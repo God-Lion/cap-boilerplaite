@@ -1,0 +1,360 @@
+import { openDB, DBSchema, IDBPDatabase } from 'idb'
+
+// IndexedDB Schema
+interface AppDB extends DBSchema {
+  jobs: {
+    key: string
+    value: {
+      id: string
+      data: any
+      timestamp: number
+    }
+  }
+  companies: {
+    key: string
+    value: {
+      id: string
+      data: any
+      timestamp: number
+    }
+  }
+  profiles: {
+    key: string
+    value: {
+      id: string
+      data: any
+      timestamp: number
+    }
+  }
+  applications: {
+    key: string
+    value: {
+      id: string
+      data: any
+      timestamp: number
+    }
+  }
+}
+
+class StorageManager {
+  private static dbName = 'god-lion-seeker-optimizer--scraper-db'
+  private static dbVersion = 1
+  private static db: IDBPDatabase<AppDB> | null = null
+
+  /**
+   * Initialize IndexedDB
+   */
+  private static async initDB(): Promise<IDBPDatabase<AppDB>> {
+    if (this.db) return this.db
+
+    this.db = await openDB<AppDB>(this.dbName, this.dbVersion, {
+      upgrade(db) {
+        // Create object stores if they don't exist
+        if (!db.objectStoreNames.contains('jobs')) {
+          db.createObjectStore('jobs', { keyPath: 'id' })
+        }
+        if (!db.objectStoreNames.contains('companies')) {
+          db.createObjectStore('companies', { keyPath: 'id' })
+        }
+        if (!db.objectStoreNames.contains('profiles')) {
+          db.createObjectStore('profiles', { keyPath: 'id' })
+        }
+        if (!db.objectStoreNames.contains('applications')) {
+          db.createObjectStore('applications', { keyPath: 'id' })
+        }
+      },
+    })
+
+    return this.db
+  }
+
+  /**
+   * Save data to IndexedDB
+   * Use for large datasets (job listings, company data)
+   */
+  static async saveToIndexedDB<T extends keyof AppDB>(
+    storeName: T,
+    key: string,
+    data: any
+  ): Promise<void> {
+    try {
+      const db = await this.initDB()
+      await db.put(storeName as any, {
+        id: key,
+        data,
+        timestamp: Date.now(),
+      })
+    } catch (error) {
+      console.error('IndexedDB save error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get data from IndexedDB
+   */
+  static async getFromIndexedDB<T extends keyof AppDB>(
+    storeName: T,
+    key: string
+  ): Promise<any | null> {
+    try {
+      const db = await this.initDB()
+      const result = await db.get(storeName as any, key)
+      return result?.data || null
+    } catch (error) {
+      console.error('IndexedDB get error:', error)
+      return null
+    }
+  }
+
+  /**
+   * Get all data from a store
+   */
+  static async getAllFromIndexedDB<T extends keyof AppDB>(
+    storeName: T
+  ): Promise<any[]> {
+    try {
+      const db = await this.initDB()
+      const results = await db.getAll(storeName as any)
+      return results.map(r => r.data)
+    } catch (error) {
+      console.error('IndexedDB getAll error:', error)
+      return []
+    }
+  }
+
+  /**
+   * Delete from IndexedDB
+   */
+  static async deleteFromIndexedDB<T extends keyof AppDB>(
+    storeName: T,
+    key: string
+  ): Promise<void> {
+    try {
+      const db = await this.initDB()
+      await db.delete(storeName as any, key)
+    } catch (error) {
+      console.error('IndexedDB delete error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Clear entire store
+   */
+  static async clearIndexedDBStore<T extends keyof AppDB>(
+    storeName: T
+  ): Promise<void> {
+    try {
+      const db = await this.initDB()
+      await db.clear(storeName as any)
+    } catch (error) {
+      console.error('IndexedDB clear error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Save to LocalStorage
+   * Use for user preferences (with optional encryption for sensitive data)
+   */
+  static saveToLocalStorage(key: string, data: any, encrypt = false): void {
+    try {
+      const value = encrypt ? this.encryptData(JSON.stringify(data)) : JSON.stringify(data)
+      localStorage.setItem(key, value)
+    } catch (error) {
+      console.error('LocalStorage save error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get from LocalStorage
+   */
+  static getFromLocalStorage<T = any>(key: string, decrypt = false): T | null {
+    try {
+      const value = localStorage.getItem(key)
+      if (!value) return null
+
+      const parsed = decrypt ? this.decryptData(value) : value
+      return JSON.parse(parsed)
+    } catch (error) {
+      console.error('LocalStorage get error:', error)
+      return null
+    }
+  }
+
+  /**
+   * Delete from LocalStorage
+   */
+  static deleteFromLocalStorage(key: string): void {
+    try {
+      localStorage.removeItem(key)
+    } catch (error) {
+      console.error('LocalStorage delete error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Save to SessionStorage
+   * Use for temporary guest data
+   */
+  static saveToSessionStorage(key: string, data: any): void {
+    try {
+      sessionStorage.setItem(key, JSON.stringify(data))
+    } catch (error) {
+      console.error('SessionStorage save error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get from SessionStorage
+   */
+  static getFromSessionStorage<T = any>(key: string): T | null {
+    try {
+      const value = sessionStorage.getItem(key)
+      if (!value) return null
+      return JSON.parse(value)
+    } catch (error) {
+      console.error('SessionStorage get error:', error)
+      return null
+    }
+  }
+
+  /**
+   * Delete from SessionStorage
+   */
+  static deleteFromSessionStorage(key: string): void {
+    try {
+      sessionStorage.removeItem(key)
+    } catch (error) {
+      console.error('SessionStorage delete error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Clear all user data on logout
+   */
+  static clearAllUserData(): void {
+    try {
+      // Clear localStorage
+      localStorage.clear()
+
+      // Clear sessionStorage
+      sessionStorage.clear()
+
+      // Clear IndexedDB
+      this.clearAllIndexedDB()
+    } catch (error) {
+      console.error('Clear all user data error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Clear all IndexedDB data
+   */
+  static async clearAllIndexedDB(): Promise<void> {
+    try {
+      const db = await this.initDB()
+      const storeNames: (keyof AppDB)[] = ['jobs', 'companies', 'profiles', 'applications']
+
+      for (const storeName of storeNames) {
+        await db.clear(storeName as any)
+      }
+    } catch (error) {
+      console.error('Clear all IndexedDB error:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Simple obfuscation using Base64 encoding
+   * 
+   * NOTE: This is NOT secure encryption! Base64 is easily reversible.
+   * Use this only for non-sensitive data obfuscation.
+   * 
+   * For production with sensitive data, implement Web Crypto API:
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto
+   */
+  private static encryptData(data: string): string {
+    // Only show warning in development mode
+    if (import.meta.env.DEV) {
+      console.warn('⚠️ Using Base64 encoding (NOT secure encryption)')
+    }
+    return btoa(data)
+  }
+
+  /**
+   * Decode Base64 encoded data
+   * NOTE: This is NOT decryption! Base64 is easily reversible.
+   */
+  private static decryptData(data: string): string {
+    return atob(data)
+  }
+
+  /**
+   * Get storage quota information
+   */
+  static async getStorageQuota(): Promise<{
+    usage: number
+    quota: number
+    percentUsed: number
+  }> {
+    if ('storage' in navigator && 'estimate' in navigator.storage) {
+      const estimate = await navigator.storage.estimate()
+      const usage = estimate.usage || 0
+      const quota = estimate.quota || 0
+      const percentUsed = quota > 0 ? (usage / quota) * 100 : 0
+
+      return {
+        usage,
+        quota,
+        percentUsed,
+      }
+    }
+
+    return {
+      usage: 0,
+      quota: 0,
+      percentUsed: 0,
+    }
+  }
+
+  /**
+   * Check if storage is available
+   */
+  static isStorageAvailable(type: 'localStorage' | 'sessionStorage'): boolean {
+    try {
+      const storage = window[type]
+      const test = '__storage_test__'
+      storage.setItem(test, test)
+      storage.removeItem(test)
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+}
+
+export default StorageManager
+
+// Export storage managers for backward compatibility
+
+
+// Storage keys
+export const STORAGE_KEYS = {
+  AUTH_TOKEN: 'auth_token',
+  REFRESH_TOKEN: 'refresh_token',
+  USER_DATA: 'user_data',
+  USER_PREFERENCES: 'user_preferences',
+  SAVED_JOBS: 'saved_jobs',
+  RESUME_PROFILES: 'resume_profiles',
+  NOTIFICATIONS: 'notifications',
+  GUEST_SESSION: 'guest_session',
+  THEME_PREFERENCES: 'theme_preferences',
+  LANGUAGE: 'language',
+} as const
