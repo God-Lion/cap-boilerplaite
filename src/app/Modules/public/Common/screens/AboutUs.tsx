@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Box,
   Container,
@@ -8,14 +8,14 @@ import {
   CardContent,
   CardMedia,
   Stack,
-} from '@mui/material';
-import themeConfig from 'src/configs/themeConfig';
+} from '@mui/material'
+import themeConfig from 'src/configs/themeConfig'
 
 // Team member interface
 interface TeamMember {
-  name: string;
-  role: string;
-  image: string;
+  name: string
+  role: string
+  image: string
 }
 
 const teamMembers: TeamMember[] = [
@@ -43,20 +43,18 @@ const teamMembers: TeamMember[] = [
     image:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuC5nCOjaQVzX7FltACWRqXpidgIU9UYRQ1v5eFSNWP6wI5XmsELSoArTEtaYTAhlUh5k-s8ajkX9Tm7JmUIUCWonNz3A_9n4CpuKC8cIpMdMYSJgRRn3gTV_zk0IcNT2BaCUo_DZRxnXDjpWqh_kXG3Ms73I784iL1J1mQ-h6MJpW6vJshXETiZGM-4ablF6GFTa9xupw91Lg3yM0lNXeI_mQGIarlhAWOZ5WNpez5j7QQJ37muH1gLI3q1DfnTATZC1eAufjF6Nig',
   },
-];
+]
 
 export const AboutUs: React.FC = () => {
   return (
     <>
-      
-        <title>About Us - {themeConfig.templateName}</title>
-        <meta
-          name="description"
-          content={`Learn about ${themeConfig.templateName} and our mission to revolutionize job search with AI`}
-        />
-      
+      <title>About Us - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`Learn about ${themeConfig.templateName} and our mission to revolutionize job search with AI`}
+      />
 
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <Container maxWidth='lg' sx={{ py: 8 }}>
         {/* Hero Section */}
         <Box
           sx={{
@@ -65,8 +63,8 @@ export const AboutUs: React.FC = () => {
           }}
         >
           <Typography
-            variant="h2"
-            component="h1"
+            variant='h2'
+            component='h1'
             gutterBottom
             sx={{
               fontWeight: 700,
@@ -77,8 +75,8 @@ export const AboutUs: React.FC = () => {
             The Future of Career Optimization.
           </Typography>
           <Typography
-            variant="h6"
-            color="text.secondary"
+            variant='h6'
+            color='text.secondary'
             sx={{
               maxWidth: 800,
               mx: 'auto',
@@ -86,14 +84,14 @@ export const AboutUs: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            We're revolutionizing the job search experience with the power of AI,
-            connecting talented individuals with their dream careers.
+            We're revolutionizing the job search experience with the power of
+            AI, connecting talented individuals with their dream careers.
           </Typography>
         </Box>
 
         {/* Mission Section */}
         <Box sx={{ py: { xs: 6, md: 10 } }}>
-          <Grid container spacing={4} alignItems="center">
+          <Grid container spacing={4} alignItems='center'>
             <Grid item xs={12} md={6}>
               <Box
                 sx={{
@@ -112,8 +110,8 @@ export const AboutUs: React.FC = () => {
             <Grid item xs={12} md={6}>
               <Stack spacing={3}>
                 <Typography
-                  variant="h3"
-                  component="h2"
+                  variant='h3'
+                  component='h2'
                   sx={{
                     fontWeight: 700,
                     fontSize: { xs: '1.75rem', md: '2.125rem' },
@@ -123,24 +121,25 @@ export const AboutUs: React.FC = () => {
                   Our Mission
                 </Typography>
                 <Typography
-                  variant="body1"
-                  color="text.secondary"
+                  variant='body1'
+                  color='text.secondary'
                   sx={{ lineHeight: 1.8 }}
                 >
                   Our mission is to empower every job seeker with personalized,
-                  intelligent tools that uncover the best career opportunities. We
-                  believe in a future where finding a fulfilling job is not a
-                  challenge, but an inspiring journey of self-discovery and growth.
+                  intelligent tools that uncover the best career opportunities.
+                  We believe in a future where finding a fulfilling job is not a
+                  challenge, but an inspiring journey of self-discovery and
+                  growth.
                 </Typography>
                 <Typography
-                  variant="body1"
-                  color="text.secondary"
+                  variant='body1'
+                  color='text.secondary'
                   sx={{ lineHeight: 1.8 }}
                 >
-                  By leveraging cutting-edge artificial intelligence, we analyze your
-                  unique skills and aspirations to match you with roles that don't
-                  just pay the bills, but also ignite your passion and drive your
-                  professional development forward.
+                  By leveraging cutting-edge artificial intelligence, we analyze
+                  your unique skills and aspirations to match you with roles
+                  that don't just pay the bills, but also ignite your passion
+                  and drive your professional development forward.
                 </Typography>
               </Stack>
             </Grid>
@@ -152,8 +151,8 @@ export const AboutUs: React.FC = () => {
           {/* Section Header */}
           <Box sx={{ textAlign: 'center', mb: 6 }}>
             <Typography
-              variant="h3"
-              component="h2"
+              variant='h3'
+              component='h2'
               gutterBottom
               sx={{
                 fontWeight: 700,
@@ -164,8 +163,8 @@ export const AboutUs: React.FC = () => {
               The Innovators Behind the Platform
             </Typography>
             <Typography
-              variant="body1"
-              color="text.secondary"
+              variant='body1'
+              color='text.secondary'
               sx={{ maxWidth: 800, mx: 'auto' }}
             >
               We are a passionate team of engineers, designers, and career
@@ -188,7 +187,7 @@ export const AboutUs: React.FC = () => {
                   }}
                 >
                   <CardMedia
-                    component="img"
+                    component='img'
                     image={member.image}
                     alt={member.name}
                     sx={{
@@ -202,15 +201,15 @@ export const AboutUs: React.FC = () => {
                   />
                   <CardContent>
                     <Typography
-                      variant="h6"
-                      component="div"
+                      variant='h6'
+                      component='div'
                       sx={{ fontWeight: 700 }}
                     >
                       {member.name}
                     </Typography>
                     <Typography
-                      variant="body2"
-                      color="primary"
+                      variant='body2'
+                      color='primary'
                       sx={{ fontWeight: 500 }}
                     >
                       {member.role}
@@ -223,7 +222,7 @@ export const AboutUs: React.FC = () => {
         </Box>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default AboutUs;
+export default AboutUs

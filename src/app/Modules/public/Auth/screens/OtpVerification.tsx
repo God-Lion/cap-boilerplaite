@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Container,
   Typography,
@@ -6,19 +6,18 @@ import {
   Button,
   Paper,
   Link as MuiLink,
-} from '@mui/material';
-import { Lock } from '@mui/icons-material';
-import { Link as RouterLink } from 'react-router-dom';
-import OtpInput from 'react-otp-input';
+} from '@mui/material'
+import { Lock } from '@mui/icons-material'
+import { Link as RouterLink } from 'react-router-dom'
+import OtpInput from 'react-otp-input'
 
 const OtpVerification: React.FC = () => {
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState('')
 
   return (
     <React.Fragment>
-      
-        <title>OTP Verification</title>
-      
+      <title>OTP Verification</title>
+
       <Container
         component='main'
         maxWidth='xs'
@@ -57,7 +56,11 @@ const OtpVerification: React.FC = () => {
           >
             <Lock sx={{ fontSize: 40, color: '#d4af37' }} />
           </Box>
-          <Typography component='h1' variant='h4' sx={{ mb: 1, fontWeight: 'bold' }}>
+          <Typography
+            component='h1'
+            variant='h4'
+            sx={{ mb: 1, fontWeight: 'bold' }}
+          >
             Enter Verification Code
           </Typography>
           <Typography
@@ -66,7 +69,8 @@ const OtpVerification: React.FC = () => {
             align='center'
             sx={{ mb: 4 }}
           >
-            We've sent a 6-digit code to your email. The code expires in 10 minutes.
+            We've sent a 6-digit code to your email. The code expires in 10
+            minutes.
           </Typography>
           <OtpInput
             value={otp}
@@ -96,7 +100,7 @@ const OtpVerification: React.FC = () => {
                 py: 1.5,
                 backgroundColor: '#d4af37',
                 '&:hover': {
-                  backgroundColor: '#b89a30'
+                  backgroundColor: '#b89a30',
                 },
                 textTransform: 'none',
                 fontWeight: 'bold',
@@ -107,7 +111,11 @@ const OtpVerification: React.FC = () => {
             </Button>
             <Typography variant='body2' color='text.secondary' align='center'>
               Didn't receive the code?{' '}
-              <MuiLink component={RouterLink} to='#' sx={{ color: '#8B4513', fontWeight: 'medium' }}>
+              <MuiLink
+                component={RouterLink}
+                to='#'
+                sx={{ color: '#8B4513', fontWeight: 'medium' }}
+              >
                 Resend
               </MuiLink>
             </Typography>
@@ -115,7 +123,7 @@ const OtpVerification: React.FC = () => {
         </Paper>
       </Container>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default OtpVerification;
+export default OtpVerification

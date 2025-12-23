@@ -35,7 +35,7 @@ export const DensityFeature: TableFeature<any> = {
   createTable: <TData extends RowData>(table: Table<TData>): void => {
     table.setDensity = (updater) => {
       const safeUpdater: Updater<DensityState> = (old) => {
-        let newState = functionalUpdate(updater, old)
+        const newState = functionalUpdate(updater, old)
         return newState
       }
       return table.options.onDensityChange?.(safeUpdater)

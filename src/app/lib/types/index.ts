@@ -1,6 +1,6 @@
 /**
  * Types Library - Global TypeScript types
- * 
+ *
  * All TypeScript types in one place
  */
 

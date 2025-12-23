@@ -6,7 +6,7 @@ import ModeDropdown from 'app/components/layout/shared/ModeDropdown'
 import UserDropdown from 'app/components/layout/shared/UserDropdown'
 import { verticalLayoutClasses } from 'app/layouts/utils/layoutClasses'
 import Box from '@mui/material/Box'
-import { RoleIndicator } from 'src/Modules/Auth/components/RoleIndicator'
+import { RoleIndicator } from '@/app/components/auth/RoleIndicator'
 // import ShortcutsDropdown from 'src/components/layout/shared/ShortcutsDropdown'
 // import NotificationsDropdown from 'src/components/layout/shared/NotificationsDropdown'
 // import type { ShortcutsType } from 'src/components/layout/shared/ShortcutsDropdown'
@@ -115,7 +115,7 @@ const NavbarContent = () => {
         <NavSearch />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <RoleIndicator showLabel={true} size="small" />
+        <RoleIndicator showLabel={true} size='small' />
         <LanguageDropdown />
         <ModeDropdown />
         {/* <ShortcutsDropdown shortcuts={shortcuts} /> */}

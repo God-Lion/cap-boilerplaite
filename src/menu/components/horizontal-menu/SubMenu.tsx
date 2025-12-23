@@ -94,11 +94,11 @@ const StyledSubMenu = styled.li<StyledSubMenuProps>`
 
   > .${menuClasses.button} {
     ${({ level, disabled, children }) =>
-    menuButtonStyles({
-      level,
-      disabled,
-      children,
-    })};
+      menuButtonStyles({
+        level,
+        disabled,
+        children,
+      })};
     ${({ buttonStyles }) => buttonStyles};
   }
 `
@@ -410,7 +410,6 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
                 open: open,
               })
             ) : (
-              // eslint-disable-next-line lines-around-comment
               /* Expanded Arrow Icon */
               <StyledHorizontalNavExpandIcon level={level}>
                 <ChevronRight fontSize='1rem' />

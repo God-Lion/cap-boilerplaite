@@ -24,17 +24,15 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { useTheme } from '@mui/material/styles'
 import { Controller, useForm } from 'react-hook-form'
-import Copyright from 'src/components/Copyright'
+import Copyright from 'app/components/Copyright'
 import { useAuth } from 'src/store'
-import MAlert from 'src/components/Alert'
-import Session from 'src/services/Session'
-import { isObjectEmpty } from 'src/utils'
+import MAlert from 'app/components/Alert'
+import Session from 'src/services/storage/Session'
+import { isObjectEmpty } from 'app/utils/helper'
 import { ILogin } from 'src/types'
-import { IStatus } from 'src/utils/types'
-import { Roles } from 'src/utils/types'
+import { IStatus, Roles } from 'app/utils/types'
 
 export default function SignInSide() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const theme = useTheme()
   const { signIn, user } = useAuth()
   const location = useLocation()
@@ -45,7 +43,7 @@ export default function SignInSide() {
     state: location.state?.data?.state || '',
     msg: location.state?.data?.msg || '',
   })
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+
   // const _handleClickStatus = (newStatus: React.SetStateAction<IStatus>) => {
   //   setStatus({ msg: '', state: '', type: '', ...newStatus, open: true })
   // }
@@ -74,17 +72,16 @@ export default function SignInSide() {
 
   return (
     <React.Fragment>
-      
-        <title>Sign In - {themeConfig.templateName}</title>
-        <meta
-          name='description'
-          content={`Sign in to your account on ${themeConfig.templateName}`}
-        />
-        <meta
-          name='keywords'
-          content={`sign in, login, authentication, ${themeConfig.templateName}`}
-        />
-      
+      <title>Sign In - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`Sign in to your account on ${themeConfig.templateName}`}
+      />
+      <meta
+        name='keywords'
+        content={`sign in, login, authentication, ${themeConfig.templateName}`}
+      />
+
       <Grid
         container
         component='main'
@@ -114,10 +111,7 @@ export default function SignInSide() {
         </Snackbar>
         <CssBaseline />
         <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
+          size={{ xs: false, sm: 4, md: 7 }}
           sx={{
             backgroundImage:
               'url(https://source.unsplash.com/random?wallpapers)',
@@ -131,10 +125,7 @@ export default function SignInSide() {
           }}
         />
         <Grid
-          item
-          xs={12}
-          sm={8}
-          md={5}
+          size={{ xs: 12, sm: 8, md: 5 }}
           component={Paper}
           elevation={6}
           square
@@ -206,7 +197,7 @@ export default function SignInSide() {
               onSubmit={controlForm.handleSubmit(async (data: ILogin) => {
                 await signIn(data)
                 const session = new Session()
-                const userSession = session.read('user')
+                const userSession = session.read('user') as any
                 const roleId = user?.role ?? userSession?.role
                 if (
                   !isObjectEmpty(userSession) &&
@@ -219,7 +210,7 @@ export default function SignInSide() {
               })}
             >
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Controller
                     name='email'
                     control={controlForm.control}
@@ -243,7 +234,7 @@ export default function SignInSide() {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Controller
                     name='password'
                     control={controlForm.control}
@@ -324,12 +315,12 @@ export default function SignInSide() {
                 Sign In
               </Button>
               <Grid container>
-                <Grid item xs>
+                <Grid size={'grow'}>
                   <HLink component={Link} to='/auth/forgetpassword'>
                     Forgot password?
                   </HLink>
                 </Grid>
-                <Grid item>
+                <Grid>
                   <HLink component={Link} to='/auth/signup'>
                     Don't have an account? Sign Up"
                   </HLink>

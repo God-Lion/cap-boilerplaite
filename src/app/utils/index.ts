@@ -1,5 +1,4 @@
 // Export all utility functions
 export * from './helper'
 export * from './rgbaToHex'
-export * from '../services/optimisticUpdates'
-
+export * from 'src/services/optimisticUpdates'

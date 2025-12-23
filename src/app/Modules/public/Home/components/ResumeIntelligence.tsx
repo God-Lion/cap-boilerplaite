@@ -1,5 +1,14 @@
 import React from 'react'
-import { Box, Container, Typography, Button, Paper, alpha, useTheme, CircularProgress } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Paper,
+  alpha,
+  useTheme,
+  CircularProgress,
+} from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { useNavigate } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
@@ -16,8 +25,8 @@ const ResumeIntelligence: React.FC = () => {
         py: { xs: 8, md: 12 },
       }}
     >
-      <Container maxWidth="lg">
-        <Grid container spacing={6} alignItems="center">
+      <Container maxWidth='lg'>
+        <Grid container spacing={6} alignItems='center'>
           {/* Text Content - Left */}
           <Grid item xs={12} lg={6}>
             <Box
@@ -29,7 +38,7 @@ const ResumeIntelligence: React.FC = () => {
             >
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Typography
-                  variant="h2"
+                  variant='h2'
                   sx={{
                     fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
                     fontWeight: 800,
@@ -41,7 +50,7 @@ const ResumeIntelligence: React.FC = () => {
                   Your resume, optimized for every job.
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant='body1'
                   sx={{
                     fontSize: { xs: '1rem', md: '1.125rem' },
                     color: 'text.secondary',
@@ -49,14 +58,16 @@ const ResumeIntelligence: React.FC = () => {
                     maxWidth: 540,
                   }}
                 >
-                  Our AI scans your resume against job descriptions to identify key skills, suggest improvements, and calculate a match score, ensuring you stand out to recruiters.
+                  Our AI scans your resume against job descriptions to identify
+                  key skills, suggest improvements, and calculate a match score,
+                  ensuring you stand out to recruiters.
                 </Typography>
               </Box>
 
               <Box>
                 <Button
-                  variant="contained"
-                  size="large"
+                  variant='contained'
+                  size='large'
                   onClick={() => navigate('/profile-analyzer')}
                   sx={{
                     minHeight: 48,
@@ -66,7 +77,8 @@ const ResumeIntelligence: React.FC = () => {
                     textTransform: 'none',
                     borderRadius: 2,
                     bgcolor: 'primary.main',
-                    color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                    color:
+                      theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                     boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.4)}`,
                     transition: 'all 0.3s ease',
                     '&:hover': {
@@ -93,7 +105,14 @@ const ResumeIntelligence: React.FC = () => {
               }}
             >
               {/* Resume Document */}
-              <Box sx={{ position: 'relative', width: '100%', maxWidth: 400, mx: 'auto' }}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: '100%',
+                  maxWidth: 400,
+                  mx: 'auto',
+                }}
+              >
                 {/* Browser Chrome */}
                 <Box
                   sx={{
@@ -107,9 +126,30 @@ const ResumeIntelligence: React.FC = () => {
                     gap: 1,
                   }}
                 >
-                  <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#ff5f56' }} />
-                  <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#ffbd2e' }} />
-                  <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#27c93f' }} />
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: '50%',
+                      bgcolor: '#ff5f56',
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: '50%',
+                      bgcolor: '#ffbd2e',
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: '50%',
+                      bgcolor: '#27c93f',
+                    }}
+                  />
                 </Box>
 
                 {/* Document Content */}
@@ -117,7 +157,10 @@ const ResumeIntelligence: React.FC = () => {
                   elevation={0}
                   sx={{
                     p: 3,
-                    bgcolor: theme.palette.mode === 'dark' ? alpha('#fff', 0.95) : '#fff',
+                    bgcolor:
+                      theme.palette.mode === 'dark'
+                        ? alpha('#fff', 0.95)
+                        : '#fff',
                     border: 1,
                     borderColor: alpha(theme.palette.divider, 0.5),
                     borderTop: 'none',
@@ -137,10 +180,38 @@ const ResumeIntelligence: React.FC = () => {
                     />
                   </Box>
 
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
-                    <Box sx={{ height: 10, width: '100%', borderRadius: 1, bgcolor: alpha(theme.palette.text.primary, 0.08) }} />
-                    <Box sx={{ height: 10, width: '100%', borderRadius: 1, bgcolor: alpha(theme.palette.text.primary, 0.08) }} />
-                    <Box sx={{ height: 10, width: '75%', borderRadius: 1, bgcolor: alpha(theme.palette.primary.main, 0.3) }} />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        height: 10,
+                        width: '100%',
+                        borderRadius: 1,
+                        bgcolor: alpha(theme.palette.text.primary, 0.08),
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        height: 10,
+                        width: '100%',
+                        borderRadius: 1,
+                        bgcolor: alpha(theme.palette.text.primary, 0.08),
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        height: 10,
+                        width: '75%',
+                        borderRadius: 1,
+                        bgcolor: alpha(theme.palette.primary.main, 0.3),
+                      }}
+                    />
                   </Box>
 
                   <Box sx={{ mb: 2, mt: 3 }}>
@@ -154,10 +225,38 @@ const ResumeIntelligence: React.FC = () => {
                     />
                   </Box>
 
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
-                    <Box sx={{ height: 10, width: '100%', borderRadius: 1, bgcolor: alpha(theme.palette.text.primary, 0.08) }} />
-                    <Box sx={{ height: 10, width: '100%', borderRadius: 1, bgcolor: alpha(theme.palette.primary.main, 0.3) }} />
-                    <Box sx={{ height: 10, width: '86%', borderRadius: 1, bgcolor: alpha(theme.palette.text.primary, 0.08) }} />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        height: 10,
+                        width: '100%',
+                        borderRadius: 1,
+                        bgcolor: alpha(theme.palette.text.primary, 0.08),
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        height: 10,
+                        width: '100%',
+                        borderRadius: 1,
+                        bgcolor: alpha(theme.palette.primary.main, 0.3),
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        height: 10,
+                        width: '86%',
+                        borderRadius: 1,
+                        bgcolor: alpha(theme.palette.text.primary, 0.08),
+                      }}
+                    />
                   </Box>
 
                   <Box sx={{ mb: 2, mt: 3 }}>
@@ -171,9 +270,25 @@ const ResumeIntelligence: React.FC = () => {
                     />
                   </Box>
 
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <Box sx={{ height: 10, width: '100%', borderRadius: 1, bgcolor: alpha(theme.palette.text.primary, 0.08) }} />
-                    <Box sx={{ height: 10, width: '50%', borderRadius: 1, bgcolor: alpha(theme.palette.text.primary, 0.08) }} />
+                  <Box
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+                  >
+                    <Box
+                      sx={{
+                        height: 10,
+                        width: '100%',
+                        borderRadius: 1,
+                        bgcolor: alpha(theme.palette.text.primary, 0.08),
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        height: 10,
+                        width: '50%',
+                        borderRadius: 1,
+                        bgcolor: alpha(theme.palette.text.primary, 0.08),
+                      }}
+                    />
                   </Box>
                 </Paper>
               </Box>
@@ -213,7 +328,7 @@ const ResumeIntelligence: React.FC = () => {
                   }}
                 >
                   <EditIcon sx={{ fontSize: 16 }} />
-                  <Typography variant="caption" fontWeight={600}>
+                  <Typography variant='caption' fontWeight={600}>
                     Stronger Action Verb
                   </Typography>
                 </Paper>
@@ -241,7 +356,7 @@ const ResumeIntelligence: React.FC = () => {
                   }}
                 >
                   <CircularProgress
-                    variant="determinate"
+                    variant='determinate'
                     value={88}
                     size={160}
                     thickness={3}
@@ -254,7 +369,7 @@ const ResumeIntelligence: React.FC = () => {
                     }}
                   />
                   <CircularProgress
-                    variant="determinate"
+                    variant='determinate'
                     value={100}
                     size={160}
                     thickness={3}
@@ -264,10 +379,18 @@ const ResumeIntelligence: React.FC = () => {
                     }}
                   />
                   <Box sx={{ textAlign: 'center', zIndex: 1 }}>
-                    <Typography variant="h3" fontWeight={800} color="text.primary">
+                    <Typography
+                      variant='h3'
+                      fontWeight={800}
+                      color='text.primary'
+                    >
                       88%
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                    <Typography
+                      variant='body2'
+                      color='text.secondary'
+                      fontWeight={500}
+                    >
                       Match Score
                     </Typography>
                   </Box>
@@ -301,7 +424,7 @@ const ResumeIntelligence: React.FC = () => {
                   }}
                 >
                   <CheckCircleIcon sx={{ fontSize: 16 }} />
-                  <Typography variant="caption" fontWeight={600}>
+                  <Typography variant='caption' fontWeight={600}>
                     Keyword Match
                   </Typography>
                 </Paper>

@@ -3,9 +3,9 @@
 // Complete Auth Service with All Missing Features Implemented
 // ============================================================================
 
-import { apiClient } from 'src/services/api/api-client'
-import { ENDPOINTS } from 'src/services/api/config'
-import { AxiosResponse } from 'axios'
+import { apiClient, FetchResponse } from 'src/services/api/api.client'
+import { ENDPOINTS } from 'src/services/api/api,config'
+
 import {
   // Existing types
   LoginRequest,
@@ -47,31 +47,43 @@ class AuthService {
   // EXISTING METHODS (Keep as is)
   // ========================================================================
 
-  async register(data: RegisterRequest): Promise<AxiosResponse<MessageResponse>> {
+  async register(
+    data: RegisterRequest,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.register, data)
   }
 
-  async login(data: LoginRequest): Promise<AxiosResponse<TokenResponse>> {
+  async login(data: LoginRequest): Promise<FetchResponse<TokenResponse>> {
     return apiClient.post<TokenResponse>(ENDPOINTS.auth.login, data)
   }
 
-  async logout(): Promise<AxiosResponse<MessageResponse>> {
+  async logout(): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.logout)
   }
 
-  async verifyEmail(token: string): Promise<AxiosResponse<VerifyEmailResponse>> {
-    return apiClient.get<VerifyEmailResponse>(ENDPOINTS.auth.verifyEmailToken(token))
+  async verifyEmail(
+    token: string,
+  ): Promise<FetchResponse<VerifyEmailResponse>> {
+    return apiClient.get<VerifyEmailResponse>(
+      ENDPOINTS.auth.verifyEmailToken(token),
+    )
   }
 
-  async forgotPassword(data: ForgotPasswordRequest): Promise<AxiosResponse<MessageResponse>> {
+  async forgotPassword(
+    data: ForgotPasswordRequest,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.forgotPassword, data)
   }
 
-  async resetPassword(data: ResetPasswordRequest): Promise<AxiosResponse<MessageResponse>> {
+  async resetPassword(
+    data: ResetPasswordRequest,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.resetPassword, data)
   }
 
-  async refreshToken(refreshToken: string): Promise<AxiosResponse<TokenResponse>> {
+  async refreshToken(
+    refreshToken: string,
+  ): Promise<FetchResponse<TokenResponse>> {
     return apiClient.post<TokenResponse>(
       ENDPOINTS.auth.refresh,
       {},
@@ -79,37 +91,46 @@ class AuthService {
         headers: {
           Authorization: `Bearer ${refreshToken}`,
         },
-      }
+      },
     )
   }
 
-  async getSession(): Promise<AxiosResponse<SessionResponse>> {
+  async getSession(): Promise<FetchResponse<SessionResponse>> {
     return apiClient.get<SessionResponse>(ENDPOINTS.auth.session)
   }
 
   async trackFailedLogin(
-    data: TrackFailedLoginRequest
-  ): Promise<AxiosResponse<TrackFailedLoginResponse>> {
-    return apiClient.post<TrackFailedLoginResponse>(ENDPOINTS.auth.trackFailedLogin, data)
+    data: TrackFailedLoginRequest,
+  ): Promise<FetchResponse<TrackFailedLoginResponse>> {
+    return apiClient.post<TrackFailedLoginResponse>(
+      ENDPOINTS.auth.trackFailedLogin,
+      data,
+    )
   }
 
-  async getProfileSettings(): Promise<AxiosResponse<ProfileSettingsResponse>> {
+  async getProfileSettings(): Promise<FetchResponse<ProfileSettingsResponse>> {
     return apiClient.get<ProfileSettingsResponse>(ENDPOINTS.user.settings)
   }
 
-  async updateNames(data: UpdateNamesRequest): Promise<AxiosResponse<UpdateResponse>> {
+  async updateNames(
+    data: UpdateNamesRequest,
+  ): Promise<FetchResponse<UpdateResponse>> {
     return apiClient.put<UpdateResponse>(ENDPOINTS.user.updateNames, data)
   }
 
-  async updateEmail(data: UpdateEmailRequest): Promise<AxiosResponse<UpdateResponse>> {
+  async updateEmail(
+    data: UpdateEmailRequest,
+  ): Promise<FetchResponse<UpdateResponse>> {
     return apiClient.put<UpdateResponse>(ENDPOINTS.user.updateEmail, data)
   }
 
-  async updatePhoto(data: UpdatePhotoRequest): Promise<AxiosResponse<UpdateResponse>> {
+  async updatePhoto(
+    data: UpdatePhotoRequest,
+  ): Promise<FetchResponse<UpdateResponse>> {
     return apiClient.uploadFormData<UpdateResponse>(
       ENDPOINTS.user.updatePhoto(data.id),
       { photo: data.photo },
-      'patch'
+      'patch',
     )
   }
 
@@ -122,8 +143,8 @@ class AuthService {
    * Requires current password for security
    */
   async changePassword(
-    data: ChangePasswordRequest
-  ): Promise<AxiosResponse<MessageResponse>> {
+    data: ChangePasswordRequest,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.put<MessageResponse>('/api/user/change-password', data)
   }
 
@@ -136,8 +157,8 @@ class AuthService {
    * Returns QR code and backup codes
    */
   async setupMfa(
-    data: MfaSetupRequest
-  ): Promise<AxiosResponse<MfaSetupResponse>> {
+    data: MfaSetupRequest,
+  ): Promise<FetchResponse<MfaSetupResponse>> {
     return apiClient.post<MfaSetupResponse>(ENDPOINTS.auth.mfa.setup, data)
   }
 
@@ -145,29 +166,31 @@ class AuthService {
    * Verify MFA code and enable MFA
    */
   async verifyMfa(
-    data: MfaVerifyRequest
-  ): Promise<AxiosResponse<MfaVerifyResponse>> {
+    data: MfaVerifyRequest,
+  ): Promise<FetchResponse<MfaVerifyResponse>> {
     return apiClient.post<MfaVerifyResponse>(ENDPOINTS.auth.mfa.verify, data)
   }
 
   /**
    * Disable MFA
    */
-  async disableMfa(): Promise<AxiosResponse<MessageResponse>> {
+  async disableMfa(): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.mfa.disable)
   }
 
   /**
    * Get MFA status
    */
-  async getMfaStatus(): Promise<AxiosResponse<MfaStatusResponse>> {
+  async getMfaStatus(): Promise<FetchResponse<MfaStatusResponse>> {
     return apiClient.get<MfaStatusResponse>('/api/auth/mfa/status')
   }
 
   /**
    * Regenerate backup codes
    */
-  async regenerateBackupCodes(): Promise<AxiosResponse<{ backup_codes: string[] }>> {
+  async regenerateBackupCodes(): Promise<
+    FetchResponse<{ backup_codes: string[] }>
+  > {
     return apiClient.post('/api/auth/mfa/regenerate-backup-codes')
   }
 
@@ -178,21 +201,23 @@ class AuthService {
   /**
    * Get all active sessions for current user
    */
-  async getSessions(): Promise<AxiosResponse<SessionsResponse>> {
+  async getSessions(): Promise<FetchResponse<SessionsResponse>> {
     return apiClient.get<SessionsResponse>('/api/auth/sessions')
   }
 
   /**
    * Revoke a specific session
    */
-  async revokeSession(sessionId: string): Promise<AxiosResponse<MessageResponse>> {
+  async revokeSession(
+    sessionId: string,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.delete<MessageResponse>(`/api/auth/sessions/${sessionId}`)
   }
 
   /**
    * Revoke all sessions except current
    */
-  async revokeAllSessions(): Promise<AxiosResponse<MessageResponse>> {
+  async revokeAllSessions(): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>('/api/auth/sessions/revoke-all')
   }
 
@@ -204,8 +229,8 @@ class AuthService {
    * Deactivate user account (soft delete)
    */
   async deactivateAccount(
-    data: DeactivateAccountRequest
-  ): Promise<AxiosResponse<MessageResponse>> {
+    data: DeactivateAccountRequest,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>('/api/user/deactivate', data)
   }
 
@@ -213,8 +238,8 @@ class AuthService {
    * Reactivate a deactivated account
    */
   async reactivateAccount(
-    data: ReactivateAccountRequest
-  ): Promise<AxiosResponse<TokenResponse>> {
+    data: ReactivateAccountRequest,
+  ): Promise<FetchResponse<TokenResponse>> {
     return apiClient.post<TokenResponse>('/api/auth/reactivate', data)
   }
 
@@ -225,7 +250,9 @@ class AuthService {
   /**
    * Get login history for current user
    */
-  async getLoginHistory(limit: number = 50): Promise<AxiosResponse<LoginHistoryResponse>> {
+  async getLoginHistory(
+    limit: number = 50,
+  ): Promise<FetchResponse<LoginHistoryResponse>> {
     return apiClient.get<LoginHistoryResponse>('/api/auth/login-history', {
       params: { limit },
     })
@@ -238,7 +265,7 @@ class AuthService {
     limit?: number
     offset?: number
     event_type?: string
-  }): Promise<AxiosResponse<{ logs: any[] }>> {
+  }): Promise<FetchResponse<{ logs: any[] }>> {
     return apiClient.get('/api/auth/security-logs', { params })
   }
 
@@ -251,8 +278,8 @@ class AuthService {
    */
   async oauthLogin(
     provider: 'google' | 'facebook',
-    code: string
-  ): Promise<AxiosResponse<TokenResponse>> {
+    code: string,
+  ): Promise<FetchResponse<TokenResponse>> {
     return apiClient.post<TokenResponse>('/api/auth/oauth/login', {
       provider,
       code,
@@ -263,8 +290,8 @@ class AuthService {
    * Link OAuth account to existing user
    */
   async linkOAuthProvider(
-    data: LinkOAuthRequest
-  ): Promise<AxiosResponse<MessageResponse>> {
+    data: LinkOAuthRequest,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>('/api/auth/oauth/link', data)
   }
 
@@ -272,15 +299,17 @@ class AuthService {
    * Unlink OAuth account
    */
   async unlinkOAuthProvider(
-    provider: 'google' | 'facebook'
-  ): Promise<AxiosResponse<MessageResponse>> {
-    return apiClient.delete<MessageResponse>(`/api/auth/oauth/unlink/${provider}`)
+    provider: 'google' | 'facebook',
+  ): Promise<FetchResponse<MessageResponse>> {
+    return apiClient.delete<MessageResponse>(
+      `/api/auth/oauth/unlink/${provider}`,
+    )
   }
 
   /**
    * Get linked OAuth accounts
    */
-  async getLinkedAccounts(): Promise<AxiosResponse<LinkedAccountsResponse>> {
+  async getLinkedAccounts(): Promise<FetchResponse<LinkedAccountsResponse>> {
     return apiClient.get<LinkedAccountsResponse>('/api/auth/oauth/linked')
   }
 
@@ -291,14 +320,16 @@ class AuthService {
   /**
    * Get email preferences
    */
-  async getEmailPreferences(): Promise<AxiosResponse<any>> {
+  async getEmailPreferences(): Promise<FetchResponse<any>> {
     return apiClient.get('/api/user/email-preferences')
   }
 
   /**
    * Update email preferences
    */
-  async updateEmailPreferences(preferences: Record<string, boolean>): Promise<AxiosResponse<MessageResponse>> {
+  async updateEmailPreferences(
+    preferences: Record<string, boolean>,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.put('/api/user/email-preferences', preferences)
   }
 
@@ -309,14 +340,16 @@ class AuthService {
   /**
    * Get trusted devices
    */
-  async getTrustedDevices(): Promise<AxiosResponse<any>> {
+  async getTrustedDevices(): Promise<FetchResponse<any>> {
     return apiClient.get('/api/auth/trusted-devices')
   }
 
   /**
    * Remove trusted device
    */
-  async removeTrustedDevice(deviceId: string): Promise<AxiosResponse<MessageResponse>> {
+  async removeTrustedDevice(
+    deviceId: string,
+  ): Promise<FetchResponse<MessageResponse>> {
     return apiClient.delete(`/api/auth/trusted-devices/${deviceId}`)
   }
 }

@@ -18,8 +18,7 @@ import {
 } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from 'src/store'
-import { useSignOut } from 'src/Modules/Auth/hooks/useSignOut'
-
+import { useSignOut } from '@/hooks/useSignOut'
 
 export const UserMenu: React.FC = () => {
   const navigate = useNavigate()
@@ -64,11 +63,11 @@ export const UserMenu: React.FC = () => {
     <>
       <IconButton
         onClick={handleClick}
-        size="small"
+        size='small'
         aria-controls={open ? 'user-menu' : undefined}
-        aria-haspopup="true"
+        aria-haspopup='true'
         aria-expanded={open ? 'true' : undefined}
-        aria-label="user menu"
+        aria-label='user menu'
       >
         <Avatar
           sx={{
@@ -84,7 +83,7 @@ export const UserMenu: React.FC = () => {
 
       <Menu
         anchorEl={anchorEl}
-        id="user-menu"
+        id='user-menu'
         open={open}
         onClose={handleClose}
         onClick={handleClose}
@@ -104,15 +103,15 @@ export const UserMenu: React.FC = () => {
       >
         {/* User Info Header */}
         <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography variant="subtitle2" fontWeight={600}>
+          <Typography variant='subtitle2' fontWeight={600}>
             {user?.full_name || 'User'}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant='caption' color='text.secondary'>
             {user?.email || ''}
           </Typography>
           {user?.role && (
             <Typography
-              variant="caption"
+              variant='caption'
               sx={{
                 display: 'block',
                 mt: 0.5,
@@ -135,21 +134,21 @@ export const UserMenu: React.FC = () => {
         {/* Menu Items */}
         <MenuItem onClick={() => handleNavigate('/dashboard')}>
           <ListItemIcon>
-            <Dashboard fontSize="small" />
+            <Dashboard fontSize='small' />
           </ListItemIcon>
           <ListItemText>Dashboard</ListItemText>
         </MenuItem>
 
         <MenuItem onClick={() => handleNavigate('/profile')}>
           <ListItemIcon>
-            <AccountCircle fontSize="small" />
+            <AccountCircle fontSize='small' />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
 
         <MenuItem onClick={() => handleNavigate('/settings')}>
           <ListItemIcon>
-            <Settings fontSize="small" />
+            <Settings fontSize='small' />
           </ListItemIcon>
           <ListItemText>Settings</ListItemText>
         </MenuItem>
@@ -168,7 +167,7 @@ export const UserMenu: React.FC = () => {
           }}
         >
           <ListItemIcon>
-            <LogoutOutlined fontSize="small" color="error" />
+            <LogoutOutlined fontSize='small' color='error' />
           </ListItemIcon>
           <ListItemText>
             {isSigningOut ? 'Signing out...' : 'Sign Out'}

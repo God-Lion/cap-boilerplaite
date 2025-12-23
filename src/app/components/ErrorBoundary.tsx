@@ -48,18 +48,18 @@ class ErrorBoundary extends Component<Props, State> {
             textAlign: 'center',
           }}
         >
-          <Alert severity="error" sx={{ mb: 2, maxWidth: 500 }}>
-            <Typography variant="h6" gutterBottom>
+          <Alert severity='error' sx={{ mb: 2, maxWidth: 500 }}>
+            <Typography variant='h6' gutterBottom>
               Something went wrong
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
               {this.state.error?.message || 'An unexpected error occurred'}
             </Typography>
             <Button
-              variant="contained"
+              variant='contained'
               startIcon={<RefreshIcon />}
               onClick={this.handleRetry}
-              size="small"
+              size='small'
             >
               Try Again
             </Button>

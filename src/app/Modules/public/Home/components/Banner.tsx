@@ -1,8 +1,7 @@
 import React from 'react'
 import { Box, Paper, Typography } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import Banner2 from 'src/assets/images/abstract_low_poly_banner_design_1301.jpg'
-
+import Banner2 from 'app/assets/images/abstract_low_poly_banner_design_1301.jpg'
 
 interface BannerPost {
   title: string
@@ -50,14 +49,17 @@ const Banner: React.FC = () => {
           bottom: 0,
           right: 0,
           left: 0,
-          backgroundColor: (theme) => theme.palette.mode === 'light' ? 'rgba(0,0,0,.6)' : 'rgba(0,0,0,.5)',
+          backgroundColor: (theme) =>
+            theme.palette.mode === 'light'
+              ? 'rgba(0,0,0,.6)'
+              : 'rgba(0,0,0,.5)',
           borderRadius: 2,
         }}
       />
 
       {/* Banner Content */}
       <Grid container>
-        <Grid item md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Box
             sx={{
               position: 'relative',

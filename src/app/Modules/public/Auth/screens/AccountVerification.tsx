@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Container,
   Typography,
@@ -9,19 +9,18 @@ import {
   // Toolbar,
   Link as MuiLink,
   // LinearProgress,
-} from '@mui/material';
+} from '@mui/material'
 // import { Search, Pets } from '@mui/icons-material';
-import { Link as RouterLink } from 'react-router-dom';
-import OtpInput from 'react-otp-input';
+import { Link as RouterLink } from 'react-router-dom'
+import OtpInput from 'react-otp-input'
 
 const AccountVerification: React.FC = () => {
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState('')
 
   return (
     <React.Fragment>
-      
-        <title>Account Verification</title>
-      
+      <title>Account Verification</title>
+
       <Container
         component='main'
         maxWidth='xs'
@@ -54,7 +53,11 @@ const AccountVerification: React.FC = () => {
             <LinearProgress variant='determinate' value={50} sx={{ height: 8, borderRadius: 4 }} />
           </Box> */}
           <Box sx={{ textAlign: 'center' }}>
-            <Typography component='h1' variant='h4' sx={{ mb: 1, fontWeight: 'black' }}>
+            <Typography
+              component='h1'
+              variant='h4'
+              sx={{ mb: 1, fontWeight: 'black' }}
+            >
               Verify Your Account
             </Typography>
             <Typography variant='body1' color='text.secondary'>
@@ -89,7 +92,7 @@ const AccountVerification: React.FC = () => {
                 py: 1.5,
                 backgroundColor: '#d4af37',
                 '&:hover': {
-                  backgroundColor: '#b89a30'
+                  backgroundColor: '#b89a30',
                 },
                 textTransform: 'none',
                 fontWeight: 'bold',
@@ -98,14 +101,18 @@ const AccountVerification: React.FC = () => {
             >
               Verify & Continue
             </Button>
-            <MuiLink component={RouterLink} to='#' sx={{ color: '#8B4513', fontWeight: 'medium' }}>
+            <MuiLink
+              component={RouterLink}
+              to='#'
+              sx={{ color: '#8B4513', fontWeight: 'medium' }}
+            >
               Didn't receive a code?
             </MuiLink>
           </Box>
         </Paper>
       </Container>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default AccountVerification;
+export default AccountVerification

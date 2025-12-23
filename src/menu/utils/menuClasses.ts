@@ -18,7 +18,7 @@ export const menuClasses = {
   disabled: 'disabled',
   active: 'active',
   open: 'open',
-} as const;
+} as const
 
 export const verticalNavClasses = {
   root: 'vertical-nav-root',
@@ -36,7 +36,7 @@ export const verticalNavClasses = {
   hovered: 'hovered',
   scrollWithContent: 'scroll-with-content',
   breakpointReached: 'breakpoint-reached',
-} as const;
+} as const
 
 export const horizontalNavClasses = {
   root: 'horizontal-nav-root',
@@ -48,4 +48,4 @@ export const horizontalNavClasses = {
   active: 'active',
   open: 'open',
   disabled: 'disabled',
-} as const;
+} as const

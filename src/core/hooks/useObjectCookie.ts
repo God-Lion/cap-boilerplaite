@@ -7,7 +7,6 @@ const useObjectCookie = <T>(
 ): [T, (newVal: T) => void] => {
   const [valStr, updateCookie] = useCookie(key)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const value = React.useMemo<T>(
     () => (valStr ? JSON.parse(valStr) : fallback),
     [valStr],

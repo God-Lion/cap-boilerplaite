@@ -20,10 +20,7 @@ import {
 import CssBaseline from '@mui/material/CssBaseline'
 import { useTheme, styled } from '@mui/material/styles'
 // import MuiAppBar from '@mui/material/AppBar'
-import {
-  ChevronLeft,
-  ExpandMore,
-} from '@mui/icons-material'
+import { ChevronLeft, ExpandMore } from '@mui/icons-material'
 import MenuIcon from '@mui/icons-material/Menu'
 import DarkIcon from '@mui/icons-material/Brightness4'
 import LightIcon from '@mui/icons-material/Brightness7'
@@ -119,15 +116,13 @@ export default function DrawerSide({
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [user])
 
-  // eslint-disable-next-line no-unused-vars
-
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar
         position='absolute'
         open={open}
-      // color='secondary'
+        // color='secondary'
       >
         <Toolbar
           sx={{
@@ -631,7 +626,6 @@ export default function DrawerSide({
   )
 }
 
-// eslint-disable-next-line no-unused-vars
 // function Profile() {
 //   const { signOut } = useAuth()
 //   const navigate = useNavigate()
@@ -861,28 +855,28 @@ export type INotificationsType = {
   time: string
   read: boolean
 } & (
-    | {
+  | {
       avatarImage?: string
       avatarIcon?: never
       avatarText?: never
       avatarColor?: never
       avatarSkin?: never
     }
-    | {
+  | {
       avatarIcon?: string
       avatarColor?: ThemeColor
       avatarSkin?: CustomAvatarProps['skin']
       avatarImage?: never
       avatarText?: never
     }
-    | {
+  | {
       avatarText?: string
       avatarColor?: ThemeColor
       avatarSkin?: CustomAvatarProps['skin']
       avatarImage?: never
       avatarIcon?: never
     }
-  )
+)
 
 const notifications: Array<INotificationsType> = [
   {

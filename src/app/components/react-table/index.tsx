@@ -12,9 +12,11 @@ export default function App() {
     [],
   )
 
-  const numRows = 10
+  const [data, setData] = React.useState<IPerson[]>([])
 
-  const [data, setData] = React.useState([])
+  const refreshData = () => {
+    setData([]) // Clear data or fetch new data
+  }
 
   return (
     <>

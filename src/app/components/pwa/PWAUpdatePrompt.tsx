@@ -13,7 +13,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 
 /**
  * PWA Update Prompt Component
- * 
+ *
  * Shows a notification when a new version of the app is available
  * Allows users to update immediately or dismiss
  */
@@ -59,13 +59,13 @@ export function PWAUpdatePrompt() {
     >
       <Alert
         severity={needRefresh ? 'info' : 'success'}
-        variant="filled"
+        variant='filled'
         action={
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             {needRefresh && (
               <Button
-                color="inherit"
-                size="small"
+                color='inherit'
+                size='small'
                 onClick={handleUpdate}
                 startIcon={<RefreshIcon />}
               >
@@ -73,12 +73,12 @@ export function PWAUpdatePrompt() {
               </Button>
             )}
             <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
+              size='small'
+              aria-label='close'
+              color='inherit'
               onClick={handleClose}
             >
-              <CloseIcon fontSize="small" />
+              <CloseIcon fontSize='small' />
             </IconButton>
           </Box>
         }

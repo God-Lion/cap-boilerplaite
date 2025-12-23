@@ -24,8 +24,8 @@ const StyledVerticalNav = styled.aside<StyledVerticalNavProps>`
   z-index: 9;
 
   /* Transition */
-  transition-property: inline-size, min-inline-size, margin-inline-start,
-    inset-inline-start;
+  transition-property:
+    inline-size, min-inline-size, margin-inline-start, inset-inline-start;
   transition-duration: ${({ transitionDuration }) => `${transitionDuration}ms`};
   transition-timing-function: ease-in-out;
 

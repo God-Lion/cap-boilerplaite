@@ -1,5 +1,14 @@
 import React from 'react'
-import { Box, Container, Typography, Paper, Button, Chip, alpha, useTheme } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Paper,
+  Button,
+  Chip,
+  alpha,
+  useTheme,
+} from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import { useNavigate } from 'react-router-dom'
 
@@ -86,11 +95,11 @@ const PricingSection: React.FC = () => {
         py: { xs: 8, md: 12 },
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth='lg'>
         {/* Header */}
         <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
           <Typography
-            variant="h2"
+            variant='h2'
             sx={{
               fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
               fontWeight: 800,
@@ -102,7 +111,7 @@ const PricingSection: React.FC = () => {
             Simple, Transparent Pricing
           </Typography>
           <Typography
-            variant="body1"
+            variant='body1'
             sx={{
               fontSize: { xs: '1rem', md: '1.125rem' },
               color: 'text.secondary',
@@ -111,7 +120,8 @@ const PricingSection: React.FC = () => {
               mx: 'auto',
             }}
           >
-            Choose the perfect plan for your job search journey. All plans include 14-day free trial.
+            Choose the perfect plan for your job search journey. All plans
+            include 14-day free trial.
           </Typography>
         </Box>
 
@@ -141,10 +151,14 @@ const PricingSection: React.FC = () => {
                 flexDirection: 'column',
                 position: 'relative',
                 transition: 'all 0.3s ease',
-                transform: plan.highlighted ? { md: 'scale(1.05)' } : 'scale(1)',
+                transform: plan.highlighted
+                  ? { md: 'scale(1.05)' }
+                  : 'scale(1)',
                 zIndex: plan.highlighted ? 2 : 1,
                 '&:hover': {
-                  transform: plan.highlighted ? { md: 'scale(1.08)' } : 'scale(1.03)',
+                  transform: plan.highlighted
+                    ? { md: 'scale(1.08)' }
+                    : 'scale(1.03)',
                   borderColor: 'primary.main',
                   boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.2)}`,
                 },
@@ -153,14 +167,15 @@ const PricingSection: React.FC = () => {
               {/* Popular Badge */}
               {plan.highlighted && (
                 <Chip
-                  label="MOST POPULAR"
-                  size="small"
+                  label='MOST POPULAR'
+                  size='small'
                   sx={{
                     position: 'absolute',
                     top: 16,
                     right: 16,
                     bgcolor: 'primary.main',
-                    color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                    color:
+                      theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                     fontWeight: 700,
                     fontSize: '0.75rem',
                   }}
@@ -169,7 +184,7 @@ const PricingSection: React.FC = () => {
 
               {/* Plan Name */}
               <Typography
-                variant="h5"
+                variant='h5'
                 sx={{
                   fontWeight: 700,
                   mb: 1,
@@ -180,7 +195,7 @@ const PricingSection: React.FC = () => {
 
               {/* Description */}
               <Typography
-                variant="body2"
+                variant='body2'
                 sx={{
                   color: 'text.secondary',
                   mb: 3,
@@ -193,7 +208,7 @@ const PricingSection: React.FC = () => {
               <Box sx={{ mb: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
                   <Typography
-                    variant="h2"
+                    variant='h2'
                     sx={{
                       fontWeight: 800,
                       fontSize: { xs: '2.5rem', md: '3rem' },
@@ -203,7 +218,7 @@ const PricingSection: React.FC = () => {
                     {plan.price}
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant='body1'
                     sx={{
                       color: 'text.secondary',
                     }}
@@ -215,7 +230,9 @@ const PricingSection: React.FC = () => {
 
               {/* Features List */}
               <Box sx={{ flexGrow: 1, mb: 4 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                <Box
+                  sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}
+                >
                   {plan.features.map((feature, idx) => (
                     <Box
                       key={idx}
@@ -234,7 +251,7 @@ const PricingSection: React.FC = () => {
                         }}
                       />
                       <Typography
-                        variant="body2"
+                        variant='body2'
                         sx={{
                           color: 'text.primary',
                           lineHeight: 1.6,
@@ -250,7 +267,7 @@ const PricingSection: React.FC = () => {
               {/* CTA Button */}
               <Button
                 variant={plan.ctaVariant}
-                size="large"
+                size='large'
                 onClick={() => handlePlanClick(plan.name)}
                 sx={{
                   minHeight: 48,
@@ -260,7 +277,8 @@ const PricingSection: React.FC = () => {
                   borderRadius: 2,
                   ...(plan.ctaVariant === 'contained' && {
                     bgcolor: 'primary.main',
-                    color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                    color:
+                      theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                     boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.4)}`,
                     '&:hover': {
                       boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.5)}`,
@@ -284,12 +302,13 @@ const PricingSection: React.FC = () => {
         {/* Bottom Note */}
         <Box sx={{ textAlign: 'center', mt: 6 }}>
           <Typography
-            variant="body2"
+            variant='body2'
             sx={{
               color: 'text.secondary',
             }}
           >
-            All plans include 14-day free trial. No credit card required. Cancel anytime.
+            All plans include 14-day free trial. No credit card required. Cancel
+            anytime.
           </Typography>
         </Box>
       </Container>

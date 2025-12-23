@@ -9,7 +9,10 @@ interface GuestRouteProps {
   redirectTo?: string
 }
 
-const GuestRoute = ({ element, redirectTo = '/dashboard' }: GuestRouteProps) => {
+const GuestRoute = ({
+  element,
+  redirectTo = '/dashboard',
+}: GuestRouteProps) => {
   const { user, isAuthenticated } = useAuth()
   const location = useLocation()
   const [isChecking, setIsChecking] = useState(true)

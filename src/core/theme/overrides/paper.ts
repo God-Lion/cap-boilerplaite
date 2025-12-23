@@ -5,10 +5,10 @@ const paper: Theme['components'] = {
   MuiPaper: {
     styleOverrides: {
       root: {
-        backgroundImage: 'none'
-      }
-    }
-  }
+        backgroundImage: 'none',
+      },
+    },
+  },
 }
 
 export default paper

@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material'
 import BaseTheme from './Base'
-/* eslint-disable prettier/prettier */
+
 const lightTheme = createTheme({
   ...BaseTheme,
   palette: {

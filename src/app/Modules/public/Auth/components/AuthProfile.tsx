@@ -84,7 +84,7 @@ const AuthProfile = () => {
   if (!user) {
     return null
   }
-  
+
   const settings: Array<{
     icon: React.JSX.Element
     name: string

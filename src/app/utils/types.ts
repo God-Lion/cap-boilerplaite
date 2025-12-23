@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
 import { IUserReponse } from 'src/types'
 
 export enum Roles {

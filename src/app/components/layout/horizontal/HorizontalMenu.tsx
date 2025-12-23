@@ -34,8 +34,7 @@ import verticalMenuItemStyles from 'src/core/styles/vertical/menuItemStyles'
 import verticalMenuSectionStyles from 'src/core/styles/vertical/menuSectionStyles'
 import { ChevronRight, RadioButtonUnchecked } from '@mui/icons-material'
 import { IMenu } from '../types'
-import adminmenu from 'src/Modules/Admin/menu'
-
+import adminMenu from '@/app/components/admin/adminMenu'
 
 import Icon from 'app/components/Icon'
 
@@ -156,11 +155,11 @@ const renderMenu: React.FC<IMenu> = (menu) => {
         label={menu.name}
         icon={<Icon icon={menu.icon as string} />}
         suffix={menu.suffix}
-      // style={{
-      //   backgroundColor: '#E57373',
-      // }}
+        // style={{
+        //   backgroundColor: '#E57373',
+        // }}
       >
-        {menu.submenu.map(renderMenu)}
+        {menu.submenu.map(renderMenu) as React.ReactNode}
       </SubMenu>
     )
   }
@@ -189,9 +188,9 @@ const renderMenu: React.FC<IMenu> = (menu) => {
       component={<Link to={menu?.link as string} />}
       icon={<Icon icon={menu.icon as string} />}
       suffix={menu.suffix}
-    // style={{
-    //   backgroundColor: '#8E24AA',
-    // }}
+      // style={{
+      //   backgroundColor: '#8E24AA',
+      // }}
     >
       {menu.name}
     </MenuItem>
@@ -199,84 +198,84 @@ const renderMenu: React.FC<IMenu> = (menu) => {
 }
 
 const HorizontalMenu = () =>
-// { dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }
+  // { dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }
 
-{
-  const theme = useTheme()
-  const verticalNavOptions = useVerticalNav()
-  const { settings } = useSettings()
-  // const params = useParams()
-  const { skin } = settings
-  const { transitionDuration } = verticalNavOptions
-  // const { lang: locale, id } = params
+  {
+    const theme = useTheme()
+    const verticalNavOptions = useVerticalNav()
+    const { settings } = useSettings()
+    // const params = useParams()
+    const { skin } = settings
+    const { transitionDuration } = verticalNavOptions
+    // const { lang: locale, id } = params
 
-  return (
-    <HorizontalNav
-      switchToVertical
-      verticalNavContent={VerticalNavContent}
-      verticalNavProps={{
-        customStyles: verticalNavigationCustomStyles(
-          verticalNavOptions,
-          theme,
-        ),
-        backgroundColor:
-          skin === 'bordered'
-            ? 'var(--mui-palette-background-paper)'
-            : 'var(--mui-palette-background-default)',
-      }}
-    >
-      <Menu
-        rootStyles={menuRootStyles(theme)}
-        renderExpandIcon={({ level }) => <RenderExpandIcon level={level} />}
-        menuItemStyles={menuItemStyles(settings, theme)}
-        renderExpandedMenuItemIcon={{
-          icon: (
-            <RadioButtonUnchecked
-              sx={{
-                fontSize: '1.25rem',
-                lineHeight: '1.75rem',
-              }}
-            // className='text-xl'
-            />
-          ),
-          // <i className='tabler-circle text-xs' />,
-        }}
-        popoutMenuOffset={{
-          mainAxis: ({ level }) => (level && level > 0 ? 14 : 12),
-          alignmentAxis: 0,
-        }}
-        verticalMenuProps={{
-          menuItemStyles: verticalMenuItemStyles(
+    return (
+      <HorizontalNav
+        switchToVertical
+        verticalNavContent={VerticalNavContent as any}
+        verticalNavProps={{
+          customStyles: verticalNavigationCustomStyles(
             verticalNavOptions,
             theme,
-            settings,
           ),
-          renderExpandIcon: ({ open }) => (
-            <RenderVerticalExpandIcon
-              open={open}
-              transitionDuration={transitionDuration}
-            />
-          ),
-          renderExpandedMenuItemIcon: {
+          backgroundColor:
+            skin === 'bordered'
+              ? 'var(--mui-palette-background-paper)'
+              : 'var(--mui-palette-background-default)',
+        }}
+      >
+        <Menu
+          rootStyles={menuRootStyles(theme)}
+          renderExpandIcon={({ level }) => <RenderExpandIcon level={level} />}
+          menuItemStyles={menuItemStyles(settings, theme)}
+          renderExpandedMenuItemIcon={{
             icon: (
               <RadioButtonUnchecked
                 sx={{
                   fontSize: '1.25rem',
                   lineHeight: '1.75rem',
                 }}
-              // className='text-xl'
+                // className='text-xl'
               />
             ),
             // <i className='tabler-circle text-xs' />,
-          },
-          menuSectionStyles: verticalMenuSectionStyles(
-            verticalNavOptions,
-            theme,
-          ),
-        }}
-      >
-        {[...adminmenu, ...menuArray].map(renderMenu)}
-        {/* 
+          }}
+          popoutMenuOffset={{
+            mainAxis: ({ level }) => (level && level > 0 ? 14 : 12),
+            alignmentAxis: 0,
+          }}
+          verticalMenuProps={{
+            menuItemStyles: verticalMenuItemStyles(
+              verticalNavOptions,
+              theme,
+              settings,
+            ),
+            renderExpandIcon: ({ open }) => (
+              <RenderVerticalExpandIcon
+                open={open}
+                transitionDuration={transitionDuration}
+              />
+            ),
+            renderExpandedMenuItemIcon: {
+              icon: (
+                <RadioButtonUnchecked
+                  sx={{
+                    fontSize: '1.25rem',
+                    lineHeight: '1.75rem',
+                  }}
+                  // className='text-xl'
+                />
+              ),
+              // <i className='tabler-circle text-xs' />,
+            },
+            menuSectionStyles: verticalMenuSectionStyles(
+              verticalNavOptions,
+              theme,
+            ),
+          }}
+        >
+          {[...adminMenu, ...menuArray].map(renderMenu) as React.ReactNode}
+          {/* 
           <SubMenu
             label={dictionary['navigation'].dashboards}
             icon={<i className='tabler-smart-home' />}
@@ -689,9 +688,9 @@ const HorizontalMenu = () =>
             </MenuItem>
           </SubMenu>
        */}{' '}
-      </Menu>
+        </Menu>
 
-      {/* <Menu
+        {/* <Menu
         rootStyles={menuRootStyles(theme)}
         renderExpandIcon={({ level }) => <RenderExpandIcon level={level} />}
         menuItemStyles={menuItemStyles(settings, theme)}
@@ -711,8 +710,8 @@ const HorizontalMenu = () =>
       >
         <GenerateHorizontalMenu menuData={menuData(dictionary, params)} />
       </Menu> */}
-    </HorizontalNav>
-  )
-}
+      </HorizontalNav>
+    )
+  }
 
 export default HorizontalMenu

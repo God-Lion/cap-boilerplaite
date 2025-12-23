@@ -1,5 +1,4 @@
 import React from 'react'
-import { Helmet } from 'react-helmet-async'
 import themeConfig from 'src/configs/themeConfig'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
@@ -26,10 +25,10 @@ import {
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import { Controller, useForm } from 'react-hook-form'
-import MAlert from 'src/components/Alert'
+import MAlert from 'app/components/Alert'
 import { useResetPassword, ResetPasswordRequest } from '../index'
 import { authService } from 'src/services/api/api.service'
-import { AxiosError, AxiosResponse } from 'axios'
+import { FetchResponse, HttpError } from 'src/services/api/api.client'
 import { IUserReponseEmailResetPassword } from 'src/types'
 
 interface ResetPasswordFormData {
@@ -42,14 +41,14 @@ export default function ResetPassword() {
   const theme = useTheme()
   const navigate = useNavigate()
   const { email } = useParams()
-  let [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const signature = searchParams.get('signature')
 
   const [loading, setLoading] = React.useState<boolean>(false)
   const [open, setOpen] = React.useState<boolean>(false)
-  const [error, setError] = React.useState<AxiosError>()
+  const [error, setError] = React.useState<HttpError>()
   const [errorMessage, setErrorMessage] = React.useState<string>('')
-  
+
   const handleCloseAlert = () => setOpen(false)
 
   const [userReponseEmailResetPassword, setUserReponseEmailResetPassword] =
@@ -60,7 +59,11 @@ export default function ResetPassword() {
       navigate('/auth/signin')
     },
     onError: (error: any) => {
-      setErrorMessage(error.response?.data?.detail || error.message || 'Failed to reset password')
+      setErrorMessage(
+        error.response?.data?.detail ||
+          error.message ||
+          'Failed to reset password',
+      )
       setOpen(true)
     },
   })
@@ -77,14 +80,14 @@ export default function ResetPassword() {
     async function fetchData() {
       try {
         setLoading(true)
-        const response: AxiosResponse<IUserReponseEmailResetPassword> =
+        const response: FetchResponse<IUserReponseEmailResetPassword> =
           await authService.verifyEmail(email || '', signature ?? '')
         if (response.status === 202) {
           setUserReponseEmailResetPassword(response.data)
           controlForm.setValue('token', response.data.token || '')
         }
       } catch (error) {
-        setError(error as AxiosError)
+        setError(error as HttpError)
         console.log('error ', error)
       } finally {
         setLoading(false)
@@ -107,17 +110,16 @@ export default function ResetPassword() {
   if (userReponseEmailResetPassword?.isSignatureValid === false) {
     return (
       <React.Fragment>
-        
-          <title>Reset Password - {themeConfig.templateName}</title>
-          <meta
-            name='description'
-            content={`Reset your password on ${themeConfig.templateName}`}
-          />
-          <meta
-            name='keywords'
-            content={`reset password, new password, ${themeConfig.templateName}`}
-          />
-        
+        <title>Reset Password - {themeConfig.templateName}</title>
+        <meta
+          name='description'
+          content={`Reset your password on ${themeConfig.templateName}`}
+        />
+        <meta
+          name='keywords'
+          content={`reset password, new password, ${themeConfig.templateName}`}
+        />
+
         <Container
           component='main'
           maxWidth='lg'
@@ -263,17 +265,16 @@ export default function ResetPassword() {
 
   return (
     <React.Fragment>
-      
-        <title>Reset Password - {themeConfig.templateName}</title>
-        <meta
-          name='description'
-          content={`Reset your password on ${themeConfig.templateName}`}
-        />
-        <meta
-          name='keywords'
-          content={`reset password, new password, ${themeConfig.templateName}`}
-        />
-      
+      <title>Reset Password - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`Reset your password on ${themeConfig.templateName}`}
+      />
+      <meta
+        name='keywords'
+        content={`reset password, new password, ${themeConfig.templateName}`}
+      />
+
       <Container
         component='main'
         maxWidth='xs'
@@ -340,7 +341,7 @@ export default function ResetPassword() {
             severity='error'
             sx={{ width: '100%' }}
           >
-            {(
+            {
               <Box>
                 <Typography
                   component='body'
@@ -395,7 +396,7 @@ export default function ResetPassword() {
                   appreciate your patience.
                 </Typography>
               </Box>
-            )}
+            }
           </MAlert>
         </Snackbar>
         <CssBaseline />
@@ -421,7 +422,7 @@ export default function ResetPassword() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <TextField
                   required
                   fullWidth
@@ -434,7 +435,7 @@ export default function ResetPassword() {
                   }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='new_password'
                   control={controlForm.control}
@@ -486,7 +487,7 @@ export default function ResetPassword() {
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='confirmPassword'
                   control={controlForm.control}

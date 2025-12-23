@@ -1,6 +1,6 @@
 /**
  * Common Module Routes
- * 
+ *
  * Routes for shared/common pages like feature comparison
  */
 
@@ -16,12 +16,12 @@ import Pricing from '../screens/Pricing'
 const CommonRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/features" element={<FeatureComparison />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/terms-of-service" element={<TermsOfService />} />
-      <Route path="/contact" element={<ContactUs />} />
-      <Route path="/about" element={<AboutUs />} />
-      <Route path="/pricing" element={<Pricing />} />
+      <Route path='/features' element={<FeatureComparison />} />
+      <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+      <Route path='/terms-of-service' element={<TermsOfService />} />
+      <Route path='/contact' element={<ContactUs />} />
+      <Route path='/about' element={<AboutUs />} />
+      <Route path='/pricing' element={<Pricing />} />
     </Routes>
   )
 }

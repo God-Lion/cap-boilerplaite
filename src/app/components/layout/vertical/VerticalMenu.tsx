@@ -137,10 +137,11 @@ const renderMenu: React.FC<{
         label={navigation[menu.name]}
         icon={<Icon icon={menu.icon as string} />}
         suffix={menu.suffix}
-      // style={{
-      //   backgroundColor: '#E57373',
-      // }}
+        // style={{
+        //   backgroundColor: '#E57373',
+        // }}
       >
+        {/* @ts-expect-error - React 19 type compatibility */}
         {menu.submenu.map((menuItem) =>
           renderMenu({ menu: menuItem, dictionary }),
         )}
@@ -161,9 +162,9 @@ const renderMenu: React.FC<{
             {navigation[menu.menusection.menu.name]}
           </MenuItem>
         ) : (
-          menu.menusection.menu.map((subMenu) =>
+          (menu.menusection.menu.map((subMenu) =>
             renderMenu({ menu: subMenu, dictionary }),
-          )
+          ) as React.ReactNode)
         )}
       </MenuSection>
     )
@@ -195,28 +196,27 @@ const VerticalMenu: React.FC<Props> = ({ dictionary, menu, scrollMenu }) => {
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
 
   return (
-    // eslint-disable-next-line lines-around-comment
     /* Custom scrollbar instead of browser scroll, remove if you want browser scroll only */
     <ScrollWrapper
       {...(isBreakpointReached
         ? {
-          // className: 'bs-full overflow-y-auto overflow-x-hidden',
-          style: {
-            blockSize: '100%',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-          },
-          onScroll: (container) => scrollMenu(container, false),
-        }
+            // className: 'bs-full overflow-y-auto overflow-x-hidden',
+            style: {
+              blockSize: '100%',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+            },
+            onScroll: (container) => scrollMenu(container, false),
+          }
         : {
-          options: { wheelPropagation: false, suppressScrollX: true },
-          onScrollY: (container) => scrollMenu(container, true),
-        })}
+            options: { wheelPropagation: false, suppressScrollX: true },
+            onScrollY: (container) => scrollMenu(container, true),
+          })}
     >
       <Menu
         popoutMenuOffset={{ mainAxis: 23 }}
         menuItemStyles={menuItemStyles(verticalNavOptions, theme, settings)}
-        renderExpandIcon={({ open }: { open: boolean }) => (
+        renderExpandIcon={({ open }: { open?: boolean }) => (
           <RenderExpandIcon
             open={open}
             transitionDuration={transitionDuration}
@@ -229,13 +229,14 @@ const VerticalMenu: React.FC<Props> = ({ dictionary, menu, scrollMenu }) => {
                 fontSize: '1.25rem',
                 lineHeight: '1.75rem',
               }}
-            // className='text-xl'
+              // className='text-xl'
             />
           ), //<i className='tabler-circle text-xs' />,
         }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
         {/* {[...adminmenu, ...providermenu, ...menuArray] */}
+        {/* @ts-expect-error - React 19 type compatibility */}
         {menu.map((menuItem) => renderMenu({ menu: menuItem, dictionary }))}
       </Menu>
     </ScrollWrapper>

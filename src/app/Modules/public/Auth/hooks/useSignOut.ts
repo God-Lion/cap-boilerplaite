@@ -12,20 +12,20 @@ interface UseSignOutOptions {
 
 /**
  * Custom hook for handling user sign out
- * 
+ *
  * Provides a unified signout function that:
  * - Calls the backend logout API
  * - Clears all authentication data
  * - Resets application state
  * - Redirects to specified page
- * 
+ *
  * @example
  * ```tsx
  * const { signOut, isSigningOut } = useSignOut({
  *   redirectTo: '/auth/signin',
  *   onSuccess: () => console.log('Signed out successfully')
  * })
- * 
+ *
  * <Button onClick={signOut}>Sign Out</Button>
  * ```
  */

@@ -163,8 +163,8 @@ const ConfirmationDialog = ({
                   type === 'delete-account'
                     ? 'Deactivated'
                     : type === 'unsubscribe'
-                    ? 'Unsubscribed'
-                    : 'Suspended!'
+                      ? 'Unsubscribed'
+                      : 'Suspended!'
                 }`
               : 'Cancelled'}
           </Typography>

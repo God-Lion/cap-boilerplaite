@@ -17,12 +17,13 @@ interface BeforeInstallPromptEvent extends Event {
 
 /**
  * PWA Install Prompt Component
- * 
+ *
  * Shows a prompt to install the app when the browser supports it
  * Handles the beforeinstallprompt event
  */
 export function InstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null)
   const [showPrompt, setShowPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
 
@@ -37,7 +38,7 @@ export function InstallPrompt() {
     const handler = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e as BeforeInstallPromptEvent)
-      
+
       // Show prompt after a delay (don't be too aggressive)
       setTimeout(() => {
         setShowPrompt(true)
@@ -93,25 +94,25 @@ export function InstallPrompt() {
       sx={{ bottom: { xs: 90, sm: 24 } }}
     >
       <Alert
-        severity="info"
-        variant="filled"
+        severity='info'
+        variant='filled'
         action={
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <Button
-              color="inherit"
-              size="small"
+              color='inherit'
+              size='small'
               onClick={handleInstall}
               startIcon={<GetAppIcon />}
             >
               Install
             </Button>
             <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
+              size='small'
+              aria-label='close'
+              color='inherit'
               onClick={handleClose}
             >
-              <CloseIcon fontSize="small" />
+              <CloseIcon fontSize='small' />
             </IconButton>
           </Box>
         }

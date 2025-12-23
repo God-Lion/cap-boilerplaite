@@ -1,8 +1,8 @@
 // src/shared/api/api-client.ts
 
-import { FetchClient, FetchResponse, FetchRequestConfig, fetchClient as defaultFetchClient } from './api.fetch.client'
+import { FetchClient, FetchResponse, FetchRequestConfig, HttpError, fetchClient as defaultFetchClient } from './api.fetch.client'
 
-export { FetchClient }
+export { FetchClient, HttpError }
 export type { FetchResponse, FetchRequestConfig }
 
 // Response types

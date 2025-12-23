@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Box,
   Button,
@@ -12,23 +12,23 @@ import {
   Paper,
   TextField,
   Typography,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+} from '@mui/material'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const SetNewPassword = () => {
-  const [password, setPassword] = useState('pA$$w0rd!');
-  const [confirmPassword, setConfirmPassword] = useState('pA$$w0rd!');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [password, setPassword] = useState('pA$$w0rd!')
+  const [confirmPassword, setConfirmPassword] = useState('pA$$w0rd!')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword(!showConfirmPassword)
 
   return (
     <React.Fragment>
-      
-        <title>Set New Password</title>
-      
+      <title>Set New Password</title>
+
       <Container
         component='main'
         maxWidth='sm'
@@ -51,11 +51,16 @@ const SetNewPassword = () => {
           }}
         >
           <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <Typography component='h1' variant='h4' sx={{ fontWeight: 'black', mb: 1 }}>
+            <Typography
+              component='h1'
+              variant='h4'
+              sx={{ fontWeight: 'black', mb: 1 }}
+            >
               Set a New Password
             </Typography>
             <Typography variant='body1' color='text.secondary'>
-              Your new password must be different from previous passwords and meet the criteria below.
+              Your new password must be different from previous passwords and
+              meet the criteria below.
             </Typography>
           </Box>
           <form>
@@ -71,7 +76,10 @@ const SetNewPassword = () => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
-                        <IconButton onClick={handleClickShowPassword} edge='end'>
+                        <IconButton
+                          onClick={handleClickShowPassword}
+                          edge='end'
+                        >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
@@ -90,8 +98,15 @@ const SetNewPassword = () => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
-                        <IconButton onClick={handleClickShowConfirmPassword} edge='end'>
-                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        <IconButton
+                          onClick={handleClickShowConfirmPassword}
+                          edge='end'
+                        >
+                          {showConfirmPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -104,25 +119,47 @@ const SetNewPassword = () => {
                 <LinearProgress
                   variant='determinate'
                   value={100}
-                  sx={{ flexGrow: 1, height: 8, borderRadius: 4, mr: 1, backgroundColor: '#E0E0E0' }}
+                  sx={{
+                    flexGrow: 1,
+                    height: 8,
+                    borderRadius: 4,
+                    mr: 1,
+                    backgroundColor: '#E0E0E0',
+                  }}
                   color='success'
                 />
-                <Typography variant='body2' color='success.main' sx={{ fontWeight: 'medium' }}>
+                <Typography
+                  variant='body2'
+                  color='success.main'
+                  sx={{ fontWeight: 'medium' }}
+                >
                   Strong
                 </Typography>
               </Box>
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={6}>
-                  <FormControlLabel control={<Checkbox defaultChecked disabled />} label='At least 8 characters' />
+                  <FormControlLabel
+                    control={<Checkbox defaultChecked disabled />}
+                    label='At least 8 characters'
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControlLabel control={<Checkbox defaultChecked disabled />} label='Contains an uppercase letter' />
+                  <FormControlLabel
+                    control={<Checkbox defaultChecked disabled />}
+                    label='Contains an uppercase letter'
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControlLabel control={<Checkbox defaultChecked disabled />} label='Contains a number' />
+                  <FormControlLabel
+                    control={<Checkbox defaultChecked disabled />}
+                    label='Contains a number'
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControlLabel control={<Checkbox defaultChecked disabled />} label='Contains a special character (!@#$%)' />
+                  <FormControlLabel
+                    control={<Checkbox defaultChecked disabled />}
+                    label='Contains a special character (!@#$%)'
+                  />
                 </Grid>
               </Grid>
             </Box>
@@ -144,7 +181,7 @@ const SetNewPassword = () => {
         </Paper>
       </Container>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default SetNewPassword;
+export default SetNewPassword

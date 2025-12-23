@@ -1,5 +1,12 @@
 import React from 'react'
-import { Box, Container, Typography, Paper, alpha, useTheme } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Paper,
+  alpha,
+  useTheme,
+} from '@mui/material'
 import Grid from '@mui/material/Grid'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ChecklistIcon from '@mui/icons-material/Checklist'
@@ -30,8 +37,8 @@ const SmartJobDiscovery: React.FC = () => {
         py: { xs: 8, md: 12 },
       }}
     >
-      <Container maxWidth="lg">
-        <Grid container spacing={6} alignItems="center">
+      <Container maxWidth='lg'>
+        <Grid container spacing={6} alignItems='center'>
           {/* Text Content - Left */}
           <Grid item xs={12} lg={6}>
             <Box
@@ -44,7 +51,7 @@ const SmartJobDiscovery: React.FC = () => {
             >
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Typography
-                  variant="h2"
+                  variant='h2'
                   sx={{
                     fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
                     fontWeight: 800,
@@ -56,7 +63,7 @@ const SmartJobDiscovery: React.FC = () => {
                   AI that hunts for you.
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant='body1'
                   sx={{
                     fontSize: { xs: '1rem', md: '1.125rem' },
                     color: 'text.secondary',
@@ -65,7 +72,9 @@ const SmartJobDiscovery: React.FC = () => {
                     mx: { xs: 'auto', lg: 0 },
                   }}
                 >
-                  Our advanced AI analyzes millions of data points to find the perfect job opportunities that align with your skills, experience, and career goals.
+                  Our advanced AI analyzes millions of data points to find the
+                  perfect job opportunities that align with your skills,
+                  experience, and career goals.
                 </Typography>
               </Box>
 
@@ -106,7 +115,7 @@ const SmartJobDiscovery: React.FC = () => {
                       {feature.icon}
                     </Box>
                     <Typography
-                      variant="body1"
+                      variant='body1'
                       sx={{
                         color: 'text.primary',
                         fontWeight: 500,
@@ -168,12 +177,22 @@ const SmartJobDiscovery: React.FC = () => {
                     zIndex: 1,
                   }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Box>
-                      <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                      <Typography
+                        variant='subtitle1'
+                        fontWeight={700}
+                        color='text.primary'
+                      >
                         UX Designer
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant='body2' color='text.secondary'>
                         Creative Agency
                       </Typography>
                     </Box>
@@ -210,12 +229,22 @@ const SmartJobDiscovery: React.FC = () => {
                     zIndex: 2,
                   }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Box>
-                      <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                      <Typography
+                        variant='subtitle1'
+                        fontWeight={700}
+                        color='text.primary'
+                      >
                         Product Manager
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant='body2' color='text.secondary'>
                         Fintech Startup
                       </Typography>
                     </Box>
@@ -253,12 +282,23 @@ const SmartJobDiscovery: React.FC = () => {
                     zIndex: 3,
                   }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      mb: 2,
+                    }}
+                  >
                     <Box>
-                      <Typography variant="h6" fontWeight={700} color="text.primary">
+                      <Typography
+                        variant='h6'
+                        fontWeight={700}
+                        color='text.primary'
+                      >
                         Senior Frontend Engineer
                       </Typography>
-                      <Typography variant="body1" color="text.secondary">
+                      <Typography variant='body1' color='text.secondary'>
                         AI Innovations Inc.
                       </Typography>
                     </Box>
@@ -268,7 +308,10 @@ const SmartJobDiscovery: React.FC = () => {
                         py: 0.5,
                         borderRadius: 2,
                         bgcolor: 'primary.main',
-                        color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                        color:
+                          theme.palette.mode === 'dark'
+                            ? 'text.primary'
+                            : '#000',
                         fontSize: '0.875rem',
                         fontWeight: 700,
                         boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`,

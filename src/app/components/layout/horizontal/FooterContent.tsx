@@ -9,7 +9,7 @@ const FooterContent = () => {
   // const { isBreakpointReached: isVerticalBreakpointReached } = useVerticalNav()
   // const { isBreakpointReached: isHorizontalBreakpointReached } =
   // useHorizontalNav()
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+
   // const isBreakpointReached =
   //   settings.layout === 'vertical'
   //     ? isVerticalBreakpointReached

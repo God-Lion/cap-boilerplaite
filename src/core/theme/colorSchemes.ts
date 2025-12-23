@@ -3,14 +3,14 @@ import themeConfig from 'src/configs/themeConfig'
 
 /**
  * God Lion Seeker Optimizer - Theme Color Schemes
- * 
+ *
  * Primary Palette (Inspired by the logo):
  * - Gold Accent: #D4AF37 (Metallic Gold)
  * - Lion Brown: #8B4513 (Saddle Brown)
  * - Deep Blue/Grey: #2F4F4F (Dark Slate Gray)
  * - Off-White/Cream: #F5F5DC (Beige)
  * - Dark Contrast: #1A1A1A (Very Dark Gray/Near Black)
- * 
+ *
  * Light Theme: Clean, airy, readable
  * Dark Theme: Sophisticated, comfortable, low-light friendly
  */

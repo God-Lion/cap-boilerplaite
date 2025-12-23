@@ -12,7 +12,7 @@ import NotificationsDropdown from 'app/components/layout/shared/NotificationsDro
 import UserDropdown from 'app/components/layout/shared/UserDropdown'
 import { useHorizontalNav } from 'src/menu/contexts/horizontalNavContext'
 import { horizontalLayoutClasses } from 'app/layouts/utils/layoutClasses'
-import { RoleIndicator } from 'app/Modules/Auth/components/RoleIndicator'
+import { RoleIndicator } from '@/app/components/auth/RoleIndicator'
 
 const shortcuts: Array<ShortcutsType> = [
   {
@@ -135,7 +135,7 @@ const NavbarContent = () => {
         }}
       >
         <NavSearch />
-        <RoleIndicator showLabel={true} size="small" />
+        <RoleIndicator showLabel={true} size='small' />
         <LanguageDropdown />
         <ModeDropdown />
         <ShortcutsDropdown shortcuts={shortcuts} />

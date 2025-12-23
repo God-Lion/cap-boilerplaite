@@ -7,34 +7,34 @@ import Navigation from './Navigation'
 import { useHorizontalNav } from 'src/menu/contexts/horizontalNavContext'
 
 const Header = () =>
-//   {
-//   dictionary,
-// }: {
-//   dictionary: Awaited<ReturnType<typeof getDictionary>>
-// }
-{
-  // Hooks
-  const { isBreakpointReached } = useHorizontalNav()
+  //   {
+  //   dictionary,
+  // }: {
+  //   dictionary: Awaited<ReturnType<typeof getDictionary>>
+  // }
+  {
+    // Hooks
+    const { isBreakpointReached } = useHorizontalNav()
 
-  return (
-    <>
-      <LayoutHeader>
-        <Navbar>
-          <NavbarContent />
-        </Navbar>
-        {!isBreakpointReached && (
+    return (
+      <>
+        <LayoutHeader>
+          <Navbar>
+            <NavbarContent />
+          </Navbar>
+          {!isBreakpointReached && (
+            <Navigation
+            // dictionary={dictionary}
+            />
+          )}
+        </LayoutHeader>
+        {isBreakpointReached && (
           <Navigation
           // dictionary={dictionary}
           />
         )}
-      </LayoutHeader>
-      {isBreakpointReached && (
-        <Navigation
-        // dictionary={dictionary}
-        />
-      )}
-    </>
-  )
-}
+      </>
+    )
+  }
 
 export default Header

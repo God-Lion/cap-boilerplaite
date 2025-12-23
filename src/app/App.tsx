@@ -14,8 +14,9 @@ import AuthRoute from 'app/middlewares/AuthRoute'
 // Admin Module (only loaded for admin users)
 // const AdminRoutes = React.lazy(() => import('src/Modules/Admin/routes/routes'))
 
-const HomeRoutes = React.lazy(() => import('app/Modules/public/Home/routes/routes'))
-
+const HomeRoutes = React.lazy(
+  () => import('app/Modules/public/Home/routes/routes'),
+)
 
 const AuthenticationRoutes = React.lazy(
   () => import('app/Modules/public/Auth/routes/routes'),
@@ -25,11 +26,14 @@ const CommonRoutes = React.lazy(
   () => import('app/Modules/public/Common/routes/routes'),
 )
 
-
 // Error & Utility Modules
 const Home = React.lazy(() => import('app/Modules/public/Home/screens/Home'))
-const NotFound = React.lazy(() => import('app/Modules/public/ERR0R/screens/NotFound'))
-const ERR0RRoutes = React.lazy(() => import('app/Modules/public/ERR0R/routes/routes'))
+const NotFound = React.lazy(
+  () => import('app/Modules/public/ERR0R/screens/NotFound'),
+)
+const ERR0RRoutes = React.lazy(
+  () => import('app/Modules/public/ERR0R/routes/routes'),
+)
 
 const LoadingBackdrop: React.FC = () => (
   <Backdrop open style={{ background: '#FFF', zIndex: 1301 }}>
@@ -96,10 +100,6 @@ const App: React.FC = (): React.ReactElement => {
           }
         />
 
-
-
-
-
         {/* <Route
             path='notification/*'
             element={
@@ -112,9 +112,6 @@ const App: React.FC = (): React.ReactElement => {
               />
             }
           /> */}
-
-
-
 
         <Route
           path='error/*'
@@ -134,7 +131,6 @@ const App: React.FC = (): React.ReactElement => {
           }
         />
       </Routes>
-
     </ThemeProvider>
   )
 }

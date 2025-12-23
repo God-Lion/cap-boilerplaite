@@ -43,7 +43,4 @@ export {
 } from 'recharts'
 
 // Export types if needed
-export type {
-  TooltipProps,
-  LegendProps,
-} from 'recharts'
+export type { TooltipProps, LegendProps } from 'recharts'

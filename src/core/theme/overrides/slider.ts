@@ -165,8 +165,8 @@ const slider: Theme['components'] = {
             ? { blockSize: 4 }
             : { blockSize: 4 }
           : ownerState.size !== 'small'
-          ? { inlineSize: 4 }
-          : { inlineSize: 4 }),
+            ? { inlineSize: 4 }
+            : { inlineSize: 4 }),
       }),
       thumb: ({ ownerState }) => ({
         ...(ownerState.size === 'small'

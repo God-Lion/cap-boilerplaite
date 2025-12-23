@@ -5,22 +5,22 @@ const list: Theme['components'] = {
   MuiListItem: {
     styleOverrides: {
       root: ({ theme }) => ({
-        gap: theme.spacing(3)
+        gap: theme.spacing(3),
       }),
       padding: ({ theme, ownerState }) => ({
         ...(!ownerState.dense && {
           paddingBlock: theme.spacing(2),
-          paddingInlineStart: theme.spacing(5)
-        })
-      })
-    }
+          paddingInlineStart: theme.spacing(5),
+        }),
+      }),
+    },
   },
   MuiListItemAvatar: {
     styleOverrides: {
       root: {
-        minInlineSize: 'unset'
-      }
-    }
+        minInlineSize: 'unset',
+      },
+    },
   },
   MuiListItemIcon: {
     styleOverrides: {
@@ -29,50 +29,50 @@ const list: Theme['components'] = {
         color: 'var(--mui-palette-text-primary)',
         fontSize: '1.375rem',
         '& > svg, & > i': {
-          fontSize: 'inherit'
-        }
-      }
-    }
+          fontSize: 'inherit',
+        },
+      },
+    },
   },
   MuiListItemButton: {
     styleOverrides: {
       root: ({ theme, ownerState }) => ({
         gap: theme.spacing(2),
         ...(!ownerState.dense && {
-          paddingBlock: theme.spacing(2)
+          paddingBlock: theme.spacing(2),
         }),
         paddingInlineStart: theme.spacing(5),
         '&.Mui-selected': {
           backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
           '& .MuiTypography-root': {
-            color: 'var(--mui-palette-primary-main)'
+            color: 'var(--mui-palette-primary-main)',
           },
           '& + .MuiListItemSecondaryAction-root .MuiIconButton-root': {
-            color: 'var(--mui-palette-primary-main)'
-          }
-        }
-      })
-    }
+            color: 'var(--mui-palette-primary-main)',
+          },
+        },
+      }),
+    },
   },
   MuiListItemText: {
     styleOverrides: {
       root: {
-        margin: 0
+        margin: 0,
       },
       primary: {
-        color: 'var(--mui-palette-text-primary)'
-      }
-    }
+        color: 'var(--mui-palette-text-primary)',
+      },
+    },
   },
   MuiListSubheader: {
     styleOverrides: {
       root: ({ theme }) => ({
         ...theme.typography.subtitle2,
         paddingBlock: 10,
-        paddingInline: theme.spacing(5)
-      })
-    }
-  }
+        paddingInline: theme.spacing(5),
+      }),
+    },
+  },
 }
 
 export default list

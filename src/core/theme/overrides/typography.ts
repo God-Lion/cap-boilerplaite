@@ -5,64 +5,64 @@ const typography: Theme['components'] = {
   MuiTypography: {
     styleOverrides: {
       gutterBottom: ({ theme }) => ({
-        marginBottom: theme.spacing(2)
-      })
+        marginBottom: theme.spacing(2),
+      }),
     },
     variants: [
       {
         props: { variant: 'h1' },
-        style: { color: 'var(--mui-palette-text-primary)' }
+        style: { color: 'var(--mui-palette-text-primary)' },
       },
       {
         props: { variant: 'h2' },
-        style: { color: 'var(--mui-palette-text-primary)' }
+        style: { color: 'var(--mui-palette-text-primary)' },
       },
       {
         props: { variant: 'h3' },
-        style: { color: 'var(--mui-palette-text-primary)' }
+        style: { color: 'var(--mui-palette-text-primary)' },
       },
       {
         props: { variant: 'h4' },
-        style: { color: 'var(--mui-palette-text-primary)' }
+        style: { color: 'var(--mui-palette-text-primary)' },
       },
       {
         props: { variant: 'h5' },
-        style: { color: 'var(--mui-palette-text-primary)' }
+        style: { color: 'var(--mui-palette-text-primary)' },
       },
       {
         props: { variant: 'h6' },
-        style: { color: 'var(--mui-palette-text-primary)' }
+        style: { color: 'var(--mui-palette-text-primary)' },
       },
       {
         props: { variant: 'subtitle1' },
-        style: { color: 'rgb(var(--mui-palette-text-primaryChannel) / 0.55)' }
+        style: { color: 'rgb(var(--mui-palette-text-primaryChannel) / 0.55)' },
       },
       {
         props: { variant: 'subtitle2' },
-        style: { color: 'rgb(var(--mui-palette-text-primaryChannel) / 0.55)' }
+        style: { color: 'rgb(var(--mui-palette-text-primaryChannel) / 0.55)' },
       },
       {
         props: { variant: 'body1' },
-        style: { color: 'var(--mui-palette-text-secondary)' }
+        style: { color: 'var(--mui-palette-text-secondary)' },
       },
       {
         props: { variant: 'body2' },
-        style: { color: 'var(--mui-palette-text-secondary)' }
+        style: { color: 'var(--mui-palette-text-secondary)' },
       },
       {
         props: { variant: 'button' },
-        style: { color: 'var(--mui-palette-text-primary)' }
+        style: { color: 'var(--mui-palette-text-primary)' },
       },
       {
         props: { variant: 'caption' },
-        style: { color: 'var(--mui-palette-text-disabled)' }
+        style: { color: 'var(--mui-palette-text-disabled)' },
       },
       {
         props: { variant: 'overline' },
-        style: { color: 'var(--mui-palette-text-primary)' }
-      }
-    ]
-  }
+        style: { color: 'var(--mui-palette-text-primary)' },
+      },
+    ],
+  },
 }
 
 export default typography

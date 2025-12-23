@@ -1,23 +1,23 @@
 /**
  * Workflow Orchestrator - Production-Ready Pipeline Controller
- * 
+ *
  * Orchestrates the entire 7-step job seeker workflow with:
  * - Automated data flow between modules
  * - Error handling and recovery
  * - Progress tracking and metrics
  * - State persistence
  * - Rollback capabilities
- * 
+ *
  * Usage:
  * ```typescript
  * const orchestrator = useWorkflowOrchestrator()
- * 
+ *
  * // Run complete pipeline
  * await orchestrator.runFullPipeline()
- * 
+ *
  * // Run specific steps
  * await orchestrator.executeStepManually(2) // Profile Analysis
- * 
+ *
  * // Get pipeline status
  * const status = orchestrator.getPipelineStatus()
  * ```
@@ -87,7 +87,8 @@ const DEFAULT_STEP_CONFIGS: StepConfig[] = [
     required: true,
     timeout: 60000, // 1 minute
     retries: 3,
-    validator: (data) => Array.isArray(data?.recommendedRoles) && data.recommendedRoles.length > 0,
+    validator: (data) =>
+      Array.isArray(data?.recommendedRoles) && data.recommendedRoles.length > 0,
   },
   {
     step: 3,
@@ -95,7 +96,8 @@ const DEFAULT_STEP_CONFIGS: StepConfig[] = [
     required: true,
     timeout: 300000, // 5 minutes
     retries: 2,
-    validator: (data) => Array.isArray(data?.scrapedJobs) && data.scrapedJobs.length > 0,
+    validator: (data) =>
+      Array.isArray(data?.scrapedJobs) && data.scrapedJobs.length > 0,
   },
   {
     step: 4,
@@ -103,7 +105,8 @@ const DEFAULT_STEP_CONFIGS: StepConfig[] = [
     required: true,
     timeout: 60000,
     retries: 2,
-    validator: (data) => Array.isArray(data?.normalizedJobs) && data.normalizedJobs.length > 0,
+    validator: (data) =>
+      Array.isArray(data?.normalizedJobs) && data.normalizedJobs.length > 0,
   },
   {
     step: 5,
@@ -111,7 +114,8 @@ const DEFAULT_STEP_CONFIGS: StepConfig[] = [
     required: true,
     timeout: 120000, // 2 minutes
     retries: 3,
-    validator: (data) => Array.isArray(data?.rankedJobs) && data.rankedJobs.length > 0,
+    validator: (data) =>
+      Array.isArray(data?.rankedJobs) && data.rankedJobs.length > 0,
   },
   {
     step: 6,
@@ -137,12 +141,15 @@ const DEFAULT_STEP_CONFIGS: StepConfig[] = [
 
 export function useWorkflowOrchestrator() {
   const workflow = useWorkflow()
-  
+
   const [isRunning, setIsRunning] = useState(false)
-  const [currentlyExecuting, setCurrentlyExecuting] = useState<WorkflowStep | null>(null)
+  const [currentlyExecuting, setCurrentlyExecuting] =
+    useState<WorkflowStep | null>(null)
   const [failedSteps, setFailedSteps] = useState<WorkflowStep[]>([])
-  const [executionHistory, setExecutionHistory] = useState<StepExecutionResult[]>([])
-  
+  const [executionHistory, setExecutionHistory] = useState<
+    StepExecutionResult[]
+  >([])
+
   const abortController = useRef<AbortController | null>(null)
 
   // ============================================================================
@@ -152,89 +159,107 @@ export function useWorkflowOrchestrator() {
   /**
    * Execute a single step with retries and timeout
    */
-  const executeStepManually = useCallback(async (
-    step: WorkflowStep,
-    config?: StepConfig,
-    data: any = {}
-  ): Promise<StepExecutionResult> => {
-    const stepConfig = config || DEFAULT_STEP_CONFIGS[step - 1]
-    const startTime = Date.now()
-    let attempts = 0
-    let lastError: Error | undefined
+  const executeStepManually = useCallback(
+    async (
+      step: WorkflowStep,
+      config?: StepConfig,
+      data: any = {},
+    ): Promise<StepExecutionResult> => {
+      const stepConfig = config || DEFAULT_STEP_CONFIGS[step - 1]
+      const startTime = Date.now()
+      let attempts = 0
+      let lastError: Error | undefined
 
-    while (attempts <= (stepConfig.retries || 0)) {
-      try {
-        attempts++
-        
-        // Check if aborted
-        if (abortController.current?.signal.aborted) {
-          throw new Error('Pipeline execution was aborted')
-        }
+      while (attempts <= (stepConfig.retries || 0)) {
+        try {
+          attempts++
 
-        console.log(`[Orchestrator] Executing Step ${step}: ${stepConfig.name} (Attempt ${attempts})`)
-
-        // Execute step based on step number
-        const result = await executeStepLogic(step, data)
-
-        // Validate result if validator exists
-        if (stepConfig.validator && !stepConfig.validator(result)) {
-          throw new Error(`Step ${step} validation failed`)
-        }
-
-        // Mark step as completed
-        workflow.completeStep(step)
-
-        const duration = Date.now() - startTime
-        const executionResult: StepExecutionResult = {
-          step,
-          success: true,
-          data: result,
-          duration,
-          timestamp: new Date().toISOString(),
-        }
-
-        console.log(`[Orchestrator] Step ${step} completed successfully in ${duration}ms`)
-        return executionResult
-
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error))
-        console.error(`[Orchestrator] Step ${step} failed (Attempt ${attempts}):`, lastError)
-
-        // If max retries reached or skip on error is true
-        if (attempts > (stepConfig.retries || 0)) {
-          if (stepConfig.skipOnError && !stepConfig.required) {
-            console.warn(`[Orchestrator] Skipping optional step ${step} due to error`)
-            break
+          // Check if aborted
+          if (abortController.current?.signal.aborted) {
+            throw new Error('Pipeline execution was aborted')
           }
-          throw lastError
+
+          console.log(
+            `[Orchestrator] Executing Step ${step}: ${stepConfig.name} (Attempt ${attempts})`,
+          )
+
+          // Execute step based on step number
+          const result = await executeStepLogic(step, data)
+
+          // Validate result if validator exists
+          if (stepConfig.validator && !stepConfig.validator(result)) {
+            throw new Error(`Step ${step} validation failed`)
+          }
+
+          // Mark step as completed
+          workflow.completeStep(step)
+
+          const duration = Date.now() - startTime
+          const executionResult: StepExecutionResult = {
+            step,
+            success: true,
+            data: result,
+            duration,
+            timestamp: new Date().toISOString(),
+          }
+
+          console.log(
+            `[Orchestrator] Step ${step} completed successfully in ${duration}ms`,
+          )
+          return executionResult
+        } catch (error) {
+          lastError = error instanceof Error ? error : new Error(String(error))
+          console.error(
+            `[Orchestrator] Step ${step} failed (Attempt ${attempts}):`,
+            lastError,
+          )
+
+          // If max retries reached or skip on error is true
+          if (attempts > (stepConfig.retries || 0)) {
+            if (stepConfig.skipOnError && !stepConfig.required) {
+              console.warn(
+                `[Orchestrator] Skipping optional step ${step} due to error`,
+              )
+              break
+            }
+            throw lastError
+          }
+
+          // Wait before retry (exponential backoff)
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.pow(2, attempts) * 1000),
+          )
         }
-
-        // Wait before retry (exponential backoff)
-        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempts) * 1000))
       }
-    }
 
-    // If we got here, either succeeded or failed with skipOnError
-    const duration = Date.now() - startTime
-    return {
-      step,
-      success: false,
-      error: lastError,
-      duration,
-      timestamp: new Date().toISOString(),
-    }
-  }, [workflow])
+      // If we got here, either succeeded or failed with skipOnError
+      const duration = Date.now() - startTime
+      return {
+        step,
+        success: false,
+        error: lastError,
+        duration,
+        timestamp: new Date().toISOString(),
+      }
+    },
+    [workflow],
+  )
 
   /**
    * Execute step-specific logic
    * NOTE: This contains placeholders - integrate with actual service modules
    */
-  const executeStepLogic = async (step: WorkflowStep, data: any): Promise<any> => {
+  const executeStepLogic = async (
+    step: WorkflowStep,
+    data: any,
+  ): Promise<any> => {
     switch (step) {
       case 1: // Profile Management
         // Profile should already be set by the user
         if (!workflow.userProfile) {
-          throw new Error('No user profile available. Please create a profile first.')
+          throw new Error(
+            'No user profile available. Please create a profile first.',
+          )
         }
         return { userProfile: workflow.userProfile }
 
@@ -244,7 +269,7 @@ export function useWorkflowOrchestrator() {
         if (!workflow.userProfile) {
           throw new Error('Profile required for analysis')
         }
-        
+
         // Placeholder - replace with actual service call
         console.log('[TODO] Call ProfileAnalyzer service here')
         const recommendedRoles = workflow.recommendedRoles // Use existing data for now
@@ -256,7 +281,7 @@ export function useWorkflowOrchestrator() {
         if (workflow.recommendedRoles.length === 0) {
           throw new Error('No recommended roles available for scraping')
         }
-        
+
         console.log('[TODO] Call Scraper service here')
         const scrapedJobs = workflow.scrapedJobs // Use existing data for now
         return { scrapedJobs }
@@ -267,7 +292,7 @@ export function useWorkflowOrchestrator() {
         if (workflow.scrapedJobs.length === 0) {
           throw new Error('No scraped jobs to normalize')
         }
-        
+
         console.log('[TODO] Call Jobs normalization service here')
         const normalizedJobs = workflow.normalizedJobs // Use existing data for now
         return { normalizedJobs }
@@ -278,7 +303,7 @@ export function useWorkflowOrchestrator() {
         if (workflow.normalizedJobs.length === 0) {
           throw new Error('No normalized jobs to analyze')
         }
-        
+
         console.log('[TODO] Call JobAnalysis service here')
         const rankedJobs = workflow.rankedJobs // Use existing data for now
         return { rankedJobs }
@@ -289,7 +314,7 @@ export function useWorkflowOrchestrator() {
         if (workflow.rankedJobs.length === 0) {
           throw new Error('No ranked jobs for automation')
         }
-        
+
         console.log('[TODO] Call Automation service here')
         const applications = workflow.applications // Use existing data for now
         return { applications }
@@ -300,7 +325,7 @@ export function useWorkflowOrchestrator() {
         if (workflow.applications.length === 0) {
           throw new Error('No applications to track')
         }
-        
+
         console.log('[TODO] Setup ApplicationTracker')
         return { applications: workflow.applications }
 
@@ -342,13 +367,15 @@ export function useWorkflowOrchestrator() {
 
           if (!result.success && config.required) {
             failed.push(stepNum)
-            console.error(`[Orchestrator] Required step ${step} failed, stopping pipeline`)
+            console.error(
+              `[Orchestrator] Required step ${step} failed, stopping pipeline`,
+            )
             break
           }
         } catch (error) {
           console.error(`[Orchestrator] Step ${step} threw error:`, error)
           failed.push(stepNum)
-          
+
           results.push({
             step: stepNum,
             success: false,
@@ -358,14 +385,15 @@ export function useWorkflowOrchestrator() {
           })
 
           if (config.required) {
-            console.error(`[Orchestrator] Required step ${step} failed, stopping pipeline`)
+            console.error(
+              `[Orchestrator] Required step ${step} failed, stopping pipeline`,
+            )
             break
           }
         }
       }
 
       console.log('[Orchestrator] Pipeline execution completed')
-      
     } catch (error) {
       console.error('[Orchestrator] Pipeline execution error:', error)
       workflow.setError(error instanceof Error ? error.message : String(error))
@@ -383,59 +411,62 @@ export function useWorkflowOrchestrator() {
   /**
    * Run pipeline up to a specific step
    */
-  const runToStep = useCallback(async (targetStep: WorkflowStep): Promise<PipelineStatus> => {
-    if (isRunning) {
-      throw new Error('Pipeline is already running')
-    }
-
-    setIsRunning(true)
-    setFailedSteps([])
-    setExecutionHistory([])
-    abortController.current = new AbortController()
-
-    const startStep = workflow.currentStep
-    const results: StepExecutionResult[] = []
-    const failed: WorkflowStep[] = []
-
-    try {
-      for (let step = startStep; step <= targetStep; step++) {
-        const stepNum = step as WorkflowStep
-        const config = DEFAULT_STEP_CONFIGS[step - 1]
-
-        setCurrentlyExecuting(stepNum)
-        workflow.setStep(stepNum)
-
-        try {
-          const result = await executeStepManually(stepNum, config, {})
-          results.push(result)
-
-          if (!result.success && config.required) {
-            failed.push(stepNum)
-            break
-          }
-        } catch (error) {
-          failed.push(stepNum)
-          results.push({
-            step: stepNum,
-            success: false,
-            error: error instanceof Error ? error : new Error(String(error)),
-            duration: 0,
-            timestamp: new Date().toISOString(),
-          })
-
-          if (config.required) break
-        }
+  const runToStep = useCallback(
+    async (targetStep: WorkflowStep): Promise<PipelineStatus> => {
+      if (isRunning) {
+        throw new Error('Pipeline is already running')
       }
-    } finally {
-      setIsRunning(false)
-      setCurrentlyExecuting(null)
-      setFailedSteps(failed)
-      setExecutionHistory(results)
-      abortController.current = null
-    }
 
-    return getPipelineStatus()
-  }, [isRunning, workflow, executeStepManually])
+      setIsRunning(true)
+      setFailedSteps([])
+      setExecutionHistory([])
+      abortController.current = new AbortController()
+
+      const startStep = workflow.currentStep
+      const results: StepExecutionResult[] = []
+      const failed: WorkflowStep[] = []
+
+      try {
+        for (let step = startStep; step <= targetStep; step++) {
+          const stepNum = step as WorkflowStep
+          const config = DEFAULT_STEP_CONFIGS[step - 1]
+
+          setCurrentlyExecuting(stepNum)
+          workflow.setStep(stepNum)
+
+          try {
+            const result = await executeStepManually(stepNum, config, {})
+            results.push(result)
+
+            if (!result.success && config.required) {
+              failed.push(stepNum)
+              break
+            }
+          } catch (error) {
+            failed.push(stepNum)
+            results.push({
+              step: stepNum,
+              success: false,
+              error: error instanceof Error ? error : new Error(String(error)),
+              duration: 0,
+              timestamp: new Date().toISOString(),
+            })
+
+            if (config.required) break
+          }
+        }
+      } finally {
+        setIsRunning(false)
+        setCurrentlyExecuting(null)
+        setFailedSteps(failed)
+        setExecutionHistory(results)
+        abortController.current = null
+      }
+
+      return getPipelineStatus()
+    },
+    [isRunning, workflow, executeStepManually],
+  )
 
   /**
    * Abort running pipeline
@@ -450,33 +481,39 @@ export function useWorkflowOrchestrator() {
   /**
    * Retry a failed step
    */
-  const retryStep = useCallback(async (step: WorkflowStep): Promise<StepExecutionResult> => {
-    const config = DEFAULT_STEP_CONFIGS[step - 1]
-    setCurrentlyExecuting(step)
-    
-    try {
-      const result = await executeStepManually(step, config, {})
-      
-      // Remove from failed steps if successful
-      if (result.success) {
-        setFailedSteps(prev => prev.filter(s => s !== step))
+  const retryStep = useCallback(
+    async (step: WorkflowStep): Promise<StepExecutionResult> => {
+      const config = DEFAULT_STEP_CONFIGS[step - 1]
+      setCurrentlyExecuting(step)
+
+      try {
+        const result = await executeStepManually(step, config, {})
+
+        // Remove from failed steps if successful
+        if (result.success) {
+          setFailedSteps((prev) => prev.filter((s) => s !== step))
+        }
+
+        // Add to history
+        setExecutionHistory((prev) => [...prev, result])
+
+        return result
+      } finally {
+        setCurrentlyExecuting(null)
       }
-      
-      // Add to history
-      setExecutionHistory(prev => [...prev, result])
-      
-      return result
-    } finally {
-      setCurrentlyExecuting(null)
-    }
-  }, [executeStepManually])
+    },
+    [executeStepManually],
+  )
 
   /**
    * Get current pipeline status
    */
   const getPipelineStatus = useCallback((): PipelineStatus => {
-    const totalDuration = executionHistory.reduce((sum, r) => sum + r.duration, 0)
-    const successfulSteps = executionHistory.filter(r => r.success).length
+    const totalDuration = executionHistory.reduce(
+      (sum, r) => sum + r.duration,
+      0,
+    )
+    const successfulSteps = executionHistory.filter((r) => r.success).length
     const totalSteps = executionHistory.length
 
     return {
@@ -519,17 +556,17 @@ export function useWorkflowOrchestrator() {
     executeStepManually,
     retryStep,
     abortPipeline,
-    
+
     // Status
     getPipelineStatus,
     isRunning,
     currentStep: currentlyExecuting,
     failedSteps,
     history: executionHistory,
-    
+
     // Utilities
     resetPipeline,
-    
+
     // Workflow context pass-through
     workflow,
   }

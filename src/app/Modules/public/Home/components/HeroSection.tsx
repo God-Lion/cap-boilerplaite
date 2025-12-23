@@ -1,5 +1,12 @@
 import React from 'react'
-import { Box, Container, Typography, Button, alpha, useTheme } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  alpha,
+  useTheme,
+} from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { useNavigate } from 'react-router-dom'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
@@ -49,8 +56,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
         }}
       />
 
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid container spacing={6} alignItems="center">
+      <Container maxWidth='lg' sx={{ position: 'relative', zIndex: 1 }}>
+        <Grid container spacing={6} alignItems='center'>
           {/* Text Content */}
           <Grid item xs={12} lg={6}>
             <Box
@@ -63,9 +70,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
             >
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Typography
-                  variant="h1"
+                  variant='h1'
                   sx={{
-                    fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem', lg: '4rem' },
+                    fontSize: {
+                      xs: '2.5rem',
+                      sm: '3rem',
+                      md: '3.5rem',
+                      lg: '4rem',
+                    },
                     fontWeight: 700,
                     lineHeight: 1.2,
                     letterSpacing: '-0.02em',
@@ -75,10 +87,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
                     backgroundClip: 'text',
                   }}
                 >
-                  Unleash AI power to seek, analyze, and optimize your career journey.
+                  Unleash AI power to seek, analyze, and optimize your career
+                  journey.
                 </Typography>
                 <Typography
-                  variant="h6"
+                  variant='h6'
                   sx={{
                     fontSize: { xs: '1rem', md: '1.125rem' },
                     color: 'text.secondary',
@@ -87,7 +100,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
                     mx: { xs: 'auto', lg: 0 },
                   }}
                 >
-                  Our AI helps you find the best job matches and streamline your search process with features like job matching scores, application tracking, and career path analytics.
+                  Our AI helps you find the best job matches and streamline your
+                  search process with features like job matching scores,
+                  application tracking, and career path analytics.
                 </Typography>
               </Box>
 
@@ -98,8 +113,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
                 }}
               >
                 <Button
-                  variant="contained"
-                  size="large"
+                  variant='contained'
+                  size='large'
                   startIcon={<RocketLaunchIcon />}
                   onClick={handleGetStarted}
                   sx={{
@@ -164,9 +179,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
                 }}
               >
                 <Box
-                  component="img"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaAadD9x__Nozic4Ef1OEYCSNN_LRa7ByX9MVHvbWUn360Sr76c6sfjNhA_R-G-Mo4sPTkiqk6FlWYC8HJ6-_CoD6L4gWB6PS3aVwTTq5CXZNnKU2ifktYlhR1Ldum8qe7FECN2ExoexHp6tJ2wIqulbiUN1Zx94R8Ic59jJjN7Ftxid3ZeDq9sRy04PylvbBLmtMb0ydnpyaaWv30zF-EWoyFG9gBXSHacqGrf4pUODCONbhFNksT6wEy2rDmxvUgjpmlRGftcT0"
-                  alt="Dashboard Preview"
+                  component='img'
+                  src='https://lh3.googleusercontent.com/aida-public/AB6AXuDaAadD9x__Nozic4Ef1OEYCSNN_LRa7ByX9MVHvbWUn360Sr76c6sfjNhA_R-G-Mo4sPTkiqk6FlWYC8HJ6-_CoD6L4gWB6PS3aVwTTq5CXZNnKU2ifktYlhR1Ldum8qe7FECN2ExoexHp6tJ2wIqulbiUN1Zx94R8Ic59jJjN7Ftxid3ZeDq9sRy04PylvbBLmtMb0ydnpyaaWv30zF-EWoyFG9gBXSHacqGrf4pUODCONbhFNksT6wEy2rDmxvUgjpmlRGftcT0'
+                  alt='Dashboard Preview'
                   sx={{
                     width: '100%',
                     height: '100%',

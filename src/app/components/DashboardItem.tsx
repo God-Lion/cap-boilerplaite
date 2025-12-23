@@ -25,7 +25,8 @@ export default function DashboardItem({
       >
         <Grid container>
           {icon && (
-            <Grid size={{ xs: 5 }}
+            <Grid
+              size={{ xs: 5 }}
               style={{
                 backgroundColor: alpha(backgroundColor, 0.4),
                 padding: '10px',

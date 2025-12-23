@@ -18,8 +18,7 @@ import FormLayout from './FormLayout'
 // import { userService } from 'src/shared/api/services/api.service'
 import { useMutation } from '@tanstack/react-query'
 import { useAuth } from 'src/store'
-import { AxiosError } from 'axios'
-import { IError } from 'src/types'
+import { HttpError } from 'src/services/api/api.client'
 
 export default function ChangeEmail({ user }: { user: IUserReponse }) {
   const { refreshAuth } = useAuth()
@@ -65,7 +64,7 @@ export default function ChangeEmail({ user }: { user: IUserReponse }) {
       console.log('onMutate variables ', variables)
       setLoading(true)
     },
-    onError: (error: AxiosError<IError>) => {
+    onError: (error: HttpError) => {
       // console.log('onError ', { error, variables, context })
       controlForm.setError(
         'email',
@@ -107,7 +106,7 @@ export default function ChangeEmail({ user }: { user: IUserReponse }) {
           })}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
+            <Grid size={{ xs: 12, sm: 12 }}>
               <Controller
                 name='email'
                 control={controlForm.control}
@@ -167,7 +166,7 @@ export default function ChangeEmail({ user }: { user: IUserReponse }) {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Controller
                 name='password'
                 control={controlForm.control}
@@ -200,7 +199,7 @@ export default function ChangeEmail({ user }: { user: IUserReponse }) {
               />
             </Grid>
 
-            <Grid item xs={12} sx={{ mt: '30px' }}>
+            <Grid size={{ xs: 12 }} sx={{ mt: '30px' }}>
               <Stack direction='row' spacing={2} justifyContent='start'>
                 <Button type='submit' variant='contained' color='primary'>
                   Save changes

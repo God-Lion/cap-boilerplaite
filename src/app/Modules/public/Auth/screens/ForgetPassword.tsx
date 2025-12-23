@@ -13,8 +13,8 @@ import {
   Link as MuiLink,
 } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
-import MAlert from 'src/components/Alert'
-import AdaptiveLogo from 'src/components/AdaptiveLogo'
+import MAlert from 'app/components/Alert'
+import AdaptiveLogo from 'app/components/AdaptiveLogo'
 import themeConfig from 'src/configs/themeConfig'
 import { useForgotPassword, ForgotPasswordRequest } from '../index'
 
@@ -36,47 +36,52 @@ export default function ForgetPassword() {
   const [open, setOpen] = useState<boolean>(false)
   const [alertType, setAlertType] = useState<'error' | 'success'>('success')
   const [errorMessage, setErrorMessage] = useState<string>('')
-  
+
   const handleCloseAlert = useCallback(() => setOpen(false), [])
-  
+
+  const controlForm = useForm<ForgotPasswordRequest>({
+    defaultValues: DEFAULT_FORM_VALUES,
+  })
+
   const handleForgotPasswordSuccess = useCallback(() => {
     setAlertType('success')
     setOpen(true)
     controlForm.reset()
   }, [])
-  
+
   const handleForgotPasswordError = useCallback((error: any) => {
     setAlertType('error')
-    setErrorMessage(error.response?.data?.detail || error.message || 'Failed to send reset email')
+    setErrorMessage(
+      error.response?.data?.detail ||
+        error.message ||
+        'Failed to send reset email',
+    )
     setOpen(true)
   }, [])
-  
+
   const forgotPasswordMutation = useForgotPassword({
     onSuccess: handleForgotPasswordSuccess,
     onError: handleForgotPasswordError,
   })
-  
-  const controlForm = useForm<ForgotPasswordRequest>({
-    defaultValues: DEFAULT_FORM_VALUES,
-  })
 
-  const onSubmit = useCallback((data: ForgotPasswordRequest) => {
-    forgotPasswordMutation.mutate({ data })
-  }, [forgotPasswordMutation])
+  const onSubmit = useCallback(
+    (data: ForgotPasswordRequest) => {
+      forgotPasswordMutation.mutate({ data })
+    },
+    [forgotPasswordMutation],
+  )
 
   return (
     <>
-      
-        <title>Forgot Password - {themeConfig.templateName}</title>
-        <meta
-          name='description'
-          content={`Reset your password on ${themeConfig.templateName}`}
-        />
-        <meta
-          name='keywords'
-          content={`forgot password, reset password, ${themeConfig.templateName}`}
-        />
-      
+      <title>Forgot Password - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`Reset your password on ${themeConfig.templateName}`}
+      />
+      <meta
+        name='keywords'
+        content={`forgot password, reset password, ${themeConfig.templateName}`}
+      />
 
       <Box
         sx={{
@@ -87,7 +92,7 @@ export default function ForgetPassword() {
       >
         {/* Header */}
         <Box
-          component="header"
+          component='header'
           sx={{
             height: 80,
             display: 'flex',
@@ -101,7 +106,7 @@ export default function ForgetPassword() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <AdaptiveLogo width={32} height={32} />
               <Typography
-                variant="h6"
+                variant='h6'
                 sx={{
                   color: '#333333',
                   fontWeight: 700,
@@ -116,7 +121,7 @@ export default function ForgetPassword() {
 
         {/* Main Content */}
         <Box
-          component="main"
+          component='main'
           sx={{
             flex: 1,
             display: 'flex',
@@ -126,7 +131,7 @@ export default function ForgetPassword() {
             py: 6,
           }}
         >
-          <Container maxWidth="sm">
+          <Container maxWidth='sm'>
             <Box sx={{ width: '100%', maxWidth: 448 }}>
               {/* Content Card */}
               <Paper
@@ -141,9 +146,16 @@ export default function ForgetPassword() {
               >
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                   {/* Page Heading */}
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                      textAlign: 'center',
+                    }}
+                  >
                     <Typography
-                      component="h1"
+                      component='h1'
                       sx={{
                         color: '#333333',
                         fontSize: '1.875rem',
@@ -159,21 +171,22 @@ export default function ForgetPassword() {
                         fontSize: '1rem',
                       }}
                     >
-                      No problem. Enter your email address below and we'll send you a link to reset it.
+                      No problem. Enter your email address below and we'll send
+                      you a link to reset it.
                     </Typography>
                   </Box>
 
                   {/* Form */}
                   <Box
-                    component="form"
+                    component='form'
                     onSubmit={controlForm.handleSubmit(onSubmit)}
                     sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
                   >
                     {/* Email Field */}
                     <Box>
                       <Typography
-                        component="label"
-                        htmlFor="email"
+                        component='label'
+                        htmlFor='email'
                         sx={{
                           display: 'block',
                           color: '#333333',
@@ -200,12 +213,16 @@ export default function ForgetPassword() {
                         render={({ field }) => (
                           <TextField
                             {...field}
-                            id="email"
-                            type="email"
-                            placeholder="e.g., your.email@example.com"
+                            id='email'
+                            type='email'
+                            placeholder='e.g., your.email@example.com'
                             fullWidth
-                            error={controlForm.formState?.errors?.email !== undefined}
-                            helperText={controlForm.formState?.errors?.email?.message}
+                            error={
+                              controlForm.formState?.errors?.email !== undefined
+                            }
+                            helperText={
+                              controlForm.formState?.errors?.email?.message
+                            }
                             // sx={{
                             //   '& .MuiOutlinedInput-root': {
                             //     bgcolor: 'white',
@@ -235,9 +252,9 @@ export default function ForgetPassword() {
 
                     {/* Submit Button */}
                     <Button
-                      type="submit"
+                      type='submit'
                       fullWidth
-                      variant="contained"
+                      variant='contained'
                       disabled={forgotPasswordMutation.isPending}
                       sx={{
                         bgcolor: '#D4AF37',
@@ -262,7 +279,9 @@ export default function ForgetPassword() {
                         },
                       }}
                     >
-                      {forgotPasswordMutation.isPending ? 'Sending...' : 'Send Recovery Link'}
+                      {forgotPasswordMutation.isPending
+                        ? 'Sending...'
+                        : 'Send Recovery Link'}
                     </Button>
                   </Box>
                 </Box>
@@ -280,7 +299,7 @@ export default function ForgetPassword() {
                 Remember your password?{' '}
                 <MuiLink
                   component={Link}
-                  to="/auth/signin"
+                  to='/auth/signin'
                   sx={{
                     fontWeight: 500,
                     color: '#8B4513',
@@ -342,7 +361,8 @@ export default function ForgetPassword() {
                 sx={{ pt: 1, bgcolor: 'transparent', color: '#FFF' }}
               >
                 If you don't see the email in your inbox, please check your spam
-                or junk folder. It may take a few minutes for the email to arrive.
+                or junk folder. It may take a few minutes for the email to
+                arrive.
               </Typography>
               <Typography
                 component='div'

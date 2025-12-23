@@ -9,26 +9,25 @@ import {
   CardContent,
   Link,
   IconButton,
-} from '@mui/material';
-import themeConfig from 'src/configs/themeConfig';
+} from '@mui/material'
+import themeConfig from 'src/configs/themeConfig'
 import {
   EmailOutlined,
   PeopleOutline,
   HelpOutline,
   LinkedIn,
   Twitter,
-} from '@mui/icons-material';
+} from '@mui/icons-material'
 
 const ContactUs = () => {
   return (
     <>
-      
-        <title>Contact Us - {themeConfig.templateName}</title>
-        <meta
-          name='description'
-          content={`Contact us for support or inquiries at ${themeConfig.templateName}`}
-        />
-      
+      <title>Contact Us - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`Contact us for support or inquiries at ${themeConfig.templateName}`}
+      />
+
       <Container maxWidth='lg' sx={{ py: 8 }}>
         <Box sx={{ textAlign: 'center', mb: 8 }}>
           <Typography variant='h2' component='h1' gutterBottom>
@@ -109,7 +108,9 @@ const ContactUs = () => {
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <Card variant='outlined'>
-                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <CardContent
+                  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
+                >
                   <EmailOutlined color='primary' sx={{ fontSize: 40 }} />
                   <Box>
                     <Typography variant='h6'>Support Email</Typography>
@@ -124,7 +125,9 @@ const ContactUs = () => {
               </Card>
 
               <Card variant='outlined'>
-                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <CardContent
+                  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
+                >
                   <PeopleOutline color='primary' sx={{ fontSize: 40 }} />
                   <Box>
                     <Typography variant='h6'>Social Media</Typography>
@@ -144,7 +147,9 @@ const ContactUs = () => {
               </Card>
 
               <Card variant='outlined'>
-                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <CardContent
+                  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
+                >
                   <HelpOutline color='primary' sx={{ fontSize: 40 }} />
                   <Box>
                     <Typography variant='h6'>Help Center</Typography>
@@ -162,7 +167,7 @@ const ContactUs = () => {
         </Grid>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default ContactUs;
+export default ContactUs

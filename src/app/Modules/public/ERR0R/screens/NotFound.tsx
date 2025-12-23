@@ -49,11 +49,18 @@ const NotFound: React.FC = (): React.ReactElement => {
           mb: 3,
         }}
       >
-        The page you're looking for doesn't exist or has been moved. 
-        Let's get you back on track.
+        The page you're looking for doesn't exist or has been moved. Let's get
+        you back on track.
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+        }}
+      >
         <Button
           component={Link}
           to='/'

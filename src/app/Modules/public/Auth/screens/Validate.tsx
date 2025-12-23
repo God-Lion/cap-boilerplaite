@@ -101,17 +101,15 @@ export default function Validate() {
   ])
   return (
     <React.Fragment>
-      
-        <title>Registration Validation - {themeConfig.templateName}</title>
-        <meta
-          name='description'
-          content={`Validate your registration on ${themeConfig.templateName}`}
-        />
-        <meta
-          name='keywords'
-          content={`registration validation, account validation, ${themeConfig.templateName}`}
-        />
-      
+      <title>Registration Validation - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`Validate your registration on ${themeConfig.templateName}`}
+      />
+      <meta
+        name='keywords'
+        content={`registration validation, account validation, ${themeConfig.templateName}`}
+      />
 
       <Container maxWidth='lg' style={{}}>
         <Backdrop

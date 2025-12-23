@@ -47,6 +47,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       src: path.resolve(__dirname, './src'),
+      app: path.resolve(__dirname, './src/app'),
     },
   },
   optimizeDeps: {

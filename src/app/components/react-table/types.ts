@@ -54,8 +54,9 @@ declare module '@tanstack/table-core' {
     itemRank: RankingInfo
   }
   interface TableState extends DensityTableState {}
-  interface TableOptionsResolved<TData extends RowData>
-    extends DensityOptions {}
+  interface TableOptionsResolved<
+    TData extends RowData,
+  > extends DensityOptions {}
   interface Table<TData extends RowData> extends DensityInstance {}
 
   interface TableMeta<TData extends RowData> {

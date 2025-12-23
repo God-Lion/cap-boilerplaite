@@ -193,7 +193,6 @@ const VerticalNav = (props: VerticalNavProps) => {
         className={verticalNavClasses.container}
         transitionDuration={transitionDurationContext}
         {
-          // eslint-disable-next-line lines-around-comment
           /* Toggle verticalNav on hover only when isPopoutWhenCollapsedContext(default false) is false */
           ...(!isPopoutWhenCollapsedContext &&
             isCollapsedContext &&
@@ -213,7 +212,6 @@ const VerticalNav = (props: VerticalNavProps) => {
 
         {/* Display verticalNav background image if provided by user through props */}
         {backgroundImage && (
-          // eslint-disable-next-line lines-around-comment
           /* VerticalNav Background Image */
           <img
             className={classnames(verticalNavClasses.image, styles.root)}
@@ -225,7 +223,6 @@ const VerticalNav = (props: VerticalNavProps) => {
 
       {/* When verticalNav is toggled on smaller screen, show/hide verticalNav backdrop */}
       {isToggledContext && breakpointReached && (
-        // eslint-disable-next-line lines-around-comment
         /* VerticalNav Backdrop */
         <StyledBackdrop
           role='button'

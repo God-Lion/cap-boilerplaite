@@ -137,19 +137,12 @@ export default function VirtualizedTable<T>({
       <Card>
         <CardContent>
           <Box display='flex' gap={2} mb={2}>
-            <Button
-              variant='contained'
-              onClick={() => table.toggleDensity()}
-            >
+            <Button variant='contained' onClick={() => table.toggleDensity()}>
               Toggle Density
             </Button>
           </Box>
           {enableSearch && (
-            <Box
-              display='flex'
-              justifyContent='space-between'
-              sx={{ mb: 2 }}
-            >
+            <Box display='flex' justifyContent='space-between' sx={{ mb: 2 }}>
               <Box className='flex flex-col sm:flex-row is-full sm:is-auto items-start sm:items-center gap-4'>
                 <DebouncedInput
                   value={globalFilter ?? ''}
@@ -186,8 +179,8 @@ export default function VirtualizedTable<T>({
                               density === 'sm'
                                 ? '4px'
                                 : density === 'md'
-                                ? '8px'
-                                : '16px',
+                                  ? '8px'
+                                  : '16px',
                             transition: 'padding 0.2s',
                           }}
                         >
@@ -263,8 +256,8 @@ export default function VirtualizedTable<T>({
                                       density === 'sm'
                                         ? '4px'
                                         : density === 'md'
-                                        ? '8px'
-                                        : '16px',
+                                          ? '8px'
+                                          : '16px',
                                     transition: 'padding 0.2s',
                                   }}
                                 >
@@ -302,8 +295,8 @@ export default function VirtualizedTable<T>({
                                     density === 'sm'
                                       ? '4px'
                                       : density === 'md'
-                                      ? '8px'
-                                      : '16px',
+                                        ? '8px'
+                                        : '16px',
                                   transition: 'padding 0.2s',
                                 }}
                               >

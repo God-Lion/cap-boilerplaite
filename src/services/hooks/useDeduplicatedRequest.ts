@@ -70,6 +70,8 @@ function useDeduplicatedRequest<T = any>(
     },
   }
 
+  const configKey = JSON.stringify(config)
+
   const fetchData = useCallback(async () => {
     if (!isMountedRef.current) return
 
@@ -105,11 +107,13 @@ function useDeduplicatedRequest<T = any>(
         onError?.(httpError)
       }
     }
-  }, [url, JSON.stringify(config)])
+  }, [url, configKey])
+
+
 
   const cancel = useCallback(() => {
     requestDeduplicator.cancelRequest(config)
-  }, [url, JSON.stringify(config)])
+  }, [configKey])
 
   // Initial fetch
   useEffect(() => {
@@ -161,6 +165,8 @@ function useDeduplicatedMutation<TData = any, TVariables = any>(
 
   const { onSuccess, onError, forceDeduplication = false, ...fetchConfig } = options
 
+  const fetchConfigKey = JSON.stringify(fetchConfig)
+
   const mutate = useCallback(
     async (url: string, variables?: TVariables): Promise<TData | null> => {
       setLoading(true)
@@ -198,7 +204,7 @@ function useDeduplicatedMutation<TData = any, TVariables = any>(
         return null
       }
     },
-    [JSON.stringify(fetchConfig), forceDeduplication, onSuccess, onError]
+    [fetchConfigKey, forceDeduplication, onSuccess, onError]
   )
 
   const reset = useCallback(() => {

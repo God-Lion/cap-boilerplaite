@@ -1,5 +1,12 @@
 import React from 'react'
-import { Box, Container, Typography, Paper, alpha, useTheme } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Paper,
+  alpha,
+  useTheme,
+} from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import TargetIcon from '@mui/icons-material/GpsFixed'
 import SendIcon from '@mui/icons-material/Send'
@@ -9,22 +16,26 @@ const stages = [
   {
     icon: <SearchIcon sx={{ fontSize: 28 }} />,
     title: 'Search',
-    description: 'Our AI scours thousands of job boards to find the perfect opportunities for you.',
+    description:
+      'Our AI scours thousands of job boards to find the perfect opportunities for you.',
   },
   {
     icon: <TargetIcon sx={{ fontSize: 28 }} />,
     title: 'Match',
-    description: 'We intelligently match jobs to your unique profile, skills, and resume.',
+    description:
+      'We intelligently match jobs to your unique profile, skills, and resume.',
   },
   {
     icon: <SendIcon sx={{ fontSize: 28 }} />,
     title: 'Apply',
-    description: 'Apply to jobs with a single click or let our system handle the entire process for you.',
+    description:
+      'Apply to jobs with a single click or let our system handle the entire process for you.',
   },
   {
     icon: <CalendarMonthIcon sx={{ fontSize: 28 }} />,
     title: 'Interview',
-    description: 'Receive notifications and easily schedule interviews directly through the platform.',
+    description:
+      'Receive notifications and easily schedule interviews directly through the platform.',
   },
 ]
 
@@ -38,7 +49,7 @@ const AutomationEngine: React.FC = () => {
         py: { xs: 8, md: 12 },
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth='lg'>
         {/* Section Header */}
         <Box
           sx={{
@@ -47,7 +58,7 @@ const AutomationEngine: React.FC = () => {
           }}
         >
           <Typography
-            variant="h2"
+            variant='h2'
             sx={{
               fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
               fontWeight: 800,
@@ -130,7 +141,7 @@ const AutomationEngine: React.FC = () => {
 
                   {/* Title */}
                   <Typography
-                    variant="h6"
+                    variant='h6'
                     sx={{
                       fontWeight: 600,
                       mb: 1,
@@ -142,7 +153,7 @@ const AutomationEngine: React.FC = () => {
 
                   {/* Description */}
                   <Typography
-                    variant="body2"
+                    variant='body2'
                     sx={{
                       color: 'text.secondary',
                       lineHeight: 1.6,
@@ -217,7 +228,7 @@ const AutomationEngine: React.FC = () => {
                 {/* Right Column - Content */}
                 <Box sx={{ pt: 1, pb: index < stages.length - 1 ? 4 : 0 }}>
                   <Typography
-                    variant="subtitle1"
+                    variant='subtitle1'
                     sx={{
                       fontWeight: 600,
                       mb: 0.5,
@@ -227,7 +238,7 @@ const AutomationEngine: React.FC = () => {
                     {stage.title}
                   </Typography>
                   <Typography
-                    variant="body2"
+                    variant='body2'
                     sx={{
                       color: 'text.secondary',
                       lineHeight: 1.6,

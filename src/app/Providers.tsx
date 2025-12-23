@@ -86,9 +86,7 @@ const Providers: React.FC<
             rtl={false}
             styles={tourStyles}
           >
-            <BrowserRouter>
-              {children}
-            </BrowserRouter>
+            <BrowserRouter>{children}</BrowserRouter>
           </TourProvider>
           <AppReactToastify
             position={themeConfig.toastPosition}

@@ -132,12 +132,12 @@ const StyledHeader = styled.header<StyledHeaderProps>`
       ).${verticalLayoutClasses.headerDetached}
       .${verticalLayoutClasses.navbar} {
       ${({ theme }) =>
-    `transition: ${theme.transitions.create([
-      'box-shadow',
-      'border-width',
-      'padding-inline',
-      'backdrop-filter',
-    ])}`};
+        `transition: ${theme.transitions.create([
+          'box-shadow',
+          'border-width',
+          'padding-inline',
+          'backdrop-filter',
+        ])}`};
     }
     &:not(
         .${verticalLayoutClasses.headerFloating}

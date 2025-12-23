@@ -8,7 +8,9 @@ type StyledHorizontalNavExpandIconProps = {
   level?: number
 }
 
-export const StyledHorizontalNavExpandIconWrapper = styled.span<{ $rootStyles?: RootStylesType['rootStyles'] }>`
+export const StyledHorizontalNavExpandIconWrapper = styled.span<{
+  $rootStyles?: RootStylesType['rootStyles']
+}>`
   display: flex;
   margin-inline-start: 4px;
 

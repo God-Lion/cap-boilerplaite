@@ -7,10 +7,10 @@ import {
   UseQueryOptions,
   UseMutationOptions,
 } from '@tanstack/react-query'
-import { AxiosError, AxiosResponse } from 'axios'
 import { QUERY_KEYS } from 'src/services/api'
 import { authService } from '../services/auth.service'
-import Session from 'src/services/Session'
+import { FetchResponse, HttpError } from 'src/services/api/api.client'
+import Session from 'src/services/storage/Session'
 import { secureTokenManager } from 'src/services/secureTokenManager'
 import {
   TokenResponse,
@@ -50,9 +50,9 @@ import {
  */
 export function useSession(
   options?: Omit<
-    UseQueryOptions<AxiosResponse<SessionResponse>, AxiosError>,
+    UseQueryOptions<FetchResponse<SessionResponse>, HttpError>,
     'queryKey' | 'queryFn'
-  >
+  >,
 ) {
   return useQuery({
     queryKey: QUERY_KEYS.auth.session,
@@ -68,9 +68,9 @@ export function useSession(
  */
 export function useProfileSettings(
   options?: Omit<
-    UseQueryOptions<AxiosResponse<ProfileSettingsResponse>, AxiosError>,
+    UseQueryOptions<FetchResponse<ProfileSettingsResponse>, HttpError>,
     'queryKey' | 'queryFn'
-  >
+  >,
 ) {
   return useQuery({
     queryKey: QUERY_KEYS.auth.profileSettings,
@@ -89,32 +89,39 @@ export function useProfileSettings(
  */
 export function useLogin(
   options?: UseMutationOptions<
-    AxiosResponse<TokenResponse>,
-    AxiosError,
+    FetchResponse<TokenResponse>,
+    HttpError,
     LoginMutationVars,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: ({ data }) => authService.login(data),
     onSuccess: (...args) => {
       const [response] = args
-      console.log('[useLogin] onSuccess triggered', { response, hasCustomCallback: !!customOnSuccess })
-      
+      console.log('[useLogin] onSuccess triggered', {
+        response,
+        hasCustomCallback: !!customOnSuccess,
+      })
+
       if (response.data.token) {
         const expiresIn = response.data.expires_in || 3600
         const expiresAt = Date.now() + expiresIn * 1000
-        
+
         secureTokenManager.setTokens({
           accessToken: response.data.token,
           refreshToken: response.data.refresh_token,
           expiresAt,
         })
-        
+
         try {
           const session = new Session()
           session.write('user', response.data.user)
@@ -122,12 +129,12 @@ export function useLogin(
         } catch (error) {
           console.warn('[useLogin] Failed to store in Session:', error)
         }
-        
+
         console.log('[useLogin] Tokens stored securely in memory')
       }
-      
+
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      
+
       console.log('[useLogin] Calling custom onSuccess callback')
       customOnSuccess?.(...args)
     },
@@ -143,11 +150,11 @@ export function useLogin(
  */
 export function useRegister(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     RegisterMutationVars,
     unknown
-  >
+  >,
 ) {
   return useMutation({
     mutationFn: ({ data }) => authService.register(data),
@@ -160,24 +167,28 @@ export function useRegister(
  */
 export function useLogout(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     void,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: (...args) => {
       secureTokenManager.clearTokens()
       localStorage.removeItem('user')
-      
+
       queryClient.clear()
-      
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -192,11 +203,11 @@ export function useLogout(
  */
 export function useVerifyEmail(
   options?: UseMutationOptions<
-    AxiosResponse<VerifyEmailResponse>,
-    AxiosError,
+    FetchResponse<VerifyEmailResponse>,
+    HttpError,
     { token: string },
     unknown
-  >
+  >,
 ) {
   return useMutation({
     mutationFn: ({ token }) => authService.verifyEmail(token),
@@ -209,11 +220,11 @@ export function useVerifyEmail(
  */
 export function useForgotPassword(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     ForgotPasswordMutationVars,
     unknown
-  >
+  >,
 ) {
   return useMutation({
     mutationFn: ({ data }) => authService.forgotPassword(data),
@@ -226,11 +237,11 @@ export function useForgotPassword(
  */
 export function useResetPassword(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     ResetPasswordMutationVars,
     unknown
-  >
+  >,
 ) {
   return useMutation({
     mutationFn: ({ data }) => authService.resetPassword(data),
@@ -243,15 +254,19 @@ export function useResetPassword(
  */
 export function useRefreshToken(
   options?: UseMutationOptions<
-    AxiosResponse<TokenResponse>,
-    AxiosError,
+    FetchResponse<TokenResponse>,
+    HttpError,
     { refreshToken: string },
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: ({ refreshToken }) => authService.refreshToken(refreshToken),
@@ -260,16 +275,16 @@ export function useRefreshToken(
       if (response.data.token) {
         const expiresIn = response.data.expires_in || 3600
         const expiresAt = Date.now() + expiresIn * 1000
-        
+
         secureTokenManager.setTokens({
           accessToken: response.data.token,
           refreshToken: response.data.refresh_token,
           expiresAt,
         })
       }
-      
+
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -284,22 +299,28 @@ export function useRefreshToken(
  */
 export function useUpdateNames(
   options?: UseMutationOptions<
-    AxiosResponse<UpdateResponse>,
-    AxiosError,
+    FetchResponse<UpdateResponse>,
+    HttpError,
     UpdateNamesMutationVars,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: ({ data }) => authService.updateNames(data),
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.profileSettings })
-      
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.auth.profileSettings,
+      })
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -314,22 +335,28 @@ export function useUpdateNames(
  */
 export function useUpdateEmail(
   options?: UseMutationOptions<
-    AxiosResponse<UpdateResponse>,
-    AxiosError,
+    FetchResponse<UpdateResponse>,
+    HttpError,
     UpdateEmailMutationVars,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: ({ data }) => authService.updateEmail(data),
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.profileSettings })
-      
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.auth.profileSettings,
+      })
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -344,22 +371,28 @@ export function useUpdateEmail(
  */
 export function useUpdatePhoto(
   options?: UseMutationOptions<
-    AxiosResponse<UpdateResponse>,
-    AxiosError,
+    FetchResponse<UpdateResponse>,
+    HttpError,
     UpdatePhotoMutationVars,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: ({ data }) => authService.updatePhoto(data),
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.profileSettings })
-      
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.auth.profileSettings,
+      })
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -378,14 +411,18 @@ export function useUpdatePhoto(
  */
 export function useChangePassword(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     ChangePasswordRequest,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: (data) => authService.changePassword(data),
@@ -393,7 +430,7 @@ export function useChangePassword(
       // Clear tokens - force re-login for security
       secureTokenManager.clearTokens()
       queryClient.clear()
-      
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -412,11 +449,11 @@ export function useChangePassword(
  */
 export function useSetupMfa(
   options?: UseMutationOptions<
-    AxiosResponse<MfaSetupResponse>,
-    AxiosError,
+    FetchResponse<MfaSetupResponse>,
+    HttpError,
     MfaSetupRequest,
     unknown
-  >
+  >,
 ) {
   return useMutation({
     mutationFn: (data) => authService.setupMfa(data),
@@ -429,30 +466,34 @@ export function useSetupMfa(
  */
 export function useVerifyMfa(
   options?: UseMutationOptions<
-    AxiosResponse<MfaVerifyResponse>,
-    AxiosError,
+    FetchResponse<MfaVerifyResponse>,
+    HttpError,
     MfaVerifyRequest,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: (data) => authService.verifyMfa(data),
     onSuccess: (...args) => {
       const [response] = args
       const { token, refresh_token, expires_in } = response.data
-      
+
       secureTokenManager.setTokens({
         accessToken: token,
         refreshToken: refresh_token,
         expiresAt: Date.now() + expires_in * 1000,
       })
-      
+
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
       queryClient.invalidateQueries({ queryKey: ['auth', 'mfa', 'status'] })
-      
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -467,14 +508,18 @@ export function useVerifyMfa(
  */
 export function useDisableMfa(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     void,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: () => authService.disableMfa(),
@@ -494,9 +539,9 @@ export function useDisableMfa(
  */
 export function useMfaStatus(
   options?: Omit<
-    UseQueryOptions<AxiosResponse<MfaStatusResponse>, AxiosError>,
+    UseQueryOptions<FetchResponse<MfaStatusResponse>, HttpError>,
     'queryKey' | 'queryFn'
-  >
+  >,
 ) {
   return useQuery({
     queryKey: ['auth', 'mfa', 'status'],
@@ -511,11 +556,11 @@ export function useMfaStatus(
  */
 export function useRegenerateBackupCodes(
   options?: UseMutationOptions<
-    AxiosResponse<{ backup_codes: string[] }>,
-    AxiosError,
+    FetchResponse<{ backup_codes: string[] }>,
+    HttpError,
     void,
     unknown
-  >
+  >,
 ) {
   return useMutation({
     mutationFn: () => authService.regenerateBackupCodes(),
@@ -532,9 +577,9 @@ export function useRegenerateBackupCodes(
  */
 export function useSessions(
   options?: Omit<
-    UseQueryOptions<AxiosResponse<SessionsResponse>, AxiosError>,
+    UseQueryOptions<FetchResponse<SessionsResponse>, HttpError>,
     'queryKey' | 'queryFn'
-  >
+  >,
 ) {
   return useQuery({
     queryKey: ['auth', 'sessions'],
@@ -549,14 +594,18 @@ export function useSessions(
  */
 export function useRevokeSession(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     string,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: (sessionId) => authService.revokeSession(sessionId),
@@ -576,14 +625,18 @@ export function useRevokeSession(
  */
 export function useRevokeAllSessions(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     void,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: () => authService.revokeAllSessions(),
@@ -607,14 +660,18 @@ export function useRevokeAllSessions(
  */
 export function useDeactivateAccount(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     DeactivateAccountRequest,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: (data) => authService.deactivateAccount(data),
@@ -635,27 +692,31 @@ export function useDeactivateAccount(
  */
 export function useReactivateAccount(
   options?: UseMutationOptions<
-    AxiosResponse<TokenResponse>,
-    AxiosError,
+    FetchResponse<TokenResponse>,
+    HttpError,
     ReactivateAccountRequest,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: (data) => authService.reactivateAccount(data),
     onSuccess: (...args) => {
       const [response] = args
       const { token, refresh_token, expires_in } = response.data
-      
+
       secureTokenManager.setTokens({
         accessToken: token,
         refreshToken: refresh_token,
         expiresAt: Date.now() + expires_in * 1000,
       })
-      
+
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
       customOnSuccess?.(...args)
     },
@@ -676,9 +737,9 @@ export function useReactivateAccount(
 export function useLoginHistory(
   limit: number = 50,
   options?: Omit<
-    UseQueryOptions<AxiosResponse<LoginHistoryResponse>, AxiosError>,
+    UseQueryOptions<FetchResponse<LoginHistoryResponse>, HttpError>,
     'queryKey' | 'queryFn'
-  >
+  >,
 ) {
   return useQuery({
     queryKey: ['auth', 'login-history', limit],
@@ -694,9 +755,9 @@ export function useLoginHistory(
 export function useSecurityLogs(
   params?: any,
   options?: Omit<
-    UseQueryOptions<AxiosResponse<any>, AxiosError>,
+    UseQueryOptions<FetchResponse<any>, HttpError>,
     'queryKey' | 'queryFn'
-  >
+  >,
 ) {
   return useQuery({
     queryKey: ['auth', 'security-logs', params],
@@ -715,27 +776,31 @@ export function useSecurityLogs(
  */
 export function useOAuthLogin(
   options?: UseMutationOptions<
-    AxiosResponse<TokenResponse>,
-    AxiosError,
+    FetchResponse<TokenResponse>,
+    HttpError,
     { provider: 'google' | 'facebook'; code: string },
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: ({ provider, code }) => authService.oauthLogin(provider, code),
     onSuccess: (...args) => {
       const [response] = args
       const { token, refresh_token, expires_in } = response.data
-      
+
       secureTokenManager.setTokens({
         accessToken: token,
         refreshToken: refresh_token,
         expiresAt: Date.now() + expires_in * 1000,
       })
-      
+
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
       customOnSuccess?.(...args)
     },
@@ -751,14 +816,18 @@ export function useOAuthLogin(
  */
 export function useLinkOAuthProvider(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     LinkOAuthRequest,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: (data) => authService.linkOAuthProvider(data),
@@ -778,14 +847,18 @@ export function useLinkOAuthProvider(
  */
 export function useUnlinkOAuthProvider(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     'google' | 'facebook',
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
     mutationFn: (provider) => authService.unlinkOAuthProvider(provider),
@@ -805,9 +878,9 @@ export function useUnlinkOAuthProvider(
  */
 export function useLinkedAccounts(
   options?: Omit<
-    UseQueryOptions<AxiosResponse<LinkedAccountsResponse>, AxiosError>,
+    UseQueryOptions<FetchResponse<LinkedAccountsResponse>, HttpError>,
     'queryKey' | 'queryFn'
-  >
+  >,
 ) {
   return useQuery({
     queryKey: ['auth', 'linked-accounts'],
@@ -826,9 +899,9 @@ export function useLinkedAccounts(
  */
 export function useEmailPreferences(
   options?: Omit<
-    UseQueryOptions<AxiosResponse<any>, AxiosError>,
+    UseQueryOptions<FetchResponse<any>, HttpError>,
     'queryKey' | 'queryFn'
-  >
+  >,
 ) {
   return useQuery({
     queryKey: ['auth', 'email-preferences'],
@@ -843,17 +916,22 @@ export function useEmailPreferences(
  */
 export function useUpdateEmailPreferences(
   options?: UseMutationOptions<
-    AxiosResponse<MessageResponse>,
-    AxiosError,
+    FetchResponse<MessageResponse>,
+    HttpError,
     Record<string, boolean>,
     unknown
-  >
+  >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+  const {
+    onSuccess: customOnSuccess,
+    onError: customOnError,
+    ...restOptions
+  } = options || {}
 
   return useMutation({
-    mutationFn: (preferences) => authService.updateEmailPreferences(preferences),
+    mutationFn: (preferences) =>
+      authService.updateEmailPreferences(preferences),
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: ['auth', 'email-preferences'] })
       customOnSuccess?.(...args)

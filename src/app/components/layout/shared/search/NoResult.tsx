@@ -10,22 +10,22 @@ const noResultData: Array<{
   href: string
   icon: string
 }> = [
-    {
-      label: 'Analytics',
-      href: '/dashboards/analytics',
-      icon: 'PieChart',
-    },
-    {
-      label: 'User Profile',
-      href: '/pages/user-profile',
-      icon: 'Person',
-    },
-    {
-      label: 'CRM',
-      href: '/dashboards/crm',
-      icon: 'tabler-3d-cube-sphere',
-    },
-  ]
+  {
+    label: 'Analytics',
+    href: '/dashboards/analytics',
+    icon: 'PieChart',
+  },
+  {
+    label: 'User Profile',
+    href: '/pages/user-profile',
+    icon: 'Person',
+  },
+  {
+    label: 'CRM',
+    href: '/dashboards/crm',
+    icon: 'tabler-3d-cube-sphere',
+  },
+]
 
 const NoResult: React.FC<{
   query: string | undefined

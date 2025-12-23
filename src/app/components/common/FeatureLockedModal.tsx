@@ -1,6 +1,6 @@
 /**
  * Feature Locked Modal Component
- * 
+ *
  * Modal that appears when a guest user tries to access a feature
  * that requires authentication. Encourages sign up with feature benefits.
  */
@@ -39,7 +39,7 @@ export interface FeatureLockedModalProps {
 
 /**
  * Feature Locked Modal
- * 
+ *
  * Shows when a guest tries to access a restricted feature.
  * Displays the benefits of signing up and provides direct links to auth pages.
  */
@@ -66,13 +66,17 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
 
   const handleSignUp = () => {
     onClose()
-    const destination = redirectPath ? `/auth/signup?redirect=${encodeURIComponent(redirectPath)}` : '/auth/signup'
+    const destination = redirectPath
+      ? `/auth/signup?redirect=${encodeURIComponent(redirectPath)}`
+      : '/auth/signup'
     navigate(destination)
   }
 
   const handleSignIn = () => {
     onClose()
-    const destination = redirectPath ? `/auth/signin?redirect=${encodeURIComponent(redirectPath)}` : '/auth/signin'
+    const destination = redirectPath
+      ? `/auth/signin?redirect=${encodeURIComponent(redirectPath)}`
+      : '/auth/signin'
     navigate(destination)
   }
 
@@ -80,7 +84,7 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
+      maxWidth='sm'
       fullWidth
       PaperProps={{
         sx: {
@@ -90,12 +94,16 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
       }}
     >
       <DialogTitle sx={{ pb: 1 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack
+          direction='row'
+          alignItems='center'
+          justifyContent='space-between'
+        >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <LockIcon color="warning" />
-            <Typography variant="h6">Feature Locked</Typography>
+            <LockIcon color='warning' />
+            <Typography variant='h6'>Feature Locked</Typography>
           </Box>
-          <IconButton size="small" onClick={onClose} aria-label="close">
+          <IconButton size='small' onClick={onClose} aria-label='close'>
             <CloseIcon />
           </IconButton>
         </Stack>
@@ -105,8 +113,8 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
         <Stack spacing={3}>
           {/* Feature Info */}
           <Box>
-            <Chip label={featureName} color="primary" sx={{ mb: 2 }} />
-            <Typography variant="body1" color="text.secondary">
+            <Chip label={featureName} color='primary' sx={{ mb: 2 }} />
+            <Typography variant='body1' color='text.secondary'>
               {featureDescription ||
                 `The ${featureName} feature requires an account. Sign up for free to unlock this and many other features!`}
             </Typography>
@@ -116,14 +124,14 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
 
           {/* Benefits List */}
           <Box>
-            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+            <Typography variant='subtitle1' fontWeight='bold' gutterBottom>
               What You'll Get:
             </Typography>
             <List dense>
               {displayBenefits.map((benefit, index) => (
                 <ListItem key={index} disableGutters>
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    <CheckCircleIcon color="success" fontSize="small" />
+                    <CheckCircleIcon color='success' fontSize='small' />
                   </ListItemIcon>
                   <ListItemText
                     primary={benefit}
@@ -145,7 +153,7 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
               textAlign: 'center',
             }}
           >
-            <Typography variant="subtitle2" color="primary.main" gutterBottom>
+            <Typography variant='subtitle2' color='primary.main' gutterBottom>
               🎉 Sign up is free and takes less than 30 seconds!
             </Typography>
           </Box>
@@ -153,13 +161,13 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-        <Button onClick={onClose} variant="text" color="inherit">
+        <Button onClick={onClose} variant='text' color='inherit'>
           Maybe Later
         </Button>
-        <Button onClick={handleSignIn} variant="outlined" color="primary">
+        <Button onClick={handleSignIn} variant='outlined' color='primary'>
           Sign In
         </Button>
-        <Button onClick={handleSignUp} variant="contained" color="primary">
+        <Button onClick={handleSignUp} variant='contained' color='primary'>
           Sign Up Free
         </Button>
       </DialogActions>

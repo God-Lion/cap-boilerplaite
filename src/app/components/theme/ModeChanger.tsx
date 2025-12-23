@@ -8,16 +8,19 @@ const ModeChanger = () => {
 
   React.useEffect(() => {
     if (settings.mode) {
-      let mode: 'light' | 'dark' = settings.mode === 'system' 
-        ? (isDark ? 'dark' : 'light')
-        : settings.mode as 'light' | 'dark'
-      
+      const mode: 'light' | 'dark' =
+        settings.mode === 'system'
+          ? isDark
+            ? 'dark'
+            : 'light'
+          : (settings.mode as 'light' | 'dark')
+
       // Remove old color scheme classes
       document.documentElement.classList.remove('light', 'dark')
-      
+
       // Add new color scheme class
       document.documentElement.classList.add(mode)
-      
+
       // Update body color-scheme for better browser defaults
       document.body.style.colorScheme = mode
     }

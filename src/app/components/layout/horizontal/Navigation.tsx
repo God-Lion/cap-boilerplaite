@@ -18,8 +18,9 @@ const StyledDiv = styled.div<StyledDivProps>`
     `
     padding: ${themeConfig.layoutPadding}px;
 
-    ${isContentCompact &&
-    `
+    ${
+      isContentCompact &&
+      `
       margin-inline: auto;
       max-inline-size: ${themeConfig.compactContentWidth}px;
     `
@@ -28,41 +29,41 @@ const StyledDiv = styled.div<StyledDivProps>`
 `
 
 const Navigation = () =>
-//   {
-//   dictionary,
-// }: {
-//   dictionary: Awaited<ReturnType<typeof getDictionary>>
-// }
-{
-  const { settings } = useSettings()
-  const { isBreakpointReached } = useHorizontalNav()
-  const headerContentCompact = settings.navbarContentWidth === 'compact'
+  //   {
+  //   dictionary,
+  // }: {
+  //   dictionary: Awaited<ReturnType<typeof getDictionary>>
+  // }
+  {
+    const { settings } = useSettings()
+    const { isBreakpointReached } = useHorizontalNav()
+    const headerContentCompact = settings.navbarContentWidth === 'compact'
 
-  return (
-    <div
-      {...(!isBreakpointReached && {
-        className: classnames(
-          horizontalLayoutClasses.navigation,
-          'relative flex border-bs',
-        ),
-      })}
-    >
-      <StyledDiv
-        isContentCompact={headerContentCompact}
-        isBreakpointReached={isBreakpointReached}
+    return (
+      <div
         {...(!isBreakpointReached && {
           className: classnames(
-            horizontalLayoutClasses.navigationContentWrapper,
-            'flex items-center is-full plb-2',
+            horizontalLayoutClasses.navigation,
+            'relative flex border-bs',
           ),
         })}
       >
-        <HorizontalMenu
-        // dictionary={dictionary}
-        />
-      </StyledDiv>
-    </div>
-  )
-}
+        <StyledDiv
+          isContentCompact={headerContentCompact}
+          isBreakpointReached={isBreakpointReached}
+          {...(!isBreakpointReached && {
+            className: classnames(
+              horizontalLayoutClasses.navigationContentWrapper,
+              'flex items-center is-full plb-2',
+            ),
+          })}
+        >
+          <HorizontalMenu
+          // dictionary={dictionary}
+          />
+        </StyledDiv>
+      </div>
+    )
+  }
 
 export default Navigation

@@ -94,7 +94,10 @@ export default function Toolbar({
       <Box>
         <Grid container spacing={3} my='30px'>
           {filters.map((filter) => (
-            <Grid item xs={12} sm={Math.round(12 / filters.length)}>
+            <Grid
+              key={filter.key}
+              size={{ xs: 12, sm: Math.round(12 / filters.length) }}
+            >
               <FormControl fullWidth>
                 <InputLabel>{filter.label}</InputLabel>
                 <Select
@@ -104,12 +107,7 @@ export default function Toolbar({
                   }
                 >
                   {filter.values?.map((value) => (
-                    <MenuItem
-                      key={`${filter.key}-${Math.random()}-${
-                        value.key
-                      }${Math.random()}`}
-                      value={value.key}
-                    >
+                    <MenuItem key={value.key} value={value.key}>
                       {value.label}
                     </MenuItem>
                   ))}
@@ -175,13 +173,9 @@ export default function Toolbar({
             variant='scrollable'
             scrollButtons={false}
             aria-label='scrollable filter'
-            key={`Tabs${Math.random()}`}
           >
             {tabs.map((tab: ITabsHeader) => (
-              <Tab
-                key={`Tab${tab.key.toString()}${Math.random()}`}
-                label={tab.label}
-              />
+              <Tab key={tab.key} label={tab.label} />
             ))}
           </Tabs>
         )}

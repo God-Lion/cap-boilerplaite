@@ -13,13 +13,12 @@ import themeConfig from 'src/configs/themeConfig'
 const PrivacyPolicy = () => {
   return (
     <>
-      
-        <title>Privacy Policy - {themeConfig.templateName}</title>
-        <meta
-          name='description'
-          content={`Privacy Policy for ${themeConfig.templateName}`}
-        />
-      
+      <title>Privacy Policy - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`Privacy Policy for ${themeConfig.templateName}`}
+      />
+
       <Container maxWidth='md' sx={{ py: 8 }}>
         <Typography variant='h2' component='h1' gutterBottom>
           Privacy Policy
@@ -123,8 +122,8 @@ const PrivacyPolicy = () => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography variant='body1' color='text.secondary' gutterBottom>
-                We do not sell your personal data. We may share your
-                information under the following circumstances:
+                We do not sell your personal data. We may share your information
+                under the following circumstances:
               </Typography>
               <ul>
                 <li>
@@ -162,8 +161,8 @@ const PrivacyPolicy = () => {
                 The security of your data is important to us. We use
                 commercially acceptable means to protect your Personal
                 Information, including encryption and secure server
-                infrastructure. However, remember that no method of
-                transmission over the Internet is 100% secure.
+                infrastructure. However, remember that no method of transmission
+                over the Internet is 100% secure.
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -174,10 +173,9 @@ const PrivacyPolicy = () => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography variant='body1' color='text.secondary'>
-                You have the right to access, update, or delete the
-                information we have on you. You can do this at any time
-                through your account settings or by contacting our support
-                team.
+                You have the right to access, update, or delete the information
+                we have on you. You can do this at any time through your account
+                settings or by contacting our support team.
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -205,9 +203,8 @@ const PrivacyPolicy = () => {
               <Typography variant='body1' color='text.secondary'>
                 We may update our Privacy Policy from time to time. We will
                 notify you of any changes by posting the new Privacy Policy on
-                this page and updating the "Last Updated" date. You are
-                advised to review this Privacy Policy periodically for any
-                changes.
+                this page and updating the "Last Updated" date. You are advised
+                to review this Privacy Policy periodically for any changes.
               </Typography>
             </AccordionDetails>
           </Accordion>

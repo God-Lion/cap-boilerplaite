@@ -1,4 +1,10 @@
-import { Box, Container, Typography, IconButton, Link as HLInk } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  IconButton,
+  Link as HLInk,
+} from '@mui/material'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import FacebookIcon from '@mui/icons-material/Facebook'
@@ -7,7 +13,7 @@ import { Link } from 'react-router-dom'
 export default function Footer() {
   return (
     <Box
-      component="footer"
+      component='footer'
       sx={{
         width: '100%',
         borderTop: 1,
@@ -17,7 +23,7 @@ export default function Footer() {
       }}
     >
       <Container
-        maxWidth="lg"
+        maxWidth='lg'
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -39,7 +45,7 @@ export default function Footer() {
           <HLInk
             component={Link}
             to='/privacy-policy'
-            underline="none"
+            underline='none'
             sx={{
               fontSize: '0.875rem',
               color: 'text.secondary',
@@ -54,7 +60,7 @@ export default function Footer() {
           <HLInk
             component={Link}
             to='/terms-of-service'
-            underline="none"
+            underline='none'
             sx={{
               fontSize: '0.875rem',
               color: 'text.secondary',
@@ -69,7 +75,7 @@ export default function Footer() {
           <HLInk
             component={Link}
             to='/contact'
-            underline="none"
+            underline='none'
             sx={{
               fontSize: '0.875rem',
               color: 'text.secondary',
@@ -92,8 +98,8 @@ export default function Footer() {
           }}
         >
           <IconButton
-            href="#"
-            aria-label="Twitter"
+            href='#'
+            aria-label='Twitter'
             sx={{
               color: 'text.secondary',
               transition: 'color 0.2s',
@@ -105,8 +111,8 @@ export default function Footer() {
             <TwitterIcon />
           </IconButton>
           <IconButton
-            href="#"
-            aria-label="LinkedIn"
+            href='#'
+            aria-label='LinkedIn'
             sx={{
               color: 'text.secondary',
               transition: 'color 0.2s',
@@ -118,8 +124,8 @@ export default function Footer() {
             <LinkedInIcon />
           </IconButton>
           <IconButton
-            href="#"
-            aria-label="Facebook"
+            href='#'
+            aria-label='Facebook'
             sx={{
               color: 'text.secondary',
               transition: 'color 0.2s',
@@ -134,13 +140,14 @@ export default function Footer() {
 
         {/* Copyright */}
         <Typography
-          variant="body2"
+          variant='body2'
           sx={{
             fontSize: '0.875rem',
             color: 'text.secondary',
           }}
         >
-          © {new Date().getFullYear()} God Lion Seeker Optimizer. All rights reserved.
+          © {new Date().getFullYear()} God Lion Seeker Optimizer. All rights
+          reserved.
         </Typography>
       </Container>
     </Box>

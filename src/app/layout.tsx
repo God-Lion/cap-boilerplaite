@@ -1,25 +1,25 @@
 import React from 'react'
 import type { ChildrenType } from 'src/core/types'
 // import type { Locale } from 'src/configs/i18n'
-import LayoutWrapper from 'src/layouts/LayoutWrapper'
-import PublicLayout from 'src/components/layout/PublicLayout'
-import VerticalLayout from 'src/layouts/VerticalLayout'
-import HorizontalLayout from 'src/layouts/HorizontalLayout'
-import Navigation from 'src/components/layout/vertical/Navigation'
-import Header from 'src/components/layout/horizontal/Header'
-import Navbar from 'src/components/layout/vertical/Navbar'
-import VerticalFooter from 'src/components/layout/vertical/Footer'
-import HorizontalFooter from 'src/components/layout/horizontal/Footer'
+import LayoutWrapper from 'app/layouts/LayoutWrapper'
+import PublicLayout from 'app/components/layout/PublicLayout'
+import VerticalLayout from 'app/layouts/VerticalLayout'
+import HorizontalLayout from 'app/layouts/HorizontalLayout'
+import Navigation from 'app/components/layout/vertical/Navigation'
+import Header from 'app/components/layout/horizontal/Header'
+import Navbar from 'app/components/layout/vertical/Navbar'
+import VerticalFooter from 'app/components/layout/vertical/Footer'
+import HorizontalFooter from 'app/components/layout/horizontal/Footer'
 // import Customizer from 'src/core/components/customizer'
 import ScrollToTop from 'src/core/components/scroll-to-top'
 import Button from '@mui/material/Button'
 import { ArrowUpward } from '@mui/icons-material'
-import type { IMenu } from 'src/components/layout/types'
+import type { IMenu } from 'app/components/layout/types'
 import {
   Navbar as PublicNavbar,
   GuestNavbar,
   Footer as PublicFooter,
-} from 'src/components'
+} from 'app/components'
 import { useAuth } from 'src/store'
 
 import {
@@ -27,7 +27,7 @@ import {
   useLang,
 } from './utils/getDictionary'
 import { useTranslation } from 'react-i18next'
-import { Locale } from './configs/i18n'
+import { Locale } from 'src/configs/i18n'
 
 // import { i18n } from 'src/configs/i18n'
 // import { getDictionary } from 'src/utils'

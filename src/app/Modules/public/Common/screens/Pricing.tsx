@@ -1,11 +1,11 @@
 /**
  * Pricing Page
- * 
+ *
  * Displays pricing plans and frequently asked questions
  * for God Lion Seeker Optimizer
  */
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Box,
   Container,
@@ -27,23 +27,20 @@ import {
   AccordionSummary,
   AccordionDetails,
   Divider,
-} from '@mui/material';
-import {
-  CheckCircle,
-  ExpandMore,
-} from '@mui/icons-material';
-import themeConfig from 'src/configs/themeConfig';
+} from '@mui/material'
+import { CheckCircle, ExpandMore } from '@mui/icons-material'
+import themeConfig from 'src/configs/themeConfig'
 
 // Pricing plan interface
 interface PricingPlan {
-  name: string;
-  price: number;
-  priceAnnual: number;
-  description?: string;
-  features: string[];
-  buttonText: string;
-  buttonVariant: 'contained' | 'outlined';
-  featured?: boolean;
+  name: string
+  price: number
+  priceAnnual: number
+  description?: string
+  features: string[]
+  buttonText: string
+  buttonVariant: 'contained' | 'outlined'
+  featured?: boolean
 }
 
 const pricingPlans: PricingPlan[] = [
@@ -87,12 +84,12 @@ const pricingPlans: PricingPlan[] = [
     buttonText: 'Contact Sales',
     buttonVariant: 'outlined',
   },
-];
+]
 
 // FAQ interface
 interface FAQ {
-  question: string;
-  answer: string;
+  question: string
+  answer: string
 }
 
 const faqs: FAQ[] = [
@@ -116,40 +113,40 @@ const faqs: FAQ[] = [
     answer:
       'Our AI analyzes your resume, skills, and career goals to match you with the most relevant job openings from millions of listings. It also provides personalized recommendations to optimize your profile and prepare for interviews.',
   },
-];
+]
 
 export const Pricing: React.FC = () => {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>(
+    'monthly',
+  )
 
   const handleBillingChange = (
     _event: React.MouseEvent<HTMLElement>,
-    newValue: 'monthly' | 'annual' | null
+    newValue: 'monthly' | 'annual' | null,
   ) => {
     if (newValue !== null) {
-      setBillingCycle(newValue);
+      setBillingCycle(newValue)
     }
-  };
+  }
 
   const getPrice = (plan: PricingPlan) => {
-    return billingCycle === 'monthly' ? plan.price : plan.priceAnnual;
-  };
+    return billingCycle === 'monthly' ? plan.price : plan.priceAnnual
+  }
 
   return (
     <>
-      
-        <title>Pricing - {themeConfig.templateName}</title>
-        <meta
-          name="description"
-          content={`View pricing plans for ${themeConfig.templateName} and unlock your career potential`}
-        />
-      
+      <title>Pricing - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`View pricing plans for ${themeConfig.templateName} and unlock your career potential`}
+      />
 
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <Container maxWidth='lg' sx={{ py: 8 }}>
         {/* Page Heading */}
         <Box sx={{ textAlign: 'center', mb: 4 }}>
           <Typography
-            variant="h2"
-            component="h1"
+            variant='h2'
+            component='h1'
             gutterBottom
             sx={{
               fontWeight: 900,
@@ -160,8 +157,8 @@ export const Pricing: React.FC = () => {
             Choose the Plan That's Right for You
           </Typography>
           <Typography
-            variant="h6"
-            color="text.secondary"
+            variant='h6'
+            color='text.secondary'
             sx={{ fontSize: { xs: '1rem', md: '1.125rem' } }}
           >
             Unlock your career potential with the power of AI.
@@ -174,7 +171,7 @@ export const Pricing: React.FC = () => {
             value={billingCycle}
             exclusive
             onChange={handleBillingChange}
-            aria-label="billing cycle"
+            aria-label='billing cycle'
             sx={{
               bgcolor: 'action.hover',
               borderRadius: 10,
@@ -196,15 +193,15 @@ export const Pricing: React.FC = () => {
               },
             }}
           >
-            <ToggleButton value="monthly" aria-label="monthly billing">
+            <ToggleButton value='monthly' aria-label='monthly billing'>
               Monthly
             </ToggleButton>
-            <ToggleButton value="annual" aria-label="annual billing">
+            <ToggleButton value='annual' aria-label='annual billing'>
               Annual
               <Chip
-                label="Save 20%"
-                size="small"
-                color="primary"
+                label='Save 20%'
+                size='small'
+                color='primary'
                 sx={{ ml: 1, fontWeight: 700, fontSize: '0.625rem' }}
               />
             </ToggleButton>
@@ -241,9 +238,9 @@ export const Pricing: React.FC = () => {
                     }}
                   >
                     <Chip
-                      label="Most Popular"
-                      color="primary"
-                      size="small"
+                      label='Most Popular'
+                      color='primary'
+                      size='small'
                       sx={{
                         fontWeight: 700,
                         textTransform: 'uppercase',
@@ -255,8 +252,8 @@ export const Pricing: React.FC = () => {
                 )}
                 <CardContent sx={{ flexGrow: 1, pt: plan.featured ? 4 : 3 }}>
                   <Typography
-                    variant="h5"
-                    component="h3"
+                    variant='h5'
+                    component='h3'
                     gutterBottom
                     sx={{ fontWeight: 700 }}
                   >
@@ -264,8 +261,8 @@ export const Pricing: React.FC = () => {
                   </Typography>
                   <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 3 }}>
                     <Typography
-                      variant="h3"
-                      component="span"
+                      variant='h3'
+                      component='span'
                       sx={{
                         fontWeight: 900,
                         letterSpacing: '-0.03em',
@@ -274,8 +271,8 @@ export const Pricing: React.FC = () => {
                       ${getPrice(plan)}
                     </Typography>
                     <Typography
-                      variant="body1"
-                      color="text.secondary"
+                      variant='body1'
+                      color='text.secondary'
                       sx={{ ml: 1 }}
                     >
                       /month
@@ -286,7 +283,7 @@ export const Pricing: React.FC = () => {
                     {plan.features.map((feature, i) => (
                       <ListItem key={i} disableGutters sx={{ py: 0.75 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <CheckCircle color="primary" fontSize="small" />
+                          <CheckCircle color='primary' fontSize='small' />
                         </ListItemIcon>
                         <ListItemText
                           primary={feature}
@@ -303,7 +300,7 @@ export const Pricing: React.FC = () => {
                   <Button
                     fullWidth
                     variant={plan.buttonVariant}
-                    size="large"
+                    size='large'
                     sx={{
                       py: 1.5,
                       fontWeight: 700,
@@ -322,8 +319,8 @@ export const Pricing: React.FC = () => {
         <Box sx={{ maxWidth: 900, mx: 'auto' }}>
           <Box sx={{ textAlign: 'center', mb: 6 }}>
             <Typography
-              variant="h3"
-              component="h2"
+              variant='h3'
+              component='h2'
               gutterBottom
               sx={{
                 fontWeight: 700,
@@ -332,9 +329,9 @@ export const Pricing: React.FC = () => {
             >
               Frequently Asked Questions
             </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Can't find the answer you're looking for? Reach out to our customer
-              support team.
+            <Typography variant='body1' color='text.secondary'>
+              Can't find the answer you're looking for? Reach out to our
+              customer support team.
             </Typography>
           </Box>
 
@@ -366,12 +363,12 @@ export const Pricing: React.FC = () => {
                     },
                   }}
                 >
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                  <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                     {faq.question}
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={{ px: 3, pb: 3, pt: 0 }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     {faq.answer}
                   </Typography>
                 </AccordionDetails>
@@ -381,7 +378,7 @@ export const Pricing: React.FC = () => {
         </Box>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default Pricing;
+export default Pricing

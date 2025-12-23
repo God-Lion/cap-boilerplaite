@@ -9,14 +9,14 @@ const progress: Theme['components'] = {
         borderRadius: 'var(--mui-shape-borderRadius)',
         backgroundColor: 'var(--mui-palette-customColors-trackBg)',
         '& .MuiLinearProgress-bar': {
-          borderRadius: 'var(--mui-shape-borderRadius)'
+          borderRadius: 'var(--mui-shape-borderRadius)',
         },
         '& .MuiLinearProgress-dashed': {
-          marginTop: theme.spacing(0.2)
-        }
-      })
-    }
-  }
+          marginTop: theme.spacing(0.2),
+        },
+      }),
+    },
+  },
 }
 
 export default progress

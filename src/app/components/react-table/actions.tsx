@@ -6,7 +6,16 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import LastPageIcon from '@mui/icons-material/LastPage'
 import { useTheme } from '@mui/material/styles'
-import { TablePaginationActionsProps } from '@mui/material/TablePagination/TablePaginationActions'
+
+interface TablePaginationActionsProps {
+  count: number
+  page: number
+  rowsPerPage: number
+  onPageChange: (
+    event: React.MouseEvent<HTMLButtonElement>,
+    newPage: number,
+  ) => void
+}
 
 const TablePaginationActions = (props: TablePaginationActionsProps) => {
   const theme = useTheme()

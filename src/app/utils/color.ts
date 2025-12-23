@@ -1,2 +1,2 @@
-export let primaryColor = '#285e20'
-export let whiteColor = '#ffffff'
+export const primaryColor = '#285e20'
+export const whiteColor = '#ffffff'

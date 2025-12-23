@@ -1,4 +1,4 @@
-let countries_states = [
+const countries_states = [
   {
     country: 'Afghanistan',
     states: [

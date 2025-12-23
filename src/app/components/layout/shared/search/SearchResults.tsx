@@ -51,7 +51,6 @@ const SearchResults: React.FC<{
 
   return (
     <KBarResults
-      // eslint-disable-next-line lines-around-comment
       // If you do not want to filter the search data, you can remove `getFilteredResults`
       // function below and directly pass `results` to `items` prop.
       items={getFilteredResults(results)}

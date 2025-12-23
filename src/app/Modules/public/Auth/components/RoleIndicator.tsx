@@ -1,6 +1,6 @@
 /**
  * Role Indicator Component
- * 
+ *
  * Visual indicator showing the current user's role (Guest, User, Admin)
  * Appears in the header/navbar area
  */
@@ -19,7 +19,7 @@ interface RoleIndicatorProps {
 
 /**
  * Role Indicator Component
- * 
+ *
  * Displays a colored chip indicating the user's current role
  */
 export const RoleIndicator: React.FC<RoleIndicatorProps> = ({
@@ -77,7 +77,7 @@ export const RoleIndicator: React.FC<RoleIndicatorProps> = ({
           label={showLabel ? role.label : undefined}
           color={role.color}
           size={size}
-          variant="outlined"
+          variant='outlined'
           sx={{
             fontWeight: 'bold',
             cursor: 'default',

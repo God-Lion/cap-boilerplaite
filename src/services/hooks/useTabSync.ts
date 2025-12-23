@@ -57,8 +57,39 @@ export function useTabSync<T = any>(
 
   const tabIdRef = useRef(generateTabId())
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null)
-  const heartbeatIntervalRef = useRef<NodeJS.Timeout>()
-  const tabCheckIntervalRef = useRef<NodeJS.Timeout>()
+  const heartbeatIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const tabCheckIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
+
+  /**
+   * Update connected tabs count
+   */
+  const updateConnectedTabs = useCallback(() => {
+    try {
+      const tabsData = localStorage.getItem(`${channelName}_tabs`)
+      if (tabsData) {
+        const tabs = JSON.parse(tabsData)
+        const now = Date.now()
+
+        // Filter out stale tabs (no heartbeat in last 10 seconds)
+        const activeTabs = Object.entries(tabs).filter(
+          ([_, timestamp]) => now - (timestamp as number) < 10000
+        )
+
+        setConnectedTabs(activeTabs.length + 1) // +1 for current tab
+
+        // Check if this is the leader tab (oldest active tab)
+        const sortedTabs = activeTabs.sort((a, b) =>
+          (a[1] as number) - (b[1] as number)
+        )
+        setIsLeaderTab(
+          sortedTabs.length === 0 ||
+          sortedTabs[0][0] === tabIdRef.current
+        )
+      }
+    } catch (error) {
+      console.error('Error updating connected tabs:', error)
+    }
+  }, [channelName])
 
   /**
    * Initialize BroadcastChannel
@@ -70,12 +101,12 @@ export function useTabSync<T = any>(
 
         broadcastChannelRef.current.onmessage = (event) => {
           const message = event.data as TabSyncMessage<T>
-          
+
           // Ignore messages from self
           if (message.tabId === tabIdRef.current) return
 
           setLastMessage(message)
-          
+
           if (onMessage) {
             onMessage(message)
           }
@@ -106,12 +137,12 @@ export function useTabSync<T = any>(
         if (e.key === `tab_sync_${channelName}` && e.newValue) {
           try {
             const message = JSON.parse(e.newValue) as TabSyncMessage<T>
-            
+
             // Ignore messages from self
             if (message.tabId === tabIdRef.current) return
 
             setLastMessage(message)
-            
+
             if (onMessage) {
               onMessage(message)
             }
@@ -129,33 +160,7 @@ export function useTabSync<T = any>(
   /**
    * Update connected tabs count
    */
-  const updateConnectedTabs = useCallback(() => {
-    try {
-      const tabsData = localStorage.getItem(`${channelName}_tabs`)
-      if (tabsData) {
-        const tabs = JSON.parse(tabsData)
-        const now = Date.now()
-        
-        // Filter out stale tabs (no heartbeat in last 10 seconds)
-        const activeTabs = Object.entries(tabs).filter(
-          ([_, timestamp]) => now - (timestamp as number) < 10000
-        )
-        
-        setConnectedTabs(activeTabs.length + 1) // +1 for current tab
-        
-        // Check if this is the leader tab (oldest active tab)
-        const sortedTabs = activeTabs.sort((a, b) => 
-          (a[1] as number) - (b[1] as number)
-        )
-        setIsLeaderTab(
-          sortedTabs.length === 0 || 
-          sortedTabs[0][0] === tabIdRef.current
-        )
-      }
-    } catch (error) {
-      console.error('Error updating connected tabs:', error)
-    }
-  }, [channelName])
+
 
   /**
    * Send heartbeat to track active tabs
@@ -177,7 +182,7 @@ export function useTabSync<T = any>(
    */
   useEffect(() => {
     sendHeartbeat() // Initial heartbeat
-    
+
     heartbeatIntervalRef.current = setInterval(() => {
       sendHeartbeat()
     }, 3000) // Send heartbeat every 3 seconds
@@ -193,7 +198,7 @@ export function useTabSync<T = any>(
       if (tabCheckIntervalRef.current) {
         clearInterval(tabCheckIntervalRef.current)
       }
-      
+
       // Remove this tab from active tabs
       try {
         const tabsData = localStorage.getItem(`${channelName}_tabs`)

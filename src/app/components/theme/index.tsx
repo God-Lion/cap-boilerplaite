@@ -4,7 +4,7 @@ import {
   createTheme,
 } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import type { } from '@mui/lab/themeAugmentation'
+import type {} from '@mui/lab/themeAugmentation'
 import { useMedia } from 'react-use'
 import type { ChildrenType, Direction, SystemMode } from 'src/types'
 import ModeChanger from './ModeChanger'
@@ -29,10 +29,15 @@ const ThemeProvider: React.FC<
   }
 
   const theme = React.useMemo(() => {
-    const coreThemeConfig = defaultCoreTheme(settings, currentMode, direction) as any
-    
-    const modeScheme = coreThemeConfig.colorSchemes?.[currentMode]?.palette || {}
-    
+    const coreThemeConfig = defaultCoreTheme(
+      settings,
+      currentMode,
+      direction,
+    ) as any
+
+    const modeScheme =
+      coreThemeConfig.colorSchemes?.[currentMode]?.palette || {}
+
     const themeWithPalette = {
       ...coreThemeConfig,
       palette: {
@@ -40,7 +45,7 @@ const ThemeProvider: React.FC<
         ...modeScheme,
       },
     }
-    
+
     return createTheme(themeWithPalette)
   }, [settings, currentMode, direction])
 

@@ -45,7 +45,6 @@ const Logo = () => {
         logoTextRef.current?.classList.add('hidden')
       else logoTextRef.current.classList.remove('hidden')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered, layout])
 
   // You may return any JSX here to display a logo in the sidebar header

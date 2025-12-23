@@ -1,5 +1,13 @@
 import React from 'react'
-import { Box, Container, Typography, Button, Paper, alpha, useTheme } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Paper,
+  alpha,
+  useTheme,
+} from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
@@ -14,7 +22,7 @@ const DashboardInsights: React.FC = () => {
         py: { xs: 8, md: 12 },
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth='lg'>
         <Box
           sx={{
             display: 'flex',
@@ -25,9 +33,16 @@ const DashboardInsights: React.FC = () => {
           }}
         >
           {/* Header */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              alignItems: 'center',
+            }}
+          >
             <Typography
-              variant="h2"
+              variant='h2'
               sx={{
                 fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
                 fontWeight: 800,
@@ -38,7 +53,7 @@ const DashboardInsights: React.FC = () => {
               See your job hunt like data
             </Typography>
             <Typography
-              variant="h6"
+              variant='h6'
               sx={{
                 fontSize: { xs: '1rem', md: '1.125rem' },
                 color: 'text.secondary',
@@ -46,13 +61,14 @@ const DashboardInsights: React.FC = () => {
                 maxWidth: 700,
               }}
             >
-              Our AI-powered dashboard visualizes your entire job search, revealing insights to help you land your next role faster.
+              Our AI-powered dashboard visualizes your entire job search,
+              revealing insights to help you land your next role faster.
             </Typography>
 
             <Box sx={{ mt: 2 }}>
               <Button
-                variant="contained"
-                size="large"
+                variant='contained'
+                size='large'
                 endIcon={<ArrowForwardIcon />}
                 onClick={() => navigate('/dashboard')}
                 sx={{
@@ -63,7 +79,8 @@ const DashboardInsights: React.FC = () => {
                   textTransform: 'none',
                   borderRadius: 2,
                   bgcolor: 'primary.main',
-                  color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                  color:
+                    theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                   boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.4)}`,
                   transition: 'all 0.3s ease',
                   '&:hover': {
@@ -99,18 +116,19 @@ const DashboardInsights: React.FC = () => {
                   padding: 1,
                   background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.3)} 0%, ${alpha(
                     theme.palette.secondary.main,
-                    0.3
+                    0.3,
                   )} 100%)`,
-                  WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  WebkitMask:
+                    'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
                   WebkitMaskComposite: 'xor',
                   maskComposite: 'exclude',
                 },
               }}
             >
               <Box
-                component="img"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5_TszWUdDZgJ5RjodI-nI1HZBebyrwUSUYxVP9Nvb_3CAYwEEJ-wunDetFNs4BCW8-Z4fEw5n0G5aQCZ8FndjhhPcW4Fn-AaNYdf5FrbFv4rBzgsQ1XjsftTjNxkgHN2kSW-yzu4BPUf3T1JCsir5EJ5U4X8Fs_9VCP93Ztaqr0lqfsCtTx2XIRH7XtWdiruwvd6ek3c7v9PsfGLthsLBmq63oWjxuk3jOzm4sGsaoxHNXx1B4erpCbl7GivW2E-PGOTD2xHWTQU"
-                alt="Analytics Dashboard Preview"
+                component='img'
+                src='https://lh3.googleusercontent.com/aida-public/AB6AXuD5_TszWUdDZgJ5RjodI-nI1HZBebyrwUSUYxVP9Nvb_3CAYwEEJ-wunDetFNs4BCW8-Z4fEw5n0G5aQCZ8FndjhhPcW4Fn-AaNYdf5FrbFv4rBzgsQ1XjsftTjNxkgHN2kSW-yzu4BPUf3T1JCsir5EJ5U4X8Fs_9VCP93Ztaqr0lqfsCtTx2XIRH7XtWdiruwvd6ek3c7v9PsfGLthsLBmq63oWjxuk3jOzm4sGsaoxHNXx1B4erpCbl7GivW2E-PGOTD2xHWTQU'
+                alt='Analytics Dashboard Preview'
                 sx={{
                   width: '100%',
                   height: 'auto',

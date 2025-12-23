@@ -1,5 +1,5 @@
 import { differenceInYears, parseISO } from 'date-fns'
-import departements from 'src/utils/departement_state.json'
+import departements from 'app/utils/departement_state.json'
 
 export const isObjectEmpty = (objectName: object) => {
   return (
@@ -39,7 +39,10 @@ export const showPermissions = (userTypeID: number) => {
 }
 
 export function category(dateBirth: string | object): number {
-  const birthDate = typeof dateBirth === 'string' ? parseISO(dateBirth) : new Date(dateBirth as Date)
+  const birthDate =
+    typeof dateBirth === 'string'
+      ? parseISO(dateBirth)
+      : new Date(dateBirth as Date)
   const age = differenceInYears(new Date(), birthDate)
   if (age >= 7 && age <= 12) return 1
   if (age >= 13 && age <= 17) return 2

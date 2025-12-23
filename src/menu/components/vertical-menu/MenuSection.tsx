@@ -78,7 +78,6 @@ const MenuSection: React.ForwardRefRenderFunction<
   }
 
   return (
-    // eslint-disable-next-line lines-around-comment
     // Menu Section
     <StyledVerticalMenuSection
       ref={ref}

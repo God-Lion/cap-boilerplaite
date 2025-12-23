@@ -187,8 +187,8 @@ export default function LocalTable({
                               density === 'sm'
                                 ? '4px'
                                 : density === 'md'
-                                ? '8px'
-                                : '16px',
+                                  ? '8px'
+                                  : '16px',
                             transition: 'padding 0.2s',
                           }}
                         >
@@ -260,8 +260,8 @@ export default function LocalTable({
                                     density === 'sm'
                                       ? '4px'
                                       : density === 'md'
-                                      ? '8px'
-                                      : '16px',
+                                        ? '8px'
+                                        : '16px',
                                   transition: 'padding 0.2s',
                                 }}
                               >

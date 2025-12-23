@@ -25,47 +25,47 @@ const menuItemStyles = (
   return {
     root: ({ level }: MenuItemStylesParams) => ({
       ...(!isPopoutWhenCollapsed ||
-        popoutExpanded ||
-        (popoutCollapsed && level === 0)
+      popoutExpanded ||
+      (popoutCollapsed && level === 0)
         ? {
-          marginBlockStart: theme.spacing(1.5),
-        }
+            marginBlockStart: theme.spacing(1.5),
+          }
         : {
-          marginBlockStart: 0,
-        }),
+            marginBlockStart: 0,
+          }),
       [`&.${menuClasses.subMenuRoot}.${menuClasses.open} > .${menuClasses.button}, &.${menuClasses.subMenuRoot} > .${menuClasses.button}.${menuClasses.active}`]:
-      {
-        backgroundColor: 'var(--mui-palette-action-selected) !important',
-      },
+        {
+          backgroundColor: 'var(--mui-palette-action-selected) !important',
+        },
       [`&.${menuClasses.disabled} > .${menuClasses.button}`]: {
         color: 'var(--mui-palette-text-disabled)',
       },
       [`&:not(.${menuClasses.subMenuRoot}) > .${menuClasses.button}.${menuClasses.active}`]:
-      {
-        ...(popoutCollapsed && level > 0
-          ? {
-            backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
-            color: 'var(--mui-palette-primary-main)',
-            [`& .${menuClasses.icon}`]: {
-              color: 'var(--mui-palette-primary-main)',
-            },
-          }
-          : {
-            color: 'var(--mui-palette-primary-contrastText)',
-            background:
-              theme.direction === 'ltr'
-                ? `linear-gradient(270deg,
+        {
+          ...(popoutCollapsed && level > 0
+            ? {
+                backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
+                color: 'var(--mui-palette-primary-main)',
+                [`& .${menuClasses.icon}`]: {
+                  color: 'var(--mui-palette-primary-main)',
+                },
+              }
+            : {
+                color: 'var(--mui-palette-primary-contrastText)',
+                background:
+                  theme.direction === 'ltr'
+                    ? `linear-gradient(270deg,
                     rgb(var(--mui-palette-primary-mainChannel) / 0.7) 0%,
                     var(--mui-palette-primary-main) 100%) !important`
-                : `linear-gradient(270deg,
+                    : `linear-gradient(270deg,
                      var(--mui-palette-primary-main) 100%,
                      rgb(var(--mui-palette-primary-mainChannel) / 0.7) 100%) !important`,
-            boxShadow: 'var(--mui-customShadows-primary-sm)',
-            [`& .${menuClasses.icon}`]: {
-              color: 'inherit',
-            },
-          }),
-      },
+                boxShadow: 'var(--mui-customShadows-primary-sm)',
+                [`& .${menuClasses.icon}`]: {
+                  color: 'inherit',
+                },
+              }),
+        },
     }),
     button: ({ level, active }: MenuItemStylesParams) => ({
       paddingBlock: '8px',
@@ -109,8 +109,8 @@ const menuItemStyles = (
       }),
       ...(level === 1 &&
         !popoutCollapsed && {
-        marginInlineStart: theme.spacing(1.5),
-      }),
+          marginInlineStart: theme.spacing(1.5),
+        }),
       ...(level > 1 && {
         marginInlineStart: theme.spacing(
           (popoutCollapsed ? 0 : 1.5) + 2.5 * (level - 1),
@@ -121,8 +121,8 @@ const menuItemStyles = (
       }),
       ...(popoutCollapsed &&
         level > 0 && {
-        marginInlineEnd: theme.spacing(2),
-      }),
+          marginInlineEnd: theme.spacing(2),
+        }),
       '& > i, & > svg': {
         fontSize: 'inherit',
       },
@@ -157,19 +157,19 @@ const menuItemStyles = (
       ...(popoutCollapsed && {
         '& > ul, & > div > ul': {
           [`& > li:not(:last-child), & > li > .${menuClasses.button}:not(:last-child)`]:
-          {
-            marginBlockEnd: `${theme.spacing(0.5)} !important`,
-          },
+            {
+              marginBlockEnd: `${theme.spacing(0.5)} !important`,
+            },
         },
         ...(level === 0 && {
           ...(settings.skin === 'bordered'
             ? {
-              boxShadow: 'none',
-              border: '1px solid var(--mui-palette-divider)',
-            }
+                boxShadow: 'none',
+                border: '1px solid var(--mui-palette-divider)',
+              }
             : {
-              boxShadow: 'var(--mui-customShadows-sm)',
-            }),
+                boxShadow: 'var(--mui-customShadows-sm)',
+              }),
           [`& .${menuClasses.button}`]: {
             paddingInline: theme.spacing(4),
           },

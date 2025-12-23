@@ -1,9 +1,9 @@
 /**
  * Settings Context - Backward Compatibility Layer
- * 
+ *
  * This file now re-exports Zustand hooks for backward compatibility.
  * All new code should import directly from 'src/store'
- * 
+ *
  * @deprecated Use `import { useSettings } from 'src/store'` instead
  */
 
@@ -140,18 +140,18 @@ export const SettingsProvider: React.FC<{
 
 /**
  * @deprecated Use `import { useSettings } from 'src/store'` instead
- * 
+ *
  * This hook now uses Zustand internally for backward compatibility
  */
 export const useSettings = () => {
   // Use Zustand store directly
   const zustandSettings = useZustandSettings()
-  
+
   // Wrap updateSettings to handle the updateCookie option (ignored in Zustand)
   const updateSettings = (settings: Partial<Settings>) => {
     zustandSettings.updateSettings(settings)
   }
-  
+
   return {
     settings: zustandSettings.settings,
     updateSettings,

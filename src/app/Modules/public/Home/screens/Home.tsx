@@ -1,4 +1,15 @@
-import { Container, Paper, Typography, Box, Button, Card, CardContent, Chip, alpha, useTheme } from '@mui/material'
+import {
+  Container,
+  Paper,
+  Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  alpha,
+  useTheme,
+} from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { useNavigate } from 'react-router-dom'
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline'
@@ -9,9 +20,8 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import SpeedIcon from '@mui/icons-material/Speed'
 import SecurityIcon from '@mui/icons-material/Security'
 import Banner from '../components/Banner'
-import { GuestBanner } from 'src/components/common'
+import { GuestBanner } from 'app/components/common'
 import { useGuest } from 'src/store'
-
 
 const aboutSection = {
   title: 'Transform Your Job Search Experience',
@@ -66,7 +76,6 @@ const benefits = [
   },
 ]
 
-
 export default function Home() {
   const navigate = useNavigate()
   const { isGuest } = useGuest()
@@ -79,8 +88,8 @@ export default function Home() {
         {isGuest && (
           <Box sx={{ mb: 3 }}>
             <GuestBanner
-              variant="minimal"
-              message="Create a free account to unlock all features and save your job searches!"
+              variant='minimal'
+              message='Create a free account to unlock all features and save your job searches!'
             />
           </Box>
         )}
@@ -105,14 +114,18 @@ export default function Home() {
             >
               Powerful Features
             </Typography>
-            <Typography variant='h6' color='text.secondary' sx={{ maxWidth: 600, mx: 'auto' }}>
+            <Typography
+              variant='h6'
+              color='text.secondary'
+              sx={{ maxWidth: 600, mx: 'auto' }}
+            >
               Everything you need to navigate the modern job market
             </Typography>
           </Box>
 
           <Grid container spacing={4}>
             {features.map((feature, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                 <Card
                   elevation={0}
                   sx={{
@@ -149,7 +162,14 @@ export default function Home() {
                     }}
                   />
 
-                  <CardContent sx={{ flexGrow: 1, p: 3, textAlign: 'center', position: 'relative' }}>
+                  <CardContent
+                    sx={{
+                      flexGrow: 1,
+                      p: 3,
+                      textAlign: 'center',
+                      position: 'relative',
+                    }}
+                  >
                     {/* Icon Container */}
                     <Box
                       className='feature-icon'
@@ -163,17 +183,26 @@ export default function Home() {
                         background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
                         color: 'white',
                         mb: 2.5,
-                        transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        transition:
+                          'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                         boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.3)}`,
                       }}
                     >
                       {feature.icon}
                     </Box>
 
-                    <Typography variant='h6' gutterBottom sx={{ fontWeight: 700, mb: 1.5 }}>
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      sx={{ fontWeight: 700, mb: 1.5 }}
+                    >
                       {feature.title}
                     </Typography>
-                    <Typography variant='body2' color='text.secondary' sx={{ lineHeight: 1.7 }}>
+                    <Typography
+                      variant='body2'
+                      color='text.secondary'
+                      sx={{ lineHeight: 1.7 }}
+                    >
                       {feature.description}
                     </Typography>
                   </CardContent>
@@ -185,7 +214,7 @@ export default function Home() {
 
         {/* About Section with Modern Layout */}
         <Grid container spacing={5} sx={{ mb: 10 }}>
-          <Grid item xs={12} md={7}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <Paper
               elevation={0}
               sx={{
@@ -205,18 +234,28 @@ export default function Home() {
                   fontWeight: 600,
                 }}
               />
-              <Typography variant='h4' gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
+              <Typography
+                variant='h4'
+                gutterBottom
+                sx={{ fontWeight: 700, mb: 3 }}
+              >
                 {aboutSection.title}
               </Typography>
-              <Typography variant='body1' paragraph sx={{ lineHeight: 1.9, color: 'text.secondary', mb: 4 }}>
+              <Typography
+                variant='body1'
+                paragraph
+                sx={{ lineHeight: 1.9, color: 'text.secondary', mb: 4 }}
+              >
                 {aboutSection.description}
               </Typography>
 
               {/* Benefits List */}
               <Grid container spacing={2} sx={{ mb: 4 }}>
                 {benefits.map((benefit, index) => (
-                  <Grid item xs={12} key={index}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                  <Grid size={{ xs: 12 }} key={index}>
+                    <Box
+                      sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}
+                    >
                       <Box
                         sx={{
                           display: 'flex',
@@ -233,7 +272,10 @@ export default function Home() {
                         {benefit.icon}
                       </Box>
                       <Box>
-                        <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 0.5 }}>
+                        <Typography
+                          variant='subtitle1'
+                          sx={{ fontWeight: 600, mb: 0.5 }}
+                        >
                           {benefit.title}
                         </Typography>
                         <Typography variant='body2' color='text.secondary'>
@@ -275,7 +317,7 @@ export default function Home() {
           </Grid>
 
           {/* Stats Card with Gradient */}
-          <Grid item xs={12} md={5}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Paper
               elevation={0}
               sx={{
@@ -327,19 +369,39 @@ export default function Home() {
 
                 {/* Stat Items */}
                 {[
-                  { number: '10,000+', label: 'Active Job Listings', icon: <WorkOutlineIcon /> },
-                  { number: '500+', label: 'Partner Companies', icon: <BusinessIcon /> },
-                  { number: '24/7', label: 'Real-Time Monitoring', icon: <SpeedIcon /> },
+                  {
+                    number: '10,000+',
+                    label: 'Active Job Listings',
+                    icon: <WorkOutlineIcon />,
+                  },
+                  {
+                    number: '500+',
+                    label: 'Partner Companies',
+                    icon: <BusinessIcon />,
+                  },
+                  {
+                    number: '24/7',
+                    label: 'Real-Time Monitoring',
+                    icon: <SpeedIcon />,
+                  },
                 ].map((stat, index) => (
                   <Box
                     key={index}
                     sx={{
                       mb: 4,
                       pb: index < 2 ? 4 : 0,
-                      borderBottom: index < 2 ? '1px solid rgba(255,255,255,0.2)' : 'none',
+                      borderBottom:
+                        index < 2 ? '1px solid rgba(255,255,255,0.2)' : 'none',
                     }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        mb: 1,
+                      }}
+                    >
                       <Box
                         sx={{
                           display: 'flex',
@@ -404,7 +466,8 @@ export default function Home() {
                       color: 'white',
                     }}
                   >
-                    Our platform continuously monitors and updates job listings to ensure you never miss an opportunity
+                    Our platform continuously monitors and updates job listings
+                    to ensure you never miss an opportunity
                   </Typography>
                 </Box>
               </Box>
@@ -454,9 +517,17 @@ export default function Home() {
               color='text.secondary'
               sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}
             >
-              Join thousands of job seekers and recruiters who trust our platform for their career journey
+              Join thousands of job seekers and recruiters who trust our
+              platform for their career journey
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
               <Button
                 variant='contained'
                 size='large'

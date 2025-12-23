@@ -10,16 +10,23 @@ import {
   Chip,
   Box,
 } from '@mui/material'
-import { Delete as DeleteIcon, Devices as DevicesIcon } from '@mui/icons-material'
-import { useSessions, useRevokeSession, useRevokeAllSessions } from '../hooks/useAuthQuery'
+import {
+  Delete as DeleteIcon,
+  Devices as DevicesIcon,
+} from '@mui/icons-material'
+import {
+  useSessions,
+  useRevokeSession,
+  useRevokeAllSessions,
+} from '../hooks/useAuthQuery'
 
 export function ActiveSessions() {
   const { data, isLoading } = useSessions()
   const revokeSessionMutation = useRevokeSession()
   const revokeAllMutation = useRevokeAllSessions()
-  
+
   if (isLoading) return <div>Loading...</div>
-  
+
   const handleRevokeSession = (sessionId: string) => {
     if (confirm('Are you sure you want to end this session?')) {
       revokeSessionMutation.mutate(sessionId, {
@@ -27,7 +34,7 @@ export function ActiveSessions() {
       })
     }
   }
-  
+
   const handleRevokeAll = () => {
     if (confirm('This will log you out from all other devices. Continue?')) {
       revokeAllMutation.mutate(undefined, {
@@ -35,23 +42,28 @@ export function ActiveSessions() {
       })
     }
   }
-  
+
   return (
     <Card>
       <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6">Active Sessions</Typography>
+        <Box
+          display='flex'
+          justifyContent='space-between'
+          alignItems='center'
+          mb={2}
+        >
+          <Typography variant='h6'>Active Sessions</Typography>
           <Button
-            variant="outlined"
-            color="error"
-            size="small"
+            variant='outlined'
+            color='error'
+            size='small'
             onClick={handleRevokeAll}
             disabled={!data?.data.sessions || data.data.sessions.length <= 1}
           >
             End All Other Sessions
           </Button>
         </Box>
-        
+
         <List>
           {data?.data.sessions.map((session: any) => (
             <ListItem
@@ -59,7 +71,7 @@ export function ActiveSessions() {
               secondaryAction={
                 !session.current && (
                   <IconButton
-                    edge="end"
+                    edge='end'
                     onClick={() => handleRevokeSession(session.id)}
                   >
                     <DeleteIcon />
@@ -70,15 +82,15 @@ export function ActiveSessions() {
               <DevicesIcon sx={{ mr: 2 }} />
               <ListItemText
                 primary={
-                  <Box display="flex" alignItems="center" gap={1}>
+                  <Box display='flex' alignItems='center' gap={1}>
                     {session.device_name}
                     {session.current && (
-                      <Chip label="Current" size="small" color="primary" />
+                      <Chip label='Current' size='small' color='primary' />
                     )}
                   </Box>
                 }
                 secondary={`${session.ip_address} · Last active: ${new Date(
-                  session.last_activity
+                  session.last_activity,
                 ).toLocaleString()}`}
               />
             </ListItem>

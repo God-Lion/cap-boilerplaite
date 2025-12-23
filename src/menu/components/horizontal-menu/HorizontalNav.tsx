@@ -64,7 +64,7 @@ const HorizontalNav = (props: HorizontalNavProps) => {
   // Find the breakpoint from which screen size responsive behavior should enable and if its reached or not
   const breakpointReached = useMediaQuery(
     customBreakpoint ??
-    (breakpoint ? mergedBreakpoints[breakpoint] : breakpoint),
+      (breakpoint ? mergedBreakpoints[breakpoint] : breakpoint),
   )
 
   // Set the breakpointReached value in the state

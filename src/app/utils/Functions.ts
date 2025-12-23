@@ -81,40 +81,46 @@ export function getDepartements(): Departement[] {
 
   const departements = zoneData
     .map((el: ZoneRow) => el.DEPARTEMENT)
-    .filter((value: string, index: number, self: string[]) => 
-      value !== 'NULL' && 
-      value != null && 
-      self.indexOf(value) === index
+    .filter(
+      (value: string, index: number, self: string[]) =>
+        value !== 'NULL' && value != null && self.indexOf(value) === index,
     )
-    .map((el: string) => typeof el === 'string' ? el.trim() : el)
+    .map((el: string) => (typeof el === 'string' ? el.trim() : el))
     .map((dept: string) => {
-      const row = zoneData.find(
-        (value: ZoneRow) => value.DEPARTEMENT === dept
-      )
+      const row = zoneData.find((value: ZoneRow) => value.DEPARTEMENT === dept)
       if (!row) return null
 
       const arrondissements: Arrondissement[] = zoneData
         .filter((value: ZoneRow) => value.CODE_DEP === row.CODE_DEP)
         .reduce((acc: Arrondissement[], zoneRow: ZoneRow) => {
           const arr = zoneRow.ARRONDISSEMENT
-          if (arr && arr !== 'NULL' && !acc.some(a => a.arrondissement === arr)) {
+          if (
+            arr &&
+            arr !== 'NULL' &&
+            !acc.some((a) => a.arrondissement === arr)
+          ) {
             const communes: Commune[] = zoneData
               .filter((r: ZoneRow) => r.CODE_ARR === zoneRow.CODE_ARR)
               .reduce((commAcc: Commune[], commRow: ZoneRow) => {
                 const comm = commRow.COMMUNE
-                if (comm && comm !== 'NULL' && !commAcc.some(c => c.commune === comm)) {
+                if (
+                  comm &&
+                  comm !== 'NULL' &&
+                  !commAcc.some((c) => c.commune === comm)
+                ) {
                   const localites: Localite[] = zoneData
                     .filter((r: ZoneRow) => r.COMMUNE === comm)
                     .map((r: ZoneRow) => r.LOCALITE)
-                    .filter((l: string, i: number, self: string[]) => 
-                      l && l !== 'NULL' && self.indexOf(l) === i
+                    .filter(
+                      (l: string, i: number, self: string[]) =>
+                        l && l !== 'NULL' && self.indexOf(l) === i,
                     )
-                    .map((l: string) => typeof l === 'string' ? l.trim() : l)
+                    .map((l: string) => (typeof l === 'string' ? l.trim() : l))
 
                   commAcc.push({
                     codePostal: commRow.CODE_POSTAL,
                     commune: typeof comm === 'string' ? comm.trim() : comm,
-                    localite: localites
+                    localite: localites,
                   })
                 }
                 return commAcc
@@ -125,7 +131,7 @@ export function getDepartements(): Departement[] {
               code: zoneRow.CODE_ARR,
               codePostal: zoneRow.CODE_POSTAL,
               arrondissement: typeof arr === 'string' ? arr.trim() : arr,
-              commune: communes
+              commune: communes,
             })
           }
           return acc
@@ -135,7 +141,7 @@ export function getDepartements(): Departement[] {
         code: row.CODE_DEP,
         codePostal: row.CODE_POSTAL,
         departement: typeof dept === 'string' ? dept.trim() : dept,
-        arrondissement: arrondissements
+        arrondissement: arrondissements,
       }
     })
     .filter((dept): dept is Departement => dept !== null)

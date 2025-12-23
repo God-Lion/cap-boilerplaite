@@ -87,21 +87,21 @@ const StyledSubMenu = styled.li<StyledSubMenuProps>`
 
   > .${menuClasses.button} {
     ${({
-  level,
-  disabled,
-  active,
-  children,
-  isCollapsed,
-  isPopoutWhenCollapsed,
-}) =>
-    menuButtonStyles({
       level,
-      active,
       disabled,
+      active,
       children,
       isCollapsed,
       isPopoutWhenCollapsed,
-    })};
+    }) =>
+      menuButtonStyles({
+        level,
+        active,
+        disabled,
+        children,
+        isCollapsed,
+        isPopoutWhenCollapsed,
+      })};
     ${({ buttonStyles }) => buttonStyles};
   }
 `
@@ -308,8 +308,9 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
       setActive(true)
 
       if (
-        openSubmenusRef?.current.findIndex((submenu: OpenSubmenu) => submenu.id === id) ===
-        -1
+        openSubmenusRef?.current.findIndex(
+          (submenu: OpenSubmenu) => submenu.id === id,
+        ) === -1
       )
         openSubmenusRef?.current.push({ level, label, active: true, id })
     } else setActive(false)
@@ -359,7 +360,6 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
   )
 
   return (
-    // eslint-disable-next-line lines-around-comment
     /* Sub Menu */
     <StyledSubMenu
       ref={ref}
@@ -464,7 +464,6 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
                 open: isSubMenuOpen,
               })
             ) : (
-              // eslint-disable-next-line lines-around-comment
               /* Expanded Arrow Icon */
               <StyledVerticalNavExpandIcon
                 open={isSubMenuOpen}

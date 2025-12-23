@@ -299,7 +299,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
           </Button>
         </DialogActions>
       </form>
-    </Dialog >
+    </Dialog>
   )
 }
 

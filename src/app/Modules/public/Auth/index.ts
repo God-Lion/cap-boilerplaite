@@ -2,7 +2,7 @@
 
 /**
  * Auth Module - Centralized exports
- * 
+ *
  * This module provides authentication functionality including:
  * - Login/Logout
  * - Registration

@@ -1,6 +1,6 @@
 /**
  * Utils Library - Consolidated utility functions
- * 
+ *
  * Merged from:
  * - src/utils/
  * - src/core/utils/ (if any)
@@ -16,14 +16,12 @@ export * from '../../utils/helper'
 // State management
 
 // Type utilities
-export * from '../../utils/IAxiosError'
 
 // Color utilities
 export * from '../../utils/rgbaToHex'
 
 // Internationalization
 export * from '../../utils/getDictionary'
-
 
 // Legacy JS modules (import directly when needed)
 // - Encrypt: import Encrypt from 'src/utils/Encrypt'

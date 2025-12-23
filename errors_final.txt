@@ -1,0 +1,703 @@
+﻿
+> boilerplate@0.0.0 lint
+> eslint . --quiet
+
+
+C:\Node.Js\boilerplate\scripts\architectural\validate-architecture.js
+  48:12  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Node.Js\boilerplate\src\app\App.tsx
+  11:8  error  'AuthRoute' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\components\form\ChangeEmail.tsx
+  49:28  error  'body' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\components\form\UpdateAboutYou.tsx
+  61:21  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  66:23  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\screens\ForgetPassword.tsx
+  46:51  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `controlForm`, but the source dependencies were []. Inferred dependency not present in source.
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\screens\ForgetPassword.tsx:46:51
+  44 |   })
+  45 |
+> 46 |   const handleForgotPasswordSuccess = useCallback(() => {
+     |                                                   ^^^^^^^
+> 47 |     setAlertType('success')
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 48 |     setOpen(true)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 49 |     controlForm.reset()
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 50 |   }, [])
+     | ^^^^ Could not preserve existing manual memoization
+  51 |
+  52 |   const handleForgotPasswordError = useCallback((error: any) => {
+  53 |     setAlertType('error')  react-hooks/preserve-manual-memoization
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\screens\SignIn.tsx
+  100:7  error  Error: Cannot access variable before it is declared
+
+`setStatus` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\screens\SignIn.tsx:100:7
+   98 |
+   99 |       // Show success message
+> 100 |       setStatus({
+      |       ^^^^^^^^^ `setStatus` accessed before it is declared
+  101 |         open: true,
+  102 |         type: 'success',
+  103 |         state: 'success',
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\screens\SignIn.tsx:131:18
+  129 |   })
+  130 |
+> 131 |   const [status, setStatus] = useState<IStatus>({
+      |                  ^^^^^^^^^ `setStatus` is declared here
+  132 |     open: location.state?.data?.page === 'close-cashier',
+  133 |     type: location.state?.data?.type || '',
+  134 |     state: location.state?.data?.state || '',  react-hooks/immutability
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\screens\SignUp.tsx
+  61:45  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `controlForm`, but the source dependencies were []. Inferred dependency not present in source.
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\screens\SignUp.tsx:61:45
+  59 |   })
+  60 |
+> 61 |   const handleRegisterSuccess = useCallback(() => {
+     |                                             ^^^^^^^
+> 62 |     setAlertType('success')
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 63 |     setOpen(true)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 64 |     controlForm.reset()
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 65 |   }, [])
+     | ^^^^ Could not preserve existing manual memoization
+  66 |
+  67 |   const handleRegisterError = useCallback((error: any) => {
+  68 |     setAlertType('error')  react-hooks/preserve-manual-memoization
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Auth\screens\Validate.tsx
+   2:10  error  'Helmet' is defined but never used. Allowed unused vars must match /^_/u                                      @typescript-eslint/no-unused-vars
+  49:39  error  Unsafe usage of optional chaining. If it short-circuits with 'undefined' the evaluation will throw TypeError  no-unsafe-optional-chaining
+
+C:\Node.Js\boilerplate\src\app\Modules\public\Common\hooks\useWorkflowOrchestrator.ts
+  254:5  error  'data' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  275:9  error  Unexpected lexical declaration in case block                            no-case-declarations
+  286:9  error  Unexpected lexical declaration in case block                            no-case-declarations
+  297:9  error  Unexpected lexical declaration in case block                            no-case-declarations
+  308:9  error  Unexpected lexical declaration in case block                            no-case-declarations
+  319:9  error  Unexpected lexical declaration in case block                            no-case-declarations
+
+C:\Node.Js\boilerplate\src\app\Providers.tsx
+  72:9  error  'routerFutureConfig' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Node.Js\boilerplate\src\app\assets\svg\Logo.tsx
+  11:18  error  'style' is missing in props validation  react/prop-types
+
+C:\Node.Js\boilerplate\src\app\components\Alert.tsx
+  4:16  error  Component definition is missing display name  react/display-name
+
+C:\Node.Js\boilerplate\src\app\components\PrivateRoute.tsx
+  70:3  error  React Hook "React.useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+
+C:\Node.Js\boilerplate\src\app\components\dialogs\OpenDialogOnElementClick.tsx
+  26:5  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\Node.Js\boilerplate\src\app\components\layout\Avatar.tsx
+  52:22  error  Component definition is missing display name  react/display-name
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\LanguageDropdown.tsx
+  78:19  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\LanguageDropdown.tsx:78:19
+  76 |         disablePortal
+  77 |         placement='bottom-start'
+> 78 |         anchorEl={anchorRef.current}
+     |                   ^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  79 |         sx={{
+  80 |           minInlineSize: '160px',
+  81 |           marginBlockStart: '0.75rem !important',  react-hooks/refs
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\ModeDropdown.tsx
+  78:19  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\ModeDropdown.tsx:78:19
+  76 |         disablePortal
+  77 |         placement='bottom-start'
+> 78 |         anchorEl={anchorRef.current}
+     |                   ^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  79 |         sx={{
+  80 |           minInlineSize: '160px',
+  81 |           marginBlockStart: '0.75rem !important',  react-hooks/refs
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\NotificationsDropdown.tsx
+  261:19  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\NotificationsDropdown.tsx:261:19
+  259 |         disablePortal
+  260 |         placement='bottom-end'
+> 261 |         anchorEl={anchorRef.current}
+      |                   ^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  262 |         {...(isSmallScreen
+  263 |           ? {
+  264 |               className: 'is-full !mbs-3 z-[1]',  react-hooks/refs
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\ShortcutsDropdown.tsx
+  103:19  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\ShortcutsDropdown.tsx:103:19
+  101 |         disablePortal
+  102 |         placement='bottom-end'
+> 103 |         anchorEl={anchorRef.current}
+      |                   ^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  104 |         {...(isSmallScreen
+  105 |           ? {
+  106 |               className: 'is-full  !mbs-3 z-[1]',  react-hooks/refs
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\UserDropdown.tsx
+   57:5   error  Expected an assignment or function call and instead saw an expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-expressions
+  107:19  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\UserDropdown.tsx:107:19
+  105 |         disablePortal
+  106 |         placement='bottom-end'
+> 107 |         anchorEl={anchorRef.current}
+      |                   ^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  108 |         sx={{
+  109 |           minInlineSize: '240px',
+  110 |           marginBlockStart: '0.75rem !important',  react-hooks/refs
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\search\SearchResultItem.tsx
+  159:26  error  Component definition is missing display name  react/display-name
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\search\SearchResults.tsx
+  44:5  error  Error: Cannot reassign variable after render completes
+
+Reassigning `query` after render has completed can cause inconsistent behavior on subsequent renders. Consider using state instead.
+
+C:\Node.Js\boilerplate\src\app\components\layout\shared\search\SearchResults.tsx:44:5
+  42 |   let query: string | undefined
+  43 |   useKBar((state) => {
+> 44 |     query = state.searchQuery
+     |     ^^^^^ Cannot reassign `query` after render completes
+  45 |   })
+  46 |   const { results, rootActionId } = useMatches()
+  47 |  react-hooks/immutability
+  82:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/ban-ts-comment
+
+C:\Node.Js\boilerplate\src\app\components\layout\vertical\Navigation.tsx
+  70:7  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  72:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  76:7  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Node.Js\boilerplate\src\app\components\pwa\InstallPrompt.tsx
+  33:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Node.Js\boilerplate\src\app\components\pwa\InstallPrompt.tsx:33:7
+  31 |     // Check if already installed
+  32 |     if (window.matchMedia('(display-mode: standalone)').matches) {
+> 33 |       setIsInstalled(true)
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  34 |       return
+  35 |     }
+  36 |  react-hooks/set-state-in-effect
+
+C:\Node.Js\boilerplate\src\app\components\pwa\PWAUpdatePrompt.tsx
+  38:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Node.Js\boilerplate\src\app\components\pwa\PWAUpdatePrompt.tsx:38:7
+  36 |   useEffect(() => {
+  37 |     if (offlineReady || needRefresh) {
+> 38 |       setShowPrompt(true)
+     |       ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  39 |     }
+  40 |   }, [offlineReady, needRefresh])
+  41 |  react-hooks/set-state-in-effect
+
+C:\Node.Js\boilerplate\src\app\components\react-table\LocalTable.tsx
+  109:21  error  Use the spread operator instead of '.apply()'  prefer-spread
+
+C:\Node.Js\boilerplate\src\app\components\react-table\types.ts
+  56:13  error  An interface declaring no members is equivalent to its supertype         @typescript-eslint/no-empty-object-type
+  57:13  error  An interface declaring no members is equivalent to its supertype         @typescript-eslint/no-empty-object-type
+  58:5   error  'TData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  60:13  error  An interface declaring no members is equivalent to its supertype         @typescript-eslint/no-empty-object-type
+  60:19  error  'TData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  62:23  error  'TData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Node.Js\boilerplate\src\app\components\react-table\useSkipper.ts
+   5:22  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\app\components\react-table\useSkipper.ts:5:22
+  3 | export default function useSkipper() {
+  4 |   const shouldSkipRef = React.useRef(true)
+> 5 |   const shouldSkip = shouldSkipRef.current
+    |                      ^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  6 |
+  7 |   // Wrap a function with this to skip a pagination reset temporarily
+  8 |   const skip = React.useCallback(() => {  react-hooks/refs
+  16:10  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\app\components\react-table\useSkipper.ts:16:10
+  14 |   })
+  15 |
+> 16 |   return [shouldSkip, skip] as const
+     |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  17 | }
+  18 |                                                                                                                                                                                                       react-hooks/refs
+
+C:\Node.Js\boilerplate\src\app\components\table\Table.tsx
+  15:16  error  Component definition is missing display name  react/display-name
+
+C:\Node.Js\boilerplate\src\app\components\table\TableComponent.tsx
+  20:13  error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+  31:23  error  Use the spread operator instead of '.apply()'                                                                            prefer-spread
+
+C:\Node.Js\boilerplate\src\app\components\table\types.ts
+  4:18  error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+
+C:\Node.Js\boilerplate\src\app\components\theme\types.ts
+  184:13  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Node.Js\boilerplate\src\app\components\virtualized\VirtualizedTable.tsx
+  131:21  error  Use the spread operator instead of '.apply()'  prefer-spread
+
+C:\Node.Js\boilerplate\src\app\middlewares\AuthRoute.tsx
+  30:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Node.Js\boilerplate\src\app\middlewares\AuthRoute.tsx:30:7
+  28 |     // Prevent duplicate session checks (React 18 Strict Mode calls effects twice)
+  29 |     if (hasCheckedRef.current) {
+> 30 |       setIsChecking(false)
+     |       ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |       return
+  32 |     }
+  33 |  react-hooks/set-state-in-effect
+
+C:\Node.Js\boilerplate\src\app\utils\getDictionary.ts
+  26:16  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  47:12  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Node.Js\boilerplate\src\app\utils\helper.ts
+  19:3  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Node.Js\boilerplate\src\app\utils\types.ts
+  30:24  error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+  31:24  error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+  35:11  error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+  36:12  error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+  37:8   error  The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+
+C:\Node.Js\boilerplate\src\core\components\mui\Avatar.tsx
+  42:22  error  Component definition is missing display name  react/display-name
+
+C:\Node.Js\boilerplate\src\core\components\option-menu\index.tsx
+  85:19  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\core\components\option-menu\index.tsx:85:19
+  83 |       <Popper
+  84 |         open={open}
+> 85 |         anchorEl={anchorRef.current}
+     |                   ^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  86 |         placement={leftAlignMenu ? 'bottom-start' : 'bottom-end'}
+  87 |         transition
+  88 |         disablePortal  react-hooks/refs
+
+C:\Node.Js\boilerplate\src\core\hooks\useObjectCookie.ts
+  11:5  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `fallback`, but the source dependencies were [valStr]. Inferred different dependency than source.
+
+C:\Node.Js\boilerplate\src\core\hooks\useObjectCookie.ts:11:5
+   9 |
+  10 |   const value = React.useMemo<T>(
+> 11 |     () => (valStr ? JSON.parse(valStr) : fallback),
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Could not preserve existing manual memoization
+  12 |     [valStr],
+  13 |   )
+  14 |  react-hooks/preserve-manual-memoization
+
+C:\Node.Js\boilerplate\src\menu\components\RouterLink.tsx
+  10:27  error  Component definition is missing display name  react/display-name
+
+C:\Node.Js\boilerplate\src\menu\components\horizontal-menu\MenuButton.tsx
+  66:9  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\menu\components\horizontal-menu\MenuButton.tsx:66:9
+  64 |       return React.createElement(
+  65 |         component,
+> 66 |         {
+     |         ^
+> 67 |           className,
+     | ^^^^^^^^^^^^^^^^^^^^
+> 68 |           ...rest,
+     | ^^^^^^^^^^^^^^^^^^^^
+> 69 |           ref,
+     | ^^^^^^^^^^^^^^^^^^^^
+> 70 |         },
+     | ^^^^^^^^^^ Passing a ref to a function may read its value during render
+  71 |         children,
+  72 |       )
+  73 |     } else {  react-hooks/refs
+
+C:\Node.Js\boilerplate\src\menu\components\horizontal-menu\SubMenu.tsx
+  245:5  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\Node.Js\boilerplate\src\menu\components\vertical-menu\MenuButton.tsx
+  68:9  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Node.Js\boilerplate\src\menu\components\vertical-menu\MenuButton.tsx:68:9
+  66 |       return React.createElement(
+  67 |         component,
+> 68 |         {
+     |         ^
+> 69 |           className,
+     | ^^^^^^^^^^^^^^^^^^^^
+> 70 |           ...rest,
+     | ^^^^^^^^^^^^^^^^^^^^
+> 71 |           ref,
+     | ^^^^^^^^^^^^^^^^^^^^
+> 72 |         },
+     | ^^^^^^^^^^ Passing a ref to a function may read its value during render
+  73 |         children,
+  74 |       )
+  75 |     } else {  react-hooks/refs
+
+C:\Node.Js\boilerplate\src\menu\components\vertical-menu\MenuItem.tsx
+  152:11  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\Node.Js\boilerplate\src\menu\components\vertical-menu\NavCollapseIcons.tsx
+  37:5  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  46:5  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\Node.Js\boilerplate\src\menu\components\vertical-menu\VerticalNav.tsx
+   95:7  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  102:7  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  103:7  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\Node.Js\boilerplate\src\menu\contexts\horizontalNavContext.tsx
+  47:7  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Node.Js\boilerplate\src\menu\contexts\verticalNavContext.tsx
+  58:35  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Node.Js\boilerplate\src\services\api\api.fetch.client.ts
+  123:18  error  'e' is defined but never used             @typescript-eslint/no-unused-vars
+  300:30  error  'refreshError' is defined but never used  @typescript-eslint/no-unused-vars
+  337:18  error  'e' is defined but never used             @typescript-eslint/no-unused-vars
+
+C:\Node.Js\boilerplate\src\services\auth-security.service.ts
+  258:27  error  Unnecessary escape character: \[  no-useless-escape
+  258:44  error  Unnecessary escape character: \/  no-useless-escape
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts
+   75:33  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This value was memoized in source but not in compilation output.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:75:33
+   73 |   const configKey = JSON.stringify(config)
+   74 |
+>  75 |   const fetchData = useCallback(async () => {
+      |                                 ^^^^^^^^^^^^^
+>  76 |     if (!isMountedRef.current) return
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  77 |
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 109 |     }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 110 |   }, [url, configKey])
+      | ^^^^ Could not preserve existing memoization
+  111 |
+  112 |
+  113 |                                                                                                                                                                                                                                                                                                                                                react-hooks/preserve-manual-memoization
+  114:30  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This value was memoized in source but not in compilation output.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:114:30
+  112 |
+  113 |
+> 114 |   const cancel = useCallback(() => {
+      |                              ^^^^^^^
+> 115 |     requestDeduplicator.cancelRequest(config)
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 116 |   }, [configKey])
+      | ^^^^ Could not preserve existing memoization
+  117 |
+  118 |   // Initial fetch
+  119 |   useEffect(() => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/preserve-manual-memoization
+  121:7   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:121:7
+  119 |   useEffect(() => {
+  120 |     if (enabled) {
+> 121 |       fetchData()
+      |       ^^^^^^^^^ Avoid calling setState() directly within an effect
+  122 |     }
+  123 |
+  124 |     return () => {                                                                                                                                                                                  react-hooks/set-state-in-effect
+  171:5   error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setLoading`, but the source dependencies were [fetchConfigKey, forceDeduplication, onSuccess, onError]. Inferred different dependency than source.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:171:5
+  169 |
+  170 |   const mutate = useCallback(
+> 171 |     async (url: string, variables?: TVariables): Promise<TData | null> => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 172 |       setLoading(true)
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 173 |       setError(null)
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 205 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 206 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  207 |     [fetchConfigKey, forceDeduplication, onSuccess, onError]
+  208 |   )
+  209 |   react-hooks/preserve-manual-memoization
+  171:5   error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setError`, but the source dependencies were [fetchConfigKey, forceDeduplication, onSuccess, onError]. Inferred different dependency than source.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:171:5
+  169 |
+  170 |   const mutate = useCallback(
+> 171 |     async (url: string, variables?: TVariables): Promise<TData | null> => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 172 |       setLoading(true)
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 173 |       setError(null)
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 205 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 206 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  207 |     [fetchConfigKey, forceDeduplication, onSuccess, onError]
+  208 |   )
+  209 |     react-hooks/preserve-manual-memoization
+  171:5   error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `fetchConfig`, but the source dependencies were [fetchConfigKey, forceDeduplication, onSuccess, onError]. Inferred different dependency than source.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:171:5
+  169 |
+  170 |   const mutate = useCallback(
+> 171 |     async (url: string, variables?: TVariables): Promise<TData | null> => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 172 |       setLoading(true)
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 173 |       setError(null)
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 205 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 206 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  207 |     [fetchConfigKey, forceDeduplication, onSuccess, onError]
+  208 |   )
+  209 |  react-hooks/preserve-manual-memoization
+  171:5   error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setData`, but the source dependencies were [fetchConfigKey, forceDeduplication, onSuccess, onError]. Inferred different dependency than source.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:171:5
+  169 |
+  170 |   const mutate = useCallback(
+> 171 |     async (url: string, variables?: TVariables): Promise<TData | null> => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 172 |       setLoading(true)
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 173 |       setError(null)
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 205 |       }
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 206 |     },
+      | ^^^^^^ Could not preserve existing manual memoization
+  207 |     [fetchConfigKey, forceDeduplication, onSuccess, onError]
+  208 |   )
+  209 |      react-hooks/preserve-manual-memoization
+  210:29  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setData`, but the source dependencies were []. Inferred dependency not present in source.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:210:29
+  208 |   )
+  209 |
+> 210 |   const reset = useCallback(() => {
+      |                             ^^^^^^^
+> 211 |     setData(null)
+      | ^^^^^^^^^^^^^^^^^
+> 212 |     setError(null)
+      | ^^^^^^^^^^^^^^^^^
+> 213 |     setLoading(false)
+      | ^^^^^^^^^^^^^^^^^
+> 214 |   }, [])
+      | ^^^^ Could not preserve existing manual memoization
+  215 |
+  216 |   return {
+  217 |     data,                                                                                                                                                                                                                                 react-hooks/preserve-manual-memoization
+  210:29  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setError`, but the source dependencies were []. Inferred dependency not present in source.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:210:29
+  208 |   )
+  209 |
+> 210 |   const reset = useCallback(() => {
+      |                             ^^^^^^^
+> 211 |     setData(null)
+      | ^^^^^^^^^^^^^^^^^
+> 212 |     setError(null)
+      | ^^^^^^^^^^^^^^^^^
+> 213 |     setLoading(false)
+      | ^^^^^^^^^^^^^^^^^
+> 214 |   }, [])
+      | ^^^^ Could not preserve existing manual memoization
+  215 |
+  216 |   return {
+  217 |     data,                                                                                                                                                                                                                                react-hooks/preserve-manual-memoization
+  210:29  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setLoading`, but the source dependencies were []. Inferred dependency not present in source.
+
+C:\Node.Js\boilerplate\src\services\hooks\useDeduplicatedRequest.ts:210:29
+  208 |   )
+  209 |
+> 210 |   const reset = useCallback(() => {
+      |                             ^^^^^^^
+> 211 |     setData(null)
+      | ^^^^^^^^^^^^^^^^^
+> 212 |     setError(null)
+      | ^^^^^^^^^^^^^^^^^
+> 213 |     setLoading(false)
+      | ^^^^^^^^^^^^^^^^^
+> 214 |   }, [])
+      | ^^^^ Could not preserve existing manual memoization
+  215 |
+  216 |   return {
+  217 |     data,                                                                                                                                                                                                                              react-hooks/preserve-manual-memoization
+
+C:\Node.Js\boilerplate\src\services\hooks\useSSE.ts
+  172:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Node.Js\boilerplate\src\services\hooks\useSSE.ts:172:5
+  170 |
+  171 |   useEffect(() => {
+> 172 |     connect()
+      |     ^^^^^^^ Avoid calling setState() directly within an effect
+  173 |
+  174 |     return () => {
+  175 |       disconnect()                                                                                         react-hooks/set-state-in-effect
+  287:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Node.Js\boilerplate\src\services\hooks\useSSE.ts:287:7
+  285 |   useEffect(() => {
+  286 |     if (lastEvent === 'result' && data && 'top_roles' in data) {
+> 287 |       setResult(data as AnalysisResult)
+      |       ^^^^^^^^^ Avoid calling setState() directly within an effect
+  288 |     }
+  289 |   }, [lastEvent, data])
+  290 |  react-hooks/set-state-in-effect
+
+C:\Node.Js\boilerplate\src\services\hooks\useTabSync.ts
+  184:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Node.Js\boilerplate\src\services\hooks\useTabSync.ts:184:5
+  182 |    */
+  183 |   useEffect(() => {
+> 184 |     sendHeartbeat() // Initial heartbeat
+      |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  185 |
+  186 |     heartbeatIntervalRef.current = setInterval(() => {
+  187 |       sendHeartbeat()  react-hooks/set-state-in-effect
+
+C:\Node.Js\boilerplate\src\services\storage\Session.ts
+  110:14  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Node.Js\boilerplate\src\services\storage\storage.service.ts
+  337:14  error  'e' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 95 problems (95 errors, 0 warnings)
+

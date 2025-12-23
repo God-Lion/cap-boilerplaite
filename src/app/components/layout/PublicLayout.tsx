@@ -10,7 +10,6 @@ const PublicLayout: React.FC<
     footer?: React.ReactNode
   }
 > = ({ header, footer, children }) => {
-
   return (
     <Box
       sx={{

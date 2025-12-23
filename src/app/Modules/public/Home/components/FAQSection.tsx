@@ -1,5 +1,14 @@
 import React from 'react'
-import { Box, Container, Typography, Accordion, AccordionSummary, AccordionDetails, alpha, useTheme } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  alpha,
+  useTheme,
+} from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 interface FAQ {
@@ -21,12 +30,12 @@ const faqs: FAQ[] = [
   {
     question: 'Can I cancel my subscription anytime?',
     answer:
-      'Yes, you can cancel your subscription at any time with no penalties or hidden fees. Your access will continue until the end of your current billing period. If you cancel during the free trial, you won\'t be charged at all.',
+      "Yes, you can cancel your subscription at any time with no penalties or hidden fees. Your access will continue until the end of your current billing period. If you cancel during the free trial, you won't be charged at all.",
   },
   {
     question: 'What makes this different from other job search platforms?',
     answer:
-      'Unlike traditional job boards, we use advanced AI to actively hunt for opportunities that match your profile. We don\'t just show you listings - we analyze them, optimize your applications, track your progress, and provide actionable insights. Our automation engine can handle repetitive tasks, allowing you to focus on what matters: preparing for interviews and landing your dream job.',
+      "Unlike traditional job boards, we use advanced AI to actively hunt for opportunities that match your profile. We don't just show you listings - we analyze them, optimize your applications, track your progress, and provide actionable insights. Our automation engine can handle repetitive tasks, allowing you to focus on what matters: preparing for interviews and landing your dream job.",
   },
   {
     question: 'Do you support international job searches?',
@@ -44,9 +53,10 @@ const FAQSection: React.FC = () => {
   const theme = useTheme()
   const [expanded, setExpanded] = React.useState<string | false>(false)
 
-  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false)
-  }
+  const handleChange =
+    (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false)
+    }
 
   return (
     <Box
@@ -55,11 +65,11 @@ const FAQSection: React.FC = () => {
         py: { xs: 8, md: 12 },
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth='md'>
         {/* Header */}
         <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
           <Typography
-            variant="h2"
+            variant='h2'
             sx={{
               fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
               fontWeight: 800,
@@ -71,7 +81,7 @@ const FAQSection: React.FC = () => {
             Frequently Asked Questions
           </Typography>
           <Typography
-            variant="body1"
+            variant='body1'
             sx={{
               fontSize: { xs: '1rem', md: '1.125rem' },
               color: 'text.secondary',
@@ -93,7 +103,8 @@ const FAQSection: React.FC = () => {
               sx={{
                 bgcolor: 'background.paper',
                 border: 1,
-                borderColor: expanded === `panel${index}` ? 'primary.main' : 'divider',
+                borderColor:
+                  expanded === `panel${index}` ? 'primary.main' : 'divider',
                 borderRadius: '12px !important',
                 '&:before': {
                   display: 'none',
@@ -109,7 +120,10 @@ const FAQSection: React.FC = () => {
                 expandIcon={
                   <ExpandMoreIcon
                     sx={{
-                      color: expanded === `panel${index}` ? 'primary.main' : 'text.secondary',
+                      color:
+                        expanded === `panel${index}`
+                          ? 'primary.main'
+                          : 'text.secondary',
                       transition: 'all 0.3s ease',
                     }}
                   />
@@ -129,10 +143,13 @@ const FAQSection: React.FC = () => {
                 }}
               >
                 <Typography
-                  variant="subtitle1"
+                  variant='subtitle1'
                   sx={{
                     fontWeight: 600,
-                    color: expanded === `panel${index}` ? 'primary.main' : 'text.primary',
+                    color:
+                      expanded === `panel${index}`
+                        ? 'primary.main'
+                        : 'text.primary',
                     transition: 'color 0.3s ease',
                   }}
                 >
@@ -147,7 +164,7 @@ const FAQSection: React.FC = () => {
                 }}
               >
                 <Typography
-                  variant="body2"
+                  variant='body2'
                   sx={{
                     color: 'text.secondary',
                     lineHeight: 1.7,
@@ -172,14 +189,14 @@ const FAQSection: React.FC = () => {
             borderColor: alpha(theme.palette.primary.main, 0.2),
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography variant='h6' sx={{ fontWeight: 600, mb: 1 }}>
             Still have questions?
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
             Our support team is here to help you
           </Typography>
           <Typography
-            variant="body1"
+            variant='body1'
             sx={{
               color: 'primary.main',
               fontWeight: 600,

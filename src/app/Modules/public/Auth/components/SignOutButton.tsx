@@ -16,7 +16,7 @@ interface SignOutButtonProps {
 
 /**
  * SignOut Button Component
- * 
+ *
  * Handles user logout with proper cleanup:
  * - Calls backend logout endpoint
  * - Clears authentication tokens
@@ -38,23 +38,22 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
   const { mutate: logout, isPending } = useLogout({
     onSuccess: () => {
       console.log('[SignOut] Logout successful')
-      
-      
+
       // Clear Zustand store
       zustandSignOut()
-      
+
       // Clear all app data from storage
       StorageManager.clearAllUserData()
-      
+
       // Call custom callback if provided
       onSignOutComplete?.()
-      
+
       // Redirect to login page
       navigate('/auth/signin', { replace: true })
     },
     onError: (error) => {
       console.error('[SignOut] Logout error:', error)
-      
+
       // Even if API call fails, clear local data and redirect
       zustandSignOut()
       StorageManager.clearAllUserData()
@@ -70,16 +69,16 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
 
   if (variant === 'icon') {
     return (
-      <Tooltip title="Sign Out">
+      <Tooltip title='Sign Out'>
         <IconButton
           onClick={handleSignOut}
           disabled={isPending}
           size={size}
-          color="inherit"
-          aria-label="sign out"
+          color='inherit'
+          aria-label='sign out'
         >
           {isPending ? (
-            <CircularProgress size={20} color="inherit" />
+            <CircularProgress size={20} color='inherit' />
           ) : (
             <LogoutOutlined />
           )}
@@ -94,10 +93,12 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
       disabled={isPending}
       size={size}
       fullWidth={fullWidth}
-      variant="outlined"
-      color="error"
-      startIcon={isPending ? <CircularProgress size={16} /> : <LogoutOutlined />}
-      aria-label="sign out"
+      variant='outlined'
+      color='error'
+      startIcon={
+        isPending ? <CircularProgress size={16} /> : <LogoutOutlined />
+      }
+      aria-label='sign out'
     >
       {showText && (isPending ? 'Signing out...' : 'Sign Out')}
     </Button>

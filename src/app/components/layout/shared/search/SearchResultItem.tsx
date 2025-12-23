@@ -203,14 +203,14 @@ const SearchResultItem = React.forwardRef(
           }),
           ...(!active &&
             currentPath === pathname && {
-            backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
-            color: 'var(--primary-color)',
-          }),
+              backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
+              color: 'var(--primary-color)',
+            }),
           ...(active &&
             currentPath === pathname && {
-            backgroundColor: 'var(--mui-palette-primary-mainOpacity)',
-            color: 'var(--primary-color)',
-          }),
+              backgroundColor: 'var(--mui-palette-primary-mainOpacity)',
+              color: 'var(--primary-color)',
+            }),
         }}
       >
         <Box

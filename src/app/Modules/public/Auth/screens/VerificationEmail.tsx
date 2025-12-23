@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet-async'
+
 import themeConfig from 'src/configs/themeConfig'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
@@ -12,32 +12,32 @@ import {
   Paper,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { AxiosError, AxiosResponse } from 'axios'
+import { FetchResponse, HttpError } from 'src/services/api/api.client'
 import { authService } from 'src/services/api/api.service'
-import MAlert from 'src/components/Alert'
+import MAlert from 'app/components/Alert'
 
 export default function VerificationEmail() {
   const theme = useTheme()
   const navigate = useNavigate()
   const { email } = useParams()
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  let [searchParams, _setSearchParams] = useSearchParams()
+
+  const [searchParams, _setSearchParams] = useSearchParams()
   const signature = searchParams.get('signature')
 
   const [loading, setLoading] = React.useState<boolean>(false)
-  const [error, setError] = React.useState<AxiosError>()
+  const [error, setError] = React.useState<HttpError>()
 
   React.useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true)
-        const response: AxiosResponse = await authService.verifyEmail(
+        const response: FetchResponse = await authService.verifyEmail(
           email || '',
           signature ?? '',
         )
         if (response.status === 200) navigate('/')
       } catch (error) {
-        setError(error as AxiosError)
+        setError(error as HttpError)
         console.log('error ', error)
       } finally {
         setLoading(false)
@@ -48,17 +48,16 @@ export default function VerificationEmail() {
 
   return (
     <React.Fragment>
-      
-        <title>Email Verification - {themeConfig.templateName}</title>
-        <meta
-          name='description'
-          content={`Verify your email on ${themeConfig.templateName}`}
-        />
-        <meta
-          name='keywords'
-          content={`email verification, ${themeConfig.templateName}`}
-        />
-      
+      <title>Email Verification - {themeConfig.templateName}</title>
+      <meta
+        name='description'
+        content={`Verify your email on ${themeConfig.templateName}`}
+      />
+      <meta
+        name='keywords'
+        content={`email verification, ${themeConfig.templateName}`}
+      />
+
       <Container
         component='main'
         maxWidth='lg'

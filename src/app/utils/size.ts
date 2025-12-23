@@ -1,4 +1,4 @@
-let widthApp = window.innerWidth
-let heightApp = window.innerWidth
+const widthApp = window.innerWidth
+const heightApp = window.innerWidth
 
 export { widthApp, heightApp }

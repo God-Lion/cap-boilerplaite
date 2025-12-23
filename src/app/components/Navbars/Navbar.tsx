@@ -21,14 +21,12 @@ import MenuIcon from '@mui/icons-material/Menu'
 import SearchIcon from '@mui/icons-material/Search'
 import Logo from 'app/assets/svg/Logo'
 import ModeDropdown from '../layout/shared/ModeDropdown'
-import AuthButtons from '../../Modules/Auth/components/AuthButtons'
+import AuthButtons from '@/app/components/auth/AuthButtons'
 import { isObjectEmpty } from 'app/utils'
 import { useAuth } from 'src/store'
-import ProfileDefault from 'app/Modules/Auth/components/AuthProfile'
+import AuthProfile from '@/app/components/auth/AuthProfile'
 
-
-
-export let whiteColor = '#ffffff'
+export const whiteColor = '#ffffff'
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme }) => ({
@@ -112,7 +110,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 function SearchBar() {
   const theme: Theme = useTheme()
   // return ''
@@ -179,10 +176,8 @@ export default function NavBar() {
     { name: 'Provider Management', link: 'admin-provider' },
   ]
 
-  // Provider-specific pages  
-  const providerPages = [
-    { name: 'Provider Portal', link: 'provider' },
-  ]
+  // Provider-specific pages
+  const providerPages = [{ name: 'Provider Portal', link: 'provider' }]
 
   // Combine pages based on user role
   const getPages = () => {
@@ -264,7 +259,11 @@ export default function NavBar() {
               alignItems: 'center',
             }}
           >
-            <Box sx={{ display: { lg: 'flex', md: 'flex', sm: 'flex', xs: 'none' } }}>
+            <Box
+              sx={{
+                display: { lg: 'flex', md: 'flex', sm: 'flex', xs: 'none' },
+              }}
+            >
               <Logo />
             </Box>
           </Link>
@@ -277,10 +276,13 @@ export default function NavBar() {
             }}
           >
             {pages?.map((page) => (
-              <List key={Math.random()} onClick={handleCloseNavMenu}>
+              <List key={page.name} onClick={handleCloseNavMenu}>
                 <ListItemButton
-                  key={`${Math.random()}}`}
-                  selected={location.pathname === `/${page?.link}` || (page?.link === '' && location.pathname === '/')}
+                  key={page.name}
+                  selected={
+                    location.pathname === `/${page?.link}` ||
+                    (page?.link === '' && location.pathname === '/')
+                  }
                   sx={{
                     '&.MuiListItemButton-root.Mui-selected': {
                       borderRight: '8px solid #fff',
@@ -346,12 +348,15 @@ export default function NavBar() {
               {pages?.map((page) => (
                 <List
                   // style={{ marginLeft: 5 }}
-                  key={Math.random()}
+                  key={page.name}
                   onClick={handleCloseNavMenu}
                 >
                   <ListItemButton
-                    key={`${Math.random()}}`}
-                    selected={location.pathname === `/${page?.link}` || (page?.link === '' && location.pathname === '/')}
+                    key={page.name}
+                    selected={
+                      location.pathname === `/${page?.link}` ||
+                      (page?.link === '' && location.pathname === '/')
+                    }
                     sx={{
                       '&.MuiListItemButton-root.Mui-selected': {
                         borderRight: '8px solid #fff',
@@ -401,7 +406,7 @@ export default function NavBar() {
               {user === undefined || user === null || isObjectEmpty(user) ? (
                 <AuthButtons />
               ) : (
-                <ProfileDefault />
+                <AuthProfile />
               )}
             </Stack>
           </Box>

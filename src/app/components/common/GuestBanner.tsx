@@ -1,6 +1,6 @@
 /**
  * Guest Banner Component
- * 
+ *
  * Displays a persistent banner to inform guest users about their session status
  * and encourage them to sign up for full features.
  */
@@ -31,7 +31,7 @@ interface GuestBannerProps {
 
 /**
  * Guest Banner Component
- * 
+ *
  * Shows a banner to guest users encouraging them to sign up.
  * Can be dismissed but will reappear on page reload.
  */
@@ -65,19 +65,19 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
     return (
       <Collapse in={open}>
         <Alert
-          severity="info"
+          severity='info'
           icon={<PersonOffIcon />}
           action={
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Button size="small" variant="text" onClick={handleSignIn}>
+              <Button size='small' variant='text' onClick={handleSignIn}>
                 Sign In
               </Button>
-              <Button size="small" variant="contained" onClick={handleSignUp}>
+              <Button size='small' variant='contained' onClick={handleSignUp}>
                 Sign Up
               </Button>
               {showCloseButton && (
-                <IconButton size="small" onClick={handleClose}>
-                  <CloseIcon fontSize="small" />
+                <IconButton size='small' onClick={handleClose}>
+                  <CloseIcon fontSize='small' />
                 </IconButton>
               )}
             </Box>
@@ -90,8 +90,9 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
             },
           }}
         >
-          <Typography variant="body2">
-            {message || "You're browsing as a guest. Sign up to save your progress!"}
+          <Typography variant='body2'>
+            {message ||
+              "You're browsing as a guest. Sign up to save your progress!"}
           </Typography>
         </Alert>
       </Collapse>
@@ -101,12 +102,12 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
   return (
     <Collapse in={open}>
       <Alert
-        severity="warning"
+        severity='warning'
         icon={<PersonOffIcon />}
         action={
           showCloseButton ? (
-            <IconButton size="small" onClick={handleClose}>
-              <CloseIcon fontSize="small" />
+            <IconButton size='small' onClick={handleClose}>
+              <CloseIcon fontSize='small' />
             </IconButton>
           ) : undefined
         }
@@ -117,45 +118,47 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
           },
         }}
       >
-        <AlertTitle sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Chip label="Guest Mode" size="small" color="warning" />
-          <Typography variant="subtitle1" component="span">
+        <AlertTitle
+          sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}
+        >
+          <Chip label='Guest Mode' size='small' color='warning' />
+          <Typography variant='subtitle1' component='span'>
             Limited Access Active
           </Typography>
         </AlertTitle>
 
         <Stack spacing={2}>
-          <Typography variant="body2">
+          <Typography variant='body2'>
             {message ||
               "You're browsing as a guest. Your progress and data are temporary and will be lost when you close your browser."}
           </Typography>
 
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant='body2' color='text.secondary'>
               ✓ Current session only
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant='body2' color='text.secondary'>
               • Limited features
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant='body2' color='text.secondary'>
               • No data persistence
             </Typography>
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
             <Button
-              variant="contained"
-              color="primary"
-              size="small"
+              variant='contained'
+              color='primary'
+              size='small'
               startIcon={<LockOpenIcon />}
               onClick={handleSignUp}
             >
               Sign Up to Unlock Full Features
             </Button>
             <Button
-              variant="outlined"
-              color="primary"
-              size="small"
+              variant='outlined'
+              color='primary'
+              size='small'
               onClick={handleSignIn}
             >
               Sign In

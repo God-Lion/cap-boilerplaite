@@ -1,6 +1,6 @@
 /**
  * Constants Library - Centralized constants
- * 
+ *
  * Consolidated from various locations
  */
 

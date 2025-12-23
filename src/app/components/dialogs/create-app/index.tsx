@@ -83,12 +83,12 @@ const renderStepCount = (
     activeStep === 0
       ? Details
       : activeStep === 1
-      ? FrameWork
-      : activeStep === 2
-      ? Database
-      : activeStep === 3
-      ? Billing
-      : Submit
+        ? FrameWork
+        : activeStep === 2
+          ? Database
+          : activeStep === 3
+            ? Billing
+            : Submit
 
   return (
     <Tag

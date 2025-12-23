@@ -13,17 +13,17 @@ interface AuthRouteProps {
 const AuthRoute = ({
   element,
   allowedRoles,
-  requiresVerification = false
+  requiresVerification = false,
 }: AuthRouteProps) => {
   const { user, isAuthenticated, refreshAuth } = useAuth()
   const location = useLocation()
   const [isChecking, setIsChecking] = useState(true)
   const [sessionError, setSessionError] = useState<string | null>(null)
-  
+
   // Use ref to track if component is mounted and prevent duplicate calls
   const isMountedRef = useRef(false)
   const hasCheckedRef = useRef(false)
-  
+
   useEffect(() => {
     // Prevent duplicate session checks (React 18 Strict Mode calls effects twice)
     if (hasCheckedRef.current) {
@@ -37,13 +37,13 @@ const AuthRoute = ({
     const checkSession = async () => {
       try {
         await refreshAuth()
-        
+
         if (isMountedRef.current) {
           setIsChecking(false)
         }
       } catch (error) {
         console.error('[AuthRoute] Session check failed:', error)
-        
+
         if (isMountedRef.current) {
           setSessionError('Your session has expired. Please log in again.')
           setIsChecking(false)
@@ -57,7 +57,7 @@ const AuthRoute = ({
       isMountedRef.current = false
     }
   }, []) // Empty dependency array - only run once
-  
+
   if (isChecking) {
     return (
       <Backdrop open style={{ background: '#FFF', zIndex: 1301 }}>
@@ -65,7 +65,7 @@ const AuthRoute = ({
       </Backdrop>
     )
   }
-  
+
   if (sessionError) {
     return (
       <Box
@@ -76,36 +76,30 @@ const AuthRoute = ({
           justifyContent: 'center',
           minHeight: '100vh',
           gap: 2,
-          p: 3
+          p: 3,
         }}
       >
-        <Alert severity="warning" sx={{ maxWidth: 500 }}>
+        <Alert severity='warning' sx={{ maxWidth: 500 }}>
           {sessionError}
         </Alert>
         <Button
-          variant="contained"
-          onClick={() => window.location.href = '/auth/signin'}
+          variant='contained'
+          onClick={() => (window.location.href = '/auth/signin')}
         >
           Go to Login
         </Button>
       </Box>
     )
   }
-  
+
   if (!isAuthenticated) {
-    return (
-      <Navigate
-        to="/auth/signin"
-        replace
-        state={{ from: location }}
-      />
-    )
+    return <Navigate to='/auth/signin' replace state={{ from: location }} />
   }
-  
+
   if (allowedRoles && allowedRoles.length > 0) {
     const userRole = (user as any).role
     const hasAccess = allowedRoles.includes(userRole)
-  
+
     if (!hasAccess) {
       return (
         <Box
@@ -116,15 +110,15 @@ const AuthRoute = ({
             justifyContent: 'center',
             minHeight: '100vh',
             gap: 2,
-            p: 3
+            p: 3,
           }}
         >
-          <Alert severity="error" sx={{ maxWidth: 500 }}>
+          <Alert severity='error' sx={{ maxWidth: 500 }}>
             You don't have permission to access this page.
           </Alert>
           <Button
-            variant="contained"
-            onClick={() => window.location.href = '/dashboard'}
+            variant='contained'
+            onClick={() => (window.location.href = '/dashboard')}
           >
             Go to Dashboard
           </Button>
@@ -132,10 +126,10 @@ const AuthRoute = ({
       )
     }
   }
-  
+
   if (requiresVerification) {
     const isVerified = (user as any).isVerified || (user as any).emailVerified
-  
+
     if (!isVerified) {
       return (
         <Box
@@ -146,16 +140,16 @@ const AuthRoute = ({
             justifyContent: 'center',
             minHeight: '100vh',
             gap: 2,
-            p: 3
+            p: 3,
           }}
         >
-          <Alert severity="warning" sx={{ maxWidth: 500 }}>
-            Please verify your email address to access this feature.
-            Check your inbox for a verification email.
+          <Alert severity='warning' sx={{ maxWidth: 500 }}>
+            Please verify your email address to access this feature. Check your
+            inbox for a verification email.
           </Alert>
           <Button
-            variant="contained"
-            onClick={() => window.location.href = '/auth/verification/email'}
+            variant='contained'
+            onClick={() => (window.location.href = '/auth/verification/email')}
           >
             Resend Verification Email
           </Button>

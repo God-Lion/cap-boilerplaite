@@ -9,21 +9,19 @@ interface CaptchaProps {
   size?: 'normal' | 'compact'
 }
 
-
 const Captcha: React.FC<CaptchaProps> = ({
   onVerify,
   // onError,
   // onExpire,
   theme = 'light',
 }) => {
-
   const handleChange = (token: string | null) => {
     onVerify(token)
   }
 
   /**
    * Production implementation:
-   * 
+   *
    * return (
    *   <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
    *     <ReCAPTCHA
@@ -42,20 +40,20 @@ const Captcha: React.FC<CaptchaProps> = ({
   // Temporary mock implementation for development
   return (
     <Box sx={{ my: 2 }}>
-      <Alert severity="info" sx={{ mb: 2 }}>
-        <Typography variant="body2" gutterBottom>
+      <Alert severity='info' sx={{ mb: 2 }}>
+        <Typography variant='body2' gutterBottom>
           <strong>CAPTCHA Integration Required</strong>
         </Typography>
-        <Typography variant="caption" component="div">
+        <Typography variant='caption' component='div'>
           To enable CAPTCHA:
           <br />
           1. Install: <code>npm install react-google-recaptcha</code>
           <br />
           2. Get reCAPTCHA site key from{' '}
-          <a 
-            href="https://www.google.com/recaptcha/admin" 
-            target="_blank" 
-            rel="noopener noreferrer"
+          <a
+            href='https://www.google.com/recaptcha/admin'
+            target='_blank'
+            rel='noopener noreferrer'
           >
             Google reCAPTCHA
           </a>
@@ -73,17 +71,21 @@ const Captcha: React.FC<CaptchaProps> = ({
           borderRadius: 1,
           p: 3,
           textAlign: 'center',
-          backgroundColor: theme === 'dark' ? '#1e1e1e' : '#f5f5f5'
+          backgroundColor: theme === 'dark' ? '#1e1e1e' : '#f5f5f5',
         }}
       >
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant='body2' color='text.secondary'>
           CAPTCHA Placeholder (Development Mode)
         </Typography>
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+        <Typography
+          variant='caption'
+          color='text.secondary'
+          sx={{ mt: 1, display: 'block' }}
+        >
           Click below to simulate verification
         </Typography>
         <Box
-          component="button"
+          component='button'
           onClick={() => handleChange('mock-captcha-token')}
           sx={{
             mt: 2,
@@ -95,8 +97,8 @@ const Captcha: React.FC<CaptchaProps> = ({
             borderRadius: 1,
             cursor: 'pointer',
             '&:hover': {
-              backgroundColor: '#45a049'
-            }
+              backgroundColor: '#45a049',
+            },
           }}
         >
           Verify (Mock)

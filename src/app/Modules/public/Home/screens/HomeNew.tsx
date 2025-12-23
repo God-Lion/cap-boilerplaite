@@ -17,13 +17,12 @@ export default function Home() {
 
   return (
     <Box sx={{ bgcolor: 'background.default' }}>
-
       {/* Guest Mode Banner */}
       {isGuest && (
         <Box sx={{ position: 'sticky', top: 0, zIndex: 1100 }}>
           <GuestBanner
-            variant="minimal"
-            message="Create a free account to unlock all features and save your job searches!"
+            variant='minimal'
+            message='Create a free account to unlock all features and save your job searches!'
           />
         </Box>
       )}

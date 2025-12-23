@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Container,
   Typography,
@@ -9,23 +9,31 @@ import {
   AppBar,
   Toolbar,
   Link as MuiLink,
-} from '@mui/material';
-import { MailOutline } from '@mui/icons-material';
-import { Link as RouterLink } from 'react-router-dom';
+} from '@mui/material'
+import { MailOutline } from '@mui/icons-material'
+import { Link as RouterLink } from 'react-router-dom'
 
 const EmailVerification: React.FC = () => {
   return (
     <React.Fragment>
-      
-        <title>Email Verification</title>
-        <meta
-          name='description'
-          content='Verify your email to activate your account.'
-        />
-      
-      <AppBar position='static' color='transparent' elevation={0} sx={{ px: { xs: 2, sm: 4 } }}>
+      <title>Email Verification</title>
+      <meta
+        name='description'
+        content='Verify your email to activate your account.'
+      />
+
+      <AppBar
+        position='static'
+        color='transparent'
+        elevation={0}
+        sx={{ px: { xs: 2, sm: 4 } }}
+      >
         <Toolbar>
-          <Typography variant='h6' component='div' sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+          <Typography
+            variant='h6'
+            component='div'
+            sx={{ flexGrow: 1, fontWeight: 'bold' }}
+          >
             AutoApply
           </Typography>
         </Toolbar>
@@ -68,7 +76,11 @@ const EmailVerification: React.FC = () => {
           >
             <MailOutline sx={{ fontSize: 40, color: '#d4af37' }} />
           </Box>
-          <Typography component='h1' variant='h4' sx={{ mb: 1, fontWeight: 'bold' }}>
+          <Typography
+            component='h1'
+            variant='h4'
+            sx={{ mb: 1, fontWeight: 'bold' }}
+          >
             Verify Your Email
           </Typography>
           <Typography
@@ -95,7 +107,7 @@ const EmailVerification: React.FC = () => {
               py: 1.5,
               backgroundColor: '#d4af37',
               '&:hover': {
-                backgroundColor: '#b89a30'
+                backgroundColor: '#b89a30',
               },
               textTransform: 'none',
               fontWeight: 'bold',
@@ -105,7 +117,11 @@ const EmailVerification: React.FC = () => {
           </Button>
           <Typography variant='body2' color='text.secondary' align='center'>
             Didn't receive the email? Check your spam folder or{' '}
-            <MuiLink component={RouterLink} to='#' sx={{ color: '#8B4513', fontWeight: 'medium' }}>
+            <MuiLink
+              component={RouterLink}
+              to='#'
+              sx={{ color: '#8B4513', fontWeight: 'medium' }}
+            >
               contact support
             </MuiLink>
             .
@@ -113,7 +129,7 @@ const EmailVerification: React.FC = () => {
         </Paper>
       </Container>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default EmailVerification;
+export default EmailVerification

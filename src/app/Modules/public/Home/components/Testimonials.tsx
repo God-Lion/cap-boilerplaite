@@ -1,5 +1,14 @@
 import React from 'react'
-import { Box, Container, Typography, Paper, Rating, alpha, useTheme, IconButton } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Paper,
+  Rating,
+  alpha,
+  useTheme,
+  IconButton,
+} from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
@@ -25,7 +34,7 @@ const testimonials: Testimonial[] = [
   },
   {
     rating: 5,
-    text: 'As a recruiter, this is the future. The quality of candidates we\'ve found through this platform is unmatched. A game-changer.',
+    text: "As a recruiter, this is the future. The quality of candidates we've found through this platform is unmatched. A game-changer.",
     name: 'David Chen',
     role: 'Head of Talent at FutureForward Inc.',
   },
@@ -54,11 +63,11 @@ const Testimonials: React.FC = () => {
         py: { xs: 8, md: 12 },
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth='lg'>
         {/* Header */}
         <Box sx={{ textAlign: 'center', mb: { xs: 6, sm: 8 } }}>
           <Typography
-            variant="h2"
+            variant='h2'
             sx={{
               fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
               fontWeight: 700,
@@ -70,7 +79,7 @@ const Testimonials: React.FC = () => {
             Trusted by Top Professionals
           </Typography>
           <Typography
-            variant="body1"
+            variant='body1'
             sx={{
               fontSize: { xs: '1rem', md: '1.125rem' },
               color: 'text.secondary',
@@ -79,7 +88,8 @@ const Testimonials: React.FC = () => {
               mx: 'auto',
             }}
           >
-            Discover why industry leaders and aspiring professionals alike choose God Lion Seeker Optimizer to advance their careers.
+            Discover why industry leaders and aspiring professionals alike
+            choose God Lion Seeker Optimizer to advance their careers.
           </Typography>
         </Box>
 
@@ -193,11 +203,11 @@ const Testimonials: React.FC = () => {
                   }}
                 >
                   {/* Rating */}
-                  <Rating value={testimonial.rating} readOnly size="small" />
+                  <Rating value={testimonial.rating} readOnly size='small' />
 
                   {/* Testimonial Text */}
                   <Typography
-                    variant="body1"
+                    variant='body1'
                     sx={{
                       color: 'text.primary',
                       lineHeight: 1.7,
@@ -210,7 +220,7 @@ const Testimonials: React.FC = () => {
                   {/* Author Info */}
                   <Box>
                     <Typography
-                      variant="subtitle1"
+                      variant='subtitle1'
                       sx={{
                         fontWeight: 600,
                         mb: 0.5,
@@ -219,7 +229,7 @@ const Testimonials: React.FC = () => {
                       {testimonial.name}
                     </Typography>
                     <Typography
-                      variant="body2"
+                      variant='body2'
                       sx={{
                         color: 'text.secondary',
                       }}
@@ -250,11 +260,17 @@ const Testimonials: React.FC = () => {
                   width: 8,
                   height: 8,
                   borderRadius: '50%',
-                  bgcolor: index === currentIndex ? 'primary.main' : alpha(theme.palette.text.primary, 0.3),
+                  bgcolor:
+                    index === currentIndex
+                      ? 'primary.main'
+                      : alpha(theme.palette.text.primary, 0.3),
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    bgcolor: index === currentIndex ? 'primary.main' : alpha(theme.palette.text.primary, 0.5),
+                    bgcolor:
+                      index === currentIndex
+                        ? 'primary.main'
+                        : alpha(theme.palette.text.primary, 0.5),
                   },
                 }}
               />

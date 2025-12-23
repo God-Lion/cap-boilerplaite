@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Backdrop,
   Box,
@@ -12,108 +12,108 @@ import {
   TextField,
   Typography,
   Grid,
-} from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
-import { GitHub } from "@mui/icons-material";
-import MAlert from "app/components/Alert";
-import themeConfig from "src/configs/themeConfig";
-import { useRegister, RegisterRequest } from "../index";
+} from '@mui/material'
+import { useForm, Controller } from 'react-hook-form'
+import { GitHub } from '@mui/icons-material'
+import MAlert from 'app/components/Alert'
+import themeConfig from 'src/configs/themeConfig'
+import { useRegister, RegisterRequest } from '../index'
 
 // Constants
-const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 
 const VALIDATION_MESSAGES = {
-  FULL_NAME_REQUIRED: "Full name is required",
-  EMAIL_REQUIRED: "Email is required",
-  EMAIL_INVALID: "Invalid email address",
-  PASSWORD_REQUIRED: "Password is required",
-  PASSWORD_MIN_LENGTH: "Password must be at least 8 characters",
-  PASSWORD_MISMATCH: "Passwords do not match",
-};
+  FULL_NAME_REQUIRED: 'Full name is required',
+  EMAIL_REQUIRED: 'Email is required',
+  EMAIL_INVALID: 'Invalid email address',
+  PASSWORD_REQUIRED: 'Password is required',
+  PASSWORD_MIN_LENGTH: 'Password must be at least 8 characters',
+  PASSWORD_MISMATCH: 'Passwords do not match',
+}
 
 const DEFAULT_FORM_VALUES = {
-  fullName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
+  fullName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+}
 
 // const SUPPORT_EMAIL = "support@example.com";
 
 interface SignUpFormData {
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
+  fullName: string
+  email: string
+  password: string
+  confirmPassword: string
 }
 
 export default function SignUp() {
-  const [open, setOpen] = useState<boolean>(false);
-  const [alertType, setAlertType] = useState<"error" | "success">("success");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false)
+  const [alertType, setAlertType] = useState<'error' | 'success'>('success')
+  const [errorMessage, setErrorMessage] = useState<string>('')
 
-  const handleCloseAlert = useCallback(() => setOpen(false), []);
+  const handleCloseAlert = useCallback(() => setOpen(false), [])
+
+  const controlForm = useForm<SignUpFormData>({
+    defaultValues: DEFAULT_FORM_VALUES,
+  })
 
   const handleRegisterSuccess = useCallback(() => {
-    setAlertType("success");
-    setOpen(true);
-    controlForm.reset();
-  }, []);
+    setAlertType('success')
+    setOpen(true)
+    controlForm.reset()
+  }, [])
 
   const handleRegisterError = useCallback((error: any) => {
-    setAlertType("error");
+    setAlertType('error')
     setErrorMessage(
-      error.response?.data?.detail || error.message || "Registration failed"
-    );
-    setOpen(true);
-  }, []);
+      error.response?.data?.detail || error.message || 'Registration failed',
+    )
+    setOpen(true)
+  }, [])
 
   const registerMutation = useRegister({
     onSuccess: handleRegisterSuccess,
     onError: handleRegisterError,
-  });
-
-  const controlForm = useForm<SignUpFormData>({
-    defaultValues: DEFAULT_FORM_VALUES,
-  });
+  })
 
   const onSubmit = useCallback(
     (data: SignUpFormData) => {
-      const [firstName, ...lastName] = data.fullName.split(" ");
+      const [firstName, ...lastName] = data.fullName.split(' ')
       const registerData: RegisterRequest = {
         email: data.email,
         password: data.password,
         first_name: firstName,
-        last_name: lastName.join(" "),
-      };
-      registerMutation.mutate({ data: registerData });
+        last_name: lastName.join(' '),
+      }
+      registerMutation.mutate({ data: registerData })
     },
-    [registerMutation]
-  );
+    [registerMutation],
+  )
 
   return (
     <>
       <title>Sign Up - {themeConfig.templateName}</title>
       <meta
-        name="description"
+        name='description'
         content={`Create a new account on ${themeConfig.templateName}`}
       />
       <meta
-        name="keywords"
+        name='keywords'
         content={`sign up, registration, create account, ${themeConfig.templateName}`}
       />
-      <Container component="main" maxWidth={false} sx={{ height: "100vh" }}>
+      <Container component='main' maxWidth={false} sx={{ height: '100vh' }}>
         <CssBaseline />
         <Backdrop
-          sx={{ color: "#FFFFFF", zIndex: (theme) => theme.zIndex.drawer + 10 }}
+          sx={{ color: '#FFFFFF', zIndex: (theme) => theme.zIndex.drawer + 10 }}
           open={registerMutation.isPending}
         >
-          <CircularProgress color="inherit" />
+          <CircularProgress color='inherit' />
         </Backdrop>
         <Snackbar
           anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
+            vertical: 'top',
+            horizontal: 'center',
           }}
           open={open}
           autoHideDuration={6000}
@@ -122,32 +122,46 @@ export default function SignUp() {
           <MAlert
             onClose={handleCloseAlert}
             severity={alertType}
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
           >
-            {alertType === "success" && (
+            {alertType === 'success' && (
               <Box>
-                <Typography component="body" pt={1} bgcolor="transparent" color="#FFF">
+                <Typography
+                  component='body'
+                  pt={1}
+                  bgcolor='transparent'
+                  color='#FFF'
+                >
                   Email Verification Sent!
                 </Typography>
-                <Typography component="body" pt={1} bgcolor="transparent" color="#FFF">
+                <Typography
+                  component='body'
+                  pt={1}
+                  bgcolor='transparent'
+                  color='#FFF'
+                >
                   We've sent an email to your registered email address with a
-                  link to verify your account. Please check your inbox and
-                  click on the verification link to complete the registration
-                  process.
+                  link to verify your account. Please check your inbox and click
+                  on the verification link to complete the registration process.
                 </Typography>
               </Box>
             )}
-            {alertType === "error" && (
+            {alertType === 'error' && (
               <Box>
-                <Typography component="body" pt={1} bgcolor="transparent" color="#FFF">
+                <Typography
+                  component='body'
+                  pt={1}
+                  bgcolor='transparent'
+                  color='#FFF'
+                >
                   Error Sending Email Verification
                 </Typography>
                 <Typography
-                  variant="body1"
-                  component="body"
-                  bgcolor="transparent"
+                  variant='body1'
+                  component='body'
+                  bgcolor='transparent'
                   pt={1}
-                  color="#FFF"
+                  color='#FFF'
                 >
                   {errorMessage}
                 </Typography>
@@ -155,60 +169,58 @@ export default function SignUp() {
             )}
           </MAlert>
         </Snackbar>
-        <Grid container sx={{ height: "100%" }}>
+        <Grid container sx={{ height: '100%' }}>
           <Grid
-            item
-            xs={12}
-            sm={6}
+            size={{ xs: 12, sm: 6 }}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "flex-start",
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
               p: 4,
             }}
           >
-            <Typography component="h1" variant="h4" sx={{ mb: 2 }}>
+            <Typography component='h1' variant='h4' sx={{ mb: 2 }}>
               <strong>Automate Your Job Search.</strong>
             </Typography>
-            <Typography variant="subtitle1">
+            <Typography variant='subtitle1'>
               Spend less time applying and more time interviewing. Sign up to
               get started.
             </Typography>
           </Grid>
           <Grid
-            item
-            xs={12}
-            sm={6}
+            size={{ xs: 12, sm: 6 }}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
               p: 4,
             }}
           >
             <Box
               sx={{
-                width: "100%",
+                width: '100%',
                 maxWidth: 400,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
-              <Typography component="h1" variant="h5">
+              <Typography component='h1' variant='h5'>
                 Create Your Free Account
               </Typography>
-              <Typography variant="subtitle1">Let's get you started!</Typography>
+              <Typography variant='subtitle1'>
+                Let's get you started!
+              </Typography>
               <Box
-                component="form"
+                component='form'
                 noValidate
                 onSubmit={controlForm.handleSubmit(onSubmit)}
-                sx={{ mt: 3, width: "100%" }}
+                sx={{ mt: 3, width: '100%' }}
               >
                 <Controller
-                  name="fullName"
+                  name='fullName'
                   control={controlForm.control}
                   rules={{
                     required: {
@@ -221,8 +233,8 @@ export default function SignUp() {
                       {...field}
                       required
                       fullWidth
-                      id="fullName"
-                      label="Full Name"
+                      id='fullName'
+                      label='Full Name'
                       autoFocus
                       sx={{ mb: 2 }}
                       error={!!controlForm.formState.errors.fullName}
@@ -233,7 +245,7 @@ export default function SignUp() {
                   )}
                 />
                 <Controller
-                  name="email"
+                  name='email'
                   control={controlForm.control}
                   rules={{
                     required: {
@@ -250,9 +262,9 @@ export default function SignUp() {
                       {...field}
                       required
                       fullWidth
-                      id="email"
-                      label="Email Address"
-                      autoComplete="email"
+                      id='email'
+                      label='Email Address'
+                      autoComplete='email'
                       sx={{ mb: 2 }}
                       error={!!controlForm.formState.errors.email}
                       helperText={controlForm.formState.errors.email?.message}
@@ -260,7 +272,7 @@ export default function SignUp() {
                   )}
                 />
                 <Controller
-                  name="password"
+                  name='password'
                   control={controlForm.control}
                   rules={{
                     required: {
@@ -277,11 +289,11 @@ export default function SignUp() {
                       {...field}
                       required
                       fullWidth
-                      name="password"
-                      label="Password"
-                      type="password"
-                      id="password"
-                      autoComplete="new-password"
+                      name='password'
+                      label='Password'
+                      type='password'
+                      id='password'
+                      autoComplete='new-password'
                       sx={{ mb: 2 }}
                       error={!!controlForm.formState.errors.password}
                       helperText={
@@ -291,16 +303,16 @@ export default function SignUp() {
                   )}
                 />
                 <Controller
-                  name="confirmPassword"
+                  name='confirmPassword'
                   control={controlForm.control}
                   rules={{
                     required: true,
                     validate: (value) => {
-                      const password = controlForm.getValues("password");
+                      const password = controlForm.getValues('password')
                       return (
                         value === password ||
                         VALIDATION_MESSAGES.PASSWORD_MISMATCH
-                      );
+                      )
                     },
                   }}
                   render={({ field }) => (
@@ -308,11 +320,11 @@ export default function SignUp() {
                       {...field}
                       required
                       fullWidth
-                      name="confirmPassword"
-                      label="Confirm Password"
-                      type="password"
-                      id="confirmPassword"
-                      autoComplete="new-password"
+                      name='confirmPassword'
+                      label='Confirm Password'
+                      type='password'
+                      id='confirmPassword'
+                      autoComplete='new-password'
                       sx={{ mb: 2 }}
                       error={!!controlForm.formState.errors.confirmPassword}
                       helperText={
@@ -322,29 +334,35 @@ export default function SignUp() {
                   )}
                 />
                 <Button
-                  type="submit"
+                  type='submit'
                   fullWidth
-                  variant="contained"
+                  variant='contained'
                   sx={{ mt: 3, mb: 2 }}
                   disabled={registerMutation.isPending}
                 >
-                  {registerMutation.isPending ? "Creating Account..." : "Create Account"}
+                  {registerMutation.isPending
+                    ? 'Creating Account...'
+                    : 'Create Account'}
                 </Button>
                 <Button
                   fullWidth
-                  variant="outlined"
+                  variant='outlined'
                   startIcon={<GitHub />}
                   sx={{ mb: 2 }}
                 >
                   Sign Up with Google
                 </Button>
-                <Typography variant="body2" color="text.secondary" align="center">
-                  By creating an account, you agree to our{" "}
-                  <HLink component={Link} to="/terms" variant="body2">
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  align='center'
+                >
+                  By creating an account, you agree to our{' '}
+                  <HLink component={Link} to='/terms' variant='body2'>
                     Terms of Service
-                  </HLink>{" "}
-                  and{" "}
-                  <HLink component={Link} to="/privacy" variant="body2">
+                  </HLink>{' '}
+                  and{' '}
+                  <HLink component={Link} to='/privacy' variant='body2'>
                     Privacy Policy
                   </HLink>
                   .
@@ -355,5 +373,5 @@ export default function SignUp() {
         </Grid>
       </Container>
     </>
-  );
+  )
 }

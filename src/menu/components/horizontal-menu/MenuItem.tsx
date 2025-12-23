@@ -99,7 +99,10 @@ const MenuItem: React.ForwardRefRenderFunction<HTMLLIElement, MenuItemProps> = (
   React.useEffect(() => {
     const href =
       rest.href ||
-      (component && typeof component !== 'string' && React.isValidElement(component) && (component.props as any).href)
+      (component &&
+        typeof component !== 'string' &&
+        React.isValidElement(component) &&
+        (component.props as any).href)
 
     if (href) {
       // Check if the current url matches any of the children urls

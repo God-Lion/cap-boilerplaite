@@ -10,24 +10,24 @@ const tooltip: Theme['components'] = {
         lineHeight: 1.539,
         color: 'var(--mui-palette-customColors-tooltipText)',
         paddingInline: theme.spacing(3),
-        paddingBlock: 5
+        paddingBlock: 5,
       }),
       popper: {
         '&[data-popper-placement*="bottom"] .MuiTooltip-tooltip': {
-          marginTop: '6px !important'
+          marginTop: '6px !important',
         },
         '&[data-popper-placement*="top"] .MuiTooltip-tooltip': {
-          marginBottom: '6px !important'
+          marginBottom: '6px !important',
         },
         '&[data-popper-placement*="left"] .MuiTooltip-tooltip': {
-          marginRight: '6px !important'
+          marginRight: '6px !important',
         },
         '&[data-popper-placement*="right"] .MuiTooltip-tooltip': {
-          marginLeft: '6px !important'
-        }
-      }
-    }
-  }
+          marginLeft: '6px !important',
+        },
+      },
+    },
+  },
 }
 
 export default tooltip

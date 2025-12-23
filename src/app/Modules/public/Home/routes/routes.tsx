@@ -3,7 +3,6 @@ import { Routes, Route, RoutesProps } from 'react-router-dom'
 import Home from '../screens/Home'
 import HomeNew from '../screens/HomeNew'
 
-
 const HomeRoutes: React.FC<RoutesProps> = ({
   location,
 }): React.ReactElement | null => {
@@ -12,7 +11,7 @@ const HomeRoutes: React.FC<RoutesProps> = ({
       {/* Main Home Route */}
       <Route path='/' element={<Home />} />
       <Route path='/homenew' element={<HomeNew />} />
-      
+
       {/* Additional Home Routes (Uncomment as needed) */}
       {/* <Route path='features' element={<Features />} /> */}
       {/* <Route path='pricing' element={<Pricing />} /> */}

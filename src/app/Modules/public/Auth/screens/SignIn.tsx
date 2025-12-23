@@ -76,36 +76,43 @@ export default function SignIn() {
   const navigate = useNavigate()
   const { setUser } = useAuth()
 
-  const handleLoginSuccess = useCallback(async (response: any) => {
-    const { user, token, refresh_token } = response.data
-    const normalizedRole = normalizeRole(user.role || '')
+  const controlForm = useForm<LoginRequest>({
+    defaultValues: DEFAULT_FORM_VALUES,
+  })
 
-    // Update Zustand store with auth data
-    const authData: IAuth = {
-      ...user,
-      user,
-      token,
-      refreshToken: refresh_token,
-    }
+  const handleLoginSuccess = useCallback(
+    async (response: any) => {
+      const { user, token, refresh_token } = response.data
+      const normalizedRole = normalizeRole(user.role || '')
 
-    // Update the store with user data
-    setUser(authData)
+      // Update Zustand store with auth data
+      const authData: IAuth = {
+        ...user,
+        user,
+        token,
+        refreshToken: refresh_token,
+      }
 
-    // Show success message
-    setStatus({
-      open: true,
-      type: 'success',
-      state: 'success',
-      msg: 'Login successful!',
-    })
+      // Update the store with user data
+      setUser(authData)
 
-    // Small delay for smooth transition
-    await new Promise(resolve => setTimeout(resolve, 100))
+      // Show success message
+      setStatus({
+        open: true,
+        type: 'success',
+        state: 'success',
+        msg: 'Login successful!',
+      })
 
-    // Navigate based on role
-    const navigationPath = getNavigationPath(normalizedRole)
-    navigate(navigationPath, { replace: true })
-  }, [navigate, setUser])
+      // Small delay for smooth transition
+      await new Promise((resolve) => setTimeout(resolve, 100))
+
+      // Navigate based on role
+      const navigationPath = getNavigationPath(normalizedRole)
+      navigate(navigationPath, { replace: true })
+    },
+    [navigate, setUser],
+  )
 
   const handleLoginError = useCallback((error: any) => {
     setStatus({
@@ -138,13 +145,12 @@ export default function SignIn() {
     setShowPassword((prev) => !prev)
   }, [])
 
-  const controlForm = useForm<LoginRequest>({
-    defaultValues: DEFAULT_FORM_VALUES,
-  })
-
-  const onSubmit = useCallback((data: LoginRequest) => {
-    loginMutation.mutate({ data })
-  }, [loginMutation])
+  const onSubmit = useCallback(
+    (data: LoginRequest) => {
+      loginMutation.mutate({ data })
+    },
+    [loginMutation],
+  )
 
   return (
     <>
@@ -220,7 +226,7 @@ export default function SignIn() {
             }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='email'
                   control={controlForm.control}
@@ -248,7 +254,7 @@ export default function SignIn() {
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='password'
                   control={controlForm.control}
@@ -318,7 +324,7 @@ export default function SignIn() {
               {loginMutation.isPending ? 'Signing in...' : 'Sign In'}
             </Button>
             <Grid container justifyContent='flex-end'>
-              <Grid item>
+              <Grid>
                 <HLink
                   component={Link}
                   to='/auth/forgetpassword'

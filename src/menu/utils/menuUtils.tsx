@@ -46,7 +46,11 @@ export const confirmUrlInChildren = (
     }
     const { component, href, children: subChildren } = childProps
 
-    if (component && typeof component !== 'string' && isValidElement(component)) {
+    if (
+      component &&
+      typeof component !== 'string' &&
+      isValidElement(component)
+    ) {
       const componentProps = component.props as { href?: string }
       if (componentProps.href) {
         return componentProps.href === url
@@ -89,7 +93,9 @@ export const mapHorizontalToVerticalMenu = (
           return <VerticalMenuItem {...rest}>{children}</VerticalMenuItem>
         case HorizontalSubMenu:
           return (
-            <VerticalSubMenu {...(rest as Record<string, unknown> & { label: ReactNode })}>
+            <VerticalSubMenu
+              {...(rest as Record<string, unknown> & { label: ReactNode })}
+            >
               {mapHorizontalToVerticalMenu(children)}
             </VerticalSubMenu>
           )

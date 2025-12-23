@@ -57,7 +57,9 @@ export function useSSE<T = any>(
 
   const eventSourceRef = useRef<EventSource | null>(null)
   const reconnectAttemptsRef = useRef(0)
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>()
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+
+  const connectRef = useRef<() => void>(() => { })
 
   const connect = useCallback(() => {
     if (eventSourceRef.current) {
@@ -85,7 +87,7 @@ export function useSSE<T = any>(
           reconnectTimeoutRef.current = setTimeout(() => {
             eventSource.close()
             eventSourceRef.current = null
-            connect()
+            connectRef.current()
           }, reconnectInterval)
         } else {
           eventSource.close()
@@ -141,6 +143,11 @@ export function useSSE<T = any>(
       setIsConnected(false)
     }
   }, [endpoint, onOpen, onError, reconnect, reconnectInterval, maxReconnectAttempts])
+
+  // Update ref
+  useEffect(() => {
+    connectRef.current = connect
+  }, [connect])
 
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {
@@ -266,7 +273,7 @@ export interface AnalysisResult {
 export function useAnalysisProgress(analysisId: number | null) {
   const endpoint = analysisId ? `/api/sse/analysis/${analysisId}` : ''
   const [result, setResult] = useState<AnalysisResult | null>(null)
-  
+
   const { data, error, isConnected, lastEvent, close } = useSSE<
     AnalysisProgressData | AnalysisResult
   >(endpoint, {
