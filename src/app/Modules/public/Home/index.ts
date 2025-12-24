@@ -1,6 +1,0 @@
-// export { Home } from './screens'
-// export { Banner } from './components'
-// export { default as HomeRoutes } from './routes/routes'
-export * from './components'
-export * from './routes'
-export * from './screens'

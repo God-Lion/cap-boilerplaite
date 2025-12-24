@@ -1,0 +1,128 @@
+import React from 'react'
+import type { ChildrenType } from '@cap/platform-core'
+// import type { Locale } from 'src/configs/i18n'
+import LayoutWrapper from './layouts/LayoutWrapper'
+import PublicLayout from './components/layout/PublicLayout'
+import VerticalLayout from './layouts/VerticalLayout'
+import HorizontalLayout from './layouts/HorizontalLayout'
+import Navigation from './components/layout/vertical/Navigation'
+import Header from './components/layout/horizontal/Header'
+import Navbar from './components/layout/vertical/Navbar'
+import VerticalFooter from './components/layout/vertical/Footer'
+import HorizontalFooter from './components/layout/horizontal/Footer'
+// import Customizer from 'src/core/components/customizer'
+import ScrollToTop from '../core/components/scroll-to-top'
+import Button from '@mui/material/Button'
+import { ArrowUpward } from '@mui/icons-material'
+import type { IMenu } from './components/layout/types'
+import {
+  Navbar as PublicNavbar,
+  GuestNavbar,
+  Footer as PublicFooter,
+} from './components'
+import { useAuth, Locale } from '@cap/platform-core'
+import { useTranslation } from 'react-i18next'
+import { useLang } from './utils/getDictionary'
+
+// import { i18n } from 'src/configs/i18n'
+// import { getDictionary } from 'src/utils'
+// import { getMode, getSystemMode } from 'src/core/utils/serverHelpers'
+
+// Default menu configuration
+const defaultMenu: IMenu[] = [
+  {
+    name: 'home',
+    icon: 'HomeOutlined',
+    link: '/',
+  },
+  {
+    name: 'dashboard',
+    icon: 'DashboardOutlined',
+    link: '/dashboard',
+  },
+]
+
+const NavBartWrapper = () => {
+  const { isAuthenticated } = useAuth()
+
+  console.log('isAuthenticated ', isAuthenticated)
+
+  if (!isAuthenticated) return <GuestNavbar />
+
+  return <PublicNavbar />
+}
+
+const Layout: React.FC<ChildrenType> = ({
+  children, // params,
+  //& { params: { lang: Locale } }
+}) => {
+  const { i18n } = useTranslation()
+  const dictionary = useLang(i18n.language as Locale)
+  // const mode = getMode()
+  // const systemMode = getSystemMode()
+
+  // const direction = 'ltr'
+  const systemMode = 'dark'
+  const mode = 'dark'
+  // const menu = updateMenu()
+  const menu = defaultMenu
+
+  return (
+    <React.Fragment>
+      <LayoutWrapper
+        systemMode={systemMode}
+        publicLayout={
+          <PublicLayout header={<NavBartWrapper />} footer={<PublicFooter />}>
+            {children}
+          </PublicLayout>
+        }
+        verticalLayout={
+          <VerticalLayout
+            navigation={
+              <Navigation
+                dictionary={dictionary}
+                menu={menu}
+                mode={mode}
+                systemMode={systemMode}
+              />
+            }
+            navbar={<Navbar />}
+            footer={<VerticalFooter />}
+          >
+            {children}
+          </VerticalLayout>
+        }
+        horizontalLayout={
+          <HorizontalLayout header={<Header />} footer={<HorizontalFooter />}>
+            {children}
+          </HorizontalLayout>
+        }
+        noLayout={<React.Fragment>{children}</React.Fragment>}
+      />
+      <ScrollToTop className='mui-fixed'>
+        <Button
+          variant='contained'
+          sx={{
+            minInlineSize: '2.5rem',
+            blockSize: '2.5rem',
+            // borderRadius: '100%',
+            borderRadius: '9999px',
+            padding: '0px',
+            // minInlineSize: 'opx',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // inlineSize: '2.5rem', // Equivalent to .is-10
+            // Equivalent to .items-center
+          }}
+        >
+          {/* <i className='tabler-arrow-up' /> */}
+          <ArrowUpward />
+        </Button>
+      </ScrollToTop>
+      {/* <Customizer dir={direction} /> */}
+    </React.Fragment>
+  )
+}
+
+export default Layout
