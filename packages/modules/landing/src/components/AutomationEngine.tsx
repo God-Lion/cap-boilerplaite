@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Box,
-  Container,
-  Typography,
-  Paper,
-  alpha,
-  useTheme,
-} from '@mui/material'
+import { Box, Container, Typography, Paper, alpha, useTheme } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import TargetIcon from '@mui/icons-material/GpsFixed'
 import SendIcon from '@mui/icons-material/Send'
@@ -16,14 +9,12 @@ const stages = [
   {
     icon: <SearchIcon sx={{ fontSize: 28 }} />,
     title: 'Search',
-    description:
-      'Our AI scours thousands of job boards to find the perfect opportunities for you.',
+    description: 'Our AI scours thousands of job boards to find the perfect opportunities for you.',
   },
   {
     icon: <TargetIcon sx={{ fontSize: 28 }} />,
     title: 'Match',
-    description:
-      'We intelligently match jobs to your unique profile, skills, and resume.',
+    description: 'We intelligently match jobs to your unique profile, skills, and resume.',
   },
   {
     icon: <SendIcon sx={{ fontSize: 28 }} />,

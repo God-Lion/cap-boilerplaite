@@ -19,10 +19,10 @@ export type SubMenuContentProps = React.HTMLAttributes<HTMLDivElement> &
     browserScroll?: boolean
   }
 
-const SubMenuContent: React.ForwardRefRenderFunction<
-  HTMLDivElement,
-  SubMenuContentProps
-> = (props, ref) => {
+const SubMenuContent: React.ForwardRefRenderFunction<HTMLDivElement, SubMenuContentProps> = (
+  props,
+  ref,
+) => {
   const {
     children,
     open,

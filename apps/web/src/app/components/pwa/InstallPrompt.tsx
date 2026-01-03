@@ -1,12 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  Snackbar,
-  Button,
-  Alert,
-  AlertTitle,
-  Box,
-  IconButton,
-} from '@mui/material'
+import { Snackbar, Button, Alert, AlertTitle, Box, IconButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import GetAppIcon from '@mui/icons-material/GetApp'
 
@@ -22,8 +15,7 @@ interface BeforeInstallPromptEvent extends Event {
  * Handles the beforeinstallprompt event
  */
 export function InstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showPrompt, setShowPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
 
@@ -98,20 +90,10 @@ export function InstallPrompt() {
         variant='filled'
         action={
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Button
-              color='inherit'
-              size='small'
-              onClick={handleInstall}
-              startIcon={<GetAppIcon />}
-            >
+            <Button color='inherit' size='small' onClick={handleInstall} startIcon={<GetAppIcon />}>
               Install
             </Button>
-            <IconButton
-              size='small'
-              aria-label='close'
-              color='inherit'
-              onClick={handleClose}
-            >
+            <IconButton size='small' aria-label='close' color='inherit' onClick={handleClose}>
               <CloseIcon fontSize='small' />
             </IconButton>
           </Box>

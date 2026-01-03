@@ -1,7 +1,7 @@
 import { useState, useEffect, Suspense, type ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { Backdrop, CircularProgress, Alert, Box, Button } from '@mui/material'
-import { useAuth } from '@cap/platform-core'
+import { useAuth, IAuth } from '@cap/platform-core'
 import { isObjectEmpty, Roles } from '@cap/platform-core'
 
 interface AdminRouteProps {
@@ -9,23 +9,9 @@ interface AdminRouteProps {
   minimumRole?: Roles
 }
 
-const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
 
-const ADMIN_ROLE_NAMES = [
-  'ADMIN',
-  'ADMINISTRATOR',
-  'SUPERADMINEMPLOYEE',
-  'SUPERADMIN',
-  'admin',
-  'administrator',
-  'superadminemployee',
-  'superadmin',
-]
-
-const AdminRoute = ({
-  element,
-  minimumRole = Roles.ADMIN,
-}: AdminRouteProps) => {
+const AdminRoute = ({ element, minimumRole = Roles.ADMIN }: AdminRouteProps) => {
   const { user, refreshAuth } = useAuth()
   const location = useLocation()
   const [isChecking, setIsChecking] = useState(true)
@@ -49,14 +35,13 @@ const AdminRoute = ({
 
   if (isChecking) {
     return (
-      <Backdrop open style={{ background: '#FFF', zIndex: 1301 }}>
+      <Backdrop open style={{ background: '#FFF', zIndex: 1400 }}>
         <CircularProgress color='inherit' />
       </Backdrop>
     )
   }
 
-  const isAuthenticated =
-    user && typeof user !== 'string' && !isObjectEmpty(user)
+  const isAuthenticated = user && typeof user !== 'string' && !isObjectEmpty(user)
 
   if (sessionError) {
     return (
@@ -74,10 +59,7 @@ const AdminRoute = ({
         <Alert severity='warning' sx={{ maxWidth: 500 }}>
           {sessionError}
         </Alert>
-        <Button
-          variant='contained'
-          onClick={() => (window.location.href = '/auth/signin')}
-        >
+        <Button variant='contained' onClick={() => (window.location.href = '/auth/signin')}>
           Go to Login
         </Button>
       </Box>
@@ -88,13 +70,12 @@ const AdminRoute = ({
     return <Navigate to='/auth/signin' replace state={{ from: location }} />
   }
 
-  const userData = (user as any).user || user
-  const userRole = userData.role
-  const isAdmin =
-    typeof userRole === 'string'
-      ? ADMIN_ROLE_NAMES.includes(userRole) ||
-      ADMIN_ROLE_NAMES.includes(userRole.toUpperCase())
-      : ADMIN_ROLES.includes(userRole as Roles)
+  // Securely resolve user data and role
+  const userData = (user as IAuth).user || (user as IAuth)
+  const userRole = userData.role as Roles
+
+  // Strict role check using Roles enum values
+  const isAdmin = ADMIN_ROLES.includes(userRole)
 
   if (!isAdmin) {
     return (
@@ -115,10 +96,7 @@ const AdminRoute = ({
           <br />
           You don't have administrator privileges to access this page.
         </Alert>
-        <Button
-          variant='contained'
-          onClick={() => (window.location.href = '/dashboard')}
-        >
+        <Button variant='contained' onClick={() => (window.location.href = '/dashboard')}>
           Go to Dashboard
         </Button>
       </Box>
@@ -144,10 +122,7 @@ const AdminRoute = ({
           <br />
           This admin feature requires higher privileges.
         </Alert>
-        <Button
-          variant='contained'
-          onClick={() => (window.location.href = '/admin')}
-        >
+        <Button variant='contained' onClick={() => (window.location.href = '/admin')}>
           Go to Admin Dashboard
         </Button>
       </Box>
@@ -157,7 +132,7 @@ const AdminRoute = ({
   return (
     <Suspense
       fallback={
-        <Backdrop open style={{ background: '#FFF', zIndex: 1301 }}>
+        <Backdrop open style={{ background: '#FFF', zIndex: 1400 }}>
           <CircularProgress color='inherit' />
         </Backdrop>
       }

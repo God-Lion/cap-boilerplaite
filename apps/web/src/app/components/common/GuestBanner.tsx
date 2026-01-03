@@ -21,7 +21,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import PersonOffIcon from '@mui/icons-material/PersonOff'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { useNavigate } from 'react-router-dom'
-import { useGuest } from 'src/store'
+import { useGuest } from '@cap/platform-core'
 
 interface GuestBannerProps {
   variant?: 'minimal' | 'detailed'
@@ -91,8 +91,7 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
           }}
         >
           <Typography variant='body2'>
-            {message ||
-              "You're browsing as a guest. Sign up to save your progress!"}
+            {message || "You're browsing as a guest. Sign up to save your progress!"}
           </Typography>
         </Alert>
       </Collapse>
@@ -118,9 +117,7 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
           },
         }}
       >
-        <AlertTitle
-          sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}
-        >
+        <AlertTitle sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
           <Chip label='Guest Mode' size='small' color='warning' />
           <Typography variant='subtitle1' component='span'>
             Limited Access Active
@@ -155,12 +152,7 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
             >
               Sign Up to Unlock Full Features
             </Button>
-            <Button
-              variant='outlined'
-              color='primary'
-              size='small'
-              onClick={handleSignIn}
-            >
+            <Button variant='outlined' color='primary' size='small' onClick={handleSignIn}>
               Sign In
             </Button>
           </Box>

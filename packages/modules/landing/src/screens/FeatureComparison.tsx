@@ -176,15 +176,9 @@ export const FeatureComparison: React.FC = () => {
 
   const renderFeatureValue = (value: boolean | string) => {
     if (typeof value === 'boolean') {
-      return value ? (
-        <CheckCircleIcon color='success' />
-      ) : (
-        <CancelIcon color='error' />
-      )
+      return value ? <CheckCircleIcon color='success' /> : <CancelIcon color='error' />
     }
-    return (
-      <Chip label={value} size='small' color='primary' variant='outlined' />
-    )
+    return <Chip label={value} size='small' color='primary' variant='outlined' />
   }
 
   const groupedFeatures = features.reduce(
@@ -229,20 +223,14 @@ export const FeatureComparison: React.FC = () => {
             <CardContent>
               <Stack spacing={2}>
                 <Box>
-                  <Chip
-                    label='Guest Mode'
-                    color='warning'
-                    size='small'
-                    sx={{ mb: 1 }}
-                  />
+                  <Chip label='Guest Mode' color='warning' size='small' sx={{ mb: 1 }} />
                   <Typography variant='h5' fontWeight='bold'>
                     Try Before You Sign Up
                   </Typography>
                 </Box>
                 <Typography variant='body2' color='text.secondary'>
-                  Perfect for exploring the platform and testing basic features.
-                  Your session data is temporary and will be cleared when you
-                  close your browser.
+                  Perfect for exploring the platform and testing basic features. Your session data
+                  is temporary and will be cleared when you close your browser.
                 </Typography>
                 <Box>
                   <Typography variant='caption' color='text.secondary'>
@@ -255,27 +243,18 @@ export const FeatureComparison: React.FC = () => {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Card
-            variant='outlined'
-            sx={{ borderColor: 'primary.main', borderWidth: 2 }}
-          >
+          <Card variant='outlined' sx={{ borderColor: 'primary.main', borderWidth: 2 }}>
             <CardContent>
               <Stack spacing={2}>
                 <Box>
-                  <Chip
-                    label='Registered User'
-                    color='success'
-                    size='small'
-                    sx={{ mb: 1 }}
-                  />
+                  <Chip label='Registered User' color='success' size='small' sx={{ mb: 1 }} />
                   <Typography variant='h5' fontWeight='bold'>
                     Full Access - 100% Free
                   </Typography>
                 </Box>
                 <Typography variant='body2' color='text.secondary'>
-                  Get complete access to all features including job automation,
-                  analytics, and unlimited profile analysis. Your data is
-                  securely saved and synced across devices.
+                  Get complete access to all features including job automation, analytics, and
+                  unlimited profile analysis. Your data is securely saved and synced across devices.
                 </Typography>
                 <Box>
                   <Typography variant='caption' color='text.secondary'>
@@ -283,11 +262,7 @@ export const FeatureComparison: React.FC = () => {
                   </Typography>
                 </Box>
                 {!isAuthenticated && (
-                  <Button
-                    variant='contained'
-                    onClick={() => navigate('/auth/signup')}
-                    fullWidth
-                  >
+                  <Button variant='contained' onClick={() => navigate('/auth/signup')} fullWidth>
                     Create Free Account
                   </Button>
                 )}
@@ -313,12 +288,7 @@ export const FeatureComparison: React.FC = () => {
                     <Typography variant='subtitle1' fontWeight='bold'>
                       Guest
                     </Typography>
-                    <Chip
-                      label='No Account'
-                      size='small'
-                      color='warning'
-                      variant='outlined'
-                    />
+                    <Chip label='No Account' size='small' color='warning' variant='outlined' />
                   </Stack>
                 </TableCell>
                 <TableCell align='center' sx={{ bgcolor: 'success.50' }}>
@@ -326,58 +296,34 @@ export const FeatureComparison: React.FC = () => {
                     <Typography variant='subtitle1' fontWeight='bold'>
                       Registered
                     </Typography>
-                    <Chip
-                      label='Free Account'
-                      size='small'
-                      color='success'
-                      variant='outlined'
-                    />
+                    <Chip label='Free Account' size='small' color='success' variant='outlined' />
                   </Stack>
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.entries(groupedFeatures).map(
-                ([category, categoryFeatures]) => (
-                  <React.Fragment key={category}>
-                    {/* Category Header */}
-                    <TableRow>
-                      <TableCell
-                        colSpan={3}
-                        sx={{ bgcolor: 'grey.100', py: 1 }}
-                      >
-                        <Typography
-                          variant='subtitle2'
-                          fontWeight='bold'
-                          color='primary'
-                        >
-                          {
-                            categoryNames[
-                            category as keyof typeof categoryNames
-                            ]
-                          }
-                        </Typography>
+              {Object.entries(groupedFeatures).map(([category, categoryFeatures]) => (
+                <React.Fragment key={category}>
+                  {/* Category Header */}
+                  <TableRow>
+                    <TableCell colSpan={3} sx={{ bgcolor: 'grey.100', py: 1 }}>
+                      <Typography variant='subtitle2' fontWeight='bold' color='primary'>
+                        {categoryNames[category as keyof typeof categoryNames]}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                  {/* Category Features */}
+                  {categoryFeatures.map((feature, index) => (
+                    <TableRow key={`${category}-${index}`} hover>
+                      <TableCell>
+                        <Typography variant='body2'>{feature.name}</Typography>
                       </TableCell>
+                      <TableCell align='center'>{renderFeatureValue(feature.guest)}</TableCell>
+                      <TableCell align='center'>{renderFeatureValue(feature.registered)}</TableCell>
                     </TableRow>
-                    {/* Category Features */}
-                    {categoryFeatures.map((feature, index) => (
-                      <TableRow key={`${category}-${index}`} hover>
-                        <TableCell>
-                          <Typography variant='body2'>
-                            {feature.name}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align='center'>
-                          {renderFeatureValue(feature.guest)}
-                        </TableCell>
-                        <TableCell align='center'>
-                          {renderFeatureValue(feature.registered)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </React.Fragment>
-                ),
-              )}
+                  ))}
+                </React.Fragment>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -393,17 +339,8 @@ export const FeatureComparison: React.FC = () => {
             <Typography variant='body1' color='text.secondary' paragraph>
               Sign up for free in less than 30 seconds. No credit card required.
             </Typography>
-            <Stack
-              direction='row'
-              spacing={2}
-              justifyContent='center'
-              sx={{ mt: 3 }}
-            >
-              <Button
-                variant='outlined'
-                size='large'
-                onClick={() => navigate('/auth/signin')}
-              >
+            <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 3 }}>
+              <Button variant='outlined' size='large' onClick={() => navigate('/auth/signin')}>
                 Sign In
               </Button>
               <Button
@@ -432,8 +369,8 @@ export const FeatureComparison: React.FC = () => {
               Is it really free?
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              Yes! All features are completely free for registered users. We
-              believe everyone should have access to powerful job search tools.
+              Yes! All features are completely free for registered users. We believe everyone should
+              have access to powerful job search tools.
             </Typography>
           </Box>
 
@@ -442,9 +379,8 @@ export const FeatureComparison: React.FC = () => {
               What happens to my guest session data?
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              Guest session data is stored temporarily in your browser and will
-              be cleared when you close the browser. If you want to save your
-              data, create a free account.
+              Guest session data is stored temporarily in your browser and will be cleared when you
+              close the browser. If you want to save your data, create a free account.
             </Typography>
           </Box>
 
@@ -453,9 +389,8 @@ export const FeatureComparison: React.FC = () => {
               Can I upgrade my guest session to a registered account?
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              While we can't automatically transfer guest data, you can easily
-              re-upload your resume and recreate your profile after signing up.
-              It only takes a minute!
+              While we can't automatically transfer guest data, you can easily re-upload your resume
+              and recreate your profile after signing up. It only takes a minute!
             </Typography>
           </Box>
 
@@ -464,9 +399,8 @@ export const FeatureComparison: React.FC = () => {
               How long does sign up take?
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              Less than 30 seconds! Just provide your email and password, verify
-              your email, and you're ready to go. No lengthy forms or credit
-              card required.
+              Less than 30 seconds! Just provide your email and password, verify your email, and
+              you're ready to go. No lengthy forms or credit card required.
             </Typography>
           </Box>
         </Stack>

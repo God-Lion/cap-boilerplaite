@@ -14,10 +14,9 @@ const rating: Theme['components'] = {
         '& i, & svg': {
           flexShrink: 0,
         },
-        '& .MuiRating-decimal > label:first-of-type, & .MuiRating-decimal > span:first-of-type':
-          {
-            zIndex: 1,
-          },
+        '& .MuiRating-decimal > label:first-of-type, & .MuiRating-decimal > span:first-of-type': {
+          zIndex: 1,
+        },
       },
       sizeSmall: {
         '& .MuiRating-icon i, & .MuiRating-icon svg': {

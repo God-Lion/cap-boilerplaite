@@ -35,7 +35,7 @@ export function ChangePasswordForm() {
         alert('Password changed successfully! Please login again.')
         reset()
         // Redirect to login
-        window.location.href = '/auth/signin'
+        window.location.href = '/auth/sign-in'
       },
       onError: (error: any) => {
         alert(error.response?.data?.detail || 'Failed to change password')

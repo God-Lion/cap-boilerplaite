@@ -77,9 +77,7 @@ export type MenuProps = VerticalMenuContextProps &
     popoutWhenCollapsed?: boolean
   }
 
-export const VerticalMenuContext = React.createContext(
-  {} as VerticalMenuContextProps,
-)
+export const VerticalMenuContext = React.createContext({} as VerticalMenuContextProps)
 
 const Menu: React.ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = (
   {
@@ -122,9 +120,7 @@ const Menu: React.ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = (
       const openSubmenuCopy = [...openSubmenu]
 
       submenus.forEach(({ level, label, active = false, id }) => {
-        const submenuIndex = openSubmenuCopy.findIndex(
-          (submenu) => submenu.id === id,
-        )
+        const submenuIndex = openSubmenuCopy.findIndex((submenu) => submenu.id === id)
         const submenuExists = submenuIndex >= 0
         const isAccordion = subMenuOpenBehavior === 'accordion'
 

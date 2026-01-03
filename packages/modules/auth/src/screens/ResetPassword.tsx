@@ -1,40 +1,34 @@
 import React from 'react'
 import { themeConfig } from '@cap/platform-core'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import {
-  Visibility,
-  VisibilityOff,
-  Copyright,
-  LockOutlined,
-} from '@mui/icons-material'
+import { Visibility, VisibilityOff, LockOutlined } from '@mui/icons-material'
 import {
   Container,
   Backdrop,
   CircularProgress,
   Snackbar,
-  CssBaseline,
   Typography,
   Box,
   TextField,
   InputAdornment,
   IconButton,
   Button,
-  Paper,
   Avatar,
+  Link as MuiLink,
+  Card,
+  CardContent,
 } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import { useTheme } from '@mui/material/styles'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useResetPassword, ResetPasswordRequest } from '../index'
 import {
   authService,
   FetchResponse,
   HttpError,
-  IUserReponseEmailResetPassword,
+  IUserResponseEmailResetPassword,
   Alert as MAlert,
 } from '@cap/platform-core'
-
-
 
 interface ResetPasswordFormData {
   token: string
@@ -42,8 +36,10 @@ interface ResetPasswordFormData {
   confirmPassword: string
 }
 
+const SUPPORT_EMAIL = 'support@example.com'
+
 export default function ResetPassword() {
-  const theme = useTheme()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { email } = useParams()
   const [searchParams] = useSearchParams()
@@ -56,18 +52,18 @@ export default function ResetPassword() {
 
   const handleCloseAlert = () => setOpen(false)
 
-  const [userReponseEmailResetPassword, setUserReponseEmailResetPassword] =
-    React.useState<IUserReponseEmailResetPassword>()
+  const [userResponseEmailResetPassword, setUserResponseEmailResetPassword] =
+    React.useState<IUserResponseEmailResetPassword>()
 
   const resetPasswordMutation = useResetPassword({
     onSuccess: () => {
-      navigate('/auth/signin')
+      navigate('/auth/sign-in')
     },
     onError: (error: any) => {
       setErrorMessage(
         error.response?.data?.detail ||
-        error.message ||
-        'Failed to reset password',
+          error.message ||
+          t('auth.reset_password.error_resetting_title'),
       )
       setOpen(true)
     },
@@ -85,10 +81,10 @@ export default function ResetPassword() {
     async function fetchData() {
       try {
         setLoading(true)
-        const response: FetchResponse<IUserReponseEmailResetPassword> =
-          await authService.verifyEmail(email || '', signature ?? '')
+        const response: FetchResponse<IUserResponseEmailResetPassword> =
+          await authService.verifyResetPassword(email || '', signature ?? '')
         if (response.status === 202) {
-          setUserReponseEmailResetPassword(response.data)
+          setUserResponseEmailResetPassword(response.data)
           controlForm.setValue('token', response.data.token || '')
         }
       } catch (error) {
@@ -112,13 +108,15 @@ export default function ResetPassword() {
     resetPasswordMutation.mutate({ data: resetData })
   }
 
-  if (userReponseEmailResetPassword?.isSignatureValid === false) {
+  if (userResponseEmailResetPassword?.isSignatureValid === false) {
     return (
       <React.Fragment>
-        <title>Reset Password - {themeConfig.templateName}</title>
+        <title>
+          {t('auth.reset_password.title_page')} - {themeConfig.templateName}
+        </title>
         <meta
           name='description'
-          content={`Reset your password on ${themeConfig.templateName}`}
+          content={`${t('auth.reset_password.meta_desc')} - ${themeConfig.templateName}`}
         />
         <meta
           name='keywords'
@@ -127,142 +125,115 @@ export default function ResetPassword() {
 
         <Container
           component='main'
-          maxWidth='lg'
           sx={{
-            width: '100%',
-            maxWidth: '100%',
-            maxHeight: '100%',
-            height: '100vh',
-            margin: 0,
-            [theme.breakpoints.up('lg')]: {
-              width: '100%',
-              maxWidth: '100%',
-              maxHeight: '100%',
-              height: '100vh',
-              margin: 0,
-            },
-            [theme.breakpoints.up('md')]: {
-              width: '100%',
-              maxWidth: '100%',
-              maxHeight: '100%',
-              height: '100vh',
-              margin: 0,
-            },
-            [theme.breakpoints.up('sm')]: {
-              width: '100%',
-              maxWidth: '100%',
-              maxHeight: '100%',
-              height: '100vh',
-              margin: 0,
-            },
-            [theme.breakpoints.up('xl')]: {
-              width: '100%',
-              maxWidth: '100%',
-              maxHeight: '100%',
-              height: '100vh',
-              margin: 0,
-            },
-            [theme.breakpoints.up('xs')]: {
-              width: '100%',
-              maxWidth: '100%',
-              maxHeight: '100%',
-              height: '100vh',
-              margin: 0,
-            },
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            py: 6,
           }}
         >
-          <Paper
-            variant='outlined'
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+          <Card
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              maxWidth: 450,
+            }}
           >
-            <Backdrop
+            <CardContent
               sx={{
-                color: '#FFFFFF',
-                zIndex: (theme) => theme.zIndex.drawer + 10,
+                padding: { xs: 3, sm: 4 },
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
-              open={loading}
             >
-              <CircularProgress color='inherit' />
-            </Backdrop>
-            <MAlert severity='error' sx={{ width: '100%' }}>
-              <Box>
-                {error?.code === 'ERR_NETWORK' && (
+              <Backdrop
+                sx={{
+                  zIndex: (theme) => theme.zIndex.drawer + 10,
+                }}
+                open={loading}
+              >
+                <CircularProgress color='inherit' />
+              </Backdrop>
+              <MAlert severity='error' sx={{ width: '100%' }}>
+                <Box>
+                  {error?.code === 'ERR_NETWORK' && (
+                    <Typography
+                      variant='body1'
+                      sx={{
+                        pt: 1,
+                        bgcolor: 'transparent',
+                      }}
+                    >
+                      {error.message}
+                    </Typography>
+                  )}
                   <Typography
-                    variant='body1'
-                    component='body'
-                    bgcolor='transparent'
-                    pt={1}
-                    color='#FFF'
+                    sx={{
+                      pt: 1,
+                      fontWeight: 'bold',
+                      bgcolor: 'transparent',
+                    }}
                   >
-                    {error.message}
+                    {t('auth.reset_password.invalid_link_title')}
                   </Typography>
-                )}
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
-                >
-                  Expired or Invalid Password Reset Link
-                </Typography>
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
-                >
-                  We're sorry, but the password reset link you're trying to use
-                  has either expired or is not valid. Password reset links are
-                  only valid for a limited time for security reasons.
-                </Typography>
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
-                >
-                  Please request a new password reset link by visiting the
-                  forgot password page and submitting your email address again.
-                  Make sure to use the latest link sent to your email inbox.
-                </Typography>
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
-                >
-                  If you continue to experience issues, please contact our
-                  support team at{' '}
-                  <Link to='mailto:support@example.com'>
-                    support@example.com
-                  </Link>{' '}
-                  for further assistance.
-                </Typography>
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
-                  noWrap
-                >
-                  We apologize for any inconvenience this may have caused.
-                </Typography>
-              </Box>
-            </MAlert>
-            <Button
-              component={Link}
-              to='/auth/forgetpassword'
-              sx={{ mt: 3, mb: 2 }}
-              variant='contained'
-              size='small'
-              style={{
-                textDecoration: 'none',
-                color: theme.palette.primary.contrastText,
-              }}
-            >
-              forget password
-            </Button>
-          </Paper>
+                  <Typography
+                    sx={{
+                      pt: 1,
+                      bgcolor: 'transparent',
+                    }}
+                  >
+                    {t('auth.reset_password.invalid_link_desc1')}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      pt: 1,
+                      bgcolor: 'transparent',
+                    }}
+                  >
+                    {t('auth.reset_password.invalid_link_desc2')}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      pt: 1,
+                      bgcolor: 'transparent',
+                    }}
+                  >
+                    {t('auth.reset_password.support_text')}{' '}
+                    <MuiLink
+                      component={Link}
+                      to={`mailto:${SUPPORT_EMAIL}`}
+                      sx={{
+                        textDecoration: 'underline',
+                      }}
+                    >
+                      {SUPPORT_EMAIL}
+                    </MuiLink>
+                  </Typography>
+                  <Typography
+                    sx={{
+                      pt: 1,
+                      bgcolor: 'transparent',
+                    }}
+                  >
+                    {t('auth.reset_password.apology')}
+                  </Typography>
+                </Box>
+              </MAlert>
+              <Button
+                component={Link}
+                to='/auth/forgot-password'
+                sx={{ mt: 3 }}
+                variant='contained'
+                size='small'
+                fullWidth
+              >
+                {t('auth.reset_password.button_forgot_password')}
+              </Button>
+            </CardContent>
+          </Card>
         </Container>
       </React.Fragment>
     )
@@ -270,66 +241,31 @@ export default function ResetPassword() {
 
   return (
     <React.Fragment>
-      <title>Reset Password - {themeConfig.templateName}</title>
+      <title>
+        {t('auth.reset_password.title_page')} - {themeConfig.templateName}
+      </title>
       <meta
         name='description'
-        content={`Reset your password on ${themeConfig.templateName}`}
+        content={`${t('auth.reset_password.meta_desc')} - ${themeConfig.templateName}`}
       />
-      <meta
-        name='keywords'
-        content={`reset password, new password, ${themeConfig.templateName}`}
-      />
+      <meta name='keywords' content={`reset password, new password, ${themeConfig.templateName}`} />
 
       <Container
         component='main'
         maxWidth='xs'
         sx={{
-          // backgroundColor: '#EF5350',
           display: 'flex',
           flexDirection: 'column',
-          width: '100%',
-          maxWidth: '100%',
-          minHeight: '100dvh',
-          margin: 0,
-          padding: 0,
-          [theme.breakpoints.up('lg')]: {
-            width: '100%',
-            maxWidth: '100%',
-            minHeight: '100dvh',
-            margin: 0,
-            padding: 0,
-          },
-          [theme.breakpoints.up('md')]: {
-            width: '100%',
-            maxWidth: '100%',
-            minHeight: '100dvh',
-            margin: 0,
-            padding: 0,
-          },
-          [theme.breakpoints.up('sm')]: {
-            width: '100%',
-            maxWidth: '100%',
-            minHeight: '100svh',
-            margin: 0,
-            padding: 0,
-          },
-          [theme.breakpoints.up('xl')]: {
-            width: '100%',
-            maxWidth: '100%',
-            minHeight: '100svh',
-            margin: 0,
-            padding: 0,
-          },
-          [theme.breakpoints.up('xs')]: {
-            width: '100%',
-            maxWidth: '100%',
-            minHeight: '100svh',
-            margin: 0,
-            padding: 0,
-          },
+          minHeight: '100vh',
+          justifyContent: 'center',
+          alignItems: 'center',
+          py: 8,
         }}
       >
-        <Backdrop open={loading || resetPasswordMutation.isPending}>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading || resetPasswordMutation.isPending}
+        >
           <CircularProgress color='inherit' />
         </Backdrop>
         <Snackbar
@@ -341,208 +277,192 @@ export default function ResetPassword() {
           autoHideDuration={6000}
           onClose={handleCloseAlert}
         >
-          <MAlert
-            onClose={handleCloseAlert}
-            severity='error'
-            sx={{ width: '100%' }}
-          >
-            {
-              <Box>
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
+          <MAlert onClose={handleCloseAlert} severity='error' sx={{ width: '100%' }}>
+            <Box>
+              <Typography
+                sx={{
+                  pt: 1,
+                  fontWeight: 'bold',
+                  bgcolor: 'transparent',
+                }}
+              >
+                {t('auth.reset_password.error_resetting_title')}
+              </Typography>
+              <Typography
+                sx={{
+                  pt: 1,
+                  bgcolor: 'transparent',
+                }}
+              >
+                {errorMessage}
+              </Typography>
+              <Typography
+                sx={{
+                  pt: 1,
+                  bgcolor: 'transparent',
+                }}
+              >
+                {t('auth.reset_password.error_resetting_desc1')}
+              </Typography>
+              <Typography
+                sx={{
+                  pt: 1,
+                  bgcolor: 'transparent',
+                }}
+              >
+                {t('auth.reset_password.error_resetting_desc2')}{' '}
+                <MuiLink
+                  component={Link}
+                  to={`mailto:${SUPPORT_EMAIL}`}
+                  sx={{
+                    textDecoration: 'underline',
+                  }}
                 >
-                  Error Resetting Password
-                </Typography>
-                <Typography
-                  variant='body1'
-                  component='body'
-                  bgcolor='transparent'
-                  pt={1}
-                  color='#FFF'
-                >
-                  {errorMessage}
-                </Typography>
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
-                >
-                  We regret to inform you that we encountered an issue while
-                  attempting to reset your password. Our team has been notified
-                  of the problem and is working to resolve it as quickly as
-                  possible.
-                </Typography>
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
-                >
-                  In the meantime, please try resetting your password again
-                  later. If the issue persists, please contact our support team
-                  at{' '}
-                  <Link to='mailto:support@example.com'>
-                    support@example.com
-                  </Link>{' '}
-                  for further assistance.
-                </Typography>
-                <Typography
-                  component='body'
-                  pt={1}
-                  bgcolor='transparent'
-                  color='#FFF'
-                  noWrap
-                >
-                  We apologize for any inconvenience this may have caused and
-                  appreciate your patience.
-                </Typography>
-              </Box>
-            }
+                  {SUPPORT_EMAIL}
+                </MuiLink>
+              </Typography>
+              <Typography
+                sx={{
+                  pt: 1,
+                  bgcolor: 'transparent',
+                }}
+              >
+                {t('auth.reset_password.apology_patience')}
+              </Typography>
+            </Box>
           </MAlert>
         </Snackbar>
-        <CssBaseline />
-        <Box
+
+        <Card
           sx={{
-            my: 8,
-            mx: 4,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            width: '100%',
+            maxWidth: 450,
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlined />
-          </Avatar>
-          <Typography component='h1' variant='h5'>
-            Password reset
-          </Typography>
-          <Box
-            component='form'
-            noValidate
-            onSubmit={controlForm.handleSubmit(onSubmit)}
-            sx={{ mt: 3 }}
+          <CardContent
+            sx={{
+              padding: { xs: 3, sm: 4 },
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
           >
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, sm: 12 }}>
-                <TextField
-                  required
-                  fullWidth
-                  label='Courriel'
-                  value={email || ''}
-                  InputProps={{
-                    inputProps: {
-                      readOnly: true,
-                    },
-                  }}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Controller
-                  name='new_password'
-                  control={controlForm.control}
-                  rules={{
-                    required: {
-                      value: true,
-                      message: 'Mot de passe requis',
-                    },
-                    minLength: {
-                      value: 8,
-                      message:
-                        'Le mot de passe doit contenir au moins 8 caractères',
-                    },
-                    pattern: {
-                      value:
-                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
-                      message:
-                        'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial',
-                    },
-                  }}
-                  render={({ field, formState }) => (
-                    <TextField
-                      {...field}
-                      required
-                      fullWidth
-                      type={showPassword ? 'text' : 'password'}
-                      label='Mot de passe'
-                      autoComplete='password'
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton
-                              aria-label='toggle password visibility'
-                              onClick={handleShowPassword}
-                              edge='end'
-                            >
-                              {showPassword ? (
-                                <Visibility />
-                              ) : (
-                                <VisibilityOff />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                      error={formState?.errors?.new_password !== undefined}
-                      helperText={formState?.errors?.new_password?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Controller
-                  name='confirmPassword'
-                  control={controlForm.control}
-                  rules={{
-                    required: true,
-                    onBlur: (event) => {
-                      if (
-                        controlForm.getValues('new_password')?.trim() !==
-                        event.target.value
-                      )
-                        controlForm.setError(
-                          'confirmPassword',
-                          {
-                            type: 'notMatch',
-                            message: 'Les mots de passe ne correspondent pas',
-                          },
-                          { shouldFocus: true },
-                        )
-                      else controlForm.clearErrors('confirmPassword')
-                    },
-                  }}
-                  render={({ field, formState }) => (
-                    <TextField
-                      {...field}
-                      required
-                      type={showPassword ? 'text' : 'password'}
-                      label='Confirmer vorte mot de passe'
-                      fullWidth
-                      autoComplete='password'
-                      error={formState?.errors?.confirmPassword !== undefined}
-                      helperText={formState?.errors?.confirmPassword?.message}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type='submit'
-              fullWidth
-              variant='contained'
-              sx={{ mt: 3, mb: 2 }}
-              disabled={resetPasswordMutation.isPending}
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlined />
+            </Avatar>
+            <Typography component='h1' variant='h5'>
+              {t('auth.reset_password.title')}
+            </Typography>
+            <Box
+              component='form'
+              noValidate
+              onSubmit={controlForm.handleSubmit(onSubmit)}
+              sx={{ mt: 3, width: '100%' }}
             >
-              {resetPasswordMutation.isPending ? 'Resetting...' : 'Reset'}
-            </Button>
-          </Box>
-        </Box>
-        <Box mt={5}>
-          <Copyright />
-        </Box>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    fullWidth
+                    label={t('auth.reset_password.email_label')}
+                    value={email || ''}
+                    slotProps={{
+                      input: {
+                        readOnly: true,
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Controller
+                    name='new_password'
+                    control={controlForm.control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: t('auth.login.password_required'),
+                      },
+                      minLength: {
+                        value: 8,
+                        message: t('auth.register.password_min_length'),
+                      },
+                      pattern: {
+                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+                        message: t('auth.register.password_complexity'),
+                      },
+                    }}
+                    render={({ field, formState }) => (
+                      <TextField
+                        {...field}
+                        required
+                        fullWidth
+                        type={showPassword ? 'text' : 'password'}
+                        label={t('auth.reset_password.password_label')}
+                        autoComplete='new-password'
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton
+                                  aria-label='toggle password visibility'
+                                  onClick={handleShowPassword}
+                                  edge='end'
+                                >
+                                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                        error={formState?.errors?.new_password !== undefined}
+                        helperText={formState?.errors?.new_password?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Controller
+                    name='confirmPassword'
+                    control={controlForm.control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: t('auth.register.confirm_password_required'),
+                      },
+                      validate: (value) =>
+                        value === controlForm.getValues('new_password') ||
+                        t('auth.register.passwords_must_match'),
+                    }}
+                    render={({ field, formState }) => (
+                      <TextField
+                        {...field}
+                        required
+                        type={showPassword ? 'text' : 'password'}
+                        label={t('auth.reset_password.confirm_password_label')}
+                        fullWidth
+                        autoComplete='new-password'
+                        error={formState?.errors?.confirmPassword !== undefined}
+                        helperText={formState?.errors?.confirmPassword?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                sx={{ mt: 3, mb: 2 }}
+                disabled={resetPasswordMutation.isPending}
+              >
+                {resetPasswordMutation.isPending
+                  ? t('auth.reset_password.button_resetting')
+                  : t('auth.reset_password.button_reset')}
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
       </Container>
     </React.Fragment>
   )

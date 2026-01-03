@@ -38,10 +38,9 @@ const select: Theme['components'] = {
             width: '1.125rem',
           },
         },
-        '&:not(aria-label="Without label") ~ .MuiOutlinedInput-notchedOutline > legend > span':
-          {
-            paddingInline: '5px',
-          },
+        '&:not(aria-label="Without label") ~ .MuiOutlinedInput-notchedOutline > legend > span': {
+          paddingInline: '5px',
+        },
       }),
     },
   },

@@ -58,9 +58,8 @@ const ResumeIntelligence: React.FC = () => {
                     maxWidth: 540,
                   }}
                 >
-                  Our AI scans your resume against job descriptions to identify
-                  key skills, suggest improvements, and calculate a match score,
-                  ensuring you stand out to recruiters.
+                  Our AI scans your resume against job descriptions to identify key skills, suggest
+                  improvements, and calculate a match score, ensuring you stand out to recruiters.
                 </Typography>
               </Box>
 
@@ -77,8 +76,7 @@ const ResumeIntelligence: React.FC = () => {
                     textTransform: 'none',
                     borderRadius: 2,
                     bgcolor: 'primary.main',
-                    color:
-                      theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                    color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                     boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.4)}`,
                     transition: 'all 0.3s ease',
                     '&:hover': {
@@ -157,10 +155,7 @@ const ResumeIntelligence: React.FC = () => {
                   elevation={0}
                   sx={{
                     p: 3,
-                    bgcolor:
-                      theme.palette.mode === 'dark'
-                        ? alpha('#fff', 0.95)
-                        : '#fff',
+                    bgcolor: theme.palette.mode === 'dark' ? alpha('#fff', 0.95) : '#fff',
                     border: 1,
                     borderColor: alpha(theme.palette.divider, 0.5),
                     borderTop: 'none',
@@ -270,9 +265,7 @@ const ResumeIntelligence: React.FC = () => {
                     />
                   </Box>
 
-                  <Box
-                    sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
-                  >
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                     <Box
                       sx={{
                         height: 10,
@@ -379,18 +372,10 @@ const ResumeIntelligence: React.FC = () => {
                     }}
                   />
                   <Box sx={{ textAlign: 'center', zIndex: 1 }}>
-                    <Typography
-                      variant='h3'
-                      fontWeight={800}
-                      color='text.primary'
-                    >
+                    <Typography variant='h3' fontWeight={800} color='text.primary'>
                       88%
                     </Typography>
-                    <Typography
-                      variant='body2'
-                      color='text.secondary'
-                      fontWeight={500}
-                    >
+                    <Typography variant='body2' color='text.secondary' fontWeight={500}>
                       Match Score
                     </Typography>
                   </Box>

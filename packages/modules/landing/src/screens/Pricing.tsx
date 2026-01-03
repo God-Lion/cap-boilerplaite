@@ -116,9 +116,7 @@ const faqs: FAQ[] = [
 ]
 
 export const Pricing: React.FC = () => {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>(
-    'monthly',
-  )
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly')
 
   const handleBillingChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -251,12 +249,7 @@ export const Pricing: React.FC = () => {
                   </Box>
                 )}
                 <CardContent sx={{ flexGrow: 1, pt: plan.featured ? 4 : 3 }}>
-                  <Typography
-                    variant='h5'
-                    component='h3'
-                    gutterBottom
-                    sx={{ fontWeight: 700 }}
-                  >
+                  <Typography variant='h5' component='h3' gutterBottom sx={{ fontWeight: 700 }}>
                     {plan.name}
                   </Typography>
                   <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 3 }}>
@@ -270,11 +263,7 @@ export const Pricing: React.FC = () => {
                     >
                       ${getPrice(plan)}
                     </Typography>
-                    <Typography
-                      variant='body1'
-                      color='text.secondary'
-                      sx={{ ml: 1 }}
-                    >
+                    <Typography variant='body1' color='text.secondary' sx={{ ml: 1 }}>
                       /month
                     </Typography>
                   </Box>
@@ -330,8 +319,7 @@ export const Pricing: React.FC = () => {
               Frequently Asked Questions
             </Typography>
             <Typography variant='body1' color='text.secondary'>
-              Can't find the answer you're looking for? Reach out to our
-              customer support team.
+              Can't find the answer you're looking for? Reach out to our customer support team.
             </Typography>
           </Box>
 

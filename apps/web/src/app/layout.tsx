@@ -1,46 +1,30 @@
+// cspell:ignore Customizer Navbars
 import React from 'react'
 import type { ChildrenType } from '@cap/platform-core'
-// import type { Locale } from 'src/configs/i18n'
-import LayoutWrapper from './layouts/LayoutWrapper'
-import PublicLayout from './components/layout/PublicLayout'
-import VerticalLayout from './layouts/VerticalLayout'
-import HorizontalLayout from './layouts/HorizontalLayout'
-import Navigation from './components/layout/vertical/Navigation'
-import Header from './components/layout/horizontal/Header'
-import Navbar from './components/layout/vertical/Navbar'
-import VerticalFooter from './components/layout/vertical/Footer'
-import HorizontalFooter from './components/layout/horizontal/Footer'
+import {
+  LayoutWrapper,
+  PublicLayout,
+  VerticalLayout,
+  HorizontalLayout,
+  VerticalNavigation,
+  HorizontalNavigation,
+  Header,
+  VerticalFooter,
+  HorizontalFooter,
+  Footer as PublicFooter,
+} from '@cap/layout'
 // import Customizer from 'src/core/components/customizer'
 import ScrollToTop from '../core/components/scroll-to-top'
 import Button from '@mui/material/Button'
 import { ArrowUpward } from '@mui/icons-material'
-import type { IMenu } from './components/layout/types'
-import {
-  Navbar as PublicNavbar,
-  GuestNavbar,
-  Footer as PublicFooter,
-} from './components'
-import { useAuth, Locale } from '@cap/platform-core'
+import PublicNavbar from './Menu/Navbars/Navbar'
+import GuestNavbar from './Menu/Navbars/GuestNavbar'
+import { useAuth, Locale, getMode, getSystemMode } from '@cap/platform-core'
 import { useTranslation } from 'react-i18next'
-import { useLang } from './utils/getDictionary'
-
-// import { i18n } from 'src/configs/i18n'
-// import { getDictionary } from 'src/utils'
-// import { getMode, getSystemMode } from 'src/core/utils/serverHelpers'
-
-// Default menu configuration
-const defaultMenu: IMenu[] = [
-  {
-    name: 'home',
-    icon: 'HomeOutlined',
-    link: '/',
-  },
-  {
-    name: 'dashboard',
-    icon: 'DashboardOutlined',
-    link: '/dashboard',
-  },
-]
+import { useLang, getDictionary } from './utils/getDictionary'
+import VerticalMenu from './Menu/vertical/VerticalMenu'
+import HorizontalMenu from './Menu/HorizontalMenu'
+import Navbar from './Menu/vertical/Navbar'
 
 const NavBartWrapper = () => {
   const { isAuthenticated } = useAuth()
@@ -52,20 +36,13 @@ const NavBartWrapper = () => {
   return <PublicNavbar />
 }
 
-const Layout: React.FC<ChildrenType> = ({
-  children, // params,
-  //& { params: { lang: Locale } }
-}) => {
-  const { i18n } = useTranslation()
-  const dictionary = useLang(i18n.language as Locale)
-  // const mode = getMode()
-  // const systemMode = getSystemMode()
-
-  // const direction = 'ltr'
-  const systemMode = 'dark'
-  const mode = 'dark'
-  // const menu = updateMenu()
-  const menu = defaultMenu
+const Layout: React.FC<ChildrenType> = ({ children }) => {
+  const { i18n: i18nInstance } = useTranslation()
+  const dictionary = useLang(i18nInstance.language as Locale) as Awaited<
+    ReturnType<typeof getDictionary>
+  >
+  const mode = getMode()
+  const systemMode = getSystemMode()
 
   return (
     <React.Fragment>
@@ -79,12 +56,9 @@ const Layout: React.FC<ChildrenType> = ({
         verticalLayout={
           <VerticalLayout
             navigation={
-              <Navigation
-                dictionary={dictionary}
-                menu={menu}
-                mode={mode}
-                systemMode={systemMode}
-              />
+              <VerticalNavigation mode={mode} systemMode={systemMode}>
+                {(scrollMenu) => <VerticalMenu dictionary={dictionary} scrollMenu={scrollMenu} />}
+              </VerticalNavigation>
             }
             navbar={<Navbar />}
             footer={<VerticalFooter />}
@@ -93,7 +67,16 @@ const Layout: React.FC<ChildrenType> = ({
           </VerticalLayout>
         }
         horizontalLayout={
-          <HorizontalLayout header={<Header />} footer={<HorizontalFooter />}>
+          <HorizontalLayout
+            header={
+              <Header
+                navigation={
+                  <HorizontalNavigation menu={<HorizontalMenu dictionary={dictionary} />} />
+                }
+              />
+            }
+            footer={<HorizontalFooter />}
+          >
             {children}
           </HorizontalLayout>
         }

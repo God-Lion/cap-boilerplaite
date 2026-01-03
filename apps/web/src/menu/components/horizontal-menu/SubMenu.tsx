@@ -23,11 +23,7 @@ import {
 } from '@floating-ui/react'
 import classnames from 'classnames'
 import type { CSSObject } from '@emotion/styled'
-import type {
-  ChildrenType,
-  RootStylesType,
-  SubMenuItemElement,
-} from '../../types'
+import type { ChildrenType, RootStylesType, SubMenuItemElement } from '../../types'
 import type { MenuItemProps } from './MenuItem'
 import SubMenuContent from './SubMenuContent'
 import { useHorizontalMenu } from '../../contexts/horizontalNavContext'
@@ -44,10 +40,7 @@ import StyledSubMenuContentWrapper from '../../styles/horizontal/StyledHorizonta
 import ulStyles from '../../styles/horizontal/horizontalUl.module.css'
 import ChevronRight from '../../svg/ChevronRight'
 
-export type SubMenuProps = Omit<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  'prefix'
-> &
+export type SubMenuProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'prefix'> &
   RootStylesType &
   Partial<ChildrenType> & {
     label: React.ReactNode
@@ -73,9 +66,7 @@ type StyledSubMenuProps = Pick<SubMenuProps, 'rootStyles' | 'disabled'> & {
 }
 
 type HorizontalSubMenuContextProps = {
-  getItemProps: (
-    userProps?: React.HTMLProps<HTMLElement>,
-  ) => Record<string, unknown>
+  getItemProps: (userProps?: React.HTMLProps<HTMLElement>) => Record<string, unknown>
 }
 
 const StyledSubMenu = styled.li<StyledSubMenuProps>`
@@ -103,15 +94,11 @@ const StyledSubMenu = styled.li<StyledSubMenuProps>`
   }
 `
 
-export const HorizontalSubMenuContext =
-  React.createContext<HorizontalSubMenuContextProps>({
-    getItemProps: () => ({}),
-  })
+export const HorizontalSubMenuContext = React.createContext<HorizontalSubMenuContextProps>({
+  getItemProps: () => ({}),
+})
 
-const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
-  props,
-  ref,
-) => {
+const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (props, ref) => {
   // Props
   const {
     children,
@@ -171,21 +158,14 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
       : popoutMenuOffset.alignmentAxis)
 
   React.useEffect(() => {
-    dir.current = window
-      .getComputedStyle(document.documentElement)
-      .getPropertyValue('direction')
+    dir.current = window.getComputedStyle(document.documentElement).getPropertyValue('direction')
   }, [])
 
   const { y, refs, floatingStyles, context } = useFloating({
     open,
     nodeId,
     onOpenChange: setOpen,
-    placement:
-      level > 0
-        ? dir.current !== 'rtl'
-          ? 'right-start'
-          : 'left-start'
-        : 'bottom-start',
+    placement: level > 0 ? (dir.current !== 'rtl' ? 'right-start' : 'left-start') : 'bottom-start',
     middleware: [
       offset({
         mainAxis: mainAxisOffset,
@@ -234,13 +214,14 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
   const role = useRole(context, { role: 'menu' })
 
   // Merge all the interactions into prop getters
-  const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions(
-    [hover, click, dismiss, role],
-  )
+  const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
+    hover,
+    click,
+    dismiss,
+    role,
+  ])
 
-  const handleOnClick = (
-    event: React.MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>,
-  ) => {
+  const handleOnClick = (event: React.MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) => {
     onClick?.(event)
     triggerPopout === 'click' && setOpen(!open)
   }
@@ -253,9 +234,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
     }
   }
 
-  const getSubMenuItemStyles = (
-    element: SubMenuItemElement,
-  ): CSSObject | undefined => {
+  const getSubMenuItemStyles = (element: SubMenuItemElement): CSSObject | undefined => {
     // If the menuItemStyles prop is provided, get the styles for the specified element.
     if (menuItemStyles) {
       // Define the parameters that are passed to the style functions.
@@ -267,9 +246,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
       if (styleFunction) {
         // If the style function is a function, call it and return the result.
         // Otherwise, return the style function itself.
-        return typeof styleFunction === 'function'
-          ? styleFunction(params)
-          : styleFunction
+        return typeof styleFunction === 'function' ? styleFunction(params) : styleFunction
       }
     }
   }
@@ -432,10 +409,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
                   top={y ? y - window.scrollY : 0}
                   firstLevel={level === 0}
                   browserScroll={browserScroll}
-                  className={classnames(
-                    menuClasses.subMenuContent,
-                    contentClassName,
-                  )}
+                  className={classnames(menuClasses.subMenuContent, contentClassName)}
                   $rootStyles={getSubMenuItemStyles('subMenuContent')}
                   style={{ ...styles }}
                 >

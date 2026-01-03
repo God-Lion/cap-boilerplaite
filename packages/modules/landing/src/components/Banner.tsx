@@ -35,11 +35,7 @@ const Banner: React.FC = () => {
       }}
     >
       {/* Preload background image for better performance */}
-      <img
-        style={{ display: 'none' }}
-        src={bannerContent.image}
-        alt={bannerContent.imageText}
-      />
+      <img style={{ display: 'none' }} src={bannerContent.image} alt={bannerContent.imageText} />
 
       {/* Dark overlay for better text readability */}
       <Box
@@ -50,9 +46,7 @@ const Banner: React.FC = () => {
           right: 0,
           left: 0,
           backgroundColor: (theme) =>
-            theme.palette.mode === 'light'
-              ? 'rgba(0,0,0,.6)'
-              : 'rgba(0,0,0,.5)',
+            theme.palette.mode === 'light' ? 'rgba(0,0,0,.6)' : 'rgba(0,0,0,.5)',
           borderRadius: 2,
         }}
       />

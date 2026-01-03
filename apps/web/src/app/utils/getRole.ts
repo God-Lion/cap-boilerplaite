@@ -1,4 +1,4 @@
-import { Roles } from './types'
+import { Roles } from '@cap/platform-core'
 
 const getRole = (roleId: number | string | undefined) => {
   if (roleId === null || roleId === undefined) return ''

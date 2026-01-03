@@ -4,10 +4,7 @@ import type { MenuItemProps } from '../../components/horizontal-menu/MenuItem'
 import { menuClasses } from '../../utils/menuClasses'
 import { menuButtonStyles } from '../../components/horizontal-menu/MenuButton'
 
-type StyledHorizontalMenuItemProps = Pick<
-  MenuItemProps,
-  'rootStyles' | 'disabled'
-> & {
+type StyledHorizontalMenuItemProps = Pick<MenuItemProps, 'rootStyles' | 'disabled'> & {
   level: number
   menuItemStyles?: CSSObject
   buttonStyles?: CSSObject

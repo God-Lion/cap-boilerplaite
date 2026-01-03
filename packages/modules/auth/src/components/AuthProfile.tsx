@@ -15,10 +15,12 @@ import {
   MenuItem,
   CircularProgress,
 } from '@mui/material'
-import { Settings, ColorLens, Logout } from '@mui/icons-material'
-import { useAuth, IUserReponse } from '@cap/platform-core'
+import { Settings, Logout } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
+import { useAuth, IUserResponse } from '@cap/platform-core'
+import { useLogout } from '../hooks/useAuthQuery'
 
-const Profile: React.FC<{ user: IUserReponse }> = ({ user }) => (
+const Profile: React.FC<{ user: IUserResponse }> = ({ user }) => (
   <Stack direction='column'>
     <Stack
       direction='row'
@@ -26,83 +28,71 @@ const Profile: React.FC<{ user: IUserReponse }> = ({ user }) => (
       justifyContent='start'
       alignItems='center'
       sx={{
-        mx: '15px',
-        my: '9px',
+        px: 2,
+        py: 1.5,
       }}
     >
       <Avatar
         variant='circular'
         src={user?.avatar}
         alt={`${user?.firstName || ''} ${user?.lastName || ''}`}
-        style={{
-          width: '40px',
-          height: '40px',
-        }}
         sx={{
-          margin: 'auto',
+          width: 40,
+          height: 40,
         }}
-      >
-        {!user?.avatar && (
-          <ColorLens
-            style={{
-              width: '60px',
-              height: '60px',
-            }}
-          />
-        )}
-      </Avatar>
+      />
       <Stack direction='column'>
-        <Typography noWrap>
+        <Typography variant='body1' sx={{ fontWeight: 600 }} noWrap>
           {user?.firstName} {user?.lastName}
         </Typography>
-        <Typography>{user?.email}</Typography>
+        <Typography variant='body2' color='text.secondary' noWrap>
+          {user?.email}
+        </Typography>
       </Stack>
     </Stack>
-    <Divider sx={{ backgroundColor: '#FFF000' }} />
+    <Divider />
   </Stack>
 )
 
 const AuthProfile = () => {
   const navigate = useNavigate()
-  const { user: authUser } = useAuth()
-  const { signOut, isSigningOut } = useSignOut({
+  const { t } = useTranslation()
+  const { user: authUser, signOut: zustandSignOut } = useAuth()
+
+  const { mutate: logout, isPending } = useLogout({
     onSuccess: () => {
-      console.log('[AuthProfile] User signed out successfully')
+      zustandSignOut()
+      navigate('/auth/sign-in', { replace: true })
+    },
+    onError: () => {
+      // Even on error, clear local state
+      zustandSignOut()
+      navigate('/auth/sign-in', { replace: true })
     },
   })
 
   // Extract user data from IAuth structure
   const user = authUser?.user
 
-  // ✅ Move useState BEFORE early return
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
-  // Don't render if no user
   if (!user) {
     return null
   }
 
-  const settings: Array<{
-    icon: React.JSX.Element
-    name: string
-    link: string
-  }> = [
-      // {
-      //   // icon: <AccountCircle fontSize='small' />,
-      //   // name: 'Account',
-      //   link: 'account',
-      //   component: <Profile user={user} />,
-      // },
-      {
-        icon: <Settings fontSize='small' />,
-        name: 'Settings',
-        link: 'settings',
-      },
-    ]
+  const settingsItems = [
+    {
+      icon: <Settings fontSize='small' />,
+      name: t('auth.profile.settings'),
+      link: 'settings',
+    },
+  ]
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -110,7 +100,7 @@ const AuthProfile = () => {
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Tooltip title='Account settings'>
+        <Tooltip title={t('auth.profile.tooltip')}>
           <IconButton
             onClick={handleClick}
             size='small'
@@ -122,7 +112,7 @@ const AuthProfile = () => {
             <Avatar
               alt={`${user?.firstName || ''} ${user?.lastName || ''}`}
               src={user?.avatar}
-              sx={{ width: 32, height: 32 }}
+              sx={{ width: 32, height: 32, border: '2px solid', borderColor: 'primary.light' }}
             />
           </IconButton>
         </Tooltip>
@@ -133,29 +123,33 @@ const AuthProfile = () => {
         open={open}
         onClose={handleClose}
         onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            '&::before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.12))',
+              mt: 1.5,
+              minWidth: 200,
+              borderRadius: 2,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
             },
           },
         }}
@@ -163,42 +157,53 @@ const AuthProfile = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <Profile user={user} />
-        {settings?.map((setting, index) => (
-          <List key={index}>
+        <List sx={{ pt: 0, pb: 0 }}>
+          {settingsItems.map((item, index) => (
             <MenuItem
+              key={index}
               onClick={() => {
-                navigate(`/${setting.link}`)
+                navigate(`/${item.link}`)
                 handleClose()
               }}
+              sx={{ py: 1.5 }}
             >
-              <ListItemIcon>{setting?.icon}</ListItemIcon>
-              {setting?.name}
+              <ListItemIcon sx={{ minWidth: (theme) => theme.spacing(5) }}>
+                {item.icon}
+              </ListItemIcon>
+              <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                {item.name}
+              </Typography>
             </MenuItem>
-          </List>
-        ))}
-        <Button
-          variant='contained'
-          color='error'
-          disabled={isSigningOut}
-          sx={{
-            width: '95%',
-            mx: '8px',
-            my: '2px',
-          }}
-          endIcon={
-            isSigningOut ? (
-              <CircularProgress size={16} color='inherit' />
-            ) : (
-              <Logout fontSize='small' />
-            )
-          }
-          onClick={() => {
-            handleClose()
-            signOut()
-          }}
-        >
-          {isSigningOut ? 'Signing out...' : 'Logout'}
-        </Button>
+          ))}
+        </List>
+        <Divider sx={{ my: 1 }} />
+        <Box sx={{ px: 2, pb: 1, pt: 0.5 }}>
+          <Button
+            fullWidth
+            variant='contained'
+            color='error'
+            disabled={isPending}
+            size='small'
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 600,
+            }}
+            endIcon={
+              isPending ? (
+                <CircularProgress size={16} color='inherit' />
+              ) : (
+                <Logout fontSize='small' />
+              )
+            }
+            onClick={() => {
+              handleClose()
+              logout()
+            }}
+          >
+            {isPending ? t('auth.profile.signing_out') : t('auth.profile.logout')}
+          </Button>
+        </Box>
       </Menu>
     </React.Fragment>
   )

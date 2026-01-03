@@ -24,12 +24,9 @@ export interface JobsSlice {
   resetSearchFilters: () => void
 }
 
-export const createJobsSlice: StateCreator<
-  AppStore,
-  [['zustand/immer', never]],
-  [],
-  JobsSlice
-> = (set) => ({
+export const createJobsSlice: StateCreator<AppStore, [['zustand/immer', never]], [], JobsSlice> = (
+  set,
+) => ({
   jobs: [],
   savedJobs: [],
   applications: [],
@@ -63,9 +60,7 @@ export const createJobsSlice: StateCreator<
     })),
   updateApplication: (application) =>
     set((state) => ({
-      applications: state.applications.map((a) =>
-        a.id === application.id ? application : a,
-      ),
+      applications: state.applications.map((a) => (a.id === application.id ? application : a)),
     })),
   setSearchFilters: (filters) => set({ searchFilters: filters }),
   resetSearchFilters: () => set({ searchFilters: {} }),

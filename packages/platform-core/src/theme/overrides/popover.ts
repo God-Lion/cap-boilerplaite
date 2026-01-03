@@ -7,12 +7,12 @@ const popover = (skin: Skin): Theme['components'] => ({
       paper: {
         ...(skin === 'bordered'
           ? {
-            boxShadow: 'none',
-            border: '1px solid var(--mui-palette-divider)',
-          }
+              boxShadow: 'none',
+              border: '1px solid var(--mui-palette-divider)',
+            }
           : {
-            boxShadow: 'var(--mui-customShadows-sm)',
-          }),
+              boxShadow: 'var(--mui-customShadows-sm)',
+            }),
       },
     },
   },

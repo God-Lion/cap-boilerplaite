@@ -124,9 +124,7 @@ export default function VirtualizedTable<T>({
 
   const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0
   const paddingBottom =
-    virtualRows.length > 0
-      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
-      : 0
+    virtualRows.length > 0 ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0) : 0
 
   const fillArray = Array.apply(null, Array(5)).map((_, idx) => idx)
 
@@ -161,11 +159,7 @@ export default function VirtualizedTable<T>({
               overflow: shouldVirtualize ? 'auto' : 'visible',
             }}
           >
-            <Table
-              sx={{ minWidth: 650 }}
-              stickyHeader
-              aria-label='virtualized table'
-            >
+            <Table sx={{ minWidth: 650 }} stickyHeader aria-label='virtualized table'>
               <TableHead>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -175,12 +169,7 @@ export default function VirtualizedTable<T>({
                           key={header.id}
                           colSpan={header.colSpan}
                           style={{
-                            padding:
-                              density === 'sm'
-                                ? '4px'
-                                : density === 'md'
-                                  ? '8px'
-                                  : '16px',
+                            padding: density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px',
                             transition: 'padding 0.2s',
                           }}
                         >
@@ -189,16 +178,11 @@ export default function VirtualizedTable<T>({
                               onClick={header.column.getToggleSortingHandler()}
                               style={{ cursor: 'pointer' }}
                             >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
+                              {flexRender(header.column.columnDef.header, header.getContext())}
                               {{
                                 asc: <ArrowUpward fontSize='small' />,
                                 desc: <ArrowDownward fontSize='small' />,
-                              }[
-                                header.column.getIsSorted() as 'asc' | 'desc'
-                              ] ?? null}
+                              }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
                             </div>
                           )}
                         </TableCell>
@@ -210,10 +194,7 @@ export default function VirtualizedTable<T>({
               {table.getFilteredRowModel().rows.length === 0 ? (
                 <TableBody>
                   <TableRow>
-                    <TableCell
-                      colSpan={table.getVisibleFlatColumns().length}
-                      align='center'
-                    >
+                    <TableCell colSpan={table.getVisibleFlatColumns().length} align='center'>
                       No data available
                     </TableCell>
                   </TableRow>
@@ -225,10 +206,7 @@ export default function VirtualizedTable<T>({
                       <TableRow key={`TableRow${Math.random()}`}>
                         {table.getHeaderGroups().map(() => (
                           <TableCell key={`${Math.random()}`}>
-                            <Skeleton
-                              variant='text'
-                              sx={{ fontSize: '1rem' }}
-                            />
+                            <Skeleton variant='text' sx={{ fontSize: '1rem' }} />
                           </TableCell>
                         ))}
                       </TableRow>
@@ -253,18 +231,11 @@ export default function VirtualizedTable<T>({
                                   key={cell.id}
                                   style={{
                                     padding:
-                                      density === 'sm'
-                                        ? '4px'
-                                        : density === 'md'
-                                          ? '8px'
-                                          : '16px',
+                                      density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px',
                                     transition: 'padding 0.2s',
                                   }}
                                 >
-                                  {flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext(),
-                                  )}
+                                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </TableCell>
                               )
                             })}
@@ -292,18 +263,11 @@ export default function VirtualizedTable<T>({
                                 key={cell.id}
                                 style={{
                                   padding:
-                                    density === 'sm'
-                                      ? '4px'
-                                      : density === 'md'
-                                        ? '8px'
-                                        : '16px',
+                                    density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px',
                                   transition: 'padding 0.2s',
                                 }}
                               >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext(),
-                                )}
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
                               </TableCell>
                             )
                           })}
@@ -316,8 +280,7 @@ export default function VirtualizedTable<T>({
           </TableContainer>
           {shouldVirtualize && (
             <Box sx={{ mt: 2, textAlign: 'center', color: 'text.secondary' }}>
-              Showing {virtualRows.length} of {rows.length} rows (Virtual
-              Scrolling Enabled)
+              Showing {virtualRows.length} of {rows.length} rows (Virtual Scrolling Enabled)
             </Box>
           )}
         </CardContent>

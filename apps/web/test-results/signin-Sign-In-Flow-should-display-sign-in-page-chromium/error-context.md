@@ -1,0 +1,61 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img "God Lion Seeker"
+          - button [ref=e9] [cursor=pointer]:
+            - img [ref=e10]
+        - navigation [ref=e13]:
+          - list [ref=e14]:
+            - listitem [ref=e15]:
+              - list [ref=e16]:
+                - listitem [ref=e17]
+                - listitem [ref=e18]:
+                  - img [ref=e22] [cursor=pointer]
+    - generic [ref=e24]:
+      - banner:
+        - generic [ref=e26]:
+          - generic [ref=e29] [cursor=pointer]:
+            - button [ref=e30]:
+              - img [ref=e31]
+            - paragraph [ref=e33]: Search ⌘K
+          - generic [ref=e34]:
+            - button [ref=e35] [cursor=pointer]:
+              - img [ref=e36]
+            - button "Switch theme mode - currently Light" [ref=e38] [cursor=pointer]:
+              - img [ref=e39]
+            - button [ref=e41] [cursor=pointer]:
+              - img [ref=e42]
+            - button [ref=e44] [cursor=pointer]:
+              - img [ref=e46]
+            - img [ref=e51] [cursor=pointer]
+      - main [ref=e55]:
+        - generic [ref=e58]:
+          - img "God Lion Seeker Logo" [ref=e60]
+          - generic [ref=e62]:
+            - heading "Sign in" [level=5] [ref=e63]
+            - paragraph [ref=e64]: Use your OneAuth Account
+            - generic [ref=e65]:
+              - generic [ref=e66]: Email or phone
+              - generic [ref=e67]:
+                - img [ref=e69]
+                - textbox "Email or phone" [ref=e71]
+                - group:
+                  - generic: Email or phone
+            - generic [ref=e72]:
+              - button "Create account" [ref=e73] [cursor=pointer]
+              - button "Next" [ref=e74] [cursor=pointer]:
+                - text: Next
+                - img [ref=e76]
+      - contentinfo [ref=e78]:
+        - paragraph [ref=e81]:
+          - text: © 2026, Made by
+          - link "GLDeveloper" [ref=e82] [cursor=pointer]:
+            - /url: /
+  - generic:
+    - region "Notifications Alt+T"
+```

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Chip } from '@mui/material'
-import { useAuth } from '@/store/index'
+import { useAuth } from '@cap/platform-core'
 
 interface RoleIndicatorProps {
   showLabel?: boolean

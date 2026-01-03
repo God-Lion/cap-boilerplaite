@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { fetchClient, FetchRequestConfig, FetchResponse, HttpError } from '../api/api.fetch.client'
 import { requestDeduplicator } from './../requestDeduplication'
@@ -42,7 +41,7 @@ interface UseDeduplicatedRequestResult<T> {
 
 function useDeduplicatedRequest<T = any>(
   url: string,
-  options: UseDeduplicatedRequestOptions<T> = {}
+  options: UseDeduplicatedRequestOptions<T> = {},
 ): UseDeduplicatedRequestResult<T> {
   const {
     enabled = true,
@@ -91,7 +90,7 @@ function useDeduplicatedRequest<T = any>(
           const requestUrl = (deduplicatedConfig as any).url || url
           // We need to remove 'url' from config before passing to fetchClient if fetchClient doesn't expect it in config (it just ignores extra props usually)
           return fetchClient.get<T>(requestUrl, deduplicatedConfig)
-        }
+        },
       )
 
       if (isMountedRef.current) {
@@ -108,8 +107,6 @@ function useDeduplicatedRequest<T = any>(
       }
     }
   }, [url, configKey])
-
-
 
   const cancel = useCallback(() => {
     requestDeduplicator.cancelRequest(config)
@@ -157,7 +154,7 @@ function useDeduplicatedRequest<T = any>(
  * Hook for making a deduplicated mutation request (POST, PUT, DELETE, etc.)
  */
 function useDeduplicatedMutation<TData = any, TVariables = any>(
-  options: Omit<UseDeduplicatedRequestOptions<TData>, 'enabled'> = {}
+  options: Omit<UseDeduplicatedRequestOptions<TData>, 'enabled'> = {},
 ) {
   const [data, setData] = useState<TData | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -189,7 +186,7 @@ function useDeduplicatedMutation<TData = any, TVariables = any>(
           (deduplicatedConfig) => {
             const requestUrl = (deduplicatedConfig as any).url || url
             return fetchClient.request(requestUrl, deduplicatedConfig)
-          }
+          },
         )
 
         setData(response.data)
@@ -204,7 +201,7 @@ function useDeduplicatedMutation<TData = any, TVariables = any>(
         return null
       }
     },
-    [fetchConfigKey, forceDeduplication, onSuccess, onError]
+    [fetchConfigKey, forceDeduplication, onSuccess, onError],
   )
 
   const reset = useCallback(() => {

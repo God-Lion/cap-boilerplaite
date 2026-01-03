@@ -1,23 +1,28 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import App from './AppAssembly'
 import Providers from './app/Providers'
+import Layout from './app/layout'
+import App from './AppAssembly'
+import { i18n } from '@cap/platform-core'
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const root = createRoot(document.getElementById('root')!)
-const direction = 'ltr'
+const direction = i18n.langDirection[i18n.defaultLocale]
 
 if (import.meta.env.PROD) {
   // Disable console in production
-  console.log = () => { }
-  console.warn = () => { }
-  console.error = () => { }
+  console.log = () => {}
+  console.warn = () => {}
+  console.error = () => {}
 }
 
 root.render(
   <StrictMode>
     <Providers direction={direction}>
-      <App />
+      <Layout>
+        <App />
+      </Layout>
     </Providers>
   </StrictMode>,
 )

@@ -9,7 +9,7 @@ Module contracts are TypeScript interfaces that define:
 1. **Service Contracts** - What methods a service must implement
 2. **Data Contracts** - The shape of data passed between modules
 3. **Component Contracts** - Props interfaces for reusable components
-12. **RBAC Guard Logic** - How modules define and enforce permissions (LEGO contract)
+4. **RBAC Guard Logic** - How modules define and enforce permissions (LEGO contract)
 
 ## What is the LEGO Contract?
 
@@ -45,16 +45,16 @@ The `RouteHandle` defines the standard metadata that the assembly system underst
 ```typescript
 export interface RouteHandle {
   /** Roles authorized for this route (OR logic) */
-  requiredRoles?: Roles[];
-  
+  requiredRoles?: Roles[]
+
   /** Specific permission identifiers (AND logic) */
-  requiredPermissions?: string[];
-  
+  requiredPermissions?: string[]
+
   /** Route is strictly for non-authenticated users */
-  guestOnly?: boolean;
-  
+  guestOnly?: boolean
+
   /** Route requires any valid active session */
-  authOnly?: boolean;
+  authOnly?: boolean
 }
 ```
 
@@ -109,7 +109,7 @@ export interface IUser {
 }
 
 export interface IUser {
-  email: string  // Merged with above
+  email: string // Merged with above
 }
 ```
 
@@ -140,18 +140,18 @@ export interface IAuthService {
    * @throws AuthError if credentials are invalid
    */
   login(credentials: ILoginCredentials): Promise<IAuthResponse>
-  
+
   /**
    * Log out current user
    */
   logout(): Promise<void>
-  
+
   /**
    * Get currently authenticated user
    * @returns User object or null if not authenticated
    */
   getCurrentUser(): Promise<IUser | null>
-  
+
   /**
    * Refresh authentication token
    */
@@ -182,22 +182,22 @@ export interface IAuthResponse {
 export interface IUser {
   /** Unique user identifier */
   id: string
-  
+
   /** User's full name */
   name: string
-  
+
   /** User's email address */
   email: string
-  
+
   /** User's role in the system */
   role: UserRole
-  
+
   /** URL to user's avatar image */
   avatarUrl?: string
-  
+
   /** Timestamp when user was created */
   createdAt: Date
-  
+
   /** Timestamp when user was last updated */
   updatedAt: Date
 }
@@ -212,19 +212,19 @@ export type UserRole = 'admin' | 'user' | 'guest'
 export interface UserCardProps {
   /** User data to display */
   user: IUser
-  
+
   /** Whether to show the user's email */
   showEmail?: boolean
-  
+
   /** Whether to show edit button */
   editable?: boolean
-  
+
   /** Callback when user clicks edit */
   onEdit?: (user: IUser) => void
-  
+
   /** Callback when user clicks delete */
   onDelete?: (userId: string) => void
-  
+
   /** Additional CSS class name */
   className?: string
 }
@@ -242,7 +242,7 @@ export interface IUser {
   id: string
   name: string
   email: string
-  phoneNumber?: string  // NEW FIELD
+  phoneNumber?: string // NEW FIELD
   role: UserRole
   // ...
 }
@@ -290,7 +290,7 @@ export function UserProfile({ user }: { user: IUser }) {
 export interface IAuthService {
   login(
     credentials: ILoginCredentials,
-    twoFactorCode?: string  // NEW PARAMETER
+    twoFactorCode?: string, // NEW PARAMETER
   ): Promise<IAuthResponse>
 }
 ```
@@ -303,7 +303,7 @@ export const authService: IAuthService = {
   // ❌ TypeScript error: signature doesn't match
   async login(credentials: ILoginCredentials) {
     // Missing twoFactorCode parameter
-  }
+  },
 }
 ```
 
@@ -314,10 +314,10 @@ export const authService: IAuthService = {
   async login(credentials: ILoginCredentials, twoFactorCode?: string) {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ ...credentials, twoFactorCode })
+      body: JSON.stringify({ ...credentials, twoFactorCode }),
     })
     return response.json()
-  }
+  },
 }
 ```
 
@@ -346,10 +346,10 @@ export interface IUserService {
 
 ```typescript
 export interface IUser {
-  readonly id: string          // Can't be changed
-  readonly createdAt: Date     // Can't be changed
-  name: string                 // Can be changed
-  email: string                // Can be changed
+  readonly id: string // Can't be changed
+  readonly createdAt: Date // Can't be changed
+  name: string // Can be changed
+  email: string // Can be changed
 }
 ```
 
@@ -364,12 +364,12 @@ export interface IUserProfile {
 
 // ❌ Bad - should be required or use null
 export interface IUser {
-  id?: string  // ID should always exist!
+  id?: string // ID should always exist!
 }
 
 // ✅ Better - explicit nullability
 export interface IAuthState {
-  user: IUser | null  // Explicitly nullable
+  user: IUser | null // Explicitly nullable
 }
 ```
 
@@ -470,7 +470,7 @@ import { authService } from '@/services/auth.service'
 import type { IAuthService } from '@/types/contracts/IAuthService'
 
 // Verify implementation matches contract
-const service: IAuthService = authService  // ✓ Type-checks
+const service: IAuthService = authService // ✓ Type-checks
 
 describe('AuthService', () => {
   it('implements IAuthService contract', () => {
@@ -516,6 +516,7 @@ TypeScript will show errors everywhere `User` is used, making it easy to update.
 ## Summary
 
 ✅ **DO:**
+
 - Use `interface` for contracts
 - Document with JSDoc
 - Use descriptive names (`IUserService`, not `UserSvc`)
@@ -524,6 +525,7 @@ TypeScript will show errors everywhere `User` is used, making it easy to update.
 - Re-export from `index.ts`
 
 ❌ **DON'T:**
+
 - Use `any` type (use `unknown` if truly unknown)
 - Mix request and response in same interface
 - Use `type` for extendable contracts

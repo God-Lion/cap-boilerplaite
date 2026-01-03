@@ -1,13 +1,5 @@
 import React from 'react'
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  Paper,
-  alpha,
-  useTheme,
-} from '@mui/material'
+import { Box, Container, Typography, Button, Paper, alpha, useTheme } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
@@ -61,8 +53,8 @@ const DashboardInsights: React.FC = () => {
                 maxWidth: 700,
               }}
             >
-              Our AI-powered dashboard visualizes your entire job search,
-              revealing insights to help you land your next role faster.
+              Our AI-powered dashboard visualizes your entire job search, revealing insights to help
+              you land your next role faster.
             </Typography>
 
             <Box sx={{ mt: 2 }}>
@@ -79,8 +71,7 @@ const DashboardInsights: React.FC = () => {
                   textTransform: 'none',
                   borderRadius: 2,
                   bgcolor: 'primary.main',
-                  color:
-                    theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                  color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                   boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.4)}`,
                   transition: 'all 0.3s ease',
                   '&:hover': {
@@ -118,8 +109,7 @@ const DashboardInsights: React.FC = () => {
                     theme.palette.secondary.main,
                     0.3,
                   )} 100%)`,
-                  WebkitMask:
-                    'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
                   WebkitMaskComposite: 'xor',
                   maskComposite: 'exclude',
                 },

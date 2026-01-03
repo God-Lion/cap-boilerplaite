@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -27,47 +23,19 @@
     // Path mappings for clean imports
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@ui/*": [
-        "./src/app/src/*"
-      ],
-      "@core/*": [
-        "./src/core/*"
-      ],
-      "@app/*": [
-        "./src/app/*"
-      ],
-      "@types/*": [
-        "./src/types/*"
-      ],
-      "@configs/*": [
-        "./src/configs/*"
-      ],
-      "@services/*": [
-        "./src/services/*"
-      ],
-      "@hooks/*": [
-        "./src/hooks/*"
-      ],
-      "@store/*": [
-        "./src/store/*"
-      ]
+      "@/*": ["./src/*"],
+      "@ui/*": ["./src/app/src/*"],
+      "@core/*": ["./src/core/*"],
+      "@app/*": ["./src/app/*"],
+      "@types/*": ["./src/types/*"],
+      "@configs/*": ["./src/configs/*"],
+      "@services/*": ["./src/services/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@store/*": ["./src/store/*"]
     },
-    "types": [
-      "vite-plugin-pwa/info",
-      "vite-plugin-pwa/client",
-      "vite/client",
-      "node"
-    ]
+    "types": ["vite-plugin-pwa/info", "vite-plugin-pwa/client", "vite/client", "node"]
   },
-  "include": [
-    "src",
-    "app",
-    ".react-router",
-    "packages"
-  ],
+  "include": ["src", "app", ".react-router", "packages"],
   "references": [
     {
       "path": "./src/app"

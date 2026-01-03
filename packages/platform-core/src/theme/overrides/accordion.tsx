@@ -10,11 +10,7 @@ const accordion = (skin: Skin): Theme['components'] => ({
     },
     styleOverrides: {
       root: ({ theme }) => ({
-        transition: theme.transitions.create([
-          'margin',
-          'border-radius',
-          'box-shadow',
-        ]),
+        transition: theme.transitions.create(['margin', 'border-radius', 'box-shadow']),
         '&:not(:last-child)': {
           marginBlockEnd: theme.spacing(2),
         },

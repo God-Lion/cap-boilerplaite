@@ -49,9 +49,7 @@ const switchOverrides: Theme['components'] = {
         },
         '&:not(.Mui-checked) + .MuiSwitch-track': {
           boxShadow: `0 0 4px rgb(var(--mui-palette-common-${
-            theme.palette.mode === 'light'
-              ? 'onBackgroundChannel'
-              : 'backgroundChannel'
+            theme.palette.mode === 'light' ? 'onBackgroundChannel' : 'backgroundChannel'
           }) / 0.16) inset`,
         },
         '&.Mui-disabled + .MuiSwitch-track': {

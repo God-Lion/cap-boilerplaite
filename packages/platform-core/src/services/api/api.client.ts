@@ -1,6 +1,12 @@
 // src/shared/api/api-client.ts
 
-import { FetchClient, FetchResponse, FetchRequestConfig, HttpError, fetchClient as defaultFetchClient } from './api.fetch.client'
+import {
+  FetchClient,
+  FetchResponse,
+  FetchRequestConfig,
+  HttpError,
+  fetchClient as defaultFetchClient,
+} from './api.fetch.client'
 
 export { FetchClient, HttpError }
 export type { FetchResponse, FetchRequestConfig }
@@ -32,15 +38,12 @@ export interface ApiError {
 
 // API Client class
 export class ApiClient {
-  constructor(private instance: FetchClient = defaultFetchClient) { }
+  constructor(private instance: FetchClient = defaultFetchClient) {}
 
   /**
    * GET request
    */
-  async get<T = any>(
-    url: string,
-    config?: FetchRequestConfig
-  ): Promise<FetchResponse<T>> {
+  async get<T = any>(url: string, config?: FetchRequestConfig): Promise<FetchResponse<T>> {
     return this.instance.get<T>(url, config)
   }
 
@@ -50,7 +53,7 @@ export class ApiClient {
   async post<T = any>(
     url: string,
     data?: any,
-    config?: FetchRequestConfig
+    config?: FetchRequestConfig,
   ): Promise<FetchResponse<T>> {
     return this.instance.post<T>(url, data, config)
   }
@@ -61,7 +64,7 @@ export class ApiClient {
   async put<T = any>(
     url: string,
     data?: any,
-    config?: FetchRequestConfig
+    config?: FetchRequestConfig,
   ): Promise<FetchResponse<T>> {
     return this.instance.put<T>(url, data, config)
   }
@@ -72,7 +75,7 @@ export class ApiClient {
   async patch<T = any>(
     url: string,
     data?: any,
-    config?: FetchRequestConfig
+    config?: FetchRequestConfig,
   ): Promise<FetchResponse<T>> {
     return this.instance.patch<T>(url, data, config)
   }
@@ -80,10 +83,7 @@ export class ApiClient {
   /**
    * DELETE request
    */
-  async delete<T = any>(
-    url: string,
-    config?: FetchRequestConfig
-  ): Promise<FetchResponse<T>> {
+  async delete<T = any>(url: string, config?: FetchRequestConfig): Promise<FetchResponse<T>> {
     return this.instance.delete<T>(url, config)
   }
 
@@ -94,13 +94,13 @@ export class ApiClient {
     url: string,
     files: File | File[],
     fieldName: string = 'file',
-    additionalData?: Record<string, any>
+    additionalData?: Record<string, any>,
   ): Promise<FetchResponse<T>> {
     const formData = new FormData()
 
     // Handle single or multiple files
     if (Array.isArray(files)) {
-      files.forEach(file => formData.append(fieldName, file))
+      files.forEach((file) => formData.append(fieldName, file))
     } else {
       formData.append(fieldName, files)
     }
@@ -127,7 +127,7 @@ export class ApiClient {
   async uploadFormData<T = any>(
     url: string,
     data: Record<string, any>,
-    method: 'post' | 'put' | 'patch' = 'post'
+    method: 'post' | 'put' | 'patch' = 'post',
   ): Promise<FetchResponse<T>> {
     const formData = new FormData()
 
@@ -136,7 +136,7 @@ export class ApiClient {
         if (value instanceof File) {
           formData.append(key, value)
         } else if (Array.isArray(value)) {
-          value.forEach(item => formData.append(key, item))
+          value.forEach((item) => formData.append(key, item))
         } else {
           formData.append(key, String(value))
         }
@@ -156,7 +156,7 @@ export class ApiClient {
   async getWithFallback<T = any>(
     url: string,
     fallbackData: T,
-    config?: FetchRequestConfig
+    config?: FetchRequestConfig,
   ): Promise<FetchResponse<T>> {
     try {
       return await this.instance.get<T>(url, config)
@@ -168,7 +168,7 @@ export class ApiClient {
         statusText: 'OK (Fallback)',
         headers: new Headers(),
         config: config || {},
-        ok: true
+        ok: true,
       } as FetchResponse<T>
     }
   }
@@ -210,12 +210,7 @@ export function handleApiError(error: any): ApiError {
  * Type guard for API errors
  */
 export function isApiError(error: any): error is ApiError {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'message' in error &&
-    'status' in error
-  )
+  return typeof error === 'object' && error !== null && 'message' in error && 'status' in error
 }
 
 // Export singleton instance

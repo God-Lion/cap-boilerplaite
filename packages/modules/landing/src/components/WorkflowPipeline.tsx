@@ -39,11 +39,7 @@ import TrackChangesIcon from '@mui/icons-material/TrackChanges'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import LockIcon from '@mui/icons-material/Lock'
 
-import {
-  useWorkflow,
-  WORKFLOW_STEPS,
-  type WorkflowStep,
-} from '../context/WorkflowContext'
+import { useWorkflow, WORKFLOW_STEPS, type WorkflowStep } from '../context/WorkflowContext'
 
 // ============================================================================
 // Styled Components
@@ -55,21 +51,18 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   },
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage:
-        'linear-gradient(95deg, #4CAF50 0%, #2196F3 50%, #673AB7 100%)',
+      backgroundImage: 'linear-gradient(95deg, #4CAF50 0%, #2196F3 50%, #673AB7 100%)',
     },
   },
   [`&.${stepConnectorClasses.completed}`]: {
     [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage:
-        'linear-gradient(95deg, #4CAF50 0%, #2196F3 50%, #673AB7 100%)',
+      backgroundImage: 'linear-gradient(95deg, #4CAF50 0%, #2196F3 50%, #673AB7 100%)',
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
     height: 3,
     border: 0,
-    backgroundColor:
-      theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
+    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
     borderRadius: 1,
   },
 }))
@@ -83,8 +76,7 @@ interface ColorlibStepIconProps {
 
 const ColorlibStepIconRoot = styled('div')<ColorlibStepIconProps>(
   ({ theme, active, completed, locked }) => ({
-    backgroundColor:
-      theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ccc',
+    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ccc',
     zIndex: 1,
     color: '#fff',
     width: 50,
@@ -96,14 +88,12 @@ const ColorlibStepIconRoot = styled('div')<ColorlibStepIconProps>(
     cursor: locked ? 'not-allowed' : 'pointer',
     transition: 'all 0.3s ease',
     ...(active && {
-      backgroundImage:
-        'linear-gradient(136deg, #2196F3 0%, #1976D2 50%, #0D47A1 100%)',
+      backgroundImage: 'linear-gradient(136deg, #2196F3 0%, #1976D2 50%, #0D47A1 100%)',
       boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
       transform: 'scale(1.1)',
     }),
     ...(completed && {
-      backgroundImage:
-        'linear-gradient(136deg, #4CAF50 0%, #388E3C 50%, #1B5E20 100%)',
+      backgroundImage: 'linear-gradient(136deg, #4CAF50 0%, #388E3C 50%, #1B5E20 100%)',
     }),
     ...(locked && {
       backgroundColor: theme.palette.grey[400],
@@ -148,21 +138,11 @@ function StepIconComponent({
   locked,
   onClick,
 }: StepIconComponentProps) {
-  const icon = completed ? (
-    <CheckCircleIcon />
-  ) : locked ? (
-    <LockIcon />
-  ) : (
-    STEP_ICONS[step]
-  )
+  const icon = completed ? <CheckCircleIcon /> : locked ? <LockIcon /> : STEP_ICONS[step]
 
   return (
     <Tooltip
-      title={
-        locked
-          ? 'Complete previous steps first'
-          : WORKFLOW_STEPS[step as WorkflowStep].name
-      }
+      title={locked ? 'Complete previous steps first' : WORKFLOW_STEPS[step as WorkflowStep].name}
       arrow
     >
       <ColorlibStepIconRoot
@@ -258,11 +238,7 @@ export function WorkflowPipeline({
                   onClick={() => handleStepClick(stepNum)}
                   disabled={isLocked}
                   sx={{
-                    bgcolor: isCompleted
-                      ? 'success.main'
-                      : isActive
-                        ? 'primary.main'
-                        : 'grey.300',
+                    bgcolor: isCompleted ? 'success.main' : isActive ? 'primary.main' : 'grey.300',
                     color: isCompleted || isActive ? 'white' : 'grey.600',
                     width: 32,
                     height: 32,
@@ -320,11 +296,7 @@ export function WorkflowPipeline({
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Chip
-            label={`Step ${currentStep} of 7`}
-            color='primary'
-            variant='outlined'
-          />
+          <Chip label={`Step ${currentStep} of 7`} color='primary' variant='outlined' />
           {completedSteps.length > 0 && (
             <Chip
               icon={<CheckCircleIcon />}
@@ -343,11 +315,7 @@ export function WorkflowPipeline({
             <Typography variant='caption' color='text.secondary'>
               Overall Progress
             </Typography>
-            <Typography
-              variant='caption'
-              color='primary'
-              sx={{ fontWeight: 600 }}
-            >
+            <Typography variant='caption' color='primary' sx={{ fontWeight: 600 }}>
               {progress}%
             </Typography>
           </Box>
@@ -360,8 +328,7 @@ export function WorkflowPipeline({
               backgroundColor: alpha(theme.palette.primary.main, 0.1),
               '& .MuiLinearProgress-bar': {
                 borderRadius: 4,
-                backgroundImage:
-                  'linear-gradient(90deg, #4CAF50, #2196F3, #673AB7)',
+                backgroundImage: 'linear-gradient(90deg, #4CAF50, #2196F3, #673AB7)',
               },
             }}
           />
@@ -369,11 +336,7 @@ export function WorkflowPipeline({
       )}
 
       {/* Stepper */}
-      <Stepper
-        alternativeLabel
-        activeStep={currentStep - 1}
-        connector={<ColorlibConnector />}
-      >
+      <Stepper alternativeLabel activeStep={currentStep - 1} connector={<ColorlibConnector />}>
         {[1, 2, 3, 4, 5, 6, 7].map((step) => {
           const stepNum = step as WorkflowStep
           const stepInfo = WORKFLOW_STEPS[stepNum]

@@ -8,11 +8,11 @@ const dialog = (skin: Skin): Theme['components'] => ({
         borderRadius: 'var(--mui-shape-customBorderRadius-lg)',
         ...(skin !== 'bordered'
           ? {
-            boxShadow: 'var(--mui-customShadows-lg)',
-          }
+              boxShadow: 'var(--mui-customShadows-lg)',
+            }
           : {
-            boxShadow: 'none',
-          }),
+              boxShadow: 'none',
+            }),
         [theme.breakpoints.down('sm')]: {
           margin: theme.spacing(6),
         },

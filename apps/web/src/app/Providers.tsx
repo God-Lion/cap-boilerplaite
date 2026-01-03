@@ -1,17 +1,26 @@
-import React, { useMemo } from 'react'
-import type { ChildrenType, Direction } from '@cap/platform-core'
-import { themeConfig } from '@cap/platform-core'
+// cspell:ignore languagedetector reactour Toastify
+import React from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import AppReactToastify from './lib/styles/AppReactToastify'
-import ThemeProvider from './components/theme'
 import { I18nextProvider } from 'react-i18next'
 import i18next from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import { BrowserRouter } from 'react-router-dom'
+import {
+  getDemoName,
+  getMode,
+  getSettingsFromCookie,
+  getSystemMode,
+  SettingsProvider,
+  themeConfig,
+} from '@cap/platform-core'
+import type { ChildrenType, Direction } from '@cap/platform-core'
 import { i18n } from '@cap/platform-core'
 import { TourProvider } from '@reactour/tour'
 import common_us from './data/dictionaries/en.json'
 import common_fr from './data/dictionaries/fr.json'
+import ThemeProvider from './theme/index'
+import AppReactToastify from './lib/styles/AppReactToastify'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,11 +58,11 @@ const tourConfig = [
 ]
 
 const tourStyles = {
-  close: (base: any) => ({
+  close: (base: React.CSSProperties) => ({
     ...base,
     color: '#FFF',
   }),
-  popover: (base: any) => ({
+  popover: (base: React.CSSProperties) => ({
     ...base,
     boxShadow: '0 0 3em rgba(0, 0, 0, 0.5)',
     backgroundColor: 'var(--mui-palette-background-paper)',
@@ -66,28 +75,27 @@ const Providers: React.FC<
     direction: Direction
   }
 > = ({ children, direction }) => {
-  const systemMode = themeConfig.mode === 'system' ? 'dark' : themeConfig.mode
+  const mode = getMode()
+  const settingsCookie = getSettingsFromCookie()
+  const demoName = getDemoName()
+  const systemMode = getSystemMode()
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <I18nextProvider i18n={i18next}>
-        <ThemeProvider direction={direction} systemMode={systemMode}>
-          <TourProvider
-            steps={tourConfig}
-            defaultOpen={false}
-            rtl={false}
-            styles={tourStyles}
-          >
-            {children}
-          </TourProvider>
-          <AppReactToastify
-            position={themeConfig.toastPosition}
-            hideProgressBar
-          />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </ThemeProvider>
-      </I18nextProvider>
-    </QueryClientProvider>
+    <SettingsProvider settingsCookie={settingsCookie} mode={mode} demoName={demoName}>
+      <QueryClientProvider client={queryClient}>
+        <I18nextProvider i18n={i18next}>
+          <ThemeProvider direction={direction} systemMode={systemMode}>
+            <BrowserRouter>
+              <TourProvider steps={tourConfig} defaultOpen={false} rtl={false} styles={tourStyles}>
+                {children}
+              </TourProvider>
+            </BrowserRouter>
+            <AppReactToastify position={themeConfig.toastPosition} hideProgressBar />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </ThemeProvider>
+        </I18nextProvider>
+      </QueryClientProvider>
+    </SettingsProvider>
   )
 }
 

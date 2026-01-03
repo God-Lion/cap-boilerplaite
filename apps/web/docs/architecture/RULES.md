@@ -17,6 +17,7 @@ The architecture is based on three fundamental principles:
 > **If a UI component in `src/app` tries to import something from `apps/`, the build should fail.**
 
 UI components must remain isolated from business logic. This separation ensures:
+
 - Components are reusable across different business contexts
 - Testing is easier (mock business logic at the boundary)
 - Refactoring business logic doesn't break UI components
@@ -37,6 +38,7 @@ import { Layout } from '@/core/types'
 ```
 
 **Allowed Imports for `src/app` components**:
+
 - ✅ `@/core/*` - Core primitives (components, hooks, contexts)
 - ✅ `@/configs/*` - Configuration files
 - ✅ `@/types/*` - Shared type contracts
@@ -49,12 +51,14 @@ import { Layout } from '@/core/types'
 ### Validation
 
 Run validation:
+
 ```bash
 npm run lint
 npm run validate:isolation
 ```
 
 Build automatically runs validation:
+
 ```bash
 npm run build  # Fails if Rule 1 is violated
 ```
@@ -94,6 +98,7 @@ export function UserProfile() {
 > **Every component must be in Storybook. If it's not in Storybook, it doesn't exist.**
 
 All UI components must have Storybook stories. This ensures:
+
 - Components are documented with real examples
 - New developers can explore the component library
 - Visual regression testing is possible
@@ -157,11 +162,13 @@ export const WithAvatar: Story = {
 ### Validation
 
 Check coverage:
+
 ```bash
 npm run validate:documentation
 ```
 
 The script will report missing stories:
+
 ```
 ✗ FAILURE: 12 components are missing Storybook stories:
   ✗ UserProfile
@@ -172,6 +179,7 @@ The script will report missing stories:
 ### Exceptions
 
 Components that DON'T need stories:
+
 - `index.ts` barrel exports
 - Utility files (not components)
 - Custom hooks (starting with `use`)
@@ -192,6 +200,7 @@ npm run storybook  # Opens http://localhost:6006
 > **Use TypeScript interfaces for all module contracts so that when the Backend changes, the Frontend "LEGO" pieces show errors immediately.**
 
 All module boundaries must have explicit TypeScript interfaces. This ensures:
+
 - Changes propagate as compile-time errors (not runtime bugs)
 - Clear contracts between modules
 - IntelliSense and autocomplete work properly
@@ -223,6 +232,7 @@ export interface IUserService {
 ```
 
 **Type Contracts Location**:
+
 - `src/types/contracts/` - Service contract interfaces
 - `src/core/types.ts` - Core UI type contracts
 - `src/types/*.ts` - Domain-specific contracts
@@ -250,6 +260,7 @@ npm run validate:types
 ```
 
 Build fails on type errors:
+
 ```bash
 npm run build  # Runs type-check before build
 ```
@@ -298,6 +309,7 @@ export const authService: IAuthService = {
 ```
 
 When backend changes (e.g., adds `expiresAt` to `IAuthResponse`):
+
 1. Update the interface
 2. TypeScript shows errors everywhere the contract is used
 3. Fix all errors before deployment
@@ -314,13 +326,8 @@ Husky + lint-staged runs validation before commit:
 ```json
 {
   "lint-staged": {
-    "src/app/**/*.{ts,tsx}": [
-      "npm run validate:isolation",
-      "npm run validate:documentation"
-    ],
-    "**/*.{ts,tsx}": [
-      "npm run validate:types"
-    ]
+    "src/app/**/*.{ts,tsx}": ["npm run validate:isolation", "npm run validate:documentation"],
+    "**/*.{ts,tsx}": ["npm run validate:types"]
   }
 }
 ```
@@ -351,18 +358,21 @@ npm run validate:types          # Rule 3
 ## Benefits
 
 ### For Developers
+
 - 🧩 Clear boundaries make code easier to understand
 - 🔍 Component library (Storybook) serves as living documentation
 - 🛡️ Type safety catches bugs at compile time
 - ♻️ Reusable components across projects
 
 ### For Teams
+
 - 📚 New developers onboard faster with Storybook
 - 🤝 Clear contracts reduce integration issues
 - 🎯 Architectural standards are automated
 - 🚀 Faster development with validated patterns
 
 ### For Projects
+
 - 🏗️ Scalable architecture that grows with the project
 - 🔧 Easy to refactor with type safety
 - 📦 Components can be extracted to packages
@@ -375,6 +385,7 @@ npm run validate:types          # Rule 3
 ### "Cannot import from apps/"
 
 This is Rule 1 violation. Solution:
+
 1. Move business logic to a service layer
 2. Import the service in your component
 3. Keep UI and business logic separated
@@ -382,6 +393,7 @@ This is Rule 1 violation. Solution:
 ### "Component missing Storybook story"
 
 This is Rule 2 violation. Solution:
+
 1. Create `src/stories/YourComponent.stories.tsx`
 2. Document all component variants
 3. Add interactive examples
@@ -389,6 +401,7 @@ This is Rule 2 violation. Solution:
 ### "Type error after interface change"
 
 This is Rule 3 working correctly! Solution:
+
 1. Find all TypeScript errors
 2. Update code to match new contract
 3. This prevents runtime bugs

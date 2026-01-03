@@ -1,10 +1,5 @@
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
-import type {
-  FilterFn,
-  OnChangeFn,
-  RowData,
-  Updater,
-} from '@tanstack/react-table'
+import type { FilterFn, OnChangeFn, RowData, Updater } from '@tanstack/react-table'
 
 export type DensityState = 'sm' | 'md' | 'lg'
 
@@ -54,9 +49,7 @@ declare module '@tanstack/table-core' {
     itemRank: RankingInfo
   }
   interface TableState extends DensityTableState {}
-  interface TableOptionsResolved<
-    TData extends RowData,
-  > extends DensityOptions {}
+  interface TableOptionsResolved<TData extends RowData> extends DensityOptions {}
   interface Table<TData extends RowData> extends DensityInstance {}
 
   interface TableMeta<TData extends RowData> {

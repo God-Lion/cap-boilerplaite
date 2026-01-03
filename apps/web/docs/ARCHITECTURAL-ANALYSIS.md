@@ -7,25 +7,32 @@ Your boilerplate has **2 of 3 architectural rules fully implemented**. Rule 1 (C
 ## Current Status
 
 ### ✅ Rule 2: Storybook Documentation (IMPLEMENTED)
+
 **Status:** Fully functional
+
 - **Script:** `scripts/architectural/check-storybook-coverage.js`
 - **Enforcement:** Pre-commit hooks + Build pipeline
 - **Coverage:** Scans `src/app/src/components` and validates stories exist
 
 **Gaps Found:**
+
 - Path mismatch: Script looks for `src/app/src/components` but actual path is `src/app/components`
 - Missing stories for many existing components
 
 ### ✅ Rule 3: Strict Type Contracts (IMPLEMENTED)
+
 **Status:** Working correctly
+
 - **TypeScript:** Strict mode enabled
 - **Validation:** `npm run type-check` runs in CI
 - **Path Aliases:** Configured for clean imports
 
 ### ⚠️ Rule 1: Component Isolation (NOT IMPLEMENTED)
+
 **Status:** Placeholder only
 
 **Current Issues:**
+
 1. ❌ No `packages/` directory (workspace definition exists but empty)
 2. ❌ No `@boilerplate/ui` package referenced in validation
 3. ❌ No `apps/` directory to prevent imports from
@@ -34,6 +41,7 @@ Your boilerplate has **2 of 3 architectural rules fully implemented**. Rule 1 (C
 
 **Why This Matters:**
 Without proper isolation, developers can accidentally:
+
 - Import business logic into presentation components
 - Create circular dependencies
 - Violate separation of concerns
@@ -72,6 +80,7 @@ boilerplate/
 ```
 
 **Benefits:**
+
 - ✅ True isolation enforced by package boundaries
 - ✅ UI package cannot import from apps/
 - ✅ Clear dependency graph
@@ -79,6 +88,7 @@ boilerplate/
 - ✅ Better tree-shaking and code splitting
 
 **Implementation Steps:**
+
 1. Create `packages/` structure
 2. Move `src/app/components` → `packages/ui/src/components`
 3. Move `src/core` → `packages/core/src`
@@ -91,6 +101,7 @@ boilerplate/
 **Best for:** Keep current structure but add import rules
 
 **Implementation:**
+
 ```javascript
 // eslint.config.js
 {
@@ -109,11 +120,13 @@ boilerplate/
 ```
 
 **Benefits:**
+
 - ✅ Quick to implement
 - ✅ Works with current structure
 - ✅ Catches violations in CI
 
 **Limitations:**
+
 - ⚠️ Relies on developer discipline
 - ⚠️ No physical boundary enforcement
 - ⚠️ Harder to reuse code
@@ -140,26 +153,32 @@ boilerplate/
 ## Immediate Action Items
 
 ### Priority 1: Fix Storybook Coverage Script
+
 ```javascript
 // scripts/architectural/check-storybook-coverage.js
 // CHANGE LINE 21:
-const UI_COMPONENTS_DIR = join(__dirname, '../../src/app/components'); // Remove /src
+const UI_COMPONENTS_DIR = join(__dirname, '../../src/app/components') // Remove /src
 ```
 
 ### Priority 2: Choose Architecture Path
+
 Decision needed: Full monorepo, ESLint-only, or hybrid?
 
 ### Priority 3: Create Missing Stories
+
 Components without stories (need to audit):
+
 - All components in `src/app/components/`
 - Components in subdirectories (common/, dialogs/, layout/, etc.)
 
 ### Priority 4: Set Up Import Restrictions
+
 Based on chosen architecture, implement proper boundaries.
 
 ## Migration Steps (Option 1: Full Monorepo)
 
 ### Phase 1: Setup Structure
+
 ```bash
 # Create workspace packages
 mkdir -p packages/ui/src
@@ -175,17 +194,16 @@ cd ../../apps/web && npm init -y
 ```
 
 ### Phase 2: Configure Workspaces
+
 ```json
 // Root package.json
 {
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ]
+  "workspaces": ["packages/*", "apps/*"]
 }
 ```
 
 ### Phase 3: Move Code
+
 ```bash
 # Move UI components
 mv src/app/components packages/ui/src/components
@@ -202,7 +220,9 @@ mv src/app apps/web/src/app
 ```
 
 ### Phase 4: Update Imports
+
 Update all imports to use package names:
+
 ```typescript
 // Before
 import { Button } from '@/app/components/Button'
@@ -212,6 +232,7 @@ import { Button } from '@boilerplate/ui'
 ```
 
 ### Phase 5: Configure ESLint Boundaries
+
 ```javascript
 // packages/ui/.eslintrc.js
 {
@@ -227,6 +248,7 @@ import { Button } from '@boilerplate/ui'
 ```
 
 ### Phase 6: Update Build Scripts
+
 ```json
 // Root package.json
 {
@@ -241,6 +263,7 @@ import { Button } from '@boilerplate/ui'
 ## Validation Checklist
 
 After implementation:
+
 - [ ] `npm run validate:architecture` passes
 - [ ] UI components cannot import from apps/ (enforced by ESLint)
 - [ ] All components have Storybook stories
@@ -258,14 +281,14 @@ After implementation:
 
 ## Decision Matrix
 
-| Criteria | Full Monorepo | ESLint Only | Hybrid |
-|----------|--------------|-------------|--------|
-| **Setup Time** | High (2-3 days) | Low (2-4 hours) | Medium (1 day) |
-| **Enforcement** | Strong (physical) | Weak (linting) | Medium |
-| **Maintainability** | High | Medium | High |
-| **Scalability** | Excellent | Good | Very Good |
-| **Learning Curve** | Steep | Minimal | Moderate |
-| **Reusability** | Excellent | Limited | Good |
+| Criteria            | Full Monorepo     | ESLint Only     | Hybrid         |
+| ------------------- | ----------------- | --------------- | -------------- |
+| **Setup Time**      | High (2-3 days)   | Low (2-4 hours) | Medium (1 day) |
+| **Enforcement**     | Strong (physical) | Weak (linting)  | Medium         |
+| **Maintainability** | High              | Medium          | High           |
+| **Scalability**     | Excellent         | Good            | Very Good      |
+| **Learning Curve**  | Steep             | Minimal         | Moderate       |
+| **Reusability**     | Excellent         | Limited         | Good           |
 
 ## Next Steps
 

@@ -94,11 +94,7 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
       }}
     >
       <DialogTitle sx={{ pb: 1 }}>
-        <Stack
-          direction='row'
-          alignItems='center'
-          justifyContent='space-between'
-        >
+        <Stack direction='row' alignItems='center' justifyContent='space-between'>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <LockIcon color='warning' />
             <Typography variant='h6'>Feature Locked</Typography>

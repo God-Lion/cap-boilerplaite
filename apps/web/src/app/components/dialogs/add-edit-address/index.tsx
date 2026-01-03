@@ -1,8 +1,8 @@
 import React from 'react'
 import classnames from 'classnames'
-import type { CustomInputVerticalData } from 'src/core/components/custom-inputs/types'
+import type { CustomInputVerticalData } from '../../../../core/components/custom-inputs/types'
 // Component Imports
-// import CustomInputVertical from '@core/components/custom-inputs/Vertical'
+// import CustomInputVertical from '../../../../core/components/custom-inputs/Vertical'
 import DialogCloseButton from '../DialogCloseButton'
 import {
   Dialog,
@@ -18,7 +18,7 @@ import {
   TextField,
 } from '@mui/material'
 
-import CustomInputVertical from 'src/core/components/custom-inputs/Vertical'
+import CustomInputVertical from '../../../../core/components/custom-inputs/Vertical'
 
 type AddEditAddressData = {
   firstName?: string
@@ -70,8 +70,7 @@ const customInputData: CustomInputVerticalData[] = [
 
 const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
   // Vars
-  const initialSelected: string =
-    customInputData?.find((item) => item.isSelected)?.value || ''
+  const initialSelected: string = customInputData?.find((item) => item.isSelected)?.value || ''
 
   // States
   const [selected, setSelected] = React.useState<string>(initialSelected)
@@ -108,9 +107,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
       >
         {data ? 'Edit Address' : 'Add New Address'}
         <Typography component='span' className='flex flex-col text-center'>
-          {data
-            ? 'Edit Address for future billing'
-            : 'Add address for billing address'}
+          {data ? 'Edit Address for future billing' : 'Add address for billing address'}
         </Typography>
       </DialogTitle>
       <form onSubmit={(e) => e.preventDefault()}>
@@ -147,9 +144,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 variant='outlined'
                 placeholder='John'
                 value={addressData?.firstName}
-                onChange={(e) =>
-                  setAddressData({ ...addressData, firstName: e.target.value })
-                }
+                onChange={(e) => setAddressData({ ...addressData, firstName: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -160,9 +155,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 variant='outlined'
                 placeholder='Doe'
                 value={addressData?.lastName}
-                onChange={(e) =>
-                  setAddressData({ ...addressData, lastName: e.target.value })
-                }
+                onChange={(e) => setAddressData({ ...addressData, lastName: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -172,19 +165,13 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 label='Country'
                 name='country'
                 variant='outlined'
-                value={
-                  addressData?.country?.toLowerCase().replace(/\s+/g, '-') || ''
-                }
-                onChange={(e) =>
-                  setAddressData({ ...addressData, country: e.target.value })
-                }
+                value={addressData?.country?.toLowerCase().replace(/\s+/g, '-') || ''}
+                onChange={(e) => setAddressData({ ...addressData, country: e.target.value })}
               >
                 {countries.map((item, index) => (
                   <MenuItem
                     key={index}
-                    value={
-                      index === 0 ? '' : item.toLowerCase().replace(/\s+/g, '-')
-                    }
+                    value={index === 0 ? '' : item.toLowerCase().replace(/\s+/g, '-')}
                   >
                     {item}
                   </MenuItem>
@@ -199,9 +186,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 variant='outlined'
                 placeholder='12, Business Park'
                 value={addressData?.address1}
-                onChange={(e) =>
-                  setAddressData({ ...addressData, address1: e.target.value })
-                }
+                onChange={(e) => setAddressData({ ...addressData, address1: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -212,9 +197,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 variant='outlined'
                 placeholder='Mall Road'
                 value={addressData?.address2}
-                onChange={(e) =>
-                  setAddressData({ ...addressData, address2: e.target.value })
-                }
+                onChange={(e) => setAddressData({ ...addressData, address2: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -225,9 +208,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 variant='outlined'
                 placeholder='Nr. Hard Rock Cafe'
                 value={addressData?.landmark}
-                onChange={(e) =>
-                  setAddressData({ ...addressData, landmark: e.target.value })
-                }
+                onChange={(e) => setAddressData({ ...addressData, landmark: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -238,9 +219,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 variant='outlined'
                 placeholder='Los Angeles'
                 value={addressData?.city}
-                onChange={(e) =>
-                  setAddressData({ ...addressData, city: e.target.value })
-                }
+                onChange={(e) => setAddressData({ ...addressData, city: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -251,9 +230,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 variant='outlined'
                 placeholder='California'
                 value={addressData?.state}
-                onChange={(e) =>
-                  setAddressData({ ...addressData, state: e.target.value })
-                }
+                onChange={(e) => setAddressData({ ...addressData, state: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -265,9 +242,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
                 variant='outlined'
                 placeholder='99950'
                 value={addressData?.zipCode}
-                onChange={(e) =>
-                  setAddressData({ ...addressData, zipCode: e.target.value })
-                }
+                onChange={(e) => setAddressData({ ...addressData, zipCode: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -279,11 +254,7 @@ const AddEditAddress = ({ open, setOpen, data }: AddEditAddressProps) => {
           </Grid>
         </DialogContent>
         <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
-          <Button
-            variant='contained'
-            onClick={() => setOpen(false)}
-            type='submit'
-          >
+          <Button variant='contained' onClick={() => setOpen(false)} type='submit'>
             {data ? 'Update' : 'Submit'}
           </Button>
           <Button

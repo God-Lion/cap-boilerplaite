@@ -9,7 +9,7 @@ const AuthButtons = () => {
     <Stack direction='row' spacing={2} marginLeft='10px'>
       <Button
         component={Link}
-        to='/auth/signup'
+        to='/auth/sign-up'
         variant='outlined'
         size='small'
         style={{
@@ -21,7 +21,7 @@ const AuthButtons = () => {
       </Button>
       <Button
         component={Link}
-        to='/auth/signin'
+        to='/auth/sign-in'
         variant='contained'
         size='small'
         style={{

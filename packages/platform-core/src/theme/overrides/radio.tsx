@@ -58,10 +58,9 @@ const radio: Theme['components'] = {
                 fontSize: '1.5rem',
               },
             }),
-        '&:not(.Mui-checked):not(.Mui-disabled) svg, &:not(.Mui-checked):not(.Mui-disabled) i':
-          {
-            color: 'var(--mui-palette-text-disabled)',
-          },
+        '&:not(.Mui-checked):not(.Mui-disabled) svg, &:not(.Mui-checked):not(.Mui-disabled) i': {
+          color: 'var(--mui-palette-text-disabled)',
+        },
         '&.Mui-checked:not(.Mui-disabled) svg': {
           filter: `drop-shadow(var(--mui-customShadows-${ownerState.color}-sm))`,
         },

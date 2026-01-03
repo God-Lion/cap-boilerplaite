@@ -73,8 +73,7 @@ export default function Toolbar({
     // if (newValue === undefined)
     //   setHandleChange({ event, value: event?.target?.value })
     // else {
-    if (typeof newValue === 'string')
-      setHandleChange({ event, value: newValue })
+    if (typeof newValue === 'string') setHandleChange({ event, value: newValue })
 
     // if (typeof newValue === 'number') {
     //   setValue(newValue)
@@ -94,10 +93,7 @@ export default function Toolbar({
       <Box>
         <Grid container spacing={3} my='30px'>
           {filters.map((filter) => (
-            <Grid
-              key={filter.key}
-              size={{ xs: 12, sm: Math.round(12 / filters.length) }}
-            >
+            <Grid key={filter.key} size={{ xs: 12, sm: Math.round(12 / filters.length) }}>
               <FormControl fullWidth>
                 <InputLabel>{filter.label}</InputLabel>
                 <Select
@@ -140,11 +136,9 @@ export default function Toolbar({
               placeholder='search'
               type='search'
               fullWidth
-              onChange={(
-                event: React.ChangeEvent<
-                  HTMLInputElement | HTMLTextAreaElement
-                >,
-              ) => onChange(event, event.target?.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                onChange(event, event.target?.value)
+              }
 
               // InputProps={{
               //   startAdornment: (
@@ -180,9 +174,7 @@ export default function Toolbar({
           </Tabs>
         )}
         {!hideAddMode && (
-          <Box sx={{ ml: 'auto ! important', padding: '12px 16px', pr: 0 }}>
-            {button}
-          </Box>
+          <Box sx={{ ml: 'auto ! important', padding: '12px 16px', pr: 0 }}>{button}</Box>
         )}
       </Stack>
     </Stack>

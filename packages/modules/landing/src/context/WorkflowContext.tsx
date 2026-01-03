@@ -6,13 +6,7 @@
  * 5. JobAnalysis → 6. Automation → 7. ApplicationTracker
  */
 
-import {
-  createContext,
-  useContext,
-  useReducer,
-  useCallback,
-  ReactNode,
-} from 'react'
+import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react'
 
 // ============================================================================
 // Types
@@ -78,14 +72,7 @@ export interface Application {
   jobId: string
   jobTitle: string
   company: string
-  status:
-    | 'draft'
-    | 'ready'
-    | 'submitted'
-    | 'interviewing'
-    | 'offered'
-    | 'rejected'
-    | 'withdrawn'
+  status: 'draft' | 'ready' | 'submitted' | 'interviewing' | 'offered' | 'rejected' | 'withdrawn'
   appliedAt?: string
   coverLetter?: string
   resumeVersion?: string
@@ -179,10 +166,7 @@ const initialState: WorkflowState = {
 // Reducer
 // ============================================================================
 
-function workflowReducer(
-  state: WorkflowState,
-  action: WorkflowAction,
-): WorkflowState {
+function workflowReducer(state: WorkflowState, action: WorkflowAction): WorkflowState {
   const now = new Date().toISOString()
 
   switch (action.type) {
@@ -195,9 +179,7 @@ function workflowReducer(
       }
       return {
         ...state,
-        completedSteps: [...state.completedSteps, action.payload].sort(
-          (a, b) => a - b,
-        ),
+        completedSteps: [...state.completedSteps, action.payload].sort((a, b) => a - b),
         lastUpdated: now,
       }
 
@@ -234,9 +216,7 @@ function workflowReducer(
       return {
         ...state,
         applications: state.applications.map((app) =>
-          app.id === action.payload.id
-            ? { ...app, ...action.payload.updates }
-            : app,
+          app.id === action.payload.id ? { ...app, ...action.payload.updates } : app,
         ),
         lastUpdated: now,
       }
@@ -366,12 +346,9 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
     dispatch({ type: 'ADD_APPLICATION', payload: app })
   }, [])
 
-  const updateApplication = useCallback(
-    (id: string, updates: Partial<Application>) => {
-      dispatch({ type: 'UPDATE_APPLICATION', payload: { id, updates } })
-    },
-    [],
-  )
+  const updateApplication = useCallback((id: string, updates: Partial<Application>) => {
+    dispatch({ type: 'UPDATE_APPLICATION', payload: { id, updates } })
+  }, [])
 
   // Utilities
   const setLoading = useCallback((loading: boolean) => {
@@ -435,11 +412,7 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
     getProgressPercentage,
   }
 
-  return (
-    <WorkflowContext.Provider value={value}>
-      {children}
-    </WorkflowContext.Provider>
-  )
+  return <WorkflowContext.Provider value={value}>{children}</WorkflowContext.Provider>
 }
 
 // ============================================================================

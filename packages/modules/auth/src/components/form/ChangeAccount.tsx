@@ -1,19 +1,11 @@
 import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import {
-  Box,
-  Grid,
-  TextField,
-  Button,
-  Stack,
-  Backdrop,
-  CircularProgress,
-} from '@mui/material'
+import { Box, Grid, TextField, Button, Stack, Backdrop, CircularProgress } from '@mui/material'
 import FormLayout from './FormLayout'
 import { useMutation } from '@tanstack/react-query'
-import { IUserReponse, IUpdateNames } from '@cap/platform-core'
+import { IUserResponse, IUpdateNames } from '@cap/platform-core'
 
-export default function ChangeAccount({ user }: { user: IUserReponse }) {
+export default function ChangeAccount({ user }: { user: IUserResponse }) {
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const controlForm = useForm<IUpdateNames>({
@@ -28,10 +20,8 @@ export default function ChangeAccount({ user }: { user: IUserReponse }) {
         lastname?: string
         firstname?: string
       }
-      const hasChangedFirstname =
-        user.firstName?.toLowerCase() !== data.firstname?.toLowerCase()
-      const hasChangedFirstnameCase =
-        !hasChangedFirstname && user.firstName !== data.firstname
+      const hasChangedFirstname = user.firstName?.toLowerCase() !== data.firstname?.toLowerCase()
+      const hasChangedFirstnameCase = !hasChangedFirstname && user.firstName !== data.firstname
 
       if (hasChangedFirstname) body = { ...body, firstname: data.firstname }
       if (hasChangedFirstnameCase)
@@ -45,10 +35,8 @@ export default function ChangeAccount({ user }: { user: IUserReponse }) {
         )
       else controlForm.clearErrors('firstname')
 
-      const hasChangedLastname =
-        user.lastName?.toLowerCase() !== data.lastname?.toLowerCase()
-      const hasChangedLastnameCase =
-        !hasChangedLastname && user.lastName !== data.lastname
+      const hasChangedLastname = user.lastName?.toLowerCase() !== data.lastname?.toLowerCase()
+      const hasChangedLastnameCase = !hasChangedLastname && user.lastName !== data.lastname
 
       if (hasChangedLastname) body = { ...body, lastname: data.lastname }
       if (hasChangedLastnameCase)
@@ -136,8 +124,7 @@ export default function ChangeAccount({ user }: { user: IUserReponse }) {
                         'firstname',
                         {
                           type: 'exist',
-                          message:
-                            'The submitted firstname matches your current firstname',
+                          message: 'The submitted firstname matches your current firstname',
                         },
                         { shouldFocus: true },
                       )
@@ -171,8 +158,7 @@ export default function ChangeAccount({ user }: { user: IUserReponse }) {
                     const lastname = e.target.value
                     const hasChangedLastname =
                       user.lastName?.toLowerCase() !== lastname?.toLowerCase()
-                    const hasChangedLastnameCase =
-                      !hasChangedLastname && user.lastName !== lastname
+                    const hasChangedLastnameCase = !hasChangedLastname && user.lastName !== lastname
                     if (!lastname)
                       controlForm.setError(
                         'firstname',
@@ -188,8 +174,7 @@ export default function ChangeAccount({ user }: { user: IUserReponse }) {
                         'lastname',
                         {
                           type: 'exist',
-                          message:
-                            'The submitted lastname matches your current lastname',
+                          message: 'The submitted lastname matches your current lastname',
                         },
                         { shouldFocus: true },
                       )

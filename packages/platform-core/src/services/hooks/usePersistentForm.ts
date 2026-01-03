@@ -1,9 +1,9 @@
 /**
  * usePersistentForm Hook
- * 
+ *
  * Hook to persist form state across page reloads and navigation.
  * Useful for long forms where users might accidentally navigate away.
- * 
+ *
  * @example
  * const { formData, handleChange, handleSubmit, clearForm, isDirty } = usePersistentForm(
  *   'job-application-form',
@@ -45,7 +45,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   formId: string,
   initialValues: T,
   onSubmit: (data: T) => Promise<void>,
-  options: UsePersistentFormOptions<T> = {}
+  options: UsePersistentFormOptions<T> = {},
 ): UsePersistentFormReturn<T> {
   const {
     storage = 'session',
@@ -98,7 +98,7 @@ export function usePersistentForm<T extends Record<string, any>>(
         }
       }, debounceDelay)
     },
-    [storageKey, storageObject, debounceDelay]
+    [storageKey, storageObject, debounceDelay],
   )
 
   /**
@@ -142,7 +142,7 @@ export function usePersistentForm<T extends Record<string, any>>(
         validateField(field)
       }
     },
-    [errors, validateOnChange]
+    [errors, validateOnChange],
   )
 
   /**
@@ -178,7 +178,7 @@ export function usePersistentForm<T extends Record<string, any>>(
       }
       return true
     },
-    [formData, setFieldError]
+    [formData, setFieldError],
   )
 
   /**
@@ -242,7 +242,7 @@ export function usePersistentForm<T extends Record<string, any>>(
         setIsSubmitting(false)
       }
     },
-    [formData, validateForm, onSubmit, storageKey, storageObject, onSubmitSuccess, onSubmitError]
+    [formData, validateForm, onSubmit, storageKey, storageObject, onSubmitSuccess, onSubmitError],
   )
 
   /**

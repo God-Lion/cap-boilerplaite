@@ -15,11 +15,7 @@
  * @packageDocumentation
  */
 
-import type {
-  UserApiContract,
-  AuthApiContract,
-  ApiResponse,
-} from './api.contracts'
+import type { UserApiContract, AuthApiContract, ApiResponse } from './api.contracts'
 
 /**
  * User Service Contract
@@ -228,11 +224,7 @@ export interface IHttpClient {
    * @param config - Request configuration
    * @returns Response data
    */
-  post<T>(
-    url: string,
-    data?: unknown,
-    config?: RequestConfig,
-  ): Promise<ApiResponse<T>>
+  post<T>(url: string, data?: unknown, config?: RequestConfig): Promise<ApiResponse<T>>
 
   /**
    * PUT request
@@ -242,11 +234,7 @@ export interface IHttpClient {
    * @param config - Request configuration
    * @returns Response data
    */
-  put<T>(
-    url: string,
-    data?: unknown,
-    config?: RequestConfig,
-  ): Promise<ApiResponse<T>>
+  put<T>(url: string, data?: unknown, config?: RequestConfig): Promise<ApiResponse<T>>
 
   /**
    * PATCH request
@@ -256,11 +244,7 @@ export interface IHttpClient {
    * @param config - Request configuration
    * @returns Response data
    */
-  patch<T>(
-    url: string,
-    data?: unknown,
-    config?: RequestConfig,
-  ): Promise<ApiResponse<T>>
+  patch<T>(url: string, data?: unknown, config?: RequestConfig): Promise<ApiResponse<T>>
 
   /**
    * DELETE request

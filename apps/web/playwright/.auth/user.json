@@ -1,0 +1,29 @@
+{
+  "cookies": [
+    {
+      "name": "colorPref",
+      "value": "light",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "i18nextLng",
+          "value": "en"
+        },
+        {
+          "name": "god-lion-seeker-optimizer-storage",
+          "value": "cef22f926fd2f0c6af8fc573d1aeccb4440e87277c52da41b85e4fed04d5f9fa44060db5069d2b5cd2abbdf1affdfc8606d5933b7cd8e7307b4615592f0e56092423a843b2280e84fa9d6ed54b6ec199eec476d5b7c85fa208f929015bba102c0facbe7baf58b1d961bfa95429054150061a0ac47285a8c653950728269c44df1fd16c58050e30606650c551e61f696206ce51003df43ec0a1d09a74f9ab6ec0bcb91d958d4bce8b596ead53b427cb6794e1eec5a4ebac3fdb1ecd4b92d735bf98417e89057cb1453eede4bff51d7d641fee01bcc0c9f42e219934e76d50282425871953c9ba444fdc660a9ec0f31d38b7cf5af43416196002fcb3acba7b6a0a535231d79a0ba88249b839826ccbe90f1d66b60e03df5c2aaf4bfe49e1c78a5354a5867ac2cfb4fe979f2739ebc6cf9c3f82bb2bb0a685f9b503fff9da1ab02760febe885f26da066000b0e557b9f758e9c2dea5fcd33e9f3674105e5db2c22ff932782bad319c066cef5868c4b36fb16c584d456e351d70524175c9c7b040dead109f91e15e0d6e8d38efe0a96e561eeab3ba8d3ac551b1ce5d2b396beefa4cb3c0e8e9be06619e380b3e7b0e1e719cca8257c49f2a23e962ebeae50636ecf45842935ae05e62c1bb2d0b63ba8f743adc19081cdc9418631b574e1ef1037d7d0e15837cf83c4f96616b886d47c87c13f59f077fa0edd42fa55795be596d0d5a21ab4d76345e4d2861c69c7e8c91a4f6afa2f00cbd4f07a3f07dad75c4cfc1f574bf733c88098607bdab3754330011daa500ff6deff31a07808a25b38b54e841a03baca6c4777a2c3aa6eb0fb5849d975812a51e7a9eae484316accb5250be6a6f4a75aa9e1c1726b5374a85adc2e16cb7ad86f31bf290d55f9cecfdd20e2fa0c4cd7a9138299833e9a9726d5d55e91e7cc578b5e8ee264ab8213fde28e3eb1c4ffccea55c79eae6239472d03f38f7ab7b8c4d3726929c4a6360e9ab1da44bdc4f025610375e993ebfabcd76420b06f13281f856fd22d33b9959b4a1c0d40d1e1826111b3ffca1c023156fe5974925bb4f83d399c1778cd501ba3ae66bf02273ff213e17d881f10d14203625"
+        }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,6 @@ export * from '../../utils/getRole'
 
 // Data utilities
 export * from '../../utils/Filters'
-export * from '@cap/platform-core'
 
 // State management
 

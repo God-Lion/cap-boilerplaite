@@ -3,10 +3,7 @@ import { fetchClient } from '../../services/api/api.fetch.client'
 import { IAuth, ILogin } from '../../types'
 import { IResponse } from '../../types'
 import { API_CONFIG, ENDPOINTS } from '../../services/api/api.config'
-import {
-  secureTokenManager,
-  TokenData as AuthTokens,
-} from '../../services/secureTokenManager'
+import { secureTokenManager, TokenData as AuthTokens } from '../../services/secureTokenManager'
 import { AppStore } from '..'
 
 export type { AuthTokens }
@@ -53,10 +50,7 @@ export const createAuthSlice: StateCreator<
     })
 
     try {
-      const response = await fetchClient.post<IResponse>(
-        ENDPOINTS.auth.login,
-        credentials,
-      )
+      const response = await fetchClient.post<IResponse>(ENDPOINTS.auth.login, credentials)
 
       if (response.status === 200 && response.data) {
         // Fetch user data after successful login
@@ -164,11 +158,7 @@ export const createAuthSlice: StateCreator<
           })
         }
       } catch (error: any) {
-        console.error(
-          '[refreshAuth] Error:',
-          error.response?.status,
-          error.message,
-        )
+        console.error('[refreshAuth] Error:', error.response?.status, error.message)
 
         set((state) => {
           state.user = null

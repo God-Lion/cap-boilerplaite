@@ -1,0 +1,51 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img "God Lion Seeker" [ref=e9]
+          - button [ref=e10] [cursor=pointer]:
+            - img [ref=e11]
+        - navigation [ref=e14]:
+          - list [ref=e15]:
+            - listitem [ref=e16]:
+              - list [ref=e17]:
+                - listitem [ref=e18]:
+                  - generic [ref=e19]: Apps & Pages
+                - listitem [ref=e20]:
+                  - generic [ref=e21] [cursor=pointer]:
+                    - generic [ref=e22]: Auth Pages
+                    - img [ref=e25]
+    - generic [ref=e27]:
+      - banner:
+        - generic [ref=e29]:
+          - generic [ref=e32] [cursor=pointer]:
+            - button [ref=e33]:
+              - img [ref=e34]
+            - paragraph [ref=e36]: Search ⌘K
+          - generic [ref=e37]:
+            - button [ref=e38] [cursor=pointer]:
+              - img [ref=e39]
+            - button "Switch theme mode - currently Light" [ref=e41] [cursor=pointer]:
+              - img [ref=e42]
+            - button [ref=e44] [cursor=pointer]:
+              - img [ref=e45]
+            - button [ref=e47] [cursor=pointer]:
+              - img [ref=e49]
+            - img [ref=e54] [cursor=pointer]
+      - main [ref=e58]
+      - contentinfo [ref=e59]:
+        - paragraph [ref=e62]:
+          - text: © 2026, Made by
+          - link "GLDeveloper" [ref=e63] [cursor=pointer]:
+            - /url: /
+  - generic:
+    - region "Notifications Alt+T"
+  - generic [ref=e64]:
+    - img [ref=e66]
+    - button "Open Tanstack query devtools" [ref=e114] [cursor=pointer]:
+      - img [ref=e115]
+```

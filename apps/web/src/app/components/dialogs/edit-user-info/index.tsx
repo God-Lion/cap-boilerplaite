@@ -72,9 +72,7 @@ const countries = ['Select Country', 'France', 'Russia', 'China', 'UK', 'US']
 
 const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
   // States
-  const [userData, setUserData] = React.useState<EditUserInfoProps['data']>(
-    data || initialData,
-  )
+  const [userData, setUserData] = React.useState<EditUserInfoProps['data']>(data || initialData)
 
   const handleClose = () => {
     setOpen(false)
@@ -111,9 +109,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 label='First Name'
                 placeholder='John'
                 value={userData?.firstName}
-                onChange={(e) =>
-                  setUserData({ ...userData, firstName: e.target.value })
-                }
+                onChange={(e) => setUserData({ ...userData, firstName: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -122,9 +118,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 label='Last Name'
                 placeholder='Doe'
                 value={userData?.lastName}
-                onChange={(e) =>
-                  setUserData({ ...userData, lastName: e.target.value })
-                }
+                onChange={(e) => setUserData({ ...userData, lastName: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -133,9 +127,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 label='User Name'
                 placeholder='JohnDoe'
                 value={userData?.userName}
-                onChange={(e) =>
-                  setUserData({ ...userData, userName: e.target.value })
-                }
+                onChange={(e) => setUserData({ ...userData, userName: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -144,9 +136,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 label='Billing Email'
                 placeholder='johnDoe@email.com'
                 value={userData?.billingEmail}
-                onChange={(e) =>
-                  setUserData({ ...userData, billingEmail: e.target.value })
-                }
+                onChange={(e) => setUserData({ ...userData, billingEmail: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -155,18 +145,12 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 fullWidth
                 label='Status'
                 value={userData?.status}
-                onChange={(e) =>
-                  setUserData({ ...userData, status: e.target.value as string })
-                }
+                onChange={(e) => setUserData({ ...userData, status: e.target.value as string })}
               >
                 {status.map((status, index) => (
                   <MenuItem
                     key={index}
-                    value={
-                      index === 0
-                        ? ''
-                        : status.toLowerCase().replace(/\s+/g, '-')
-                    }
+                    value={index === 0 ? '' : status.toLowerCase().replace(/\s+/g, '-')}
                   >
                     {status}
                   </MenuItem>
@@ -179,9 +163,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 label='Tax ID'
                 placeholder='Tax-7490'
                 value={userData?.taxId}
-                onChange={(e) =>
-                  setUserData({ ...userData, taxId: e.target.value })
-                }
+                onChange={(e) => setUserData({ ...userData, taxId: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -190,9 +172,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 label='Contact'
                 placeholder='+ 123 456 7890'
                 value={userData?.contact}
-                onChange={(e) =>
-                  setUserData({ ...userData, contact: e.target.value })
-                }
+                onChange={(e) => setUserData({ ...userData, contact: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -201,9 +181,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 fullWidth
                 label='Language'
                 value={
-                  userData?.language?.map((lang) =>
-                    lang.toLowerCase().replace(/\s+/g, '-'),
-                  ) || []
+                  userData?.language?.map((lang) => lang.toLowerCase().replace(/\s+/g, '-')) || []
                 }
                 SelectProps={{
                   multiple: true,
@@ -215,22 +193,14 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                   renderValue: (selected) => (
                     <div className='flex items-center gap-2'>
                       {(selected as string[]).map((value) => (
-                        <Chip
-                          key={value}
-                          label={value}
-                          className='capitalize'
-                          size='small'
-                        />
+                        <Chip key={value} label={value} className='capitalize' size='small' />
                       ))}
                     </div>
                   ),
                 }}
               >
                 {languages.map((language, index) => (
-                  <MenuItem
-                    key={index}
-                    value={language.toLowerCase().replace(/\s+/g, '-')}
-                  >
+                  <MenuItem key={index} value={language.toLowerCase().replace(/\s+/g, '-')}>
                     {language}
                   </MenuItem>
                 ))}
@@ -252,11 +222,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 {countries.map((country, index) => (
                   <MenuItem
                     key={index}
-                    value={
-                      index === 0
-                        ? ''
-                        : country.toLowerCase().replace(/\s+/g, '-')
-                    }
+                    value={index === 0 ? '' : country.toLowerCase().replace(/\s+/g, '-')}
                   >
                     {country}
                   </MenuItem>
@@ -265,9 +231,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
             </Grid>
             <Grid size={{ xs: 12 }}>
               <FormControlLabel
-                control={
-                  <Switch defaultChecked={userData?.useAsBillingAddress} />
-                }
+                control={<Switch defaultChecked={userData?.useAsBillingAddress} />}
                 label='Use as a billing address?'
               />
             </Grid>
@@ -277,12 +241,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
           <Button variant='contained' onClick={handleClose} type='submit'>
             Submit
           </Button>
-          <Button
-            variant='outlined'
-            color='secondary'
-            type='reset'
-            onClick={handleClose}
-          >
+          <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
             Cancel
           </Button>
         </DialogActions>

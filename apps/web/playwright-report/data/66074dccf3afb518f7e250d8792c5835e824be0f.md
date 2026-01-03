@@ -1,0 +1,101 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img "God Lion Seeker"
+          - button [ref=e9] [cursor=pointer]:
+            - img [ref=e10]
+        - navigation [ref=e13]:
+          - list [ref=e14]:
+            - listitem [ref=e15]:
+              - list [ref=e16]:
+                - listitem [ref=e17]:
+                  - generic [ref=e18]: Apps & Pages
+                - listitem [ref=e19]:
+                  - generic [ref=e20] [cursor=pointer]:
+                    - generic [ref=e21]: Auth Pages
+                    - img [ref=e24]
+    - generic [ref=e26]:
+      - banner:
+        - generic [ref=e28]:
+          - generic [ref=e31] [cursor=pointer]:
+            - button [ref=e32]:
+              - img [ref=e33]
+            - paragraph [ref=e35]: Search ⌘K
+          - generic [ref=e36]:
+            - button [ref=e37] [cursor=pointer]:
+              - img [ref=e38]
+            - button "Switch theme mode - currently Light" [ref=e40] [cursor=pointer]:
+              - img [ref=e41]
+            - button [ref=e43] [cursor=pointer]:
+              - img [ref=e44]
+            - button [ref=e46] [cursor=pointer]:
+              - img [ref=e48]
+            - img [ref=e53] [cursor=pointer]
+      - main [ref=e57]:
+        - main [ref=e58]:
+          - generic [ref=e60]:
+            - img "God Lion Seeker Logo" [ref=e62]
+            - generic [ref=e63]:
+              - heading "Set a New Password" [level=1] [ref=e64]
+              - paragraph [ref=e65]: Your new password must be different from previous passwords and meet the criteria below.
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - generic [ref=e69]:
+                  - generic [ref=e70]: New Password
+                  - generic [ref=e71]:
+                    - textbox "New Password" [ref=e72]: NewPassword123!
+                    - button [ref=e74] [cursor=pointer]:
+                      - img [ref=e75]
+                    - group:
+                      - generic: New Password
+                - generic [ref=e78]:
+                  - generic [ref=e79]: Confirm New Password
+                  - generic [ref=e80]:
+                    - textbox "Confirm New Password" [active] [ref=e81]: DifferentPassword123!
+                    - button [ref=e83] [cursor=pointer]:
+                      - img [ref=e84]
+                    - group:
+                      - generic: Confirm New Password
+              - generic [ref=e86]:
+                - generic [ref=e87]:
+                  - progressbar [ref=e88]
+                  - paragraph [ref=e90]: Strong
+                - generic [ref=e91]:
+                  - generic [ref=e93]:
+                    - generic:
+                      - checkbox "At least 8 characters" [checked] [disabled]
+                      - img
+                    - paragraph [ref=e94]: At least 8 characters
+                  - generic [ref=e96]:
+                    - generic:
+                      - checkbox "Contains an uppercase letter" [checked] [disabled]
+                      - img
+                    - paragraph [ref=e97]: Contains an uppercase letter
+                  - generic [ref=e99]:
+                    - generic:
+                      - checkbox "Contains a number" [checked] [disabled]
+                      - img
+                    - paragraph [ref=e100]: Contains a number
+                  - generic [ref=e102]:
+                    - generic:
+                      - checkbox "Contains a special character (!@#$%)" [checked] [disabled]
+                      - img
+                    - paragraph [ref=e103]: Contains a special character (!@#$%)
+              - button "Update Password" [ref=e104] [cursor=pointer]
+      - contentinfo [ref=e105]:
+        - paragraph [ref=e108]:
+          - text: © 2026, Made by
+          - link "GLDeveloper" [ref=e109]:
+            - /url: /
+  - generic:
+    - region "Notifications Alt+T"
+  - generic [ref=e110]:
+    - img [ref=e112]
+    - button "Open Tanstack query devtools" [ref=e180] [cursor=pointer]:
+      - img [ref=e181]
+```

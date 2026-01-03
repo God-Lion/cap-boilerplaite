@@ -27,8 +27,8 @@ import {
   Dialog,
   Grid,
 } from '@mui/material'
-import CustomInputHorizontal from 'src/core/components/custom-inputs/Horizontal'
-import { CustomInputHorizontalData } from 'src/core/components/custom-inputs/types'
+import CustomInputHorizontal from '../../../../core/components/custom-inputs/Horizontal'
+import { CustomInputHorizontalData } from '../../../../core/components/custom-inputs/types'
 
 type TwoFactorAuthProps = {
   open: boolean
@@ -47,8 +47,7 @@ const data: CustomInputHorizontalData[] = [
     ),
     value: 'app',
     isSelected: true,
-    content:
-      'Get code from an app like Google Authenticator or Microsoft Authenticator.',
+    content: 'Get code from an app like Google Authenticator or Microsoft Authenticator.',
   },
   {
     title: (
@@ -60,39 +59,24 @@ const data: CustomInputHorizontalData[] = [
       </div>
     ),
     value: 'sms',
-    content:
-      'We will send a code via SMS if you need to use your backup login method.',
+    content: 'We will send a code via SMS if you need to use your backup login method.',
   },
 ]
 
 const SMSDialog = (handleAuthDialogClose: () => void) => {
   return (
     <>
-      <DialogTitle
-        variant='h5'
-        className='flex flex-col gap-2 sm:pbs-16 sm:pbe-6 sm:pli-16'
-      >
+      <DialogTitle variant='h5' className='flex flex-col gap-2 sm:pbs-16 sm:pbe-6 sm:pli-16'>
         Verify Your Mobile Number for SMS
         <Typography component='span' className='flex flex-col'>
-          Enter your mobile phone number with country code and we will send you
-          a verification code.
+          Enter your mobile phone number with country code and we will send you a verification code.
         </Typography>
       </DialogTitle>
       <DialogContent className='overflow-visible pbs-0 sm:pbe-16 sm:pli-16'>
-        <TextField
-          fullWidth
-          type='number'
-          label='Mobile Number'
-          placeholder='123 456 7890'
-        />
+        <TextField fullWidth type='number' label='Mobile Number' placeholder='123 456 7890' />
       </DialogContent>
       <DialogActions className='pbs-0 sm:pbe-16 sm:pli-16'>
-        <Button
-          variant='contained'
-          type='reset'
-          color='secondary'
-          onClick={handleAuthDialogClose}
-        >
+        <Button variant='contained' type='reset' color='secondary' onClick={handleAuthDialogClose}>
           Cancel
         </Button>
         <Button
@@ -112,34 +96,24 @@ const SMSDialog = (handleAuthDialogClose: () => void) => {
 const AppDialog = (handleAuthDialogClose: () => void) => {
   return (
     <>
-      <DialogTitle
-        variant='h4'
-        className='text-center sm:pbs-16 sm:pbe-6 sm:pli-16'
-      >
+      <DialogTitle variant='h4' className='text-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
         Add Authenticator App
       </DialogTitle>
       <DialogContent className='flex flex-col gap-6 pbs-0 sm:pli-16'>
         <div className='flex flex-col gap-2'>
           <Typography variant='h5'>Authenticator Apps</Typography>
           <Typography>
-            Using an authenticator app like Google Authenticator, Microsoft
-            Authenticator, Authy, or 1Password, scan the QR code. It will
-            generate a 6 digit code for you to enter below.
+            Using an authenticator app like Google Authenticator, Microsoft Authenticator, Authy, or
+            1Password, scan the QR code. It will generate a 6 digit code for you to enter below.
           </Typography>
         </div>
         <div className='flex justify-center'>
-          <img
-            alt='qr-code'
-            height={150}
-            width={150}
-            src='/images/misc/barcode.png'
-          />
+          <img alt='qr-code' height={150} width={150} src='/images/misc/barcode.png' />
         </div>
         <div className='flex flex-col gap-4'>
           <Alert severity='warning' icon={false}>
             <AlertTitle>ASDLKNASDA9AHS678dGhASD78AB</AlertTitle>
-            If you having trouble using the QR code, select manual entry on your
-            app
+            If you having trouble using the QR code, select manual entry on your app
           </Alert>
           <TextField
             fullWidth
@@ -149,12 +123,7 @@ const AppDialog = (handleAuthDialogClose: () => void) => {
         </div>
       </DialogContent>
       <DialogActions className='pbs-0 sm:pbe-16 sm:pli-16'>
-        <Button
-          variant='contained'
-          type='reset'
-          color='secondary'
-          onClick={handleAuthDialogClose}
-        >
+        <Button variant='contained' type='reset' color='secondary' onClick={handleAuthDialogClose}>
           Cancel
         </Button>
         <Button
@@ -200,9 +169,7 @@ const TwoFactorAuth = ({ open, setOpen }: TwoFactorAuthProps) => {
     }
   }
 
-  const handleOptionChange = (
-    prop: string | React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleOptionChange = (prop: string | React.ChangeEvent<HTMLInputElement>) => {
     if (typeof prop === 'string') {
       setAuthType(prop)
     } else {
@@ -229,8 +196,8 @@ const TwoFactorAuth = ({ open, setOpen }: TwoFactorAuthProps) => {
         >
           Select Authentication Method
           <Typography component='span' className='flex flex-col text-center'>
-            You also need to select a method by which the proxy authenticates to
-            the directory serve.
+            You also need to select a method by which the proxy authenticates to the directory
+            serve.
           </Typography>
         </DialogTitle>
         <DialogContent className='pbs-0 sm:pli-16'>
@@ -282,9 +249,7 @@ const TwoFactorAuth = ({ open, setOpen }: TwoFactorAuthProps) => {
           <i className='tabler-x' />
         </DialogCloseButton>
         <form onSubmit={(e) => e.preventDefault()}>
-          {authType === 'sms'
-            ? SMSDialog(handleAuthDialogClose)
-            : AppDialog(handleAuthDialogClose)}
+          {authType === 'sms' ? SMSDialog(handleAuthDialogClose) : AppDialog(handleAuthDialogClose)}
         </form>
       </Dialog>
     </>

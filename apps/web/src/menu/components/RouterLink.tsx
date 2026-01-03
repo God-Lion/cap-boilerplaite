@@ -7,15 +7,13 @@ type RouterLinkProps = LinkProps &
     className?: string
   }
 
-export const RouterLink = React.forwardRef(
-  (props: RouterLinkProps, ref: any) => {
-    const { to, className, ...other } = props
+export const RouterLink = React.forwardRef((props: RouterLinkProps, ref: any) => {
+  const { to, className, ...other } = props
 
-    return (
-      <Link ref={ref} to={to} className={className} {...other}>
-        {props.children}
-      </Link>
-    )
-  },
-)
+  return (
+    <Link ref={ref} to={to} className={className} {...other}>
+      {props.children}
+    </Link>
+  )
+})
 export default RouterLink

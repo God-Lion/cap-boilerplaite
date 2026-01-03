@@ -111,9 +111,7 @@ export function VirtualizedGrid<T>({
                 }}
               >
                 {rowItems.map((item, colIndex) => (
-                  <Box key={startIndex + colIndex}>
-                    {renderItem(item, startIndex + colIndex)}
-                  </Box>
+                  <Box key={startIndex + colIndex}>{renderItem(item, startIndex + colIndex)}</Box>
                 ))}
               </Box>
             </Box>

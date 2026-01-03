@@ -11,18 +11,10 @@ const AuthButtons: React.FC = () => {
 
   return (
     <Stack direction='row' spacing={1}>
-      <Button
-        variant='outlined'
-        size='small'
-        onClick={() => navigate('/auth/signin')}
-      >
+      <Button variant='outlined' size='small' onClick={() => navigate('/auth/signin')}>
         Login
       </Button>
-      <Button
-        variant='contained'
-        size='small'
-        onClick={() => navigate('/auth/signup')}
-      >
+      <Button variant='contained' size='small' onClick={() => navigate('/auth/signup')}>
         Register
       </Button>
     </Stack>

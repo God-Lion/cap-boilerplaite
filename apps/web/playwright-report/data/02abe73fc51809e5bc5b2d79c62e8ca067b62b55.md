@@ -1,0 +1,135 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img "God Lion Seeker"
+          - button [ref=e9] [cursor=pointer]:
+            - img [ref=e10]
+        - navigation [ref=e13]:
+          - list [ref=e14]:
+            - listitem [ref=e15]:
+              - list [ref=e16]:
+                - listitem [ref=e17]:
+                  - generic [ref=e18]: Apps & Pages
+                - listitem [ref=e19]:
+                  - generic [ref=e20] [cursor=pointer]:
+                    - generic [ref=e21]: Auth Pages
+                    - img [ref=e24]
+    - generic [ref=e26]:
+      - banner:
+        - generic [ref=e28]:
+          - generic [ref=e31] [cursor=pointer]:
+            - button [ref=e32]:
+              - img [ref=e33]
+            - paragraph [ref=e35]: Search ⌘K
+          - generic [ref=e36]:
+            - button [ref=e37] [cursor=pointer]:
+              - img [ref=e38]
+            - button "Switch theme mode - currently Light" [ref=e40] [cursor=pointer]:
+              - img [ref=e41]
+            - button [ref=e43] [cursor=pointer]:
+              - img [ref=e44]
+            - button [ref=e46] [cursor=pointer]:
+              - img [ref=e48]
+            - img [ref=e53] [cursor=pointer]
+      - main [ref=e57]:
+        - main [ref=e58]:
+          - generic [ref=e60]:
+            - img "God Lion Seeker Logo" [ref=e62]
+            - heading "Create Your Free Account" [level=1] [ref=e63]
+            - paragraph [ref=e64]: Let's get you started!
+            - generic [ref=e65]:
+              - generic [ref=e66]:
+                - generic [ref=e68]:
+                  - generic:
+                    - text: Full Name
+                    - generic: "*"
+                  - generic [ref=e69]:
+                    - textbox "Full Name" [ref=e70]:
+                      - /placeholder: e.g. Jane Doe
+                    - group:
+                      - generic: Full Name *
+                - generic [ref=e72]:
+                  - generic:
+                    - text: Email Address
+                    - generic: "*"
+                  - generic [ref=e73]:
+                    - textbox "Email Address" [ref=e74]:
+                      - /placeholder: you@example.com
+                    - group:
+                      - generic: Email Address *
+                - generic [ref=e76]:
+                  - generic:
+                    - generic: Phone Number (Optional)
+                  - generic [ref=e77]:
+                    - textbox "Phone Number (Optional)" [ref=e78]:
+                      - /placeholder: +1 (555) 000-0000
+                    - group:
+                      - generic:
+                        - generic: Phone Number (Optional)
+                - generic [ref=e80]:
+                  - generic:
+                    - text: Password
+                    - generic: "*"
+                  - generic [ref=e81]:
+                    - textbox "Password" [ref=e82]:
+                      - /placeholder: Min. 8 characters
+                    - button "toggle password visibility" [ref=e84] [cursor=pointer]:
+                      - img [ref=e85]
+                    - group:
+                      - generic: Password *
+                - generic [ref=e88]:
+                  - generic:
+                    - text: Confirm Password
+                    - generic: "*"
+                  - generic [ref=e89]:
+                    - textbox "Confirm Password" [ref=e90]:
+                      - /placeholder: Re-enter password
+                    - group:
+                      - generic: Confirm Password *
+              - generic [ref=e92] [cursor=pointer]:
+                - generic [ref=e93]:
+                  - checkbox "I agree to the Terms of Service and Privacy Policy." [checked] [ref=e94]
+                  - img [ref=e95]
+                - paragraph [ref=e97]:
+                  - text: I agree to the
+                  - link "Terms of Service" [ref=e98]:
+                    - /url: /terms
+                  - text: and
+                  - link "Privacy Policy" [ref=e99]:
+                    - /url: /privacy
+                  - text: .
+              - generic [ref=e101] [cursor=pointer]:
+                - generic [ref=e102]:
+                  - checkbox "Subscribe to our newsletter for updates." [ref=e103]
+                  - img [ref=e104]
+                - paragraph [ref=e106]: Subscribe to our newsletter for updates.
+              - button "Create Account" [ref=e107] [cursor=pointer]
+              - separator [ref=e109]:
+                - generic [ref=e110]: Or continue with
+              - generic [ref=e111]:
+                - button "Google" [ref=e113] [cursor=pointer]:
+                  - img [ref=e115]
+                  - text: Google
+                - button "GitHub" [ref=e118] [cursor=pointer]:
+                  - img [ref=e120]
+                  - text: GitHub
+              - paragraph [ref=e123]:
+                - text: Already have an account? Sign In
+                - link "auth.register.login" [ref=e124] [cursor=pointer]:
+                  - /url: /auth/sign-in
+          - generic [ref=e125]:
+            - img [ref=e126]
+            - generic [ref=e128]: Secure SSL Encryption
+      - contentinfo [ref=e129]:
+        - paragraph [ref=e132]:
+          - text: © 2026, Made by
+          - link "GLDeveloper" [ref=e133] [cursor=pointer]:
+            - /url: /
+  - generic:
+    - region "Notifications Alt+T"
+```

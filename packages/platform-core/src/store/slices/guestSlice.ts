@@ -31,13 +31,8 @@ export interface GuestSlice {
   // Actions
   createGuestSession: () => void
   clearGuestSession: () => void
-  addGuestData: <K extends keyof GuestSessionData>(
-    key: K,
-    data: GuestSessionData[K],
-  ) => void
-  getGuestData: <K extends keyof GuestSessionData>(
-    key: K,
-  ) => GuestSessionData[K] | undefined
+  addGuestData: <K extends keyof GuestSessionData>(key: K, data: GuestSessionData[K]) => void
+  getGuestData: <K extends keyof GuestSessionData>(key: K) => GuestSessionData[K] | undefined
   incrementAnalysisCount: () => void
   getAnalysisCount: () => number
 }

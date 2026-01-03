@@ -15,17 +15,25 @@ class SecureTokenManager {
   private initialized = false
 
   constructor() {
-    // Load tokens from storage on initialization
-    this.loadFromStorage()
+    // Initialize tokens from storage
+    this.init()
+  }
+
+  /**
+   * Initialize tokens from storage
+   */
+  async init(): Promise<void> {
+    if (this.initialized) return
+    await this.loadFromStorage()
   }
 
   /**
    * Load tokens from localStorage
    */
-  private loadFromStorage(): void {
+  private async loadFromStorage(): Promise<void> {
     try {
       // Use encryption for token storage
-      const storedTokens = localStorageManager.get<TokenData>(TOKEN_STORAGE_KEY, true)
+      const storedTokens = await localStorageManager.get<TokenData>(TOKEN_STORAGE_KEY, true)
 
       if (storedTokens) {
         // Validate token structure
@@ -34,7 +42,7 @@ class SecureTokenManager {
           this.refreshToken = storedTokens.refreshToken
           this.expiresAt = storedTokens.expiresAt
 
-          if (import.meta.env.DEV) {
+          if ((import.meta as any).env?.DEV) {
             console.log('[SecureTokenManager] Tokens loaded from storage')
           }
         }
@@ -42,7 +50,7 @@ class SecureTokenManager {
     } catch (error) {
       console.error('[SecureTokenManager] Failed to load tokens from storage:', error)
       // Clear potentially corrupted data
-      this.clearStorage()
+      await this.clearStorage()
     } finally {
       this.initialized = true
     }
@@ -51,7 +59,7 @@ class SecureTokenManager {
   /**
    * Save tokens to localStorage
    */
-  private saveToStorage(): void {
+  private async saveToStorage(): Promise<void> {
     try {
       if (this.accessToken && this.refreshToken && this.expiresAt) {
         const tokens: TokenData = {
@@ -61,9 +69,9 @@ class SecureTokenManager {
         }
 
         // Use encryption for token storage
-        localStorageManager.set(TOKEN_STORAGE_KEY, tokens, true)
+        await localStorageManager.set(TOKEN_STORAGE_KEY, tokens, true)
 
-        if (import.meta.env.DEV) {
+        if ((import.meta as any).env?.DEV) {
           console.log('[SecureTokenManager] Tokens saved to storage')
         }
       }
@@ -75,11 +83,11 @@ class SecureTokenManager {
   /**
    * Clear tokens from localStorage
    */
-  private clearStorage(): void {
+  private async clearStorage(): Promise<void> {
     try {
       localStorageManager.remove(TOKEN_STORAGE_KEY)
 
-      if (import.meta.env.DEV) {
+      if ((import.meta as any).env?.DEV) {
         console.log('[SecureTokenManager] Tokens cleared from storage')
       }
     } catch (error) {
@@ -111,49 +119,49 @@ class SecureTokenManager {
     }
   }
 
-  setTokens(tokens: TokenData): void {
+  async setTokens(tokens: TokenData): Promise<void> {
     this.accessToken = tokens.accessToken
     this.refreshToken = tokens.refreshToken
     this.expiresAt = tokens.expiresAt
 
     // Persist to storage
-    this.saveToStorage()
+    await this.saveToStorage()
   }
 
-  setAccessToken(token: string): void {
+  async setAccessToken(token: string): Promise<void> {
     this.accessToken = token
 
     // Persist to storage if we have all required data
     if (this.refreshToken && this.expiresAt) {
-      this.saveToStorage()
+      await this.saveToStorage()
     }
   }
 
-  setRefreshToken(token: string): void {
+  async setRefreshToken(token: string): Promise<void> {
     this.refreshToken = token
 
     // Persist to storage if we have all required data
     if (this.accessToken && this.expiresAt) {
-      this.saveToStorage()
+      await this.saveToStorage()
     }
   }
 
-  setExpiresAt(expiresAt: number): void {
+  async setExpiresAt(expiresAt: number): Promise<void> {
     this.expiresAt = expiresAt
 
     // Persist to storage if we have all required data
     if (this.accessToken && this.refreshToken) {
-      this.saveToStorage()
+      await this.saveToStorage()
     }
   }
 
-  clearTokens(): void {
+  async clearTokens(): Promise<void> {
     this.accessToken = null
     this.refreshToken = null
     this.expiresAt = null
 
     // Clear from storage
-    this.clearStorage()
+    await this.clearStorage()
   }
 
   isTokenExpired(): boolean {

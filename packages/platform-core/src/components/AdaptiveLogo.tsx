@@ -7,11 +7,7 @@ interface AdaptiveLogoProps {
   sx?: SxProps<Theme>
 }
 
-export default function AdaptiveLogo({
-  width = 80,
-  height = 80,
-  sx,
-}: AdaptiveLogoProps) {
+export default function AdaptiveLogo({ width = 80, height = 80, sx }: AdaptiveLogoProps) {
   const theme = useTheme()
   const isDarkMode = theme.palette.mode === 'dark'
 

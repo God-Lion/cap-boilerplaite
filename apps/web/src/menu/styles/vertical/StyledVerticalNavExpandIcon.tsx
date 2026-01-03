@@ -18,8 +18,7 @@ const StyledVerticalNavExpandIcon = styled.span<StyledVerticalNavExpandIconProps
 
   & > i,
   & > svg {
-    transition: ${({ transitionDuration }) =>
-      `transform ${transitionDuration}ms ease-in-out`};
+    transition: ${({ transitionDuration }) => `transform ${transitionDuration}ms ease-in-out`};
     ${({ open }) => open && 'transform: rotate(90deg);'}
   }
 

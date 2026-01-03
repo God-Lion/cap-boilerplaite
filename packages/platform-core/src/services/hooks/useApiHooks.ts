@@ -1,6 +1,12 @@
 // src/shared/hooks/useApiHooks.ts
 
-import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query'
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryOptions,
+  UseMutationOptions,
+} from '@tanstack/react-query'
 import { HttpError, FetchResponse } from '../api/api.fetch.client'
 import { QUERY_KEYS } from '../api/api.config'
 import {
@@ -27,7 +33,9 @@ import {
 /**
  * Health & Metrics Hooks
  */
-export function useBasicHealth(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useBasicHealth(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.health.basic,
     queryFn: () => healthService.getBasicHealth(),
@@ -36,7 +44,9 @@ export function useBasicHealth(options?: Omit<UseQueryOptions<FetchResponse, Htt
   })
 }
 
-export function useDetailedHealth(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useDetailedHealth(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.health.detailed,
     queryFn: () => healthService.getDetailedHealth(),
@@ -45,7 +55,9 @@ export function useDetailedHealth(options?: Omit<UseQueryOptions<FetchResponse, 
   })
 }
 
-export function useMetrics(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useMetrics(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.metrics.basic,
     queryFn: () => metricsService.getMetrics(),
@@ -85,7 +97,9 @@ export function useMFADisable(options?: UseMutationOptions<FetchResponse, HttpEr
 /**
  * Resume Profiles Hooks
  */
-export function useProfiles(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useProfiles(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.profiles.all,
     queryFn: () => profileService.getProfiles(),
@@ -93,7 +107,10 @@ export function useProfiles(options?: Omit<UseQueryOptions<FetchResponse, HttpEr
   })
 }
 
-export function useProfile(id: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useProfile(
+  id: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.profiles.byId(id),
     queryFn: () => profileService.getProfileById(id),
@@ -102,7 +119,13 @@ export function useProfile(id: number, options?: Omit<UseQueryOptions<FetchRespo
   })
 }
 
-export function useUploadProfile(options?: UseMutationOptions<FetchResponse, HttpError, { file: File; name: string; description?: string }>) {
+export function useUploadProfile(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { file: File; name: string; description?: string }
+  >,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data) => profileService.uploadProfile(data),
@@ -113,7 +136,9 @@ export function useUploadProfile(options?: UseMutationOptions<FetchResponse, Htt
   })
 }
 
-export function useSetActiveProfile(options?: UseMutationOptions<FetchResponse, HttpError, number>) {
+export function useSetActiveProfile(
+  options?: UseMutationOptions<FetchResponse, HttpError, number>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => profileService.setActiveProfile(id),
@@ -125,7 +150,9 @@ export function useSetActiveProfile(options?: UseMutationOptions<FetchResponse, 
   })
 }
 
-export function useUpdateProfile(options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: any }>) {
+export function useUpdateProfile(
+  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: any }>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ id, data }) => profileService.updateProfile(id, data),
@@ -151,7 +178,10 @@ export function useDeleteProfile(options?: UseMutationOptions<FetchResponse, Htt
 /**
  * Career Hooks
  */
-export function useCareerAnalysis(id: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useCareerAnalysis(
+  id: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.career.analysis(id),
     queryFn: () => careerService.getAnalysis(id),
@@ -160,7 +190,11 @@ export function useCareerAnalysis(id: number, options?: Omit<UseQueryOptions<Fet
   })
 }
 
-export function useCareerHistory(email: string, limit?: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useCareerHistory(
+  email: string,
+  limit?: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.career.history(email),
     queryFn: () => careerService.getHistory(email, limit),
@@ -169,7 +203,9 @@ export function useCareerHistory(email: string, limit?: number, options?: Omit<U
   })
 }
 
-export function useCareerRoles(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useCareerRoles(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.career.roles,
     queryFn: () => careerService.listRoles(),
@@ -178,7 +214,10 @@ export function useCareerRoles(options?: Omit<UseQueryOptions<FetchResponse, Htt
   })
 }
 
-export function useCareerRoleDetails(roleId: string, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useCareerRoleDetails(
+  roleId: string,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.career.roleDetails(roleId),
     queryFn: () => careerService.getRoleDetails(roleId),
@@ -188,14 +227,22 @@ export function useCareerRoleDetails(roleId: string, options?: Omit<UseQueryOpti
   })
 }
 
-export function useAnalyzeCareerFile(options?: UseMutationOptions<FetchResponse, HttpError, { file: File; params?: any }>) {
+export function useAnalyzeCareerFile(
+  options?: UseMutationOptions<FetchResponse, HttpError, { file: File; params?: any }>,
+) {
   return useMutation({
     mutationFn: ({ file, params }) => careerService.analyzeFile(file, params),
     ...options,
   })
 }
 
-export function useAnalyzeCareerText(options?: UseMutationOptions<FetchResponse, HttpError, { resume_text: string; user_email?: string }>) {
+export function useAnalyzeCareerText(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { resume_text: string; user_email?: string }
+  >,
+) {
   return useMutation({
     mutationFn: (data) => careerService.analyzeText(data),
     ...options,
@@ -205,7 +252,10 @@ export function useAnalyzeCareerText(options?: UseMutationOptions<FetchResponse,
 /**
  * Jobs Hooks
  */
-export function useJobs(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useJobs(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.jobs.list(queryString),
@@ -214,7 +264,10 @@ export function useJobs(params?: any, options?: Omit<UseQueryOptions<FetchRespon
   })
 }
 
-export function useJob(id: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useJob(
+  id: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.jobs.byId(id),
     queryFn: () => jobsService.getJobById(id),
@@ -223,7 +276,11 @@ export function useJob(id: number, options?: Omit<UseQueryOptions<FetchResponse,
   })
 }
 
-export function useSearchJobs(query: string, params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useSearchJobs(
+  query: string,
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.jobs.search(query),
     queryFn: () => jobsService.searchJobs(query, params),
@@ -232,7 +289,9 @@ export function useSearchJobs(query: string, params?: any, options?: Omit<UseQue
   })
 }
 
-export function useSavedJobs(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useSavedJobs(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.jobs.saved,
     queryFn: () => jobsService.getSavedJobs(),
@@ -240,7 +299,10 @@ export function useSavedJobs(options?: Omit<UseQueryOptions<FetchResponse, HttpE
   })
 }
 
-export function useJobApplications(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useJobApplications(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.jobs.applications,
     queryFn: () => jobsService.getApplications(params),
@@ -248,7 +310,9 @@ export function useJobApplications(params?: any, options?: Omit<UseQueryOptions<
   })
 }
 
-export function useSaveJob(options?: UseMutationOptions<FetchResponse, HttpError, { id: number; notes?: string }>) {
+export function useSaveJob(
+  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; notes?: string }>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ id, notes }) => jobsService.saveJob(id, notes),
@@ -270,10 +334,17 @@ export function useUnsaveJob(options?: UseMutationOptions<FetchResponse, HttpErr
   })
 }
 
-export function useApplyToJob(options?: UseMutationOptions<FetchResponse, HttpError, { id: number; profile_id: number; cover_letter?: string }>) {
+export function useApplyToJob(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { id: number; profile_id: number; cover_letter?: string }
+  >,
+) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, profile_id, cover_letter }) => jobsService.applyToJob(id, { profile_id, cover_letter }),
+    mutationFn: ({ id, profile_id, cover_letter }) =>
+      jobsService.applyToJob(id, { profile_id, cover_letter }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.jobs.applications })
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.dashboard.stats })
@@ -282,10 +353,13 @@ export function useApplyToJob(options?: UseMutationOptions<FetchResponse, HttpEr
   })
 }
 
-export function useUpdateApplicationStatus(options?: UseMutationOptions<FetchResponse, HttpError, { applicationId: number; status: string }>) {
+export function useUpdateApplicationStatus(
+  options?: UseMutationOptions<FetchResponse, HttpError, { applicationId: number; status: string }>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ applicationId, status }) => jobsService.updateApplicationStatus(applicationId, status),
+    mutationFn: ({ applicationId, status }) =>
+      jobsService.updateApplicationStatus(applicationId, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.jobs.applications })
     },
@@ -296,7 +370,10 @@ export function useUpdateApplicationStatus(options?: UseMutationOptions<FetchRes
 /**
  * Scraper Hooks
  */
-export function useScraperSessions(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useScraperSessions(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.scraper.sessions(queryString),
@@ -305,7 +382,10 @@ export function useScraperSessions(params?: any, options?: Omit<UseQueryOptions<
   })
 }
 
-export function useScraperSession(id: number | string, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useScraperSession(
+  id: number | string,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.scraper.session(id),
     queryFn: () => scraperService.getSession(id),
@@ -326,7 +406,9 @@ export function useStartScraping(options?: UseMutationOptions<FetchResponse, Htt
   })
 }
 
-export function useStopScraping(options?: UseMutationOptions<FetchResponse, HttpError, number | string>) {
+export function useStopScraping(
+  options?: UseMutationOptions<FetchResponse, HttpError, number | string>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id) => scraperService.stopSession(id),
@@ -340,7 +422,10 @@ export function useStopScraping(options?: UseMutationOptions<FetchResponse, Http
 /**
  * Companies Hooks
  */
-export function useCompanies(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useCompanies(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.companies.list(queryString),
@@ -349,7 +434,10 @@ export function useCompanies(params?: any, options?: Omit<UseQueryOptions<FetchR
   })
 }
 
-export function useCompany(id: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useCompany(
+  id: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.companies.byId(id),
     queryFn: () => companiesService.getCompanyById(id),
@@ -358,7 +446,11 @@ export function useCompany(id: number, options?: Omit<UseQueryOptions<FetchRespo
   })
 }
 
-export function useCompanyJobs(id: number, params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useCompanyJobs(
+  id: number,
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.companies.jobs(id, queryString),
@@ -371,7 +463,10 @@ export function useCompanyJobs(id: number, params?: any, options?: Omit<UseQuery
 /**
  * Job Analysis Hooks
  */
-export function useJobAnalyses(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useJobAnalyses(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.jobAnalysis.list(queryString),
@@ -380,7 +475,10 @@ export function useJobAnalyses(params?: any, options?: Omit<UseQueryOptions<Fetc
   })
 }
 
-export function useJobAnalysis(jobId: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useJobAnalysis(
+  jobId: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.jobAnalysis.byJobId(jobId),
     queryFn: () => jobAnalysisService.getAnalysisByJobId(jobId),
@@ -389,7 +487,9 @@ export function useJobAnalysis(jobId: number, options?: Omit<UseQueryOptions<Fet
   })
 }
 
-export function useJobAnalysisStats(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useJobAnalysisStats(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.jobAnalysis.stats,
     queryFn: () => jobAnalysisService.getStats(),
@@ -397,7 +497,10 @@ export function useJobAnalysisStats(options?: Omit<UseQueryOptions<FetchResponse
   })
 }
 
-export function useRecommendedJobs(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useRecommendedJobs(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.jobAnalysis.recommended(queryString),
@@ -409,7 +512,9 @@ export function useRecommendedJobs(params?: any, options?: Omit<UseQueryOptions<
 /**
  * Statistics Hooks
  */
-export function useStatisticsOverview(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useStatisticsOverview(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.statistics.overview,
     queryFn: () => statisticsService.getOverview(),
@@ -418,7 +523,10 @@ export function useStatisticsOverview(options?: Omit<UseQueryOptions<FetchRespon
   })
 }
 
-export function useJobsByLocation(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useJobsByLocation(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.statistics.jobsByLocation(queryString),
@@ -427,7 +535,10 @@ export function useJobsByLocation(params?: any, options?: Omit<UseQueryOptions<F
   })
 }
 
-export function useJobsByCompany(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useJobsByCompany(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.statistics.jobsByCompany(queryString),
@@ -436,7 +547,10 @@ export function useJobsByCompany(params?: any, options?: Omit<UseQueryOptions<Fe
   })
 }
 
-export function useTopSkills(limit: number = 20, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useTopSkills(
+  limit: number = 20,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.statistics.topSkills(String(limit)),
     queryFn: () => statisticsService.getTopSkills(limit),
@@ -447,7 +561,9 @@ export function useTopSkills(limit: number = 20, options?: Omit<UseQueryOptions<
 /**
  * Dashboard Hooks
  */
-export function useDashboardOverview(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useDashboardOverview(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.dashboard.overview,
     queryFn: () => dashboardService.getOverview(),
@@ -455,7 +571,9 @@ export function useDashboardOverview(options?: Omit<UseQueryOptions<FetchRespons
   })
 }
 
-export function useDashboardStats(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useDashboardStats(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.dashboard.stats,
     queryFn: () => dashboardService.getStats(),
@@ -463,7 +581,10 @@ export function useDashboardStats(options?: Omit<UseQueryOptions<FetchResponse, 
   })
 }
 
-export function useDashboardRecentApplications(limit?: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useDashboardRecentApplications(
+  limit?: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.dashboard.recentApplications,
     queryFn: () => dashboardService.getRecentApplications(limit),
@@ -471,7 +592,10 @@ export function useDashboardRecentApplications(limit?: number, options?: Omit<Us
   })
 }
 
-export function useDashboardRecommendations(limit?: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useDashboardRecommendations(
+  limit?: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.dashboard.recommendations,
     queryFn: () => dashboardService.getRecommendations(limit),
@@ -482,7 +606,9 @@ export function useDashboardRecommendations(limit?: number, options?: Omit<UseQu
 /**
  * Automation Hooks
  */
-export function useAutomationConfig(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAutomationConfig(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.automation.config,
     queryFn: () => automationService.getConfig(),
@@ -490,7 +616,9 @@ export function useAutomationConfig(options?: Omit<UseQueryOptions<FetchResponse
   })
 }
 
-export function useAutomationStatus(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAutomationStatus(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.automation.status,
     queryFn: () => automationService.getStatus(),
@@ -499,7 +627,10 @@ export function useAutomationStatus(options?: Omit<UseQueryOptions<FetchResponse
   })
 }
 
-export function useAutomationHistory(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAutomationHistory(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.automation.history(queryString),
@@ -508,7 +639,9 @@ export function useAutomationHistory(params?: any, options?: Omit<UseQueryOption
   })
 }
 
-export function useUpdateAutomationConfig(options?: UseMutationOptions<FetchResponse, HttpError, any>) {
+export function useUpdateAutomationConfig(
+  options?: UseMutationOptions<FetchResponse, HttpError, any>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data) => automationService.updateConfig(data),
@@ -544,7 +677,10 @@ export function useStopAutomation(options?: UseMutationOptions<FetchResponse, Ht
 /**
  * Notifications Hooks
  */
-export function useNotifications(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useNotifications(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.notifications.list(queryString),
@@ -553,7 +689,9 @@ export function useNotifications(params?: any, options?: Omit<UseQueryOptions<Fe
   })
 }
 
-export function useNotificationPreferences(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useNotificationPreferences(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.notifications.preferences,
     queryFn: () => notificationsService.getPreferences(),
@@ -561,7 +699,9 @@ export function useNotificationPreferences(options?: Omit<UseQueryOptions<FetchR
   })
 }
 
-export function useUnreadNotificationCount(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useUnreadNotificationCount(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.notifications.unreadCount,
     queryFn: () => notificationsService.getUnreadCount(),
@@ -570,7 +710,9 @@ export function useUnreadNotificationCount(options?: Omit<UseQueryOptions<FetchR
   })
 }
 
-export function useMarkNotificationAsRead(options?: UseMutationOptions<FetchResponse, HttpError, number>) {
+export function useMarkNotificationAsRead(
+  options?: UseMutationOptions<FetchResponse, HttpError, number>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => notificationsService.markAsRead(id),
@@ -582,7 +724,9 @@ export function useMarkNotificationAsRead(options?: UseMutationOptions<FetchResp
   })
 }
 
-export function useMarkAllNotificationsAsRead(options?: UseMutationOptions<FetchResponse, HttpError>) {
+export function useMarkAllNotificationsAsRead(
+  options?: UseMutationOptions<FetchResponse, HttpError>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: () => notificationsService.markAllAsRead(),
@@ -597,7 +741,9 @@ export function useMarkAllNotificationsAsRead(options?: UseMutationOptions<Fetch
 /**
  * Admin Hooks
  */
-export function useAdminDashboard(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAdminDashboard(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.admin.dashboard,
     queryFn: () => adminService.getDashboard(),
@@ -605,7 +751,10 @@ export function useAdminDashboard(options?: Omit<UseQueryOptions<FetchResponse, 
   })
 }
 
-export function useAdminUsers(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAdminUsers(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.admin.users.list(queryString),
@@ -614,7 +763,10 @@ export function useAdminUsers(params?: any, options?: Omit<UseQueryOptions<Fetch
   })
 }
 
-export function useAdminUser(id: number, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAdminUser(
+  id: number,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.admin.users.byId(id),
     queryFn: () => adminService.getUserById(id),
@@ -623,7 +775,9 @@ export function useAdminUser(id: number, options?: Omit<UseQueryOptions<FetchRes
   })
 }
 
-export function useUpdateAdminUser(options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: any }>) {
+export function useUpdateAdminUser(
+  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: any }>,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ id, data }) => adminService.updateUser(id, data),
@@ -635,7 +789,13 @@ export function useUpdateAdminUser(options?: UseMutationOptions<FetchResponse, H
   })
 }
 
-export function useAdminBulkAction(options?: UseMutationOptions<FetchResponse, HttpError, { user_ids: number[]; action: string; reason?: string }>) {
+export function useAdminBulkAction(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { user_ids: number[]; action: string; reason?: string }
+  >,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data) => adminService.bulkAction(data),
@@ -649,7 +809,9 @@ export function useAdminBulkAction(options?: UseMutationOptions<FetchResponse, H
 /**
  * RBAC Hooks
  */
-export function usePermissions(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function usePermissions(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.rbac.permissions.all,
     queryFn: () => rbacService.getPermissions(),
@@ -658,7 +820,10 @@ export function usePermissions(options?: Omit<UseQueryOptions<FetchResponse, Htt
   })
 }
 
-export function useRolePermissions(role: string, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useRolePermissions(
+  role: string,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.rbac.roles.permissions(role),
     queryFn: () => rbacService.getRolePermissions(role),
@@ -667,7 +832,13 @@ export function useRolePermissions(role: string, options?: Omit<UseQueryOptions<
   })
 }
 
-export function useGrantPermission(options?: UseMutationOptions<FetchResponse, HttpError, { user_id: number; permission_id: number; reason?: string; expires_at?: string }>) {
+export function useGrantPermission(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { user_id: number; permission_id: number; reason?: string; expires_at?: string }
+  >,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data) => rbacService.grantPermission(data),
@@ -679,7 +850,13 @@ export function useGrantPermission(options?: UseMutationOptions<FetchResponse, H
   })
 }
 
-export function useRevokePermission(options?: UseMutationOptions<FetchResponse, HttpError, { user_id: number; permission_id: number; reason?: string }>) {
+export function useRevokePermission(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { user_id: number; permission_id: number; reason?: string }
+  >,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data) => rbacService.revokePermission(data),
@@ -694,7 +871,10 @@ export function useRevokePermission(options?: UseMutationOptions<FetchResponse, 
 /**
  * Audit Hooks
  */
-export function useAuditLogs(params?: any, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAuditLogs(
+  params?: any,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   const queryString = params ? JSON.stringify(params) : ''
   return useQuery({
     queryKey: QUERY_KEYS.audit.logs(queryString),
@@ -703,7 +883,9 @@ export function useAuditLogs(params?: any, options?: Omit<UseQueryOptions<FetchR
   })
 }
 
-export function useAuditStatistics(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAuditStatistics(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.audit.statistics,
     queryFn: () => auditService.getStatistics(),
@@ -711,7 +893,9 @@ export function useAuditStatistics(options?: Omit<UseQueryOptions<FetchResponse,
   })
 }
 
-export function useAuditCompliance(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useAuditCompliance(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.audit.compliance,
     queryFn: () => auditService.getCompliance(),
@@ -722,7 +906,9 @@ export function useAuditCompliance(options?: Omit<UseQueryOptions<FetchResponse,
 /**
  * Backup Hooks
  */
-export function useBackups(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useBackups(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.backup.list,
     queryFn: () => backupService.listBackups(),
@@ -730,7 +916,10 @@ export function useBackups(options?: Omit<UseQueryOptions<FetchResponse, HttpErr
   })
 }
 
-export function useBackup(id: number | string, options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useBackup(
+  id: number | string,
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.backup.byId(id),
     queryFn: () => backupService.getBackupById(id),
@@ -739,7 +928,9 @@ export function useBackup(id: number | string, options?: Omit<UseQueryOptions<Fe
   })
 }
 
-export function useRPOStatus(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useRPOStatus(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.backup.rpoStatus,
     queryFn: () => backupService.getRPOStatus(),
@@ -748,7 +939,13 @@ export function useRPOStatus(options?: Omit<UseQueryOptions<FetchResponse, HttpE
   })
 }
 
-export function useCreateBackup(options?: UseMutationOptions<FetchResponse, HttpError, { backup_type?: string; verify_after_creation?: boolean }>) {
+export function useCreateBackup(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { backup_type?: string; verify_after_creation?: boolean }
+  >,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data) => backupService.createBackup(data),
@@ -759,7 +956,13 @@ export function useCreateBackup(options?: UseMutationOptions<FetchResponse, Http
   })
 }
 
-export function useRestoreBackup(options?: UseMutationOptions<FetchResponse, HttpError, { backup_id: string; verify_before_restore?: boolean; create_backup_before_restore?: boolean }>) {
+export function useRestoreBackup(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { backup_id: string; verify_before_restore?: boolean; create_backup_before_restore?: boolean }
+  >,
+) {
   return useMutation({
     mutationFn: (data) => backupService.restoreBackup(data),
     ...options,
@@ -769,7 +972,9 @@ export function useRestoreBackup(options?: UseMutationOptions<FetchResponse, Htt
 /**
  * GDPR Hooks
  */
-export function useGDPRConsentStatus(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useGDPRConsentStatus(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.gdpr.consentStatus,
     queryFn: () => gdprService.getConsentStatus(),
@@ -777,7 +982,9 @@ export function useGDPRConsentStatus(options?: Omit<UseQueryOptions<FetchRespons
   })
 }
 
-export function useGDPRRetentionReport(options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>) {
+export function useGDPRRetentionReport(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
   return useQuery({
     queryKey: QUERY_KEYS.gdpr.retentionReport,
     queryFn: () => gdprService.getRetentionReport(),
@@ -785,21 +992,35 @@ export function useGDPRRetentionReport(options?: Omit<UseQueryOptions<FetchRespo
   })
 }
 
-export function useRequestDataExport(options?: UseMutationOptions<FetchResponse, HttpError, 'json' | 'csv'>) {
+export function useRequestDataExport(
+  options?: UseMutationOptions<FetchResponse, HttpError, 'json' | 'csv'>,
+) {
   return useMutation({
     mutationFn: (format) => gdprService.requestDataExport(format),
     ...options,
   })
 }
 
-export function useRequestDataDeletion(options?: UseMutationOptions<FetchResponse, HttpError, { anonymize?: boolean; reason?: string; verification_code?: string }>) {
+export function useRequestDataDeletion(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { anonymize?: boolean; reason?: string; verification_code?: string }
+  >,
+) {
   return useMutation({
     mutationFn: (data) => gdprService.requestDataDeletion(data),
     ...options,
   })
 }
 
-export function useGiveConsent(options?: UseMutationOptions<FetchResponse, HttpError, { consent_type: string; consent_given: boolean; consent_version?: string }>) {
+export function useGiveConsent(
+  options?: UseMutationOptions<
+    FetchResponse,
+    HttpError,
+    { consent_type: string; consent_given: boolean; consent_version?: string }
+  >,
+) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data) => gdprService.giveConsent(data),

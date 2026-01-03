@@ -2,10 +2,7 @@ import type { StateCreator } from 'zustand'
 import type { AppStore } from '../index'
 import themeConfig from '../../configs/themeConfig'
 
-export type Mode = 'light' | 'dark' | 'system'
-export type Skin = 'default' | 'bordered'
-export type Layout = 'vertical' | 'horizontal' | 'collapsed'
-export type LayoutComponentWidth = 'full' | 'boxed' | 'compact'
+import type { Mode, Skin, Layout, LayoutComponentWidth } from '../../types'
 
 export interface Settings {
   mode: Mode
@@ -39,11 +36,7 @@ const defaultSettings: Settings = {
 
 export const createSettingsSlice: StateCreator<
   AppStore,
-  [
-    ['zustand/immer', never],
-    ['zustand/devtools', never],
-    ['zustand/persist', unknown],
-  ],
+  [['zustand/immer', never], ['zustand/devtools', never], ['zustand/persist', unknown]],
   [],
   SettingsSlice
 > = (set, get) => ({
@@ -52,12 +45,16 @@ export const createSettingsSlice: StateCreator<
 
   updateSettings: (newSettings: Partial<Settings>) => {
     set((state) => {
-      const updatedSettings = { ...state.settings, ...newSettings }
-      return {
-        settings: updatedSettings,
-        isSettingsChanged:
-          JSON.stringify(defaultSettings) !== JSON.stringify(updatedSettings),
+      // Sync root mode if it's being updated in settings
+      if (newSettings.mode) {
+        state.mode = newSettings.mode
       }
+
+      // Update settings
+      state.settings = { ...state.settings, ...newSettings }
+
+      // Update change detection
+      state.isSettingsChanged = JSON.stringify(defaultSettings) !== JSON.stringify(state.settings)
     })
   },
 

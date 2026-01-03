@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "npm run dev --workspace=@cap/web",
     "build": "npm run build --workspaces",
-    "lint": "npm run lint --workspaces"
+    "lint": "npm run lint --workspaces",
+    "test:e2e": "npm run test:e2e --workspace=@cap/web",
+    "cspell": "cspell --no-progress --show-suggestions --relative --dot --gitignore \"**\""
   }
 }

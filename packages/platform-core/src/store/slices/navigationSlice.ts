@@ -32,11 +32,7 @@ export interface NavigationSlice {
 
 export const createNavigationSlice: StateCreator<
   AppStore,
-  [
-    ['zustand/immer', never],
-    ['zustand/devtools', never],
-    ['zustand/persist', unknown],
-  ],
+  [['zustand/immer', never], ['zustand/devtools', never], ['zustand/persist', unknown]],
   [],
   NavigationSlice
 > = (set) => ({
@@ -58,8 +54,7 @@ export const createNavigationSlice: StateCreator<
       verticalNav: {
         ...state.verticalNav,
         isHovered: value !== undefined && false,
-        isCollapsed:
-          value !== undefined ? Boolean(value) : !state.verticalNav.isCollapsed,
+        isCollapsed: value !== undefined ? Boolean(value) : !state.verticalNav.isCollapsed,
         collapsing: value === true,
         expanding: value !== true,
       },
@@ -70,8 +65,7 @@ export const createNavigationSlice: StateCreator<
     set((state) => ({
       verticalNav: {
         ...state.verticalNav,
-        isHovered:
-          value !== undefined ? Boolean(value) : !state.verticalNav.isHovered,
+        isHovered: value !== undefined ? Boolean(value) : !state.verticalNav.isHovered,
       },
     }))
   },
@@ -80,8 +74,7 @@ export const createNavigationSlice: StateCreator<
     set((state) => ({
       verticalNav: {
         ...state.verticalNav,
-        isToggled:
-          value !== undefined ? Boolean(value) : !state.verticalNav.isToggled,
+        isToggled: value !== undefined ? Boolean(value) : !state.verticalNav.isToggled,
       },
     }))
   },

@@ -114,11 +114,7 @@ export default function Home() {
             >
               Powerful Features
             </Typography>
-            <Typography
-              variant='h6'
-              color='text.secondary'
-              sx={{ maxWidth: 600, mx: 'auto' }}
-            >
+            <Typography variant='h6' color='text.secondary' sx={{ maxWidth: 600, mx: 'auto' }}>
               Everything you need to navigate the modern job market
             </Typography>
           </Box>
@@ -183,26 +179,17 @@ export default function Home() {
                         background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
                         color: 'white',
                         mb: 2.5,
-                        transition:
-                          'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                         boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.3)}`,
                       }}
                     >
                       {feature.icon}
                     </Box>
 
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      sx={{ fontWeight: 700, mb: 1.5 }}
-                    >
+                    <Typography variant='h6' gutterBottom sx={{ fontWeight: 700, mb: 1.5 }}>
                       {feature.title}
                     </Typography>
-                    <Typography
-                      variant='body2'
-                      color='text.secondary'
-                      sx={{ lineHeight: 1.7 }}
-                    >
+                    <Typography variant='body2' color='text.secondary' sx={{ lineHeight: 1.7 }}>
                       {feature.description}
                     </Typography>
                   </CardContent>
@@ -234,11 +221,7 @@ export default function Home() {
                   fontWeight: 600,
                 }}
               />
-              <Typography
-                variant='h4'
-                gutterBottom
-                sx={{ fontWeight: 700, mb: 3 }}
-              >
+              <Typography variant='h4' gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
                 {aboutSection.title}
               </Typography>
               <Typography
@@ -253,9 +236,7 @@ export default function Home() {
               <Grid container spacing={2} sx={{ mb: 4 }}>
                 {benefits.map((benefit, index) => (
                   <Grid size={{ xs: 12 }} key={index}>
-                    <Box
-                      sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}
-                    >
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -272,10 +253,7 @@ export default function Home() {
                         {benefit.icon}
                       </Box>
                       <Box>
-                        <Typography
-                          variant='subtitle1'
-                          sx={{ fontWeight: 600, mb: 0.5 }}
-                        >
+                        <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 0.5 }}>
                           {benefit.title}
                         </Typography>
                         <Typography variant='body2' color='text.secondary'>
@@ -390,8 +368,7 @@ export default function Home() {
                     sx={{
                       mb: 4,
                       pb: index < 2 ? 4 : 0,
-                      borderBottom:
-                        index < 2 ? '1px solid rgba(255,255,255,0.2)' : 'none',
+                      borderBottom: index < 2 ? '1px solid rgba(255,255,255,0.2)' : 'none',
                     }}
                   >
                     <Box
@@ -466,8 +443,8 @@ export default function Home() {
                       color: 'white',
                     }}
                   >
-                    Our platform continuously monitors and updates job listings
-                    to ensure you never miss an opportunity
+                    Our platform continuously monitors and updates job listings to ensure you never
+                    miss an opportunity
                   </Typography>
                 </Box>
               </Box>
@@ -517,8 +494,8 @@ export default function Home() {
               color='text.secondary'
               sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}
             >
-              Join thousands of job seekers and recruiters who trust our
-              platform for their career journey
+              Join thousands of job seekers and recruiters who trust our platform for their career
+              journey
             </Typography>
             <Box
               sx={{
@@ -528,11 +505,7 @@ export default function Home() {
                 flexWrap: 'wrap',
               }}
             >
-              <Button
-                variant='contained'
-                size='large'
-                onClick={() => navigate('/scraper')}
-              >
+              <Button variant='contained' size='large' onClick={() => navigate('/scraper')}>
                 Start Scraping
               </Button>
               <Button

@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Box,
-  Container,
-  Typography,
-  Paper,
-  alpha,
-  useTheme,
-} from '@mui/material'
+import { Box, Container, Typography, Paper, alpha, useTheme } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ChecklistIcon from '@mui/icons-material/Checklist'
@@ -72,9 +65,8 @@ const SmartJobDiscovery: React.FC = () => {
                     mx: { xs: 'auto', lg: 0 },
                   }}
                 >
-                  Our advanced AI analyzes millions of data points to find the
-                  perfect job opportunities that align with your skills,
-                  experience, and career goals.
+                  Our advanced AI analyzes millions of data points to find the perfect job
+                  opportunities that align with your skills, experience, and career goals.
                 </Typography>
               </Box>
 
@@ -185,11 +177,7 @@ const SmartJobDiscovery: React.FC = () => {
                     }}
                   >
                     <Box>
-                      <Typography
-                        variant='subtitle1'
-                        fontWeight={700}
-                        color='text.primary'
-                      >
+                      <Typography variant='subtitle1' fontWeight={700} color='text.primary'>
                         UX Designer
                       </Typography>
                       <Typography variant='body2' color='text.secondary'>
@@ -237,11 +225,7 @@ const SmartJobDiscovery: React.FC = () => {
                     }}
                   >
                     <Box>
-                      <Typography
-                        variant='subtitle1'
-                        fontWeight={700}
-                        color='text.primary'
-                      >
+                      <Typography variant='subtitle1' fontWeight={700} color='text.primary'>
                         Product Manager
                       </Typography>
                       <Typography variant='body2' color='text.secondary'>
@@ -291,11 +275,7 @@ const SmartJobDiscovery: React.FC = () => {
                     }}
                   >
                     <Box>
-                      <Typography
-                        variant='h6'
-                        fontWeight={700}
-                        color='text.primary'
-                      >
+                      <Typography variant='h6' fontWeight={700} color='text.primary'>
                         Senior Frontend Engineer
                       </Typography>
                       <Typography variant='body1' color='text.secondary'>
@@ -308,10 +288,7 @@ const SmartJobDiscovery: React.FC = () => {
                         py: 0.5,
                         borderRadius: 2,
                         bgcolor: 'primary.main',
-                        color:
-                          theme.palette.mode === 'dark'
-                            ? 'text.primary'
-                            : '#000',
+                        color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                         fontSize: '0.875rem',
                         fontWeight: 700,
                         boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`,

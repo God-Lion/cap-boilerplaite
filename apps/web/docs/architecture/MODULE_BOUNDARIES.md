@@ -48,6 +48,7 @@ This document defines the module structure and boundaries for the boilerplate pr
 **Purpose**: Foundation layer providing reusable primitives that never depend on app-specific logic.
 
 **Contains**:
+
 - `components/` - Base UI components (Custom MUI wrappers, option menus)
 - `contexts/` - React contexts (Settings, Theme)
 - `hooks/` - Core hooks
@@ -56,16 +57,18 @@ This document defines the module structure and boundaries for the boilerplate pr
 - `index.ts` - Public API exports
 
 **Dependency Rules**:
+
 - ✅ Can import: React, MUI, external libraries
 - ❌ Cannot import: `src/app`, `apps/`, `src/services`
 - ✅ Can be imported by: Everything
 
 **Example Exports**:
+
 ```typescript
 // Core types
 export type { Layout, Skin, Mode, Direction }
 
-// Core contexts  
+// Core contexts
 export { SettingsProvider, useSettings }
 
 // Core components (when uncommented)
@@ -79,6 +82,7 @@ export { CustomAvatar, CustomChip, OptionMenu }
 **Purpose**: Centralized configuration for the entire application.
 
 **Contains**:
+
 - `themeConfig.ts` - Theme settings and defaults
 - `primaryColorConfig.ts` - Color palette configuration
 - `guestConfig.ts` - Guest user configuration
@@ -86,11 +90,13 @@ export { CustomAvatar, CustomChip, OptionMenu }
 - `store/` - Store configuration
 
 **Dependency Rules**:
+
 - ✅ Can import: `src/core/types`, external libraries
 - ❌ Cannot import: `src/app`, `apps/`, components
 - ✅ Can be imported by: Everything except `src/core`
 
 **Example**:
+
 ```typescript
 // themeConfig.ts
 import type { Mode, Skin, Layout } from '@/core/types'
@@ -110,6 +116,7 @@ export const themeConfig = {
 **Purpose**: Shared TypeScript interfaces and types that define contracts between modules.
 
 **Contains**:
+
 - `contracts/` - Service interface contracts
 - `IAuth.ts` - Authentication types
 - `IUser.ts` - User types
@@ -120,11 +127,13 @@ export const themeConfig = {
 - `*.d.ts` - Type declarations (MUI, PWA, styled)
 
 **Dependency Rules**:
+
 - ✅ Can import: Only other types
 - ❌ Cannot import: Components, services, implementations
 - ✅ Can be imported by: Everything
 
 **Example**:
+
 ```typescript
 // contracts/IUserService.ts
 export interface IUserService {
@@ -148,11 +157,13 @@ export interface IUser {
 **Purpose**: Reusable React hooks for common functionality.
 
 **Dependency Rules**:
+
 - ✅ Can import: `src/core`, `src/types`, `src/services`, React
 - ❌ Cannot import: `src/app` components
 - ✅ Can be imported by: `src/app`, other hooks
 
 **Example**:
+
 ```typescript
 // useUserData.ts
 import { useQuery } from '@tanstack/react-query'
@@ -174,17 +185,20 @@ export function useUserData(userId: string) {
 **Purpose**: Abstraction layer for API calls, data transformations, and external integrations.
 
 **Contains**:
+
 - `api/` - API service implementations
 - `storage/` - LocalStorage, IndexedDB wrappers
 - `sync/` - Offline sync services
 
 **Dependency Rules**:
+
 - ✅ Can import: `src/types`, `src/configs`, external libraries
 - ✅ Can import: `apps/` (if needed to call business logic)
 - ❌ Cannot import: `src/app` components
 - ✅ Can be imported by: `src/app`, `src/hooks`
 
 **Example**:
+
 ```typescript
 // api/user.service.ts
 import type { IUserService, IUser } from '@/types/contracts/IUserService'
@@ -194,7 +208,7 @@ class UserService implements IUserService {
     const response = await fetch(`/api/users/${id}`)
     return response.json()
   }
-  
+
   async updateUser(id: string, data: Partial<IUser>): Promise<IUser> {
     const response = await fetch(`/api/users/${id}`, {
       method: 'PATCH',
@@ -214,11 +228,13 @@ export const userService = new UserService()
 **Purpose**: Global state management using Zustand.
 
 **Dependency Rules**:
+
 - ✅ Can import: `src/types`, `src/services`
 - ❌ Cannot import: `src/app` components
 - ✅ Can be imported by: `src/app`, `src/hooks`
 
 **Example**:
+
 ```typescript
 // slices/userSlice.ts
 import { create } from 'zustand'
@@ -242,6 +258,7 @@ export const useUserStore = create<UserState>((set) => ({
 **Purpose**: User interface components, layouts, and pages. This is the presentation layer.
 
 **Contains**:
+
 - `components/` - UI components
 - `layouts/` - Layout components
 - `Modules/` - Feature modules (grouped components)
@@ -249,12 +266,14 @@ export const useUserStore = create<UserState>((set) => ({
 - `Providers.tsx` - Provider wrappers
 
 **Dependency Rules**:
+
 - ✅ Can import: `@/core`, `@/configs`, `@/types`, `@/hooks`, `@/services`, `@/store`
 - ❌ **Cannot import: `apps/`** ⚠️ **RULE 1 VIOLATION**
 - ❌ **Cannot import: `../Modules/` from other modules** (use services)
 - ✅ Can be imported by: Nothing (top of the dependency tree)
 
 **Example**:
+
 ```typescript
 // components/UserProfile.tsx
 import { useUserData } from '@/hooks/useUserData'  // ✅ Allowed
@@ -263,7 +282,7 @@ import type { IUser } from '@/types/IUser'         // ✅ Allowed
 
 export function UserProfile({ userId }: { userId: string }) {
   const { data: user } = useUserData(userId)
-  
+
   return (
     <div>
       <CustomAvatar src={user?.avatarUrl} />
@@ -280,6 +299,7 @@ export function UserProfile({ userId }: { userId: string }) {
 **Purpose**: Specialized menu components and configurations.
 
 **Dependency Rules**:
+
 - ✅ Can import: `src/core`, React, MUI
 - ❌ Cannot import: `src/app` (except for being used by app)
 - ✅ Can be imported by: `src/app/layouts`
@@ -293,12 +313,14 @@ export function UserProfile({ userId }: { userId: string }) {
 **Status**: Not yet implemented, but architecture is prepared for it.
 
 **When Implemented, Will Contain**:
+
 - `users/` - User domain logic
 - `analytics/` - Analytics calculations
 - `billing/` - Billing logic
 - Each with: `models/`, `services/`, `repositories/`
 
 **Dependency Rules (When Implemented)**:
+
 - ✅ Can import: `src/types`, `src/services`, domain models
 - ❌ Cannot import: `src/app` UI components
 - ✅ Can be imported by: `src/services` (NOT `src/app` directly!)
@@ -345,7 +367,7 @@ import { DashboardStats } from './DashboardStats'
 // ❌ Direct import from apps/ - RULE 1 VIOLATION
 import { calculateUserScore } from 'apps/analytics/scoring'
 
-// ❌ Direct import from apps/ using @/ alias - RULE 1 VIOLATION  
+// ❌ Direct import from apps/ using @/ alias - RULE 1 VIOLATION
 import { UserModel } from '@/apps/users/models'
 
 // ❌ Direct cross-module import - Use services instead
@@ -362,21 +384,25 @@ import { AdminPanel } from '../../admin/AdminPanel'
 ### Why These Boundaries?
 
 **1. Maintainability**
+
 - Clear structure makes it easy to find code
 - Changes have predictable impact zones
 - New developers understand the architecture quickly
 
 **2. Testability**
+
 - Mock dependencies at module boundaries
 - Test UI without business logic
 - Test business logic without UI
 
 **3. Reusability**
+
 - Core components work in any context
 - Services can be reused across features
 - Types define clear contracts
 
 **4. Scalability**
+
 - Add new features without touching core
 - Extract modules to packages easily
 - Team can work in parallel on different layers
@@ -404,6 +430,7 @@ types/          ← Bottom (Contracts)
 ### Why This Matters
 
 When backend API changes:
+
 1. Update contract in `src/types/`
 2. TypeScript shows errors in `src/services/`
 3. Fix service implementations

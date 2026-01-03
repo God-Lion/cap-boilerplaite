@@ -7,10 +7,7 @@ import columnDefault from './columns'
 export default function App() {
   const rerender = React.useReducer(() => ({}), {})[1]
 
-  const columns = React.useMemo<Array<ColumnDef<IPerson>>>(
-    () => columnDefault,
-    [],
-  )
+  const columns = React.useMemo<Array<ColumnDef<IPerson>>>(() => columnDefault, [])
 
   const [data, setData] = React.useState<IPerson[]>([])
 

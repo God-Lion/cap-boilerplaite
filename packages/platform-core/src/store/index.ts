@@ -1,31 +1,17 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
+import encryption from '../services/encryption'
 
 import { createAuthSlice, AuthSlice } from './slices/authSlice'
 import { createGuestSlice, GuestSlice } from './slices/guestSlice'
 import { createJobsSlice, JobsSlice } from './slices/jobsSlice'
 import { createProfileSlice, ProfileSlice } from './slices/profileSlice'
-import {
-  createNotificationSlice,
-  NotificationSlice,
-} from './slices/notificationSlice'
-import {
-  createPreferencesSlice,
-  PreferencesSlice,
-} from './slices/preferences/preferences'
-import {
-  createSettingsSlice,
-  SettingsSlice,
-} from './slices/settingsSlice'
-import {
-  createNavigationSlice,
-  NavigationSlice,
-} from './slices/navigationSlice'
-import {
-  createThemeSlice,
-  ThemeSlice,
-} from './slices/themeSlice'
+import { createNotificationSlice, NotificationSlice } from './slices/notificationSlice'
+import { createPreferencesSlice, PreferencesSlice } from './slices/preferences/preferences'
+import { createSettingsSlice, SettingsSlice } from './slices/settingsSlice'
+import { createNavigationSlice, NavigationSlice } from './slices/navigationSlice'
+import { createThemeSlice, ThemeSlice } from './slices/themeSlice'
 
 export type AppStore = AuthSlice &
   GuestSlice &
@@ -36,6 +22,47 @@ export type AppStore = AuthSlice &
   SettingsSlice &
   NavigationSlice &
   ThemeSlice
+
+/**
+ * Custom Secure Storage for Zustand
+ */
+const secureStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    // For auth, we want to decrypt. For others, maybe not.
+    // However, Zustand expects the return to be a string that it then parses.
+    // So we should return the raw JSON string (potentially decrypted).
+    const value = localStorage.getItem(name)
+    if (!value) return null
+
+    // Check if this is a key we want to decrypt
+    if (name === 'god-lion-seeker-optimizer-storage') {
+      try {
+        // Attempt to decrypt
+        const masterKey =
+          (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY ||
+          'god-lion-default-secure-key-2025'
+        return await encryption.decryptData(value, masterKey)
+      } catch (e) {
+        // Fallback to plain text if decryption fails (e.g. legacy data)
+        return value
+      }
+    }
+    return value
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    if (name === 'god-lion-seeker-optimizer-storage') {
+      const masterKey =
+        (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'god-lion-default-secure-key-2025'
+      const encrypted = await encryption.encryptData(value, masterKey)
+      localStorage.setItem(name, encrypted)
+    } else {
+      localStorage.setItem(name, value)
+    }
+  },
+  removeItem: (name: string): void => {
+    localStorage.removeItem(name)
+  },
+}
 
 /**
  * Main Application Store
@@ -63,7 +90,7 @@ export const useAppStore = create<AppStore>()(
       })),
       {
         name: 'god-lion-seeker-optimizer-storage',
-        storage: createJSONStorage(() => localStorage),
+        storage: createJSONStorage(() => secureStorage as any),
         partialize: (state) => ({
           auth: {
             user: state.user,
@@ -125,9 +152,7 @@ export const useGuest = () => {
   const clearGuestSession = useAppStore((state) => state.clearGuestSession)
   const addGuestData = useAppStore((state) => state.addGuestData)
   const getGuestData = useAppStore((state) => state.getGuestData)
-  const incrementAnalysisCount = useAppStore(
-    (state) => state.incrementAnalysisCount,
-  )
+  const incrementAnalysisCount = useAppStore((state) => state.incrementAnalysisCount)
   const getAnalysisCount = useAppStore((state) => state.getAnalysisCount)
 
   return {
@@ -246,9 +271,7 @@ export const useSettings = () => {
 
 export const useVerticalNav = () => {
   const verticalNav = useAppStore((state) => state.verticalNav)
-  const updateVerticalNavState = useAppStore(
-    (state) => state.updateVerticalNavState,
-  )
+  const updateVerticalNavState = useAppStore((state) => state.updateVerticalNavState)
   const collapseVerticalNav = useAppStore((state) => state.collapseVerticalNav)
   const hoverVerticalNav = useAppStore((state) => state.hoverVerticalNav)
   const toggleVerticalNav = useAppStore((state) => state.toggleVerticalNav)
@@ -264,9 +287,7 @@ export const useVerticalNav = () => {
 
 export const useHorizontalNav = () => {
   const horizontalNav = useAppStore((state) => state.horizontalNav)
-  const updateIsBreakpointReached = useAppStore(
-    (state) => state.updateIsBreakpointReached,
-  )
+  const updateIsBreakpointReached = useAppStore((state) => state.updateIsBreakpointReached)
 
   return {
     ...horizontalNav,

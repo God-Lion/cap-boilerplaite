@@ -59,35 +59,22 @@ const UpgradePlan = ({ open, setOpen }: UpgradePlanProps) => {
               <MenuItem value='Enterprise'>Enterprise - $499/month</MenuItem>
               <MenuItem value='Company'>Company - $999/month</MenuItem>
             </TextField>
-            <Button
-              variant='contained'
-              className='capitalize sm:is-auto is-full'
-            >
+            <Button variant='contained' className='capitalize sm:is-auto is-full'>
               Upgrade
             </Button>
           </div>
           <Divider className='mlb-6' />
           <div className='flex flex-col gap-1'>
-            <Typography variant='body2'>
-              User current plan is standard plan
-            </Typography>
+            <Typography variant='body2'>User current plan is standard plan</Typography>
             <div className='flex items-center justify-between flex-wrap gap-2'>
               <div className='flex justify-center items-baseline gap-1'>
-                <Typography
-                  component='sup'
-                  className='self-start mbs-3'
-                  color='primary'
-                >
+                <Typography component='sup' className='self-start mbs-3' color='primary'>
                   $
                 </Typography>
                 <Typography component='span' color='primary' variant='h1'>
                   99
                 </Typography>
-                <Typography
-                  variant='body2'
-                  component='sub'
-                  className='self-baseline'
-                >
+                <Typography variant='body2' component='sub' className='self-baseline'>
                   /month
                 </Typography>
               </div>

@@ -364,15 +364,7 @@ const countries_states = [
   },
   {
     country: 'Belarus',
-    states: [
-      'Brest',
-      'Homyel',
-      'Horad Minsk',
-      'Hrodna',
-      'Mahilyow',
-      'Minsk',
-      'Vitsyebsk',
-    ],
+    states: ['Brest', 'Homyel', 'Horad Minsk', 'Hrodna', 'Mahilyow', 'Minsk', 'Vitsyebsk'],
   },
   {
     country: 'Belgium',
@@ -394,14 +386,7 @@ const countries_states = [
   },
   {
     country: 'Belize',
-    states: [
-      'Belize',
-      'Cayo',
-      'Corozal',
-      'Orange Walk',
-      'Stann Creek',
-      'Toledo',
-    ],
+    states: ['Belize', 'Cayo', 'Corozal', 'Orange Walk', 'Stann Creek', 'Toledo'],
   },
   {
     country: 'Benin',
@@ -908,15 +893,7 @@ const countries_states = [
   },
   {
     country: 'Costa Rica',
-    states: [
-      'Alajuela',
-      'Cartago',
-      'Guanacaste',
-      'Heredia',
-      'Limon',
-      'Puntarenas',
-      'San Jose',
-    ],
+    states: ['Alajuela', 'Cartago', 'Guanacaste', 'Heredia', 'Limon', 'Puntarenas', 'San Jose'],
   },
   {
     country: "Cote d'Ivoire",
@@ -970,14 +947,7 @@ const countries_states = [
   },
   {
     country: 'Cyprus',
-    states: [
-      'Famagusta',
-      'Kyrenia',
-      'Larnaca',
-      'Limassol',
-      'Nicosia',
-      'Paphos',
-    ],
+    states: ['Famagusta', 'Kyrenia', 'Larnaca', 'Limassol', 'Nicosia', 'Paphos'],
   },
   {
     country: 'Czech Republic',
@@ -1293,14 +1263,7 @@ const countries_states = [
   },
   {
     country: 'Gambia',
-    states: [
-      'Banjul',
-      'Central River',
-      'Lower River',
-      'North Bank',
-      'Upper River',
-      'Western',
-    ],
+    states: ['Banjul', 'Central River', 'Lower River', 'North Bank', 'Upper River', 'Western'],
   },
   {
     country: 'Georgia',
@@ -1401,11 +1364,7 @@ const countries_states = [
   },
   {
     country: 'Greenland',
-    states: [
-      'Avannaa (Nordgronland)',
-      'Tunu (Ostgronland)',
-      'Kitaa (Vestgronland)',
-    ],
+    states: ['Avannaa (Nordgronland)', 'Tunu (Ostgronland)', 'Kitaa (Vestgronland)'],
   },
   {
     country: 'Grenada',
@@ -1487,17 +1446,7 @@ const countries_states = [
   },
   {
     country: 'Guinea-Bissau',
-    states: [
-      'Bafata',
-      'Biombo',
-      'Bissau',
-      'Bolama',
-      'Cacheu',
-      'Gabu',
-      'Oio',
-      'Quinara',
-      'Tombali',
-    ],
+    states: ['Bafata', 'Biombo', 'Bissau', 'Bolama', 'Cacheu', 'Gabu', 'Oio', 'Quinara', 'Tombali'],
   },
   {
     country: 'Guyana',
@@ -1782,14 +1731,7 @@ const countries_states = [
   },
   {
     country: 'Israel',
-    states: [
-      'Central',
-      'Haifa',
-      'Jerusalem',
-      'Northern',
-      'Southern',
-      'Tel Aviv',
-    ],
+    states: ['Central', 'Haifa', 'Jerusalem', 'Northern', 'Southern', 'Tel Aviv'],
   },
   {
     country: 'Italy',
@@ -1984,14 +1926,7 @@ const countries_states = [
   },
   {
     country: 'Kuwait',
-    states: [
-      'Al Ahmadi',
-      'Al Farwaniyah',
-      'Al Asimah',
-      'Al Jahra',
-      'Hawalli',
-      'Mubarak Al-Kabeer',
-    ],
+    states: ['Al Ahmadi', 'Al Farwaniyah', 'Al Asimah', 'Al Jahra', 'Hawalli', 'Mubarak Al-Kabeer'],
   },
   {
     country: 'Kyrgyzstan',
@@ -2069,14 +2004,7 @@ const countries_states = [
   },
   {
     country: 'Lebanon',
-    states: [
-      'Beyrouth',
-      'Beqaa',
-      'Liban-Nord',
-      'Liban-Sud',
-      'Mont-Liban',
-      'Nabatiye',
-    ],
+    states: ['Beyrouth', 'Beqaa', 'Liban-Nord', 'Liban-Sud', 'Mont-Liban', 'Nabatiye'],
   },
   {
     country: 'Lesotho',
@@ -2270,14 +2198,7 @@ const countries_states = [
   },
   {
     country: 'Madagascar',
-    states: [
-      'Antananarivo',
-      'Antsiranana',
-      'Fianarantsoa',
-      'Mahajanga',
-      'Toamasina',
-      'Toliara',
-    ],
+    states: ['Antananarivo', 'Antsiranana', 'Fianarantsoa', 'Mahajanga', 'Toamasina', 'Toliara'],
   },
   {
     country: 'Malawi',
@@ -2691,16 +2612,7 @@ const countries_states = [
   },
   {
     country: 'Niger',
-    states: [
-      'Agadez',
-      'Diffa',
-      'Dosso',
-      'Maradi',
-      'Niamey',
-      'Tahoua',
-      'Tillaberi',
-      'Zinder',
-    ],
+    states: ['Agadez', 'Diffa', 'Dosso', 'Maradi', 'Niamey', 'Tahoua', 'Tillaberi', 'Zinder'],
   },
   {
     country: 'Nigeria',

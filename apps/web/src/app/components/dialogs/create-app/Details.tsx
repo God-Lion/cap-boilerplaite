@@ -1,7 +1,7 @@
 import React from 'react'
-import CustomAvatar from 'src/core/components/mui/Avatar'
+import CustomAvatar from '../../../../core/components/mui/Avatar'
 import DirectionalIcon from 'app/components/DirectionalIcon'
-import themeConfig from 'src/configs/themeConfig'
+import { themeConfig } from '@cap/platform-core'
 import { TextField, Typography, Radio, Button } from '@mui/material'
 
 type Props = {
@@ -20,11 +20,7 @@ const Details = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
 
   return (
     <div className='flex flex-col gap-6'>
-      <TextField
-        fullWidth
-        label='Application Name'
-        placeholder={`${themeConfig.templateName}`}
-      />
+      <TextField fullWidth label='Application Name' placeholder={`${themeConfig.templateName}`} />
       <div className='flex flex-col gap-4'>
         <Typography variant='h5'>Category</Typography>
         <div
@@ -42,51 +38,31 @@ const Details = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
               <Typography variant='body2'>Scales with any business</Typography>
             </div>
           </div>
-          <Radio
-            value='crm'
-            onChange={handleChange}
-            checked={value === 'crm'}
-          />
+          <Radio value='crm' onChange={handleChange} checked={value === 'crm'} />
         </div>
         <div
           onClick={() => setValue('eCommerce')}
           className='flex items-center justify-between cursor-pointer gap-4'
         >
           <div className='flex items-center gap-3'>
-            <CustomAvatar
-              skin='light'
-              color='success'
-              variant='rounded'
-              size={46}
-            >
+            <CustomAvatar skin='light' color='success' variant='rounded' size={46}>
               <i className='tabler-shopping-cart text-3xl' />
             </CustomAvatar>
             <div className='flex flex-col gap-1'>
               <Typography color='text.primary' className='font-medium'>
                 eCommerce Platforms
               </Typography>
-              <Typography variant='body2'>
-                Grow Your Business With App
-              </Typography>
+              <Typography variant='body2'>Grow Your Business With App</Typography>
             </div>
           </div>
-          <Radio
-            value='eCommerce'
-            onChange={handleChange}
-            checked={value === 'eCommerce'}
-          />
+          <Radio value='eCommerce' onChange={handleChange} checked={value === 'eCommerce'} />
         </div>
         <div
           onClick={() => setValue('learning')}
           className='flex items-center justify-between cursor-pointer gap-4'
         >
           <div className='flex items-center gap-3'>
-            <CustomAvatar
-              skin='light'
-              color='error'
-              variant='rounded'
-              size={46}
-            >
+            <CustomAvatar skin='light' color='error' variant='rounded' size={46}>
               <i className='tabler-device-laptop text-3xl' />
             </CustomAvatar>
             <div className='flex flex-col gap-1'>
@@ -96,11 +72,7 @@ const Details = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
               <Typography variant='body2'>Start learning today</Typography>
             </div>
           </div>
-          <Radio
-            value='learning'
-            onChange={handleChange}
-            checked={value === 'learning'}
-          />
+          <Radio value='learning' onChange={handleChange} checked={value === 'learning'} />
         </div>
       </div>
       <div className='flex items-center justify-between'>
@@ -110,10 +82,7 @@ const Details = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
           disabled={activeStep === 0}
           onClick={handlePrev}
           startIcon={
-            <DirectionalIcon
-              ltrIconClass='tabler-arrow-left'
-              rtlIconClass='tabler-arrow-right'
-            />
+            <DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right' />
           }
         >
           Previous
@@ -126,10 +95,7 @@ const Details = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
             isLastStep ? (
               <i className='tabler-check' />
             ) : (
-              <DirectionalIcon
-                ltrIconClass='tabler-arrow-right'
-                rtlIconClass='tabler-arrow-left'
-              />
+              <DirectionalIcon ltrIconClass='tabler-arrow-right' rtlIconClass='tabler-arrow-left' />
             )
           }
         >

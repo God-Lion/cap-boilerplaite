@@ -1,21 +1,14 @@
+// cspell:ignore drawingcontest juges PROVIDERADMIN PROVIDEREMPLOYEE SUPERADMINEMPLOYEE SUPERADMIN
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Backdrop, CircularProgress } from '@mui/material'
 import { isObjectEmpty, useAuth, Roles } from '@cap/platform-core'
-import type { IUserReponse } from '@cap/platform-core'
+import type { IUserResponse } from '@cap/platform-core'
 
-const access = (pathname: string, user: IUserReponse) => {
+const access = (pathname: string, user: IUserResponse) => {
   if (!isObjectEmpty(user)) {
     const roleId = user.role
     const all = [`/settings`, '/drawingcontest', '/account', '/profile']
-    // const routesParticipantAccess = [...all]
-    // const routesJudgeAccess = ['/admin/juges', '/admin/', ...all]
-    // const routesSuperVisorAccess = [
-    //   'dashboard',
-    //   '/admin/juges/details',
-    //   `Users`,
-    //   ...all,
-    // ]
     const routesSuperAdminAccess = [
       '/admin/',
       '/admin/logs',
@@ -32,40 +25,18 @@ const access = (pathname: string, user: IUserReponse) => {
       default:
         return false
     }
-
-    // if (userTypeID === 1)
-    //   return routesSuperAdminAccess.some((value) => value === pathname)
-    // else if (userTypeID === 2)
-    //   return routesSuperAdminAccess.some((value) => value === pathname)
-    // else if (userTypeID === 3)
-    //   return routesSuperVisorAccess.some((value) => value === pathname)
-    // else if (userTypeID === 4)
-    //   return routesJudgeAccess.some((value) => value === pathname)
-    // else if (userTypeID === 5)
-    //   return routesParticipantAccess.some((value) => value === pathname)
-    // else return false
   }
   return false
 }
 
-export default function PrivateRoute({
-  element,
-}: {
-  element: React.ReactNode
-}) {
+export default function PrivateRoute({ element }: { element: React.ReactNode }) {
   const navigate = useNavigate()
   const location = useLocation()
   const pathname = location.pathname
   const { user } = useAuth()
 
-  // Early return if user is invalid
-  if (!user || typeof user === 'string' || isObjectEmpty(user)) {
-    navigate('/')
-    return null
-  }
-
   React.useEffect(() => {
-    if (!user) {
+    if (!user || typeof user === 'string' || isObjectEmpty(user)) {
       navigate('/')
       return
     }
@@ -81,38 +52,18 @@ export default function PrivateRoute({
           Roles.SUPERADMINEMPLOYEE,
           Roles.SUPERADMIN,
         ].includes(roleId)
-      )
+      ) {
         navigate('/admin/')
-
-      if ([Roles.USER, Roles.PARTICIPANT].includes(roleId)) navigate('/')
-
-      // if (
-      //   ![
-      //     Roles.USER,
-      //     Roles.PARTICIPANT,
-      //     Roles.JUDGE,
-      //     Roles.PROVIDEREMPLOYEE,
-      //     Roles.PROVIDERADMIN,
-      //     Roles.ADMIN,
-      //     Roles.SUPERADMINEMPLOYEE,
-      //     Roles.SUPERADMIN,
-      //   ].includes(roleId)
-      // )
-      //   navigate('/')
-      // switch (roleId) {
-      //   case Roles.USER:
-      //     navigate('/')
-      //     break
-      //   case Roles.ADMIN:
-      //     navigate('/admin/')
-      //     break
-      //   default:
-      //     navigate('/')
-      //     break
-      // }
+      } else {
+        navigate('/')
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, user])
+  }, [pathname, user, navigate])
+
+  // Early return if user is invalid, but AFTER useEffect
+  if (!user || typeof user === 'string' || isObjectEmpty(user)) {
+    return null
+  }
 
   return (
     <React.Suspense

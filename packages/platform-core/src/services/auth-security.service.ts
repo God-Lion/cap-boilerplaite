@@ -1,15 +1,15 @@
 /**
  * Enhanced Auth Security Service
- * 
+ *
  * ⚠️ IMPORTANT: This is CLIENT-SIDE rate limiting for UX purposes only.
  * It can be bypassed and should NOT be relied upon for security.
- * 
+ *
  * ALWAYS implement rate limiting on the BACKEND with:
  * - IP-based rate limiting
- * - Account-based rate limiting  
+ * - Account-based rate limiting
  * - CAPTCHA verification
  * - Email notifications for suspicious activity
- * 
+ *
  * @see DOCS/RATE_LIMITING_IMPLEMENTATION.md for backend implementation
  */
 
@@ -46,7 +46,7 @@ const DEFAULT_RATE_LIMITS: RateLimitConfig = {
   lockouts: [15, 60, 1440],
   captchaThreshold: 2,
   alertThreshold: 5,
-  resetWindow: 60 * 60 * 1000
+  resetWindow: 60 * 60 * 1000,
 }
 
 class EnhancedAuthSecurityService {
@@ -76,11 +76,14 @@ class EnhancedAuthSecurityService {
     }
   }
 
-  recordFailedAttempt(email: string, additionalInfo?: { 
-    ip?: string
-    device?: string
-    userAgent?: string 
-  }): LoginSecurity {
+  recordFailedAttempt(
+    email: string,
+    additionalInfo?: {
+      ip?: string
+      device?: string
+      userAgent?: string
+    },
+  ): LoginSecurity {
     const security = this.getSecurityData(email)
     const now = Date.now()
 
@@ -108,10 +111,10 @@ class EnhancedAuthSecurityService {
     if (security.attempts >= this.config.attempts[lockoutLevel]) {
       const lockoutDuration = this.config.lockouts[lockoutLevel] * 60 * 1000
       security.lockedUntil = now + lockoutDuration
-      
+
       console.warn(
         `Account locked for ${this.config.lockouts[lockoutLevel]} minutes ` +
-        `(Level ${lockoutLevel + 1})`
+          `(Level ${lockoutLevel + 1})`,
       )
     }
 
@@ -129,7 +132,7 @@ class EnhancedAuthSecurityService {
       email,
       timestamp: now,
       userAgent: navigator.userAgent,
-      ...additionalInfo
+      ...additionalInfo,
     })
 
     return security
@@ -137,18 +140,18 @@ class EnhancedAuthSecurityService {
 
   recordSuccessfulLogin(email: string): void {
     const security = this.getSecurityData(email)
-    
+
     if (security.attempts > 0) {
       console.info(`Successful login after ${security.attempts} failed attempts`)
     }
-    
+
     this.saveSecurityData(email, this.getDefaultSecurity())
   }
 
-  isAccountLocked(email: string): { 
+  isAccountLocked(email: string): {
     locked: boolean
     remainingTime?: number
-    lockoutLevel?: number 
+    lockoutLevel?: number
   } {
     const security = this.getSecurityData(email)
     const now = Date.now()
@@ -157,7 +160,7 @@ class EnhancedAuthSecurityService {
       return {
         locked: true,
         remainingTime: security.lockedUntil - now,
-        lockoutLevel: security.lockoutLevel
+        lockoutLevel: security.lockoutLevel,
       }
     }
 
@@ -181,7 +184,7 @@ class EnhancedAuthSecurityService {
     }
 
     const totalMinutes = Math.ceil(lockStatus.remainingTime / 60000)
-    
+
     if (totalMinutes >= 1440) {
       const days = Math.floor(totalMinutes / 1440)
       const hours = Math.floor((totalMinutes % 1440) / 60)
@@ -206,7 +209,8 @@ class EnhancedAuthSecurityService {
     const security = this.getSecurityData(email)
     const lockStatus = this.isAccountLocked(email)
     const lockoutLevel = security.lockoutLevel
-    const nextThreshold = this.config.attempts[Math.min(lockoutLevel + 1, this.config.attempts.length - 1)]
+    const nextThreshold =
+      this.config.attempts[Math.min(lockoutLevel + 1, this.config.attempts.length - 1)]
 
     return {
       attempts: security.attempts,
@@ -214,7 +218,7 @@ class EnhancedAuthSecurityService {
       requiresCaptcha: security.requiresCaptcha,
       lockoutLevel: lockoutLevel,
       remainingTime: this.getLockoutTimeRemaining(email),
-      nextLockoutThreshold: nextThreshold
+      nextLockoutThreshold: nextThreshold,
     }
   }
 
@@ -262,10 +266,18 @@ class EnhancedAuthSecurityService {
     }
 
     const commonPatterns = [
-      'password', '12345', 'qwerty', 'abc123', 'letmein',
-      'admin', 'welcome', 'monkey', '111111', 'password1'
+      'password',
+      '12345',
+      'qwerty',
+      'abc123',
+      'letmein',
+      'admin',
+      'welcome',
+      'monkey',
+      '111111',
+      'password1',
     ]
-    if (commonPatterns.some(pattern => password.toLowerCase().includes(pattern))) {
+    if (commonPatterns.some((pattern) => password.toLowerCase().includes(pattern))) {
       feedback.push('Avoid common patterns like "password" or "12345"')
       score -= 3
     }
@@ -285,7 +297,7 @@ class EnhancedAuthSecurityService {
       isValid: feedback.length === 0 && score >= 4,
       strength,
       score: Math.max(0, score),
-      feedback
+      feedback,
     }
   }
 
@@ -301,14 +313,14 @@ class EnhancedAuthSecurityService {
   private sendSecurityAlert(email: string, attempts: number): void {
     console.warn(
       `⚠️ SECURITY ALERT: ${attempts} failed login attempts for ${email}\n` +
-      `This should trigger an email notification on the backend.`
+        `This should trigger an email notification on the backend.`,
     )
 
     if (typeof window !== 'undefined' && 'Notification' in window) {
       if (Notification.permission === 'granted') {
         new Notification('Security Alert', {
           body: `Multiple failed login attempts detected for ${email}`,
-          icon: '/security-alert-icon.png'
+          icon: '/security-alert-icon.png',
         })
       }
     }
@@ -321,7 +333,7 @@ class EnhancedAuthSecurityService {
       lockedUntil: null,
       requiresCaptcha: false,
       lockoutLevel: 0,
-      alertSent: false
+      alertSent: false,
     }
   }
 
@@ -340,12 +352,12 @@ class EnhancedAuthSecurityService {
     try {
       const logs = localStorage.getItem(ATTEMPT_LOG_KEY)
       const logArray: FailedLoginAttempt[] = logs ? JSON.parse(logs) : []
-      
+
       logArray.push(attempt)
       if (logArray.length > 100) {
         logArray.shift()
       }
-      
+
       localStorage.setItem(ATTEMPT_LOG_KEY, JSON.stringify(logArray))
     } catch (error) {
       console.error('Error logging failed attempt:', error)
@@ -365,9 +377,7 @@ class EnhancedAuthSecurityService {
 
   getFailedAttemptsForEmail(email: string, limit: number = 10): FailedLoginAttempt[] {
     const allAttempts = this.getFailedAttempts(100)
-    return allAttempts
-      .filter(attempt => attempt.email === email)
-      .slice(0, limit)
+    return allAttempts.filter((attempt) => attempt.email === email).slice(0, limit)
   }
 
   getSecurityMetrics(): {
@@ -383,7 +393,7 @@ class EnhancedAuthSecurityService {
           totalAccounts: 0,
           lockedAccounts: 0,
           accountsRequiringCaptcha: 0,
-          recentFailedAttempts: 0
+          recentFailedAttempts: 0,
         }
       }
 
@@ -394,7 +404,7 @@ class EnhancedAuthSecurityService {
       let lockedAccounts = 0
       let accountsRequiringCaptcha = 0
 
-      Object.values(allData).forEach(security => {
+      Object.values(allData).forEach((security) => {
         if (security.lockedUntil && security.lockedUntil > now) {
           lockedAccounts++
         }
@@ -406,14 +416,14 @@ class EnhancedAuthSecurityService {
       const logs = localStorage.getItem(ATTEMPT_LOG_KEY)
       const logArray: FailedLoginAttempt[] = logs ? JSON.parse(logs) : []
       const recentFailedAttempts = logArray.filter(
-        attempt => attempt.timestamp > oneHourAgo
+        (attempt) => attempt.timestamp > oneHourAgo,
       ).length
 
       return {
         totalAccounts: Object.keys(allData).length,
         lockedAccounts,
         accountsRequiringCaptcha,
-        recentFailedAttempts
+        recentFailedAttempts,
       }
     } catch (error) {
       console.error('Error getting security metrics:', error)
@@ -421,7 +431,7 @@ class EnhancedAuthSecurityService {
         totalAccounts: 0,
         lockedAccounts: 0,
         accountsRequiringCaptcha: 0,
-        recentFailedAttempts: 0
+        recentFailedAttempts: 0,
       }
     }
   }
@@ -440,7 +450,7 @@ class EnhancedAuthSecurityService {
       const allData: Record<string, LoginSecurity> = JSON.parse(data)
       delete allData[email]
       localStorage.setItem(STORAGE_KEY, JSON.stringify(allData))
-      
+
       console.info(`Security data cleared for ${email}`)
     } catch (error) {
       console.error('Error clearing security data:', error)

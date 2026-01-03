@@ -1,0 +1,16 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "lhci",
+    "autorun",
+    "iconify",
+    "reactour",
+    "languagedetector",
+    "isbot",
+    "imask",
+    "stylis"
+  ],
+  "flagWords": [],
+  "ignorePaths": ["node_modules", "dist", ".git"]
+}

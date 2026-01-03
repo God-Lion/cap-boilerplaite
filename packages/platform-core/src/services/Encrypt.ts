@@ -13,10 +13,7 @@ export default class Encrypt {
   }
 
   decrypt(encryptedData: string): any {
-    const bytes = CryptoJS.AES.decrypt(
-      decodeURIComponent(encryptedData),
-      this.privateKey,
-    )
+    const bytes = CryptoJS.AES.decrypt(decodeURIComponent(encryptedData), this.privateKey)
     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
     return decryptedData
   }

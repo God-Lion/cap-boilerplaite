@@ -7,12 +7,8 @@ export interface PreferencesSlice {
 
   updatePreferences: (updates: Partial<UserPreferences>) => void
   resetPreferences: () => void
-  updateNotificationPreferences: (
-    updates: Partial<UserPreferences['notifications']>,
-  ) => void
-  updateJobPreferences: (
-    updates: Partial<UserPreferences['jobPreferences']>,
-  ) => void
+  updateNotificationPreferences: (updates: Partial<UserPreferences['notifications']>) => void
+  updateJobPreferences: (updates: Partial<UserPreferences['jobPreferences']>) => void
 }
 
 export const createPreferencesSlice: StateCreator<
@@ -38,9 +34,7 @@ export const createPreferencesSlice: StateCreator<
     })
   },
 
-  updateNotificationPreferences: (
-    updates: Partial<UserPreferences['notifications']>,
-  ) => {
+  updateNotificationPreferences: (updates: Partial<UserPreferences['notifications']>) => {
     set((state) => {
       state.preferences.notifications = {
         ...state.preferences.notifications,
@@ -49,9 +43,7 @@ export const createPreferencesSlice: StateCreator<
     })
   },
 
-  updateJobPreferences: (
-    updates: Partial<UserPreferences['jobPreferences']>,
-  ) => {
+  updateJobPreferences: (updates: Partial<UserPreferences['jobPreferences']>) => {
     set((state) => {
       state.preferences.jobPreferences = {
         ...state.preferences.jobPreferences,

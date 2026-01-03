@@ -15,8 +15,7 @@ type MenuButtonStylesProps = Partial<ChildrenType> & {
 
 export const menuButtonStyles = (props: MenuButtonStylesProps) => {
   // Props
-  const { level, disabled, children, isCollapsed, isPopoutWhenCollapsed } =
-    props
+  const { level, disabled, children, isCollapsed, isPopoutWhenCollapsed } = props
 
   return css({
     display: 'flex',
@@ -28,9 +27,7 @@ export const menuButtonStyles = (props: MenuButtonStylesProps) => {
     cursor: 'pointer',
     paddingInlineEnd: '20px',
     paddingInlineStart: `${
-      level === 0
-        ? 20
-        : (isPopoutWhenCollapsed && isCollapsed ? level : level + 1) * 20
+      level === 0 ? 20 : (isPopoutWhenCollapsed && isCollapsed ? level : level + 1) * 20
     }px`,
 
     '&:hover, &[aria-expanded="true"]': {
@@ -56,10 +53,10 @@ export const menuButtonStyles = (props: MenuButtonStylesProps) => {
   })
 }
 
-const MenuButton: React.ForwardRefRenderFunction<
-  HTMLAnchorElement,
-  MenuButtonProps
-> = ({ className, component, children, ...rest }, ref) => {
+const MenuButton: React.ForwardRefRenderFunction<HTMLAnchorElement, MenuButtonProps> = (
+  { className, component, children, ...rest },
+  ref,
+) => {
   if (component) {
     // If component is a string, create a new element of that type
     if (typeof component === 'string') {
@@ -74,17 +71,22 @@ const MenuButton: React.ForwardRefRenderFunction<
       )
     } else {
       // Otherwise, clone the element
-      const { className: classNameProp, ...props } = component.props
+      if (React.isValidElement(component)) {
+        const { className: classNameProp, ...props } = (component as any).props as any
 
-      return React.cloneElement(
-        component,
-        {
-          className: classnames(className, classNameProp),
-          ...rest,
-          ...props,
-        },
-        children,
-      )
+        return React.cloneElement(
+          component as React.ReactElement,
+          {
+            className: classnames(className, classNameProp),
+            ...rest,
+            ...props,
+            ref,
+          },
+          children,
+        )
+      }
+
+      return null
     }
   } else {
     // If there is no component but href is defined, render RouterLink

@@ -53,10 +53,9 @@ const FAQSection: React.FC = () => {
   const theme = useTheme()
   const [expanded, setExpanded] = React.useState<string | false>(false)
 
-  const handleChange =
-    (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false)
-    }
+  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false)
+  }
 
   return (
     <Box
@@ -103,8 +102,7 @@ const FAQSection: React.FC = () => {
               sx={{
                 bgcolor: 'background.paper',
                 border: 1,
-                borderColor:
-                  expanded === `panel${index}` ? 'primary.main' : 'divider',
+                borderColor: expanded === `panel${index}` ? 'primary.main' : 'divider',
                 borderRadius: '12px !important',
                 '&:before': {
                   display: 'none',
@@ -120,10 +118,7 @@ const FAQSection: React.FC = () => {
                 expandIcon={
                   <ExpandMoreIcon
                     sx={{
-                      color:
-                        expanded === `panel${index}`
-                          ? 'primary.main'
-                          : 'text.secondary',
+                      color: expanded === `panel${index}` ? 'primary.main' : 'text.secondary',
                       transition: 'all 0.3s ease',
                     }}
                   />
@@ -146,10 +141,7 @@ const FAQSection: React.FC = () => {
                   variant='subtitle1'
                   sx={{
                     fontWeight: 600,
-                    color:
-                      expanded === `panel${index}`
-                        ? 'primary.main'
-                        : 'text.primary',
+                    color: expanded === `panel${index}` ? 'primary.main' : 'text.primary',
                     transition: 'color 0.3s ease',
                   }}
                 >

@@ -2,14 +2,7 @@
 import React from 'react'
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table'
 import type { IPerson, UsersTypeWithAction } from './types'
-import {
-  Box,
-  Chip,
-  CircularProgress,
-  FormControlLabel,
-  Switch,
-  Typography,
-} from '@mui/material'
+import { Box, Chip, CircularProgress, FormControlLabel, Switch, Typography } from '@mui/material'
 
 const columnHelper = createColumnHelper<UsersTypeWithAction>()
 
@@ -69,9 +62,7 @@ export const columns1: Array<ColumnDef<UsersTypeWithAction, any>> = [
       // }
       const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         // const checked = event.target.checked
-        console.log(
-          `row ${row.original.firstName} event.target.checked ${event.target.checked}`,
-        )
+        console.log(`row ${row.original.firstName} event.target.checked ${event.target.checked}`)
         console.log(`row.index: ${row.index} column.id: ${column.id}`)
 
         try {

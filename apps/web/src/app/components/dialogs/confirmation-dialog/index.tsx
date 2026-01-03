@@ -7,13 +7,7 @@ import React from 'react'
 
 // Third-party Imports
 import classnames from 'classnames'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Typography,
-} from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material'
 import { Error } from '@mui/icons-material'
 
 type ConfirmationType = 'delete-account' | 'unsubscribe' | 'suspend-account'
@@ -24,11 +18,7 @@ type ConfirmationDialogProps = {
   type: ConfirmationType
 }
 
-const ConfirmationDialog = ({
-  open,
-  setOpen,
-  type,
-}: ConfirmationDialogProps) => {
+const ConfirmationDialog = ({ open, setOpen, type }: ConfirmationDialogProps) => {
   // States
   const [secondDialog, setSecondDialog] = React.useState(false)
   const [userInput, setUserInput] = React.useState(false)
@@ -67,12 +57,7 @@ const ConfirmationDialog = ({
 
   return (
     <>
-      <Dialog
-        fullWidth
-        maxWidth='xs'
-        open={open}
-        onClose={() => setOpen(false)}
-      >
+      <Dialog fullWidth maxWidth='xs' open={open} onClose={() => setOpen(false)}>
         <DialogContent
           sx={{
             display: 'flex',
@@ -104,16 +89,12 @@ const ConfirmationDialog = ({
             // })}
           >
             <Typography variant='h5'>
-              {type === 'delete-account' &&
-                'Are you sure you want to deactivate your account?'}
-              {type === 'unsubscribe' &&
-                'Are you sure to cancel your subscription?'}
+              {type === 'delete-account' && 'Are you sure you want to deactivate your account?'}
+              {type === 'unsubscribe' && 'Are you sure to cancel your subscription?'}
               {type === 'suspend-account' && 'Are you sure?'}
             </Typography>
             {type === 'suspend-account' && (
-              <Typography color='text.primary'>
-                You won&#39;t be able to revert user!
-              </Typography>
+              <Typography color='text.primary'>You won&#39;t be able to revert user!</Typography>
             )}
           </Wrapper>
         </DialogContent>
@@ -171,10 +152,8 @@ const ConfirmationDialog = ({
           <Typography color='text.primary'>
             {userInput ? (
               <>
-                {type === 'delete-account' &&
-                  'Your account has been deactivated successfully.'}
-                {type === 'unsubscribe' &&
-                  'Your subscription cancelled successfully.'}
+                {type === 'delete-account' && 'Your account has been deactivated successfully.'}
+                {type === 'unsubscribe' && 'Your subscription cancelled successfully.'}
                 {type === 'suspend-account' && 'User has been suspended.'}
               </>
             ) : (
@@ -192,11 +171,7 @@ const ConfirmationDialog = ({
           }}
           // className='justify-center pbs-0 sm:pbe-16 sm:pli-16'
         >
-          <Button
-            variant='contained'
-            color='success'
-            onClick={handleSecondDialogClose}
-          >
+          <Button variant='contained' color='success' onClick={handleSecondDialogClose}>
             Ok
           </Button>
         </DialogActions>

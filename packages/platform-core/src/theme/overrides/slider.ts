@@ -19,10 +19,9 @@ const slider: Theme['components'] = {
           '& .MuiSlider-thumb.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 13px var(--mui-palette-primary-lightOpacity)',
           },
-          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible':
-            {
-              boxShadow: '0 0 0 7px var(--mui-palette-primary-lightOpacity)',
-            },
+          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible': {
+            boxShadow: '0 0 0 7px var(--mui-palette-primary-lightOpacity)',
+          },
           '& .MuiSlider-thumbSizeSmall.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 10px var(--mui-palette-primary-lightOpacity)',
           },
@@ -44,10 +43,9 @@ const slider: Theme['components'] = {
           '& .MuiSlider-thumb.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 13px var(--mui-palette-secondary-lightOpacity)',
           },
-          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible':
-            {
-              boxShadow: '0 0 0 7px var(--mui-palette-secondary-lightOpacity)',
-            },
+          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible': {
+            boxShadow: '0 0 0 7px var(--mui-palette-secondary-lightOpacity)',
+          },
           '& .MuiSlider-thumbSizeSmall.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 10px var(--mui-palette-secondary-lightOpacity)',
           },
@@ -70,10 +68,9 @@ const slider: Theme['components'] = {
           '& .MuiSlider-thumb.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 13px var(--mui-palette-error-lightOpacity)',
           },
-          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible':
-            {
-              boxShadow: '0 0 0 7px var(--mui-palette-error-lightOpacity)',
-            },
+          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible': {
+            boxShadow: '0 0 0 7px var(--mui-palette-error-lightOpacity)',
+          },
           '& .MuiSlider-thumbSizeSmall.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 10px var(--mui-palette-error-lightOpacity)',
           },
@@ -96,10 +93,9 @@ const slider: Theme['components'] = {
           '& .MuiSlider-thumb.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 13px var(--mui-palette-warning-lightOpacity)',
           },
-          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible':
-            {
-              boxShadow: '0 0 0 7px var(--mui-palette-warning-lightOpacity)',
-            },
+          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible': {
+            boxShadow: '0 0 0 7px var(--mui-palette-warning-lightOpacity)',
+          },
           '& .MuiSlider-thumbSizeSmall.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 10px var(--mui-palette-warning-lightOpacity)',
           },
@@ -122,10 +118,9 @@ const slider: Theme['components'] = {
           '& .MuiSlider-thumb.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 13px var(--mui-palette-info-lightOpacity)',
           },
-          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible':
-            {
-              boxShadow: '0 0 0 7px var(--mui-palette-info-lightOpacity)',
-            },
+          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible': {
+            boxShadow: '0 0 0 7px var(--mui-palette-info-lightOpacity)',
+          },
           '& .MuiSlider-thumbSizeSmall.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 10px var(--mui-palette-info-lightOpacity)',
           },
@@ -148,10 +143,9 @@ const slider: Theme['components'] = {
           '& .MuiSlider-thumb.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 13px var(--mui-palette-success-lightOpacity)',
           },
-          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible':
-            {
-              boxShadow: '0 0 0 7px var(--mui-palette-success-lightOpacity)',
-            },
+          '& .MuiSlider-thumbSizeSmall:hover, & .MuiSlider-thumbSizeSmall.Mui-focusVisible': {
+            boxShadow: '0 0 0 7px var(--mui-palette-success-lightOpacity)',
+          },
           '& .MuiSlider-thumbSizeSmall.Mui-active.Mui-focusVisible': {
             boxShadow: '0 0 0 10px var(--mui-palette-success-lightOpacity)',
           },

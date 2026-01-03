@@ -13,12 +13,12 @@ import React from 'react'
 
 // Third-party Imports
 import classnames from 'classnames'
-import CustomAvatar from 'src/core/components/mui/Avatar'
+import { themeConfig } from '@cap/platform-core'
+import CustomAvatar from '../../../../core/components/mui/Avatar'
 import DialogCloseButton from '../DialogCloseButton'
 import Keyboard from 'app/assets/svg/Keyboard'
 import Paper from 'app/assets/svg/Paper'
 import Rocket from 'app/assets/svg/Rocket'
-import themeConfig from 'src/configs/themeConfig'
 import {
   Dialog,
   DialogTitle,
@@ -80,8 +80,8 @@ const ReferEarn = ({ open, setOpen }: ReferEarnProps) => {
       >
         Refer & Earn
         <Typography component='span' className='flex flex-col text-center'>
-          Invite your friend to {themeConfig.templateName}, if they sign up, you
-          and your friend will get 30 days free trial
+          Invite your friend to {themeConfig.templateName}, if they sign up, you and your friend
+          will get 30 days free trial
         </Typography>
       </DialogTitle>
       <DialogContent className='flex flex-col gap-6 pbs-0 sm:pli-16 sm:pbe-16'>
@@ -96,12 +96,7 @@ const ReferEarn = ({ open, setOpen }: ReferEarnProps) => {
                   className='bs-[66px] is-[66px] sm:bs-[88px] sm:is-[88px]'
                 >
                   {typeof option.icon === 'string' ? (
-                    <i
-                      className={classnames(
-                        'text-[32px] sm:text-[40px]',
-                        option.icon,
-                      )}
-                    />
+                    <i className={classnames('text-[32px] sm:text-[40px]', option.icon)} />
                   ) : (
                     option.icon
                   )}
@@ -123,7 +118,7 @@ const ReferEarn = ({ open, setOpen }: ReferEarnProps) => {
               size='small'
               id='refer-email'
               placeholder='johnDoe@email.com'
-              label=' Enter your friend&#39;s email address and invite them to join Vuexy 😍'
+              label=' Enter your friend&#39;s email address and invite them to join GLDeveloper 😍'
             />
             <Button variant='contained' className='is-full sm:is-auto'>
               Send

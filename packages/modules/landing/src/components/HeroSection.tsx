@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  alpha,
-  useTheme,
-} from '@mui/material'
+import { Box, Container, Typography, Button, alpha, useTheme } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { useNavigate } from 'react-router-dom'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
@@ -87,8 +80,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
                     backgroundClip: 'text',
                   }}
                 >
-                  Unleash AI power to seek, analyze, and optimize your career
-                  journey.
+                  Unleash AI power to seek, analyze, and optimize your career journey.
                 </Typography>
                 <Typography
                   variant='h6'
@@ -100,9 +92,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
                     mx: { xs: 'auto', lg: 0 },
                   }}
                 >
-                  Our AI helps you find the best job matches and streamline your
-                  search process with features like job matching scores,
-                  application tracking, and career path analytics.
+                  Our AI helps you find the best job matches and streamline your search process with
+                  features like job matching scores, application tracking, and career path
+                  analytics.
                 </Typography>
               </Box>
 

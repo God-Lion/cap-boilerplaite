@@ -1,5 +1,5 @@
 import { Button, Typography } from '@mui/material'
-import DirectionalIcon from 'src/components/DirectionalIcon'
+import DirectionalIcon from '../../DirectionalIcon'
 
 type Props = {
   activeStep: number
@@ -14,9 +14,7 @@ const Submit = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
       <div className='flex flex-col items-center gap-4'>
         <div className='flex flex-col items-center gap-1'>
           <Typography variant='h5'>Submit</Typography>
-          <Typography variant='body2'>
-            Submit to kickstart your project.
-          </Typography>
+          <Typography variant='body2'>Submit to kickstart your project.</Typography>
         </div>
         <img
           alt='submit-img'
@@ -32,10 +30,7 @@ const Submit = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
           disabled={activeStep === 0}
           onClick={handlePrev}
           startIcon={
-            <DirectionalIcon
-              ltrIconClass='tabler-arrow-left'
-              rtlIconClass='tabler-arrow-right'
-            />
+            <DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right' />
           }
         >
           Previous
@@ -48,10 +43,7 @@ const Submit = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
             isLastStep ? (
               <i className='tablerr-check' />
             ) : (
-              <DirectionalIcon
-                ltrIconClass='tabler-arrow-right'
-                rtlIconClass='tabler-arrow-left'
-              />
+              <DirectionalIcon ltrIconClass='tabler-arrow-right' rtlIconClass='tabler-arrow-left' />
             )
           }
         >

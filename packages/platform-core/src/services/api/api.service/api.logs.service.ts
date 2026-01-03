@@ -4,7 +4,7 @@ import { ENDPOINTS } from '../api.config'
  * Logs Service
  */
 export const logsService = {
-    getAllLogs: (query: string = ''): Promise<FetchResponse> => {
-        return apiClient.get(`${ENDPOINTS.logs}${query}`)
-    },
+  getAllLogs: (query: string = ''): Promise<FetchResponse> => {
+    return apiClient.get(`${ENDPOINTS.logs}${query}`)
+  },
 }

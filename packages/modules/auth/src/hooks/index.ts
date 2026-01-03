@@ -17,5 +17,6 @@ export {
   useUpdateNames,
   useUpdateEmail,
   useUpdatePhoto,
+  useMfaLoginVerify,
 } from './useAuthQuery'
 export * from './useSignOut'

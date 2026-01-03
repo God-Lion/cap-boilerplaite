@@ -5,7 +5,6 @@
 
 import { apiClient, FetchResponse, ENDPOINTS } from '@cap/platform-core'
 
-
 import {
   // Existing types
   LoginRequest,
@@ -47,9 +46,7 @@ class AuthService {
   // EXISTING METHODS (Keep as is)
   // ========================================================================
 
-  async register(
-    data: RegisterRequest,
-  ): Promise<FetchResponse<MessageResponse>> {
+  async register(data: RegisterRequest): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.register, data)
   }
 
@@ -61,29 +58,19 @@ class AuthService {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.logout)
   }
 
-  async verifyEmail(
-    token: string,
-  ): Promise<FetchResponse<VerifyEmailResponse>> {
-    return apiClient.get<VerifyEmailResponse>(
-      ENDPOINTS.auth.verifyEmailToken(token),
-    )
+  async verifyEmail(token: string): Promise<FetchResponse<VerifyEmailResponse>> {
+    return apiClient.get<VerifyEmailResponse>(ENDPOINTS.auth.verifyEmailToken(token))
   }
 
-  async forgotPassword(
-    data: ForgotPasswordRequest,
-  ): Promise<FetchResponse<MessageResponse>> {
+  async forgotPassword(data: ForgotPasswordRequest): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.forgotPassword, data)
   }
 
-  async resetPassword(
-    data: ResetPasswordRequest,
-  ): Promise<FetchResponse<MessageResponse>> {
+  async resetPassword(data: ResetPasswordRequest): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.auth.resetPassword, data)
   }
 
-  async refreshToken(
-    refreshToken: string,
-  ): Promise<FetchResponse<TokenResponse>> {
+  async refreshToken(refreshToken: string): Promise<FetchResponse<TokenResponse>> {
     return apiClient.post<TokenResponse>(
       ENDPOINTS.auth.refresh,
       {},
@@ -102,31 +89,22 @@ class AuthService {
   async trackFailedLogin(
     data: TrackFailedLoginRequest,
   ): Promise<FetchResponse<TrackFailedLoginResponse>> {
-    return apiClient.post<TrackFailedLoginResponse>(
-      ENDPOINTS.auth.trackFailedLogin,
-      data,
-    )
+    return apiClient.post<TrackFailedLoginResponse>(ENDPOINTS.auth.trackFailedLogin, data)
   }
 
   async getProfileSettings(): Promise<FetchResponse<ProfileSettingsResponse>> {
     return apiClient.get<ProfileSettingsResponse>(ENDPOINTS.user.settings)
   }
 
-  async updateNames(
-    data: UpdateNamesRequest,
-  ): Promise<FetchResponse<UpdateResponse>> {
+  async updateNames(data: UpdateNamesRequest): Promise<FetchResponse<UpdateResponse>> {
     return apiClient.put<UpdateResponse>(ENDPOINTS.user.updateNames, data)
   }
 
-  async updateEmail(
-    data: UpdateEmailRequest,
-  ): Promise<FetchResponse<UpdateResponse>> {
+  async updateEmail(data: UpdateEmailRequest): Promise<FetchResponse<UpdateResponse>> {
     return apiClient.put<UpdateResponse>(ENDPOINTS.user.updateEmail, data)
   }
 
-  async updatePhoto(
-    data: UpdatePhotoRequest,
-  ): Promise<FetchResponse<UpdateResponse>> {
+  async updatePhoto(data: UpdatePhotoRequest): Promise<FetchResponse<UpdateResponse>> {
     return apiClient.uploadFormData<UpdateResponse>(
       ENDPOINTS.user.updatePhoto(data.id),
       { photo: data.photo },
@@ -142,9 +120,7 @@ class AuthService {
    * Change user password
    * Requires current password for security
    */
-  async changePassword(
-    data: ChangePasswordRequest,
-  ): Promise<FetchResponse<MessageResponse>> {
+  async changePassword(data: ChangePasswordRequest): Promise<FetchResponse<MessageResponse>> {
     return apiClient.put<MessageResponse>('/api/user/change-password', data)
   }
 
@@ -156,19 +132,22 @@ class AuthService {
    * Setup MFA for current user
    * Returns QR code and backup codes
    */
-  async setupMfa(
-    data: MfaSetupRequest,
-  ): Promise<FetchResponse<MfaSetupResponse>> {
+  async setupMfa(data: MfaSetupRequest): Promise<FetchResponse<MfaSetupResponse>> {
     return apiClient.post<MfaSetupResponse>(ENDPOINTS.auth.mfa.setup, data)
   }
 
   /**
    * Verify MFA code and enable MFA
    */
-  async verifyMfa(
-    data: MfaVerifyRequest,
-  ): Promise<FetchResponse<MfaVerifyResponse>> {
+  async verifyMfa(data: MfaVerifyRequest): Promise<FetchResponse<MfaVerifyResponse>> {
     return apiClient.post<MfaVerifyResponse>(ENDPOINTS.auth.mfa.verify, data)
+  }
+
+  /**
+   * Verify MFA code during login
+   */
+  async mfaLoginVerify(data: MfaLoginVerifyRequest): Promise<FetchResponse<MfaVerifyResponse>> {
+    return apiClient.post<MfaVerifyResponse>('/api/auth/mfa/verify-login', data)
   }
 
   /**
@@ -188,9 +167,7 @@ class AuthService {
   /**
    * Regenerate backup codes
    */
-  async regenerateBackupCodes(): Promise<
-    FetchResponse<{ backup_codes: string[] }>
-  > {
+  async regenerateBackupCodes(): Promise<FetchResponse<{ backup_codes: string[] }>> {
     return apiClient.post('/api/auth/mfa/regenerate-backup-codes')
   }
 
@@ -208,9 +185,7 @@ class AuthService {
   /**
    * Revoke a specific session
    */
-  async revokeSession(
-    sessionId: string,
-  ): Promise<FetchResponse<MessageResponse>> {
+  async revokeSession(sessionId: string): Promise<FetchResponse<MessageResponse>> {
     return apiClient.delete<MessageResponse>(`/api/auth/sessions/${sessionId}`)
   }
 
@@ -228,18 +203,14 @@ class AuthService {
   /**
    * Deactivate user account (soft delete)
    */
-  async deactivateAccount(
-    data: DeactivateAccountRequest,
-  ): Promise<FetchResponse<MessageResponse>> {
+  async deactivateAccount(data: DeactivateAccountRequest): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>('/api/user/deactivate', data)
   }
 
   /**
    * Reactivate a deactivated account
    */
-  async reactivateAccount(
-    data: ReactivateAccountRequest,
-  ): Promise<FetchResponse<TokenResponse>> {
+  async reactivateAccount(data: ReactivateAccountRequest): Promise<FetchResponse<TokenResponse>> {
     return apiClient.post<TokenResponse>('/api/auth/reactivate', data)
   }
 
@@ -250,9 +221,7 @@ class AuthService {
   /**
    * Get login history for current user
    */
-  async getLoginHistory(
-    limit: number = 50,
-  ): Promise<FetchResponse<LoginHistoryResponse>> {
+  async getLoginHistory(limit: number = 50): Promise<FetchResponse<LoginHistoryResponse>> {
     return apiClient.get<LoginHistoryResponse>('/api/auth/login-history', {
       params: { limit },
     })
@@ -289,9 +258,7 @@ class AuthService {
   /**
    * Link OAuth account to existing user
    */
-  async linkOAuthProvider(
-    data: LinkOAuthRequest,
-  ): Promise<FetchResponse<MessageResponse>> {
+  async linkOAuthProvider(data: LinkOAuthRequest): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>('/api/auth/oauth/link', data)
   }
 
@@ -301,9 +268,7 @@ class AuthService {
   async unlinkOAuthProvider(
     provider: 'google' | 'facebook',
   ): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.delete<MessageResponse>(
-      `/api/auth/oauth/unlink/${provider}`,
-    )
+    return apiClient.delete<MessageResponse>(`/api/auth/oauth/unlink/${provider}`)
   }
 
   /**
@@ -347,10 +312,27 @@ class AuthService {
   /**
    * Remove trusted device
    */
-  async removeTrustedDevice(
-    deviceId: string,
-  ): Promise<FetchResponse<MessageResponse>> {
+  async removeTrustedDevice(deviceId: string): Promise<FetchResponse<MessageResponse>> {
     return apiClient.delete(`/api/auth/trusted-devices/${deviceId}`)
+  }
+  // ========================================================================
+  // NEW METHODS - Passkeys (WebAuthn)
+  // ========================================================================
+
+  async getPasskeyRegistrationOptions(): Promise<FetchResponse<any>> {
+    return apiClient.get(ENDPOINTS.auth.passkey.registerStart)
+  }
+
+  async verifyPasskeyRegistration(data: any): Promise<FetchResponse<any>> {
+    return apiClient.post(ENDPOINTS.auth.passkey.registerFinish, data)
+  }
+
+  async getPasskeyLoginOptions(email?: string): Promise<FetchResponse<any>> {
+    return apiClient.get(ENDPOINTS.auth.passkey.loginStart, { params: { email } })
+  }
+
+  async verifyPasskeyLogin(data: any): Promise<FetchResponse<any>> {
+    return apiClient.post(ENDPOINTS.auth.passkey.loginFinish, data)
   }
 }
 

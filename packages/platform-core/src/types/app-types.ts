@@ -1,4 +1,4 @@
-import { IUserReponse } from './IAuth'
+import { IUserResponse, ILogin } from './IAuth'
 
 export enum Roles {
   USER = 1,
@@ -22,19 +22,19 @@ export const RoleWeights = [
   Roles.SUPERADMIN,
 ]
 export interface IGlobalState {
-  user: IUserReponse
-  contests: Array<any>
-  editions: Array<any>
+  user: IUserResponse | null
+  contests: unknown[]
+  editions: unknown[]
   current_contest_id: number
   current_edition_id: number
-  setCurrentContestId: Function
-  setCurrentEditionId: Function
-  error: any
-  laoding: boolean
-  messageAlert: any
-  signin: Function
-  signOut: Function
-  set: Function
+  setCurrentContestId: (id: number) => void
+  setCurrentEditionId: (id: number) => void
+  error: unknown
+  loading: boolean
+  messageAlert: unknown
+  signin: (data: ILogin) => Promise<void>
+  signOut: () => void
+  set: (data: Partial<IGlobalState>) => void
 }
 
 export interface ITab {

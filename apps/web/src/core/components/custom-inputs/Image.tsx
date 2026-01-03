@@ -47,15 +47,7 @@ const Image = styled('img', {
 
 const CustomCheckboxImg = (props: CustomInputImgProps) => {
   // Props
-  const {
-    type,
-    data,
-    name,
-    selected,
-    gridProps,
-    handleChange,
-    color = 'primary',
-  } = props
+  const { type, data, name, selected, gridProps, handleChange, color = 'primary' } = props
 
   // Vars
   const { alt, img, value } = data

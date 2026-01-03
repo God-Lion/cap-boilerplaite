@@ -21,18 +21,11 @@ import {
 import type { CSSObject } from '@emotion/styled'
 import type { OpenSubmenu } from './Menu'
 import type { MenuItemProps } from './MenuItem'
-import type {
-  ChildrenType,
-  RootStylesType,
-  SubMenuItemElement,
-} from '../../types'
+import type { ChildrenType, RootStylesType, SubMenuItemElement } from '../../types'
 import SubMenuContent from './SubMenuContent'
 import MenuButton, { menuButtonStyles } from './MenuButton'
 import ChevronRight from '../../svg/ChevronRight'
-import {
-  useVerticalNav,
-  useVerticalMenu,
-} from '../../contexts/verticalNavContext'
+import { useVerticalNav, useVerticalMenu } from '../../contexts/verticalNavContext'
 import { menuClasses } from '../../utils/menuClasses'
 import { confirmUrlInChildren, renderMenuIcon } from '../../utils/menuUtils'
 import StyledMenuLabel from '../../styles/StyledMenuLabel'
@@ -42,10 +35,7 @@ import StyledVerticalNavExpandIcon, {
   StyledVerticalNavExpandIconWrapper,
 } from '../../styles/vertical/StyledVerticalNavExpandIcon'
 
-export type SubMenuProps = Omit<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  'prefix'
-> &
+export type SubMenuProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'prefix'> &
   RootStylesType &
   Partial<ChildrenType> & {
     label: React.ReactNode
@@ -86,14 +76,7 @@ const StyledSubMenu = styled.li<StyledSubMenuProps>`
   ${({ rootStyles }) => rootStyles};
 
   > .${menuClasses.button} {
-    ${({
-      level,
-      disabled,
-      active,
-      children,
-      isCollapsed,
-      isPopoutWhenCollapsed,
-    }) =>
+    ${({ level, disabled, active, children, isCollapsed, isPopoutWhenCollapsed }) =>
       menuButtonStyles({
         level,
         active,
@@ -106,10 +89,7 @@ const StyledSubMenu = styled.li<StyledSubMenuProps>`
   }
 `
 
-const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
-  props,
-  ref,
-) => {
+const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (props, ref) => {
   // Props
   const {
     children,
@@ -134,8 +114,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
   const pathname = location.pathname
 
   // States
-  const [openWhenCollapsed, setOpenWhenCollapsed] =
-    React.useState<boolean>(false)
+  const [openWhenCollapsed, setOpenWhenCollapsed] = React.useState<boolean>(false)
   const [active, setActive] = React.useState<boolean>(false)
 
   // Refs
@@ -143,8 +122,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
 
   // Hooks
   const id = React.useId()
-  const { isCollapsed, isPopoutWhenCollapsed, isHovered, isBreakpointReached } =
-    useVerticalNav()
+  const { isCollapsed, isPopoutWhenCollapsed, isHovered, isBreakpointReached } = useVerticalNav()
   const tree = useFloatingTree()
 
   const {
@@ -215,12 +193,14 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
   const role = useRole(context, { role: 'menu' })
 
   // Merge all the interactions into prop getters
-  const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions(
-    [hover, click, dismiss, role],
-  )
+  const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
+    hover,
+    click,
+    dismiss,
+    role,
+  ])
 
-  const isSubMenuOpen =
-    openSubmenu?.some((item: OpenSubmenu) => item.id === id) ?? false
+  const isSubMenuOpen = openSubmenu?.some((item: OpenSubmenu) => item.id === id) ?? false
 
   const handleSlideToggle = (): void => {
     if (level === 0 && isCollapsed && !isHovered) {
@@ -233,9 +213,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
       openSubmenusRef.current = []
   }
 
-  const handleOnClick = (
-    event: React.MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>,
-  ) => {
+  const handleOnClick = (event: React.MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) => {
     onClick?.(event)
     handleSlideToggle()
   }
@@ -246,9 +224,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
     if (event.key === 'Enter') handleSlideToggle()
   }
 
-  const getSubMenuItemStyles = (
-    element: SubMenuItemElement,
-  ): CSSObject | undefined => {
+  const getSubMenuItemStyles = (element: SubMenuItemElement): CSSObject | undefined => {
     // If the menuItemStyles prop is provided, get the styles for the specified element.
     if (menuItemStyles) {
       // Define the parameters that are passed to the style functions.
@@ -266,9 +242,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
       if (styleFunction) {
         // If the style function is a function, call it and return the result.
         // Otherwise, return the style function itself.
-        return typeof styleFunction === 'function'
-          ? styleFunction(params)
-          : styleFunction
+        return typeof styleFunction === 'function' ? styleFunction(params) : styleFunction
       }
     }
   }
@@ -295,8 +269,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
     if (confirmUrlInChildren(children, pathname))
       openSubmenusRef?.current.push({ level, label, active: true, id })
     else {
-      if (defaultOpen)
-        openSubmenusRef?.current.push({ level, label, active: false, id })
+      if (defaultOpen) openSubmenusRef?.current.push({ level, label, active: false, id })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -307,11 +280,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
     if (confirmUrlInChildren(children, pathname)) {
       setActive(true)
 
-      if (
-        openSubmenusRef?.current.findIndex(
-          (submenu: OpenSubmenu) => submenu.id === id,
-        ) === -1
-      )
+      if (openSubmenusRef?.current.findIndex((submenu: OpenSubmenu) => submenu.id === id) === -1)
         openSubmenusRef?.current.push({ level, label, active: true, id })
     } else setActive(false)
 
@@ -324,15 +293,8 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
 
   const submenuContent = (
     <SubMenuContent
-      ref={
-        isCollapsed && level === 0 && isPopoutWhenCollapsed
-          ? refs.setFloating
-          : contentRef
-      }
-      {...(isCollapsed &&
-        level === 0 &&
-        isPopoutWhenCollapsed &&
-        getFloatingProps())}
+      ref={isCollapsed && level === 0 && isPopoutWhenCollapsed ? refs.setFloating : contentRef}
+      {...(isCollapsed && level === 0 && isPopoutWhenCollapsed && getFloatingProps())}
       browserScroll={browserScroll}
       openWhenCollapsed={openWhenCollapsed}
       isPopoutWhenCollapsed={isPopoutWhenCollapsed}
@@ -343,10 +305,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (
       isHovered={isHovered}
       className={classnames(menuClasses.subMenuContent, contentClassName)}
       rootStyles={{
-        ...(isCollapsed &&
-          level === 0 &&
-          isPopoutWhenCollapsed &&
-          floatingStyles),
+        ...(isCollapsed && level === 0 && isPopoutWhenCollapsed && floatingStyles),
         ...getSubMenuItemStyles('subMenuContent'),
       }}
     >

@@ -9,7 +9,7 @@ export interface ISession {
   current?: boolean
 }
 
-export interface IUserReponse {
+export interface IUserResponse {
   _id: string
   firstName: string
   lastName: string
@@ -23,8 +23,8 @@ export interface IUserReponse {
   sessions?: ISession[]
 }
 
-export interface IAuth extends IUserReponse {
-  user?: IUserReponse
+export interface IAuth extends IUserResponse {
+  user?: IUserResponse
   token?: string
   refreshToken?: string
   full_name?: string
@@ -61,21 +61,21 @@ export interface IResetPassword {
   confirmPassword: string
 }
 
-export interface IUserReponseForgetPassword {
+export interface IUserResponseForgetPassword {
   message: string
   success: boolean
 }
 
-export interface IUserReponseEmailResetPassword {
+export interface IUserResponseEmailResetPassword {
   message: string
   success: boolean
   token?: string
   isSignatureValid?: boolean
 }
 
-export interface IProfileSettingsReponse {
+export interface IProfileSettingsResponse {
   message: string
   success: boolean
-  user?: IUserReponse
+  user?: IUserResponse
   sessions?: ISession[]
 }

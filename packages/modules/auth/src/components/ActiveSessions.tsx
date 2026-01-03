@@ -10,88 +10,118 @@ import {
   Chip,
   Box,
 } from '@mui/material'
-import {
-  Delete as DeleteIcon,
-  Devices as DevicesIcon,
-} from '@mui/icons-material'
-import {
-  useSessions,
-  useRevokeSession,
-  useRevokeAllSessions,
-} from '../hooks/useAuthQuery'
+import { Delete as DeleteIcon, Devices as DevicesIcon } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
+import { useSessions, useRevokeSession, useRevokeAllSessions } from '../hooks/useAuthQuery'
 
 export function ActiveSessions() {
+  const { t } = useTranslation()
   const { data, isLoading } = useSessions()
   const revokeSessionMutation = useRevokeSession()
   const revokeAllMutation = useRevokeAllSessions()
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return null
 
   const handleRevokeSession = (sessionId: string) => {
-    if (confirm('Are you sure you want to end this session?')) {
+    if (confirm(t('auth.active_sessions.confirm_end_session'))) {
       revokeSessionMutation.mutate(sessionId, {
-        onSuccess: () => alert('Session ended successfully'),
+        onSuccess: () => alert(t('auth.active_sessions.success_end_session')),
       })
     }
   }
 
   const handleRevokeAll = () => {
-    if (confirm('This will log you out from all other devices. Continue?')) {
+    if (confirm(t('auth.active_sessions.confirm_end_all'))) {
       revokeAllMutation.mutate(undefined, {
-        onSuccess: () => alert('All other sessions ended successfully'),
+        onSuccess: () => alert(t('auth.active_sessions.success_end_all')),
       })
     }
   }
 
   return (
-    <Card>
-      <CardContent>
+    <Card sx={{ borderRadius: 2 }}>
+      <CardContent sx={{ padding: { xs: 3, sm: 4 } }}>
         <Box
           display='flex'
+          flexDirection={{ xs: 'column', sm: 'row' }}
           justifyContent='space-between'
-          alignItems='center'
-          mb={2}
+          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          gap={2}
+          mb={4}
         >
-          <Typography variant='h6'>Active Sessions</Typography>
+          <Typography variant='h6' sx={{ fontWeight: 700 }}>
+            {t('auth.active_sessions.title')}
+          </Typography>
           <Button
             variant='outlined'
             color='error'
             size='small'
             onClick={handleRevokeAll}
             disabled={!data?.data.sessions || data.data.sessions.length <= 1}
+            sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2 }}
           >
-            End All Other Sessions
+            {t('auth.active_sessions.button_end_all')}
           </Button>
         </Box>
 
-        <List>
-          {data?.data.sessions.map((session: any) => (
+        <List disablePadding>
+          {data?.data.sessions.map((session: any, index: number) => (
             <ListItem
               key={session.id}
+              divider={index !== (data?.data.sessions.length || 0) - 1}
+              sx={{ py: 2, px: 0 }}
               secondaryAction={
                 !session.current && (
                   <IconButton
                     edge='end'
                     onClick={() => handleRevokeSession(session.id)}
+                    color='error'
+                    size='small'
                   >
-                    <DeleteIcon />
+                    <DeleteIcon fontSize='small' />
                   </IconButton>
                 )
               }
             >
-              <DevicesIcon sx={{ mr: 2 }} />
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 40,
+                  height: 40,
+                  borderRadius: 1,
+                  backgroundColor: 'primary.light',
+                  opacity: 0.8,
+                  mr: 2,
+                }}
+              >
+                <DevicesIcon sx={{ color: 'primary.main', fontSize: 20 }} />
+              </Box>
               <ListItemText
                 primary={
                   <Box display='flex' alignItems='center' gap={1}>
-                    {session.device_name}
+                    <Typography variant='body1' sx={{ fontWeight: 600 }}>
+                      {session.device_name}
+                    </Typography>
                     {session.current && (
-                      <Chip label='Current' size='small' color='primary' />
+                      <Chip
+                        label={t('auth.active_sessions.device_current')}
+                        size='small'
+                        color='primary'
+                        sx={{ height: 20, fontSize: '0.75rem', fontWeight: 600 }}
+                      />
                     )}
                   </Box>
                 }
-                secondary={`${session.ip_address} · Last active: ${new Date(
-                  session.last_activity,
-                ).toLocaleString()}`}
+                secondary={
+                  <Typography variant='body2' color='text.secondary'>
+                    {session.ip_address} {' · '}
+                    {t('auth.active_sessions.last_active', {
+                      date: new Date(session.last_activity).toLocaleString(),
+                    })}
+                  </Typography>
+                }
               />
             </ListItem>
           ))}
@@ -100,25 +130,3 @@ export function ActiveSessions() {
     </Card>
   )
 }
-// import { Paper, Typography } from '@mui/material'
-// import { Layout } from './form'
-
-// export default function ActiveSessions() {
-//   return (
-//     <Paper
-//       sx={{
-//         padding: '20px',
-//         mb: 4,
-//       }}
-//     >
-//       <Layout title='Active Sessions'>
-//         <Typography>
-//           Below are the active sessions for your account. Active sessions are
-//           sessions that haven't signed out or expired. Location information is
-//           provided by IP2Location and is based on the IP Address of the session,
-//           accuracy will vary depending on the ISP/VPN.
-//         </Typography>
-//       </Layout>
-//     </Paper>
-//   )
-// }

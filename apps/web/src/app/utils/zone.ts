@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 export const zone = [
   {
     ZONE_HT_ID: 'HT.00.00-1-HT0000-PAY',
@@ -10271,8 +10269,7 @@ export const zone = [
     ARRONDISSEMENT: 'Port-au-Prince ',
     CODE_ARR: 'PP',
     COMMUNE: 'Port-au-Prince ',
-    LOCALITE:
-      'Port-au-Prince (Centre-ville / Champ de Mars / Morne à Tuf / Portail Léogâne)',
+    LOCALITE: 'Port-au-Prince (Centre-ville / Champ de Mars / Morne à Tuf / Portail Léogâne)',
     TYPE_ZONE: 'LOCALITE',
     LATITUDE: 'NULL',
     LONGITUDE: 'NULL',
@@ -11285,8 +11282,7 @@ export const zone = [
   },
   {
     ZONE_HT_ID: 'HT.OU.PP-4-HT6120-LOC',
-    DESCRIPTION_ZONE_HT:
-      '(NORD) AVIATION / CITE MILITAIRE / DELMAS 3 - DELMAS 15',
+    DESCRIPTION_ZONE_HT: '(NORD) AVIATION / CITE MILITAIRE / DELMAS 3 - DELMAS 15',
     CODE_POSTAL: 'HT6120',
     DEPARTEMENT: 'Ouest',
     CODE_DEP: 'OU',
@@ -14349,97 +14345,88 @@ export const zone = [
 //     })
 // }
 
-
 export type ZoneRow = {
-  ZONE_HT_ID: string;
-  DESCRIPTION_ZONE_HT: string;
-  CODE_POSTAL: string;
-  DEPARTEMENT: string;
-  CODE_DEP: string;
-  ARRONDISSEMENT: string;
-  CODE_ARR: string;
-  COMMUNE: string;
-  LOCALITE: string;
-  TYPE_ZONE: string;
-  LATITUDE: string;
-  LONGITUDE: string;
-  STATUT_ZONE_HT: number;
-};
+  ZONE_HT_ID: string
+  DESCRIPTION_ZONE_HT: string
+  CODE_POSTAL: string
+  DEPARTEMENT: string
+  CODE_DEP: string
+  ARRONDISSEMENT: string
+  CODE_ARR: string
+  COMMUNE: string
+  LOCALITE: string
+  TYPE_ZONE: string
+  LATITUDE: string
+  LONGITUDE: string
+  STATUT_ZONE_HT: number
+}
 
 function get() {
-  if (!zone) return [];
+  if (!zone) return []
 
   // Helper function to get unique, cleaned values
-  const getUniqueCleanValues = <K extends keyof ZoneRow>(
-    arr: ZoneRow[], 
-    key: K
-  ): ZoneRow[K][] => {
+  const getUniqueCleanValues = <K extends keyof ZoneRow>(arr: ZoneRow[], key: K): ZoneRow[K][] => {
     return arr
-      .map(el => el[key])
-      .filter((value, index, self) => 
-        value !== 'NULL' && 
-        value != null && 
-        self.indexOf(value) === index
+      .map((el) => el[key])
+      .filter(
+        (value, index, self) => value !== 'NULL' && value != null && self.indexOf(value) === index,
       )
-      .map(el => typeof el === 'string' ? el.trim() : el) as ZoneRow[K][];
-  };
+      .map((el) => (typeof el === 'string' ? el.trim() : el)) as ZoneRow[K][]
+  }
 
   // Helper function to find first matching row
-  const findRow = <K extends keyof ZoneRow>(
-    key: K, 
-    value: ZoneRow[K]
-  ): ZoneRow | undefined => {
-    return zone.find(row => row[key] === value);
-  };
+  const findRow = <K extends keyof ZoneRow>(key: K, value: ZoneRow[K]): ZoneRow | undefined => {
+    return zone.find((row) => row[key] === value)
+  }
 
   return getUniqueCleanValues(zone, 'DEPARTEMENT')
-    .map(dept => {
-      const deptRow = findRow('DEPARTEMENT', dept);
-      if (!deptRow) return null;
+    .map((dept) => {
+      const deptRow = findRow('DEPARTEMENT', dept)
+      if (!deptRow) return null
 
       const arrondissements = zone
-        .filter(row => row.CODE_DEP === deptRow.CODE_DEP)
+        .filter((row) => row.CODE_DEP === deptRow.CODE_DEP)
         .reduce((acc: any[], row) => {
-          const arr = row.ARRONDISSEMENT;
-          if (arr && arr !== 'NULL' && !acc.some(a => a.arrondissement === arr)) {
+          const arr = row.ARRONDISSEMENT
+          if (arr && arr !== 'NULL' && !acc.some((a) => a.arrondissement === arr)) {
             const communes = zone
-              .filter(r => r.CODE_ARR === row.CODE_ARR)
+              .filter((r) => r.CODE_ARR === row.CODE_ARR)
               .reduce((commAcc: any[], commRow) => {
-                const comm = commRow.COMMUNE;
-                if (comm && comm !== 'NULL' && !commAcc.some(c => c.commune === comm)) {
+                const comm = commRow.COMMUNE
+                if (comm && comm !== 'NULL' && !commAcc.some((c) => c.commune === comm)) {
                   const localites = zone
-                    .filter(r => r.COMMUNE === comm)
-                    .map(r => r.LOCALITE)
+                    .filter((r) => r.COMMUNE === comm)
+                    .map((r) => r.LOCALITE)
                     .filter((l, i, self) => l && l !== 'NULL' && self.indexOf(l) === i)
-                    .map(l => typeof l === 'string' ? l.trim() : l);
+                    .map((l) => (typeof l === 'string' ? l.trim() : l))
 
                   commAcc.push({
                     codePostal: commRow.CODE_POSTAL,
                     commune: typeof comm === 'string' ? comm.trim() : comm,
-                    localite: localites
-                  });
+                    localite: localites,
+                  })
                 }
-                return commAcc;
-              }, []);
+                return commAcc
+              }, [])
 
             acc.push({
               codeDep: row.CODE_DEP,
               code: row.CODE_ARR,
               codePostal: row.CODE_POSTAL,
               arrondissement: typeof arr === 'string' ? arr.trim() : arr,
-              commune: communes
-            });
+              commune: communes,
+            })
           }
-          return acc;
-        }, []);
+          return acc
+        }, [])
 
       return {
         code: deptRow.CODE_DEP,
         codePostal: deptRow.CODE_POSTAL,
         departement: typeof dept === 'string' ? dept.trim() : dept,
-        arrondissement: arrondissements
-      };
+        arrondissement: arrondissements,
+      }
     })
-    .filter(Boolean);
+    .filter(Boolean)
 }
 export default get()

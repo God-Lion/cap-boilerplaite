@@ -11,7 +11,7 @@ import {
   Typography,
   Checkbox,
 } from '@mui/material'
-// import { IUserReponse } from '@cap/platform-core'
+// import { IUserResponse } from '@cap/platform-core'
 
 export default function DesactivateAccount() {
   const controlForm = useForm({
@@ -20,7 +20,7 @@ export default function DesactivateAccount() {
       desactivate: false,
     },
   })
-  const onSubmit = async () => { }
+  const onSubmit = async () => {}
   return (
     <Paper
       sx={{
@@ -49,9 +49,7 @@ export default function DesactivateAccount() {
                   onClick={() => field.onChange(!field.value)}
                   checked={field.value}
                 />
-                <FormHelperText>
-                  {formState?.errors?.desactivate?.message}
-                </FormHelperText>
+                <FormHelperText>{formState?.errors?.desactivate?.message}</FormHelperText>
               </FormControl>
             )}
           />
@@ -64,11 +62,11 @@ export default function DesactivateAccount() {
               // position='left'
               variant='contained'
               color='error'
-            // disabled={disabled}
-            // onClick={() => {
-            //   controlForm.reset()
-            //   navigate('/home')
-            // }}
+              // disabled={disabled}
+              // onClick={() => {
+              //   controlForm.reset()
+              //   navigate('/home')
+              // }}
             >
               Desactivate account
             </Button>

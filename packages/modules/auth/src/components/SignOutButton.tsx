@@ -48,7 +48,7 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
       onSignOutComplete?.()
 
       // Redirect to login page
-      navigate('/auth/signin', { replace: true })
+      navigate('/auth/sign-in', { replace: true })
     },
     onError: (error) => {
       console.error('[SignOut] Logout error:', error)
@@ -57,7 +57,7 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
       zustandSignOut()
       StorageManager.clearAllUserData()
       onSignOutComplete?.()
-      navigate('/auth/signin', { replace: true })
+      navigate('/auth/sign-in', { replace: true })
     },
   })
 
@@ -76,11 +76,7 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
           color='inherit'
           aria-label='sign out'
         >
-          {isPending ? (
-            <CircularProgress size={20} color='inherit' />
-          ) : (
-            <LogoutOutlined />
-          )}
+          {isPending ? <CircularProgress size={20} color='inherit' /> : <LogoutOutlined />}
         </IconButton>
       </Tooltip>
     )
@@ -94,9 +90,7 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
       fullWidth={fullWidth}
       variant='outlined'
       color='error'
-      startIcon={
-        isPending ? <CircularProgress size={16} /> : <LogoutOutlined />
-      }
+      startIcon={isPending ? <CircularProgress size={16} /> : <LogoutOutlined />}
       aria-label='sign out'
     >
       {showText && (isPending ? 'Signing out...' : 'Sign Out')}

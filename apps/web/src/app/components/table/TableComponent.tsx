@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Skeleton,
-} from '@mui/material'
+import { Table, TableHead, TableRow, TableCell, TableBody, Skeleton } from '@mui/material'
 import TableValue from './TableValue'
 import type { ITableData, ITableHeader, ITableRow } from './types'
 // import { FixedSizeList } from 'react-window'
@@ -30,8 +23,7 @@ class TableComponent extends React.PureComponent<ITableComponentI> {
     const { loading, data, rowsPerPage, page } = this.props
     const fillArray = Array.apply(null, Array(5)).map((_, idx) => idx)
     const properties = []
-    for (let i = 0; i < data.header.length; i += 1)
-      properties.push(data.header[i].key)
+    for (let i = 0; i < data.header.length; i += 1) properties.push(data.header[i].key)
 
     // const hideActionMode = this.props?.hideActionMode ?? false
     // const loading = this.props?.loading ?? false
@@ -61,9 +53,7 @@ class TableComponent extends React.PureComponent<ITableComponentI> {
         <TableHead>
           <TableRow>
             {data?.header?.map((item: ITableHeader) => (
-              <TableCell
-                key={`${item.label}${Math.random()}${item.key}${Math.random()}`}
-              >
+              <TableCell key={`${item.label}${Math.random()}${item.key}${Math.random()}`}>
                 {item.label}
               </TableCell>
             ))}
@@ -103,9 +93,7 @@ class TableComponent extends React.PureComponent<ITableComponentI> {
                   {data.header.map((header: ITableHeader) => (
                     <TableCell
                       key={`${
-                        Object.keys(row).filter(
-                          (value) => value === header.key,
-                        )[0]
+                        Object.keys(row).filter((value) => value === header.key)[0]
                       }${Math.random()}${header.key}${Math.random()}`}
                     >
                       <TableValue property={header} row={row} />

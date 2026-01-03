@@ -1,13 +1,7 @@
 import { useColorScheme } from '@mui/material/styles'
 import classnames from 'classnames'
 import DialogCloseButton from '../DialogCloseButton'
-import {
-  Dialog,
-  DialogTitle,
-  Typography,
-  DialogContent,
-  Avatar,
-} from '@mui/material'
+import { Dialog, DialogTitle, Typography, DialogContent, Avatar } from '@mui/material'
 
 type PaymentProvidersProps = {
   open: boolean

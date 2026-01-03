@@ -88,8 +88,8 @@ const Testimonials: React.FC = () => {
               mx: 'auto',
             }}
           >
-            Discover why industry leaders and aspiring professionals alike
-            choose God Lion Seeker Optimizer to advance their careers.
+            Discover why industry leaders and aspiring professionals alike choose God Lion Seeker
+            Optimizer to advance their careers.
           </Typography>
         </Box>
 
@@ -214,7 +214,7 @@ const Testimonials: React.FC = () => {
                       flexGrow: 1,
                     }}
                   >
-                    "{testimonial.text}"
+                    &quot;{testimonial.text}&quot;
                   </Typography>
 
                   {/* Author Info */}

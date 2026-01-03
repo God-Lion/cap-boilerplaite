@@ -13,12 +13,6 @@ import type { VerticalNavProps } from '../components/vertical-menu/VerticalNav'
 
 export default VerticalNav
 export { Menu, MenuItem, SubMenu, MenuSection, NavHeader, NavCollapseIcons }
-export type {
-  VerticalNavProps,
-  MenuProps,
-  MenuItemProps,
-  SubMenuProps,
-  MenuSectionProps,
-}
+export type { VerticalNavProps, MenuProps, MenuItemProps, SubMenuProps, MenuSectionProps }
 
 export * from '../components/vertical-menu'

@@ -7,7 +7,7 @@ import classnames from 'classnames'
 
 // Component Imports
 import Billing from './Billing'
-import CustomAvatar from 'src/core/components/mui/Avatar'
+import CustomAvatar from '../../../../core/components/mui/Avatar'
 import Details from './Details'
 import DialogCloseButton from '../DialogCloseButton'
 import Database from './Database'
@@ -172,20 +172,11 @@ const CreateApp = ({ open, setOpen }: CreateAppProps) => {
                           })}
                           size={38}
                         >
-                          <i
-                            className={classnames(
-                              label.icon as string,
-                              'text-[22px]',
-                            )}
-                          />
+                          <i className={classnames(label.icon as string, 'text-[22px]')} />
                         </CustomAvatar>
                         <div className='flex flex-col'>
-                          <Typography className='uppercase step-title'>
-                            {label.title}
-                          </Typography>
-                          <Typography className='step-subtitle'>
-                            {label.subtitle}
-                          </Typography>
+                          <Typography className='uppercase step-title'>{label.title}</Typography>
+                          <Typography className='step-subtitle'>{label.subtitle}</Typography>
                         </div>
                       </div>
                     </StepLabel>

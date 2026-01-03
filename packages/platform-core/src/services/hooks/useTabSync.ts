@@ -1,14 +1,14 @@
 /**
  * useTabSync Hook
- * 
+ *
  * Synchronizes state across multiple browser tabs/windows.
  * Uses BroadcastChannel API for modern browsers and storage events as fallback.
- * 
+ *
  * @example
  * const { sendMessage, lastMessage } = useTabSync('job-search', (message) => {
  *   console.log('Received from another tab:', message)
  * })
- * 
+ *
  * sendMessage({ type: 'JOB_SAVED', jobId: '123' })
  */
 
@@ -44,12 +44,9 @@ const generateTabId = (): string => {
 export function useTabSync<T = any>(
   channelName: string,
   onMessage?: (message: TabSyncMessage<T>) => void,
-  options: UseTabSyncOptions<T> = {}
+  options: UseTabSyncOptions<T> = {},
 ): UseTabSyncReturn<T> {
-  const {
-    useBroadcastChannel = true,
-    useStorageEvent = true,
-  } = options
+  const { useBroadcastChannel = true, useStorageEvent = true } = options
 
   const [lastMessage, setLastMessage] = useState<TabSyncMessage<T> | null>(null)
   const [connectedTabs, setConnectedTabs] = useState(1)
@@ -72,19 +69,14 @@ export function useTabSync<T = any>(
 
         // Filter out stale tabs (no heartbeat in last 10 seconds)
         const activeTabs = Object.entries(tabs).filter(
-          ([_, timestamp]) => now - (timestamp as number) < 10000
+          ([_, timestamp]) => now - (timestamp as number) < 10000,
         )
 
         setConnectedTabs(activeTabs.length + 1) // +1 for current tab
 
         // Check if this is the leader tab (oldest active tab)
-        const sortedTabs = activeTabs.sort((a, b) =>
-          (a[1] as number) - (b[1] as number)
-        )
-        setIsLeaderTab(
-          sortedTabs.length === 0 ||
-          sortedTabs[0][0] === tabIdRef.current
-        )
+        const sortedTabs = activeTabs.sort((a, b) => (a[1] as number) - (b[1] as number))
+        setIsLeaderTab(sortedTabs.length === 0 || sortedTabs[0][0] === tabIdRef.current)
       }
     } catch (error) {
       console.error('Error updating connected tabs:', error)
@@ -161,7 +153,6 @@ export function useTabSync<T = any>(
    * Update connected tabs count
    */
 
-
   /**
    * Send heartbeat to track active tabs
    */
@@ -237,10 +228,7 @@ export function useTabSync<T = any>(
       // Send via localStorage (fallback)
       if (useStorageEvent) {
         try {
-          localStorage.setItem(
-            `tab_sync_${channelName}`,
-            JSON.stringify(message)
-          )
+          localStorage.setItem(`tab_sync_${channelName}`, JSON.stringify(message))
           // Clear after a short delay to allow other tabs to read
           setTimeout(() => {
             localStorage.removeItem(`tab_sync_${channelName}`)
@@ -250,7 +238,7 @@ export function useTabSync<T = any>(
         }
       }
     },
-    [channelName, useStorageEvent]
+    [channelName, useStorageEvent],
   )
 
   return {

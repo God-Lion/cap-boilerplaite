@@ -11,13 +11,7 @@ import {
   IconButton,
 } from '@mui/material'
 import { themeConfig } from '@cap/platform-core'
-import {
-  EmailOutlined,
-  PeopleOutline,
-  HelpOutline,
-  LinkedIn,
-  Twitter,
-} from '@mui/icons-material'
+import { EmailOutlined, PeopleOutline, HelpOutline, LinkedIn, Twitter } from '@mui/icons-material'
 
 const ContactUs = () => {
   return (
@@ -34,8 +28,8 @@ const ContactUs = () => {
             Get in Touch
           </Typography>
           <Typography variant='h6' color='text.secondary'>
-            Have a question or need support? Fill out the form below and our
-            team will get back to you.
+            Have a question or need support? Fill out the form below and our team will get back to
+            you.
           </Typography>
         </Box>
 
@@ -48,13 +42,7 @@ const ContactUs = () => {
             <Box component='form' noValidate autoComplete='off'>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    required
-                    fullWidth
-                    id='full-name'
-                    label='Full Name'
-                    name='fullName'
-                  />
+                  <TextField required fullWidth id='full-name' label='Full Name' name='fullName' />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -67,13 +55,7 @@ const ContactUs = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id='subject'
-                    label='Subject'
-                    name='subject'
-                  />
+                  <TextField required fullWidth id='subject' label='Subject' name='subject' />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -108,9 +90,7 @@ const ContactUs = () => {
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <Card variant='outlined'>
-                <CardContent
-                  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
-                >
+                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <EmailOutlined color='primary' sx={{ fontSize: 40 }} />
                   <Box>
                     <Typography variant='h6'>Support Email</Typography>
@@ -125,9 +105,7 @@ const ContactUs = () => {
               </Card>
 
               <Card variant='outlined'>
-                <CardContent
-                  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
-                >
+                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <PeopleOutline color='primary' sx={{ fontSize: 40 }} />
                   <Box>
                     <Typography variant='h6'>Social Media</Typography>
@@ -147,9 +125,7 @@ const ContactUs = () => {
               </Card>
 
               <Card variant='outlined'>
-                <CardContent
-                  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
-                >
+                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <HelpOutline color='primary' sx={{ fontSize: 40 }} />
                   <Box>
                     <Typography variant='h6'>Help Center</Typography>

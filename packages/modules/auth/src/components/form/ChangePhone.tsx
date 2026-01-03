@@ -4,14 +4,14 @@ import { Box, Grid, IconButton, TextField, InputAdornment } from '@mui/material'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { IUserReponse } from '@cap/platform-core'
+import { IUserResponse } from '@cap/platform-core'
 import FormLayout from './FormLayout'
 // import { FormLayout } from 'src/components/form'
 
 // Type-safe wrapper for PhoneInput to fix React 19 compatibility
 const PhoneInputWrapper = PhoneInput as unknown as React.ComponentType<any>
 
-export default function ChangePhone({ user }: { user: IUserReponse }) {
+export default function ChangePhone({ user }: { user: IUserResponse }) {
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
   const handleShowPassword = () => setShowPassword(!showPassword)
   const controlForm = useForm({
@@ -20,7 +20,7 @@ export default function ChangePhone({ user }: { user: IUserReponse }) {
       password: '',
     },
   })
-  const onSubmit = () => { }
+  const onSubmit = () => {}
 
   return (
     <FormLayout
@@ -59,10 +59,10 @@ export default function ChangePhone({ user }: { user: IUserReponse }) {
                     padding: '22.5px 14px',
                     width: '100%',
                   }}
-                // disabled={disabled}
-                // defaultErrorMessage={formState?.errors?.phone?.message}
-                // error={formState?.errors?.phone !== undefined}
-                // helperText={formState?.errors?.phone?.message}
+                  // disabled={disabled}
+                  // defaultErrorMessage={formState?.errors?.phone?.message}
+                  // error={formState?.errors?.phone !== undefined}
+                  // helperText={formState?.errors?.phone?.message}
                 />
               )}
             />

@@ -54,7 +54,7 @@ export default class Session {
    */
   write(key: string, value: unknown): void {
     this.session = this.fetch()
-    const index = this.session.findIndex(e => Object.prototype.hasOwnProperty.call(e, key))
+    const index = this.session.findIndex((e) => Object.prototype.hasOwnProperty.call(e, key))
 
     if (index >= 0) {
       this.session[index] = { [key]: value }
@@ -70,7 +70,7 @@ export default class Session {
   read<T>(key: string = ''): T | ISessionItem[] | undefined {
     this.session = this.fetch()
     if (key) {
-      const item = this.session.find(e => Object.prototype.hasOwnProperty.call(e, key))
+      const item = this.session.find((e) => Object.prototype.hasOwnProperty.call(e, key))
       return item ? (item[key] as T) : undefined
     }
     return this.session
@@ -89,7 +89,7 @@ export default class Session {
     try {
       const decrypted = this.encrypt.decrypt(dataSession)
       if (typeof decrypted === 'string' && decrypted.length > 1) {
-        // Assuming decrypt returns the JSON string or object? 
+        // Assuming decrypt returns the JSON string or object?
         // The original code passed 'data' to save, which stringified it.
         // encrypt.decrypt usually returns string.
         // Let's assume usage of JSON.parse is needed if decrypt returns string.
@@ -121,4 +121,3 @@ export default class Session {
     sessionStorage.setItem(this.SESSION_KEY, this.encrypt.encrypt(stringified))
   }
 }
-

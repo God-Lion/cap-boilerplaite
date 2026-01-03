@@ -1,0 +1,99 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img "God Lion Seeker"
+          - button [ref=e9] [cursor=pointer]:
+            - img [ref=e10]
+        - navigation [ref=e13]:
+          - list [ref=e14]:
+            - listitem [ref=e15]:
+              - list [ref=e16]:
+                - listitem [ref=e17]:
+                  - generic [ref=e18]: Apps & Pages
+                - listitem [ref=e19]:
+                  - generic [ref=e20] [cursor=pointer]:
+                    - generic [ref=e21]: Auth Pages
+                    - img [ref=e24]
+    - generic [ref=e26]:
+      - banner:
+        - generic [ref=e28]:
+          - generic [ref=e31] [cursor=pointer]:
+            - button [ref=e32]:
+              - img [ref=e33]
+            - paragraph [ref=e35]: Search ⌘K
+          - generic [ref=e36]:
+            - button [ref=e37] [cursor=pointer]:
+              - img [ref=e38]
+            - button "Switch theme mode - currently Light" [ref=e40] [cursor=pointer]:
+              - img [ref=e41]
+            - button [ref=e43] [cursor=pointer]:
+              - img [ref=e44]
+            - button [ref=e46] [cursor=pointer]:
+              - img [ref=e48]
+            - img [ref=e53] [cursor=pointer]
+      - main [ref=e57]:
+        - generic [ref=e58]:
+          - generic [ref=e60]:
+            - img "God Lion Seeker Logo" [ref=e62]
+            - heading "GLDeveloper" [level=3] [ref=e63]
+            - heading "Your gateway to seamless management" [level=6] [ref=e64]
+          - generic [ref=e66]:
+            - generic [ref=e67]:
+              - heading "Welcome to GLDeveloper! 👋🏻" [level=4] [ref=e68]
+              - paragraph [ref=e69]: Please sign-in to your account and start the adventure
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - generic [ref=e72]: Email Address
+                - generic [ref=e73]:
+                  - textbox "Email Address" [ref=e74]:
+                    - /placeholder: Enter your email
+                    - text: user@example.com
+                  - group:
+                    - generic: Email Address
+              - generic [ref=e75]:
+                - generic [ref=e76]: Password
+                - generic [ref=e77]:
+                  - textbox "Password" [ref=e78]:
+                    - /placeholder: ••••••••••••
+                    - text: password123
+                  - button "toggle password visibility" [ref=e80] [cursor=pointer]:
+                    - img [ref=e81]
+                  - group:
+                    - generic: Password
+              - generic [ref=e83]:
+                - generic [ref=e84] [cursor=pointer]:
+                  - generic [ref=e85]:
+                    - checkbox "Remember me" [ref=e86]
+                    - img [ref=e87]
+                  - generic [ref=e89]: Remember me
+                - link "Forgot password?" [ref=e90] [cursor=pointer]:
+                  - /url: /auth/forgot-password
+              - button "Sign In" [ref=e91] [cursor=pointer]
+              - generic [ref=e92]:
+                - paragraph [ref=e93]: New on our platform?
+                - link "Create an account" [ref=e94] [cursor=pointer]:
+                  - /url: /auth/sign-up
+              - separator [ref=e95]:
+                - generic [ref=e96]: or
+              - generic [ref=e97]:
+                - button [ref=e98] [cursor=pointer]:
+                  - img [ref=e99]
+                - button [ref=e101] [cursor=pointer]:
+                  - img [ref=e102]
+                - button [ref=e104] [cursor=pointer]:
+                  - img [ref=e105]
+                - button [ref=e107] [cursor=pointer]:
+                  - img [ref=e108]
+      - contentinfo [ref=e110]:
+        - paragraph [ref=e113]:
+          - text: © 2026, Made by
+          - link "GLDeveloper" [ref=e114] [cursor=pointer]:
+            - /url: /
+  - generic:
+    - region "Notifications Alt+T"
+```

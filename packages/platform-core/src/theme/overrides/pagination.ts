@@ -73,10 +73,9 @@ const pagination: Theme['components'] = {
               backgroundColor: 'var(--mui-palette-primary-mainOpacity)',
             },
           },
-          '& .MuiPaginationItem-root:hover:not(.Mui-selected):not(.MuiPaginationItem-ellipsis)':
-            {
-              backgroundColor: 'var(--mui-palette-action-disabledBackground)',
-            },
+          '& .MuiPaginationItem-root:hover:not(.Mui-selected):not(.MuiPaginationItem-ellipsis)': {
+            backgroundColor: 'var(--mui-palette-action-disabledBackground)',
+          },
           '& .MuiPaginationItem-root.Mui-selected.Mui-disabled': {
             backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
             color: 'var(--mui-palette-primary-main)',
@@ -96,11 +95,10 @@ const pagination: Theme['components'] = {
               backgroundColor: 'var(--mui-palette-primary-dark)',
             },
           },
-          '& .MuiPaginationItem-root:hover:not(.Mui-selected):not(.MuiPaginationItem-ellipsis)':
-            {
-              backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
-              color: 'var(--mui-palette-primary-main)',
-            },
+          '& .MuiPaginationItem-root:hover:not(.Mui-selected):not(.MuiPaginationItem-ellipsis)': {
+            backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
+            color: 'var(--mui-palette-primary-main)',
+          },
           '& .MuiPaginationItem-root.Mui-selected.Mui-disabled': {
             backgroundColor: 'var(--mui-palette-primary-main)',
             color: 'var(--mui-palette-primary-contrastText)',
@@ -120,10 +118,9 @@ const pagination: Theme['components'] = {
               backgroundColor: 'var(--mui-palette-secondary-dark)',
             },
           },
-          '& .MuiPaginationItem-root:hover:not(.Mui-selected):not(.MuiPaginationItem-ellipsis)':
-            {
-              backgroundColor: 'var(--mui-palette-secondary-mainOpacity)',
-            },
+          '& .MuiPaginationItem-root:hover:not(.Mui-selected):not(.MuiPaginationItem-ellipsis)': {
+            backgroundColor: 'var(--mui-palette-secondary-mainOpacity)',
+          },
           '& .MuiPaginationItem-root.Mui-selected.Mui-disabled': {
             backgroundColor: 'var(--mui-palette-secondary-main)',
             color: 'var(--mui-palette-secondary-contrastText)',

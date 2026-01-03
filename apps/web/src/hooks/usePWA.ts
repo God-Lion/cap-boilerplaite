@@ -8,8 +8,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 export const usePWA = () => {
   const [isInstallable, setIsInstallable] = useState(false)
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
 
   // State for Service Worker updates
   const [needRefresh, setNeedRefresh] = useState(false)
@@ -32,10 +31,7 @@ export const usePWA = () => {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
 
     return () => {
-      window.removeEventListener(
-        'beforeinstallprompt',
-        handleBeforeInstallPrompt,
-      )
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     }
   }, [])
 

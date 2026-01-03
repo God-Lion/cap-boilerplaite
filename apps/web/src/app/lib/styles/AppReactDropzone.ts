@@ -16,9 +16,7 @@ const AppReactDropzone = styled(Box)<BoxProps>(({ theme }) => ({
     padding: theme.spacing(4),
     // borderRadius: theme.shape.borderRadius,
     border: `2px dashed ${
-      theme.palette.mode === 'light'
-        ? 'rgba(93, 89, 98, 0.22)'
-        : 'rgba(247, 244, 254, 0.14)'
+      theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.22)' : 'rgba(247, 244, 254, 0.14)'
     }`,
     [theme.breakpoints.down('xs')]: {
       textAlign: 'center',
@@ -36,9 +34,7 @@ const AppReactDropzone = styled(Box)<BoxProps>(({ theme }) => ({
         borderRadius: theme.shape.borderRadius,
         padding: theme.spacing(2.5, 2.4, 2.5, 6),
         border: `1px solid ${
-          theme.palette.mode === 'light'
-            ? 'rgba(93, 89, 98, 0.14)'
-            : 'rgba(247, 244, 254, 0.14)'
+          theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.14)' : 'rgba(247, 244, 254, 0.14)'
         }`,
         '& .file-details': {
           // backgroundColor: '#EC407A',
@@ -60,9 +56,7 @@ const AppReactDropzone = styled(Box)<BoxProps>(({ theme }) => ({
           padding: theme.spacing(0.75),
           borderRadius: theme.shape.borderRadius,
           border: `1px solid ${
-            theme.palette.mode === 'light'
-              ? 'rgba(93, 89, 98, 0.14)'
-              : 'rgba(247, 244, 254, 0.14)'
+            theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.14)' : 'rgba(247, 244, 254, 0.14)'
           }`,
         },
         '& .file-name': {

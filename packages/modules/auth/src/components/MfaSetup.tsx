@@ -9,12 +9,13 @@ import {
   Box,
   Typography,
   Alert,
-  List,
-  ListItem,
 } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import { useTranslation } from 'react-i18next'
 import { useSetupMfa, useVerifyMfa, useMfaStatus } from '../hooks/useAuthQuery'
 
 export function MfaSetup() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<'setup' | 'verify'>('setup')
   const [qrCode, setQrCode] = useState('')
@@ -43,12 +44,8 @@ export function MfaSetup() {
       { code: verifyCode },
       {
         onSuccess: () => {
-          alert('MFA enabled successfully!')
           setOpen(false)
           setStep('setup')
-        },
-        onError: () => {
-          alert('Invalid code. Please try again.')
         },
       },
     )
@@ -56,14 +53,32 @@ export function MfaSetup() {
 
   if (mfaStatus?.data.enabled) {
     return (
-      <Alert severity='success'>Two-factor authentication is enabled</Alert>
+      <Alert
+        severity='success'
+        sx={{
+          borderRadius: 2,
+          '& .MuiAlert-message': { fontWeight: 600 },
+        }}
+      >
+        {t('auth.mfa.enabled_status')}
+      </Alert>
     )
   }
 
   return (
     <>
-      <Button variant='outlined' onClick={() => setOpen(true)}>
-        Enable Two-Factor Authentication
+      <Button
+        variant='outlined'
+        onClick={() => setOpen(true)}
+        sx={{
+          borderRadius: 2,
+          textTransform: 'none',
+          fontWeight: 600,
+          py: 1,
+          px: 3,
+        }}
+      >
+        {t('auth.mfa.button_enable')}
       </Button>
 
       <Dialog
@@ -71,62 +86,115 @@ export function MfaSetup() {
         onClose={() => setOpen(false)}
         maxWidth='sm'
         fullWidth
+        PaperProps={{
+          sx: { borderRadius: 3, p: 1 },
+        }}
       >
-        <DialogTitle>Enable Two-Factor Authentication</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700, fontSize: '1.25rem' }}>
+          {t('auth.mfa.dialog_title')}
+        </DialogTitle>
         <DialogContent>
           {step === 'setup' && (
-            <Box>
-              <Typography paragraph>
-                Two-factor authentication adds an extra layer of security to
-                your account.
+            <Box sx={{ mt: 1 }}>
+              <Typography variant='body1' paragraph color='text.secondary'>
+                {t('auth.mfa.setup_desc_p1')}
               </Typography>
-              <Typography paragraph>
-                You'll need an authenticator app like Google Authenticator or
-                Authy.
+              <Typography variant='body1' paragraph color='text.secondary'>
+                {t('auth.mfa.setup_desc_p2')}
               </Typography>
             </Box>
           )}
 
           {step === 'verify' && (
-            <Box>
-              <Typography paragraph>
-                1. Scan this QR code with your authenticator app:
+            <Box sx={{ mt: 1 }}>
+              <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 2 }}>
+                {t('auth.mfa.verify_step1')}
               </Typography>
-              {qrCode && (
-                <img src={qrCode} alt='QR Code' style={{ width: '200px' }} />
-              )}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  p: 2,
+                  bgcolor: 'background.default',
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                {qrCode && (
+                  <img
+                    src={qrCode}
+                    alt='QR Code'
+                    style={{ width: '180px', height: '180px', display: 'block' }}
+                  />
+                )}
+              </Box>
 
-              <Typography paragraph sx={{ mt: 2 }}>
-                2. Save these backup codes in a secure location:
+              <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 1 }}>
+                {t('auth.mfa.verify_step2')}
               </Typography>
-              <List dense>
+              <Grid container spacing={1} sx={{ mb: 3 }}>
                 {backupCodes.map((code, idx) => (
-                  <ListItem key={idx}>
-                    <code>{code}</code>
-                  </ListItem>
+                  <Grid size={6} key={idx}>
+                    <Box
+                      sx={{
+                        p: 1,
+                        bgcolor: 'action.hover',
+                        borderRadius: 1,
+                        textAlign: 'center',
+                        fontFamily: 'monospace',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        border: '1px solid',
+                        borderColor: 'divider',
+                      }}
+                    >
+                      {code}
+                    </Box>
+                  </Grid>
                 ))}
-              </List>
+              </Grid>
 
               <TextField
                 fullWidth
-                label='Enter verification code'
+                label={t('auth.mfa.input_label')}
                 value={verifyCode}
                 onChange={(e) => setVerifyCode(e.target.value)}
                 margin='normal'
+                placeholder='000000'
+                slotProps={{
+                  input: {
+                    sx: { borderRadius: 2, fontWeight: 600, textAlign: 'center', letterSpacing: 4 },
+                  },
+                }}
               />
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button
+            onClick={() => setOpen(false)}
+            sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}
+          >
+            {t('auth.mfa.button_cancel')}
+          </Button>
           {step === 'setup' && (
-            <Button onClick={handleSetup} disabled={setupMutation.isPending}>
-              Continue
+            <Button
+              variant='contained'
+              onClick={handleSetup}
+              disabled={setupMutation.isPending}
+              sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600, px: 3 }}
+            >
+              {t('auth.mfa.button_continue')}
             </Button>
           )}
           {step === 'verify' && (
-            <Button onClick={handleVerify} disabled={verifyMutation.isPending}>
-              Verify & Enable
+            <Button
+              variant='contained'
+              onClick={handleVerify}
+              disabled={verifyMutation.isPending}
+              sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600, px: 3 }}
+            >
+              {t('auth.mfa.button_verify')}
             </Button>
           )}
         </DialogActions>

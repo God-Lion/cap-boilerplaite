@@ -30,24 +30,21 @@ export interface SSEHookReturn<T = any> {
 
 /**
  * Generic SSE Hook
- * 
+ *
  * @example
  * const { data, isConnected, error } = useSSE('/api/sse/scraping/123', {
  *   onOpen: () => console.log('Connected'),
  *   onError: (e) => console.error('Error:', e)
  * });
  */
-export function useSSE<T = any>(
-  endpoint: string,
-  options: SSEOptions = {}
-): SSEHookReturn<T> {
+export function useSSE<T = any>(endpoint: string, options: SSEOptions = {}): SSEHookReturn<T> {
   const {
     onOpen,
     onError,
     onClose,
     reconnect = true,
     reconnectInterval = 3000,
-    maxReconnectAttempts = 5
+    maxReconnectAttempts = 5,
   } = options
 
   const [data, setData] = useState<T | null>(null)
@@ -59,7 +56,7 @@ export function useSSE<T = any>(
   const reconnectAttemptsRef = useRef(0)
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
-  const connectRef = useRef<() => void>(() => { })
+  const connectRef = useRef<() => void>(() => {})
 
   const connect = useCallback(() => {
     if (eventSourceRef.current) {
@@ -182,13 +179,13 @@ export function useSSE<T = any>(
     isConnected,
     lastEvent,
     close: disconnect,
-    reconnect: reconnectManually
+    reconnect: reconnectManually,
   }
 }
 
 /**
  * Hook for Scraping Progress
- * 
+ *
  * @example
  * const { progress, status, isComplete } = useScrapingProgress(sessionId);
  */
@@ -203,13 +200,10 @@ export interface ScrapingProgressData {
 
 export function useScrapingProgress(sessionId: number | null) {
   const endpoint = sessionId ? `/api/sse/scraping/${sessionId}` : ''
-  const { data, error, isConnected, lastEvent, close } = useSSE<ScrapingProgressData>(
-    endpoint,
-    {
-      reconnect: true,
-      maxReconnectAttempts: 10
-    }
-  )
+  const { data, error, isConnected, lastEvent, close } = useSSE<ScrapingProgressData>(endpoint, {
+    reconnect: true,
+    maxReconnectAttempts: 10,
+  })
 
   const isComplete = lastEvent === 'complete' || data?.status === 'completed'
   const isFailed = data?.status === 'failed'
@@ -236,13 +230,13 @@ export function useScrapingProgress(sessionId: number | null) {
     isStopped,
     isConnected,
     error,
-    data
+    data,
   }
 }
 
 /**
  * Hook for Resume Analysis Progress
- * 
+ *
  * @example
  * const { stage, progress, result } = useAnalysisProgress(analysisId);
  */
@@ -278,7 +272,7 @@ export function useAnalysisProgress(analysisId: number | null) {
     AnalysisProgressData | AnalysisResult
   >(endpoint, {
     reconnect: true,
-    maxReconnectAttempts: 10
+    maxReconnectAttempts: 10,
   })
 
   // Extract result when available
@@ -289,7 +283,8 @@ export function useAnalysisProgress(analysisId: number | null) {
   }, [lastEvent, data])
 
   const isComplete = lastEvent === 'result' || lastEvent === 'complete'
-  const progressData = !isComplete && data && 'stage' in data ? data as AnalysisProgressData : null
+  const progressData =
+    !isComplete && data && 'stage' in data ? (data as AnalysisProgressData) : null
 
   // Auto-close connection when complete
   useEffect(() => {
@@ -311,6 +306,6 @@ export function useAnalysisProgress(analysisId: number | null) {
     isComplete,
     isConnected,
     error,
-    data
+    data,
   }
 }

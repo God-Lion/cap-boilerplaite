@@ -73,15 +73,7 @@ const CheckboxInput = styled(Checkbox, {
 
 const CustomInputHorizontal = (props: CustomInputHorizontalProps) => {
   // Props
-  const {
-    type,
-    data,
-    name,
-    selected,
-    gridProps,
-    handleChange,
-    color = 'primary',
-  } = props
+  const { type, data, name, selected, gridProps, handleChange, color = 'primary' } = props
 
   // Vars
   const { meta, title, value, content } = data
@@ -118,11 +110,7 @@ const CustomInputHorizontal = (props: CustomInputHorizontalProps) => {
         content
       )
     } else if (!meta && title && !content) {
-      return typeof title === 'string' ? (
-        <Title className='mbs-1.5'>{title}</Title>
-      ) : (
-        title
-      )
+      return typeof title === 'string' ? <Title className='mbs-1.5'>{title}</Title> : title
     } else {
       return null
     }
@@ -133,8 +121,7 @@ const CustomInputHorizontal = (props: CustomInputHorizontalProps) => {
       <Root
         onClick={() => handleChange(value)}
         className={classnames({
-          active:
-            type === 'radio' ? selected === value : selected.includes(value),
+          active: type === 'radio' ? selected === value : selected.includes(value),
         })}
       >
         {type === 'radio' ? (

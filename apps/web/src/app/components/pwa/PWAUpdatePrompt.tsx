@@ -1,12 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  Snackbar,
-  Button,
-  Alert,
-  AlertTitle,
-  Box,
-  IconButton,
-} from '@mui/material'
+import { Snackbar, Button, Alert, AlertTitle, Box, IconButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useRegisterSW } from 'virtual:pwa-register/react'
@@ -72,12 +65,7 @@ export function PWAUpdatePrompt() {
                 Update
               </Button>
             )}
-            <IconButton
-              size='small'
-              aria-label='close'
-              color='inherit'
-              onClick={handleClose}
-            >
+            <IconButton size='small' aria-label='close' color='inherit' onClick={handleClose}>
               <CloseIcon fontSize='small' />
             </IconButton>
           </Box>

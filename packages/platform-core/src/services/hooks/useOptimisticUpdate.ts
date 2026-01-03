@@ -1,6 +1,6 @@
 /**
  * React Hooks for Optimistic UI Updates
- * 
+ *
  * Provides easy-to-use hooks for implementing optimistic updates
  * in React components.
  */
@@ -69,7 +69,7 @@ export interface UseOptimisticMutationResult<TData, TVariables> {
  * Hook for optimistic mutations
  */
 function useOptimisticMutation<TData = any, TVariables = any>(
-  options: UseOptimisticMutationOptions<TData, TVariables>
+  options: UseOptimisticMutationOptions<TData, TVariables>,
 ): UseOptimisticMutationResult<TData, TVariables> {
   const [data, setData] = useState<TData | null>(null)
   const [error, setError] = useState<HttpError | null>(null)
@@ -134,7 +134,7 @@ function useOptimisticMutation<TData = any, TVariables = any>(
         return null
       }
     },
-    [options, data]
+    [options, data],
   )
 
   const reset = useCallback(() => {
@@ -160,9 +160,7 @@ function useOptimisticMutation<TData = any, TVariables = any>(
 /**
  * Hook for optimistic list updates
  */
-function useOptimisticList<T extends { id: string | number }>(
-  initialData: T[] = []
-) {
+function useOptimisticList<T extends { id: string | number }>(initialData: T[] = []) {
   const [items, setItems] = useState<T[]>(initialData)
   const [pendingUpdates, setPendingUpdates] = useState<OptimisticUpdate[]>([])
 
@@ -173,22 +171,15 @@ function useOptimisticList<T extends { id: string | number }>(
     return unsubscribe
   }, [])
 
-  const addItem = useCallback(
-    (item: T, options?: { temporary?: boolean }) => {
-      const optimisticItem = options?.temporary
-        ? { ...item, _optimistic: true }
-        : item
+  const addItem = useCallback((item: T, options?: { temporary?: boolean }) => {
+    const optimisticItem = options?.temporary ? { ...item, _optimistic: true } : item
 
-      setItems((prev) => [optimisticItem as T, ...prev])
-      return optimisticItem
-    },
-    []
-  )
+    setItems((prev) => [optimisticItem as T, ...prev])
+    return optimisticItem
+  }, [])
 
   const updateItem = useCallback((id: string | number, updates: Partial<T>) => {
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
-    )
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates } : item)))
   }, [])
 
   const removeItem = useCallback((id: string | number) => {
@@ -196,16 +187,14 @@ function useOptimisticList<T extends { id: string | number }>(
   }, [])
 
   const rollbackItem = useCallback((id: string | number, originalItem: T) => {
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? originalItem : item))
-    )
+    setItems((prev) => prev.map((item) => (item.id === id ? originalItem : item)))
   }, [])
 
   const hasPendingUpdate = useCallback(
     (id: string | number) => {
       return pendingUpdates.some((update) => update.entityId === id)
     },
-    [pendingUpdates]
+    [pendingUpdates],
   )
 
   return {
@@ -229,9 +218,7 @@ function useOptimisticUpdates(entityType?: string) {
   useEffect(() => {
     const unsubscribe = optimisticUpdateManager.subscribe((allUpdates) => {
       if (entityType) {
-        setUpdates(
-          allUpdates.filter((update) => update.entityType === entityType)
-        )
+        setUpdates(allUpdates.filter((update) => update.entityType === entityType))
       } else {
         setUpdates(allUpdates)
       }

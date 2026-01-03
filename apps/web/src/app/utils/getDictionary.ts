@@ -2,12 +2,9 @@ import React from 'react'
 import type { Locale } from '@cap/platform-core'
 
 const dictionaries = {
-  en: () =>
-    import('../data/dictionaries/en.json').then((module) => module.default),
-  fr: () =>
-    import('../data/dictionaries/fr.json').then((module) => module.default),
-  ar: () =>
-    import('../data/dictionaries/ar.json').then((module) => module.default),
+  en: () => import('../data/dictionaries/en.json').then((module) => module.default),
+  fr: () => import('../data/dictionaries/fr.json').then((module) => module.default),
+  ar: () => import('../data/dictionaries/ar.json').then((module) => module.default),
 }
 
 /**
@@ -23,10 +20,8 @@ export const useLang = (code?: Locale): Record<string, string | object> => {
         const locale = code || 'en'
         const dictionary = await getDictionary(locale as Locale)
         setLang(dictionary)
-      } catch (error) {
-        console.warn(
-          `Translation file for ${code} not available, using fallback`,
-        )
+      } catch {
+        console.warn(`Translation file for ${code} not available, using fallback`)
         setLang({}) // Fallback to empty object
       }
     }
@@ -44,10 +39,8 @@ export const useLang = (code?: Locale): Record<string, string | object> => {
 export const getDictionary = async (locale: Locale) => {
   try {
     return await dictionaries[locale]()
-  } catch (error) {
-    console.warn(
-      `Dictionary for locale ${locale} not found, falling back to en`,
-    )
+  } catch {
+    console.warn(`Dictionary for locale ${locale} not found, falling back to en`)
     return await dictionaries.en()
   }
 }

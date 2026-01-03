@@ -1,14 +1,5 @@
 import React from 'react'
-import {
-  Box,
-  Container,
-  Typography,
-  Paper,
-  Button,
-  Chip,
-  alpha,
-  useTheme,
-} from '@mui/material'
+import { Box, Container, Typography, Paper, Button, Chip, alpha, useTheme } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import { useNavigate } from 'react-router-dom'
 
@@ -120,8 +111,8 @@ const PricingSection: React.FC = () => {
               mx: 'auto',
             }}
           >
-            Choose the perfect plan for your job search journey. All plans
-            include 14-day free trial.
+            Choose the perfect plan for your job search journey. All plans include 14-day free
+            trial.
           </Typography>
         </Box>
 
@@ -151,14 +142,10 @@ const PricingSection: React.FC = () => {
                 flexDirection: 'column',
                 position: 'relative',
                 transition: 'all 0.3s ease',
-                transform: plan.highlighted
-                  ? { md: 'scale(1.05)' }
-                  : 'scale(1)',
+                transform: plan.highlighted ? { md: 'scale(1.05)' } : 'scale(1)',
                 zIndex: plan.highlighted ? 2 : 1,
                 '&:hover': {
-                  transform: plan.highlighted
-                    ? { md: 'scale(1.08)' }
-                    : 'scale(1.03)',
+                  transform: plan.highlighted ? { md: 'scale(1.08)' } : 'scale(1.03)',
                   borderColor: 'primary.main',
                   boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.2)}`,
                 },
@@ -174,8 +161,7 @@ const PricingSection: React.FC = () => {
                     top: 16,
                     right: 16,
                     bgcolor: 'primary.main',
-                    color:
-                      theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                    color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                     fontWeight: 700,
                     fontSize: '0.75rem',
                   }}
@@ -230,9 +216,7 @@ const PricingSection: React.FC = () => {
 
               {/* Features List */}
               <Box sx={{ flexGrow: 1, mb: 4 }}>
-                <Box
-                  sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}
-                >
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                   {plan.features.map((feature, idx) => (
                     <Box
                       key={idx}
@@ -277,8 +261,7 @@ const PricingSection: React.FC = () => {
                   borderRadius: 2,
                   ...(plan.ctaVariant === 'contained' && {
                     bgcolor: 'primary.main',
-                    color:
-                      theme.palette.mode === 'dark' ? 'text.primary' : '#000',
+                    color: theme.palette.mode === 'dark' ? 'text.primary' : '#000',
                     boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.4)}`,
                     '&:hover': {
                       boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.5)}`,
@@ -307,8 +290,7 @@ const PricingSection: React.FC = () => {
               color: 'text.secondary',
             }}
           >
-            All plans include 14-day free trial. No credit card required. Cancel
-            anytime.
+            All plans include 14-day free trial. No credit card required. Cancel anytime.
           </Typography>
         </Box>
       </Container>

@@ -27,13 +27,11 @@ const iconButton: Theme['components'] = {
         props: { color: 'default' },
         style: {
           '&:not(.Mui-disabled):hover, &:not(.Mui-disabled):active': {
-            backgroundColor:
-              'rgb(var(--mui-palette-text-primaryChannel) / 0.08)',
+            backgroundColor: 'rgb(var(--mui-palette-text-primaryChannel) / 0.08)',
           },
           ...(themeConfig.disableRipple && {
             '&.Mui-focusVisible:not(.Mui-disabled)': {
-              backgroundColor:
-                'rgb(var(--mui-palette-text-primaryChannel) / 0.08)',
+              backgroundColor: 'rgb(var(--mui-palette-text-primaryChannel) / 0.08)',
             },
           }),
           '&.Mui-disabled': {

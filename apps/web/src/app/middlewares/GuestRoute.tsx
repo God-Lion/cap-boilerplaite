@@ -9,10 +9,7 @@ interface GuestRouteProps {
   redirectTo?: string
 }
 
-const GuestRoute = ({
-  element,
-  redirectTo = '/dashboard',
-}: GuestRouteProps) => {
+const GuestRoute = ({ element, redirectTo = '/dashboard' }: GuestRouteProps) => {
   const { user, isAuthenticated } = useAuth()
   const location = useLocation()
   const [isChecking, setIsChecking] = useState(true)
@@ -26,7 +23,7 @@ const GuestRoute = ({
 
   if (isChecking) {
     return (
-      <Backdrop open style={{ background: '#FFF', zIndex: 1301 }}>
+      <Backdrop open style={{ background: '#FFF', zIndex: 1400 }}>
         <CircularProgress color='inherit' />
       </Backdrop>
     )
@@ -40,7 +37,7 @@ const GuestRoute = ({
   return (
     <Suspense
       fallback={
-        <Backdrop open style={{ background: '#FFF', zIndex: 1301 }}>
+        <Backdrop open style={{ background: '#FFF', zIndex: 1400 }}>
           <CircularProgress color='inherit' />
         </Backdrop>
       }

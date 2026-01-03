@@ -65,18 +65,14 @@ export const GUEST_CONFIG: GuestConfig = {
   autoCreateGuestSession: true,
 
   // Messages
-  defaultBannerMessage:
-    'You are browsing as a guest. Sign up to unlock all features!',
-  featureLockedMessage:
-    'This feature requires a free account. Sign up to continue.',
+  defaultBannerMessage: 'You are browsing as a guest. Sign up to unlock all features!',
+  featureLockedMessage: 'This feature requires a free account. Sign up to continue.',
 }
 
 /**
  * Check if a specific feature is allowed for guests
  */
-export const isFeatureAllowedForGuest = (
-  featureName: keyof GuestConfig,
-): boolean => {
+export const isFeatureAllowedForGuest = (featureName: keyof GuestConfig): boolean => {
   const value = GUEST_CONFIG[featureName]
   return typeof value === 'boolean' ? value : false
 }

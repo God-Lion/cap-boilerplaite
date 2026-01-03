@@ -56,8 +56,7 @@ const RoleDialog = ({ open, setOpen, title }: RoleDialogProps) => {
       : [],
   )
 
-  const [isIndeterminateCheckbox, setIsIndeterminateCheckbox] =
-    React.useState<boolean>(false)
+  const [isIndeterminateCheckbox, setIsIndeterminateCheckbox] = React.useState<boolean>(false)
 
   const handleClose = () => {
     setOpen(false)
@@ -80,10 +79,7 @@ const RoleDialog = ({ open, setOpen, title }: RoleDialogProps) => {
       setSelectedCheckbox([])
     } else {
       defaultData.forEach((row) => {
-        const id = (typeof row === 'string' ? row : row.title)
-          .toLowerCase()
-          .split(' ')
-          .join('-')
+        const id = (typeof row === 'string' ? row : row.title).toLowerCase().split(' ').join('-')
 
         togglePermission(`${id}-read`)
         togglePermission(`${id}-write`)
@@ -93,10 +89,7 @@ const RoleDialog = ({ open, setOpen, title }: RoleDialogProps) => {
   }
 
   React.useEffect(() => {
-    if (
-      selectedCheckbox.length > 0 &&
-      selectedCheckbox.length < defaultData.length * 3
-    ) {
+    if (selectedCheckbox.length > 0 && selectedCheckbox.length < defaultData.length * 3) {
       setIsIndeterminateCheckbox(true)
     } else {
       setIsIndeterminateCheckbox(false)
@@ -156,9 +149,7 @@ const RoleDialog = ({ open, setOpen, title }: RoleDialogProps) => {
                         <Checkbox
                           onChange={handleSelectAllCheckbox}
                           indeterminate={isIndeterminateCheckbox}
-                          checked={
-                            selectedCheckbox.length === defaultData.length * 3
-                          }
+                          checked={selectedCheckbox.length === defaultData.length * 3}
                         />
                       }
                       label='Select All'
@@ -207,12 +198,8 @@ const RoleDialog = ({ open, setOpen, title }: RoleDialogProps) => {
                               control={
                                 <Checkbox
                                   id={`${id}-read`}
-                                  onChange={() =>
-                                    togglePermission(`${id}-read`)
-                                  }
-                                  checked={selectedCheckbox.includes(
-                                    `${id}-read`,
-                                  )}
+                                  onChange={() => togglePermission(`${id}-read`)}
+                                  checked={selectedCheckbox.includes(`${id}-read`)}
                                 />
                               }
                               label='Read'
@@ -222,12 +209,8 @@ const RoleDialog = ({ open, setOpen, title }: RoleDialogProps) => {
                               control={
                                 <Checkbox
                                   id={`${id}-write`}
-                                  onChange={() =>
-                                    togglePermission(`${id}-write`)
-                                  }
-                                  checked={selectedCheckbox.includes(
-                                    `${id}-write`,
-                                  )}
+                                  onChange={() => togglePermission(`${id}-write`)}
+                                  checked={selectedCheckbox.includes(`${id}-write`)}
                                 />
                               }
                               label='Write'
@@ -237,12 +220,8 @@ const RoleDialog = ({ open, setOpen, title }: RoleDialogProps) => {
                               control={
                                 <Checkbox
                                   id={`${id}-create`}
-                                  onChange={() =>
-                                    togglePermission(`${id}-create`)
-                                  }
-                                  checked={selectedCheckbox.includes(
-                                    `${id}-create`,
-                                  )}
+                                  onChange={() => togglePermission(`${id}-create`)}
+                                  checked={selectedCheckbox.includes(`${id}-create`)}
                                 />
                               }
                               label='Create'
@@ -261,12 +240,7 @@ const RoleDialog = ({ open, setOpen, title }: RoleDialogProps) => {
           <Button variant='contained' type='submit' onClick={handleClose}>
             Submit
           </Button>
-          <Button
-            variant='contained'
-            type='reset'
-            color='secondary'
-            onClick={handleClose}
-          >
+          <Button variant='contained' type='reset' color='secondary' onClick={handleClose}>
             Cancel
           </Button>
         </DialogActions>

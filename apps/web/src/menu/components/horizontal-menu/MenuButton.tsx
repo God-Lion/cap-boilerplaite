@@ -54,10 +54,10 @@ export const menuButtonStyles = (props: MenuButtonStylesProps) => {
   })
 }
 
-const MenuButton: React.ForwardRefRenderFunction<
-  HTMLAnchorElement,
-  MenuButtonProps
-> = ({ className, component, children, ...rest }, ref) => {
+const MenuButton: React.ForwardRefRenderFunction<HTMLAnchorElement, MenuButtonProps> = (
+  { className, component, children, ...rest },
+  ref,
+) => {
   if (component) {
     // If component is a string, create a new element of that type
     if (typeof component === 'string') {
@@ -72,7 +72,7 @@ const MenuButton: React.ForwardRefRenderFunction<
       )
     } else {
       // Otherwise, clone the element
-      const { className: classNameProp, ...props } = component.props
+      const { className: classNameProp, ...props } = (component as any).props
 
       return React.cloneElement(
         component,

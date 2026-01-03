@@ -21,11 +21,7 @@ const defaultColumn: Partial<ColumnDef<IPerson>> = {
     }, [initialValue])
 
     return (
-      <input
-        value={value as string}
-        onChange={(e) => setValue(e.target.value)}
-        onBlur={onBlur}
-      />
+      <input value={value as string} onChange={(e) => setValue(e.target.value)} onBlur={onBlur} />
     )
   },
 }

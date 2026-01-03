@@ -6,7 +6,7 @@ The Storybook coverage validation script has an **incorrect path** that prevents
 
 ```javascript
 // Line 21 in scripts/architectural/check-storybook-coverage.js
-const UI_COMPONENTS_DIR = join(__dirname, '../../src/app/src/components');
+const UI_COMPONENTS_DIR = join(__dirname, '../../src/app/src/components')
 //                                                         ^^^ EXTRA /src
 ```
 
@@ -28,13 +28,12 @@ Open `scripts/architectural/check-storybook-coverage.js` and change line 21:
 
 ```javascript
 // BEFORE
-const UI_COMPONENTS_DIR = join(__dirname, '../../src/app/src/components');
-const UI_STORIES_DIR = join(__dirname, '../../src/app/stories');
+const UI_COMPONENTS_DIR = join(__dirname, '../../src/app/src/components')
+const UI_STORIES_DIR = join(__dirname, '../../src/app/stories')
 
 // AFTER
-const UI_COMPONENTS_DIR = join(__dirname, '../../src/app/components');
-const UI_STORIES_DIR = join(__dirname, '../../src/stories');  // Also fix this!
+const UI_COMPONENTS_DIR = join(__dirname, '../../src/app/components')
+const UI_STORIES_DIR = join(__dirname, '../../src/stories') // Also fix this!
 ```
 
 ### Option B: Automated Fix (Run This)
-

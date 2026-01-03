@@ -14,16 +14,11 @@ type NavCollapseIconsProps = React.HTMLAttributes<HTMLSpanElement> & {
 
 const NavCollapseIcons = (props: NavCollapseIconsProps) => {
   // Props
-  const { closeIcon, lockedIcon, unlockedIcon, onClick, onClose, ...rest } =
-    props
+  const { closeIcon, lockedIcon, unlockedIcon, onClick, onClose, ...rest } = props
 
   // Hooks
-  const {
-    isCollapsed,
-    collapseVerticalNav,
-    isBreakpointReached,
-    toggleVerticalNav,
-  } = useVerticalNav()
+  const { isCollapsed, collapseVerticalNav, isBreakpointReached, toggleVerticalNav } =
+    useVerticalNav()
 
   // Handle Lock / Unlock Icon Buttons click
   const handleClick = (action: 'lock' | 'unlock') => {

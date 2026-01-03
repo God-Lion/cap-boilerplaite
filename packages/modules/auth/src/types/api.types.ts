@@ -12,8 +12,8 @@
 export interface User {
   id: number
   email: string
-  first_name?: string
-  last_name?: string
+  firstName?: string
+  lastName?: string
   full_name?: string
   role?: string
   status?: string
@@ -39,8 +39,10 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string
   password: string
-  first_name: string
-  last_name: string
+  confirmPassword: string
+  firstname: string
+  lastname: string
+  isTermsSign: boolean
 }
 
 export interface ForgotPasswordRequest {
@@ -95,6 +97,11 @@ export interface MfaVerifyRequest {
   remember_device?: boolean
 }
 
+export interface MfaLoginVerifyRequest {
+  userId: number
+  code: string
+}
+
 // Account Deactivation
 export interface DeactivateAccountRequest {
   password: string
@@ -127,6 +134,8 @@ export interface TokenResponse {
   refresh_token: string
   user: User
   expires_in: number
+  mfa_required?: boolean
+  userId?: number
 }
 
 export interface MessageResponse {
@@ -160,6 +169,15 @@ export interface UpdateResponse {
   message: string
   success: boolean
   user?: User
+}
+
+// Passkeys (WebAuthn)
+export interface PasskeyRegistrationOptionsResponse {
+  options: any // SimpleWebAuthn RegistrationOptions
+}
+
+export interface PasskeyLoginOptionsResponse {
+  options: any // SimpleWebAuthn AuthenticationOptions
 }
 
 // ============================================================================

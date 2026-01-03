@@ -1,9 +1,9 @@
 /**
  * Request Deduplication Utility
- * 
+ *
  * Prevents duplicate API requests by caching in-flight requests
  * and returning the same promise for identical requests.
- * 
+ *
  * Features:
  * - Automatic deduplication of identical requests
  * - Configurable cache TTL
@@ -85,7 +85,6 @@ class RequestDeduplicator {
     // Let's rely on an extra property 'url' in FetchRequestConfig if possible, OR check if I should change the signature.
     // For minimal refactor of usage, I will add `url` to `FetchRequestConfig` in the check, but wait...
     // In `useDeduplicatedRequest.ts`, it constructs a config object:
-    // const config: AxiosRequestConfig = { url, ... }
 
     // So I should add `url` to `FetchRequestConfig` as an optional property for internal use here.
 
@@ -140,12 +139,12 @@ class RequestDeduplicator {
 
   /**
    * Get or create a deduplicated request
-   * 
+   *
    * NOTE: config MUST contain 'url' property for key generation if using default generator.
    */
   public deduplicateRequest<T = any>(
     config: FetchRequestConfig & { url?: string },
-    requestExecutor: (config: FetchRequestConfig) => Promise<FetchResponse<T>>
+    requestExecutor: (config: FetchRequestConfig) => Promise<FetchResponse<T>>,
   ): Promise<FetchResponse<T>> {
     // Check if deduplication is enabled for this request
     if (!this.shouldDeduplicate(config)) {
@@ -333,7 +332,7 @@ class RequestDeduplicator {
 export const requestDeduplicator = new RequestDeduplicator({
   cacheTTL: 5000, // 5 seconds cache for completed requests
   maxPendingRequests: 100,
-  debug: import.meta.env.DEV,
+  debug: (import.meta as any).env.DEV,
 })
 
 // Export class for custom instances

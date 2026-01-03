@@ -77,11 +77,7 @@ const Captcha: React.FC<CaptchaProps> = ({
         <Typography variant='body2' color='text.secondary'>
           CAPTCHA Placeholder (Development Mode)
         </Typography>
-        <Typography
-          variant='caption'
-          color='text.secondary'
-          sx={{ mt: 1, display: 'block' }}
-        >
+        <Typography variant='caption' color='text.secondary' sx={{ mt: 1, display: 'block' }}>
           Click below to simulate verification
         </Typography>
         <Box

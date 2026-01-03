@@ -18,10 +18,7 @@
           {
             "codePostal": "HT4420",
             "commune": "Petite Rivière de l'Artibonite ",
-            "localite": [
-              "Petite Rivière de l'Artibonite (Centre-ville)",
-              "Savane à Roches "
-            ]
+            "localite": ["Petite Rivière de l'Artibonite (Centre-ville)", "Savane à Roches "]
           },
           {
             "codePostal": "HT4430",
@@ -67,10 +64,7 @@
           {
             "codePostal": "HT4110",
             "commune": "Gonaives ",
-            "localite": [
-              "Gonaives (Centre-ville)",
-              "Petite Rivière de Bayonais"
-            ]
+            "localite": ["Gonaives (Centre-ville)", "Petite Rivière de Bayonais"]
           },
           {
             "codePostal": "HT4120",
@@ -116,12 +110,7 @@
           {
             "codePostal": "HT4320",
             "commune": "Verrettes ",
-            "localite": [
-              "Verrettes (Centre-ville)",
-              "Désarmes ",
-              "Deschapelles ",
-              "Liancourt "
-            ]
+            "localite": ["Verrettes (Centre-ville)", "Désarmes ", "Deschapelles ", "Liancourt "]
           }
         ]
       }
@@ -141,11 +130,7 @@
           {
             "codePostal": "HT5410",
             "commune": "Cerca-la-Source ",
-            "localite": [
-              "Cerca-la-Source (Centre-ville)",
-              "Saltadère ",
-              "La Mielle "
-            ]
+            "localite": ["Cerca-la-Source (Centre-ville)", "Saltadère ", "La Mielle "]
           },
           {
             "codePostal": "HT5420",
@@ -358,11 +343,7 @@
           {
             "codePostal": "HT1510",
             "commune": "Borgne ",
-            "localite": [
-              "Borgne (Centre-ville)",
-              "Petit bourg de Borgne ",
-              "Côte de Fer et Fond "
-            ]
+            "localite": ["Borgne (Centre-ville)", "Petit bourg de Borgne ", "Côte de Fer et Fond "]
           },
           {
             "codePostal": "HT1520",
@@ -503,11 +484,7 @@
           {
             "codePostal": "HT2110",
             "commune": "Fort Liberté ",
-            "localite": [
-              "Fort Liberté (Centre-ville)",
-              "Dérac ",
-              "Acul Samedi "
-            ]
+            "localite": ["Fort Liberté (Centre-ville)", "Dérac ", "Acul Samedi "]
           },
           {
             "codePostal": "HT2120",
@@ -563,11 +540,7 @@
           {
             "codePostal": "HT2330",
             "commune": "Terrier Rouge ",
-            "localite": [
-              "Terrier Rouge (Centre-ville)",
-              "Phaëton ",
-              "Paulette "
-            ]
+            "localite": ["Terrier Rouge (Centre-ville)", "Phaëton ", "Paulette "]
           },
           {
             "codePostal": "HT2340",
@@ -734,11 +707,7 @@
           {
             "codePostal": "HT3120",
             "commune": "La Tortue ",
-            "localite": [
-              "La Tortue (Centre-ville)",
-              "Pointe des Roseaux ",
-              "Mare Rouge "
-            ]
+            "localite": ["La Tortue (Centre-ville)", "Pointe des Roseaux ", "Mare Rouge "]
           },
           {
             "codePostal": "HT3130",
@@ -761,11 +730,7 @@
           {
             "codePostal": "HT3210",
             "commune": "Saint Louis du Nord ",
-            "localite": [
-              "Saint Louis du Nord (Centre-ville)",
-              "Bonneau ",
-              "Guichard "
-            ]
+            "localite": ["Saint Louis du Nord (Centre-ville)", "Bonneau ", "Guichard "]
           },
           {
             "codePostal": "HT3220",
@@ -834,10 +799,7 @@
           {
             "codePostal": "HT6330",
             "commune": "Ganthier ",
-            "localite": [
-              "Ganthier (Centre-ville)",
-              "Fonds Parisien et Galette Chambon "
-            ]
+            "localite": ["Ganthier (Centre-ville)", "Fonds Parisien et Galette Chambon "]
           },
           {
             "codePostal": "HT6340",

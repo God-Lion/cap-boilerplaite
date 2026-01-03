@@ -1,9 +1,9 @@
 /**
  * Optimistic UI Updates Manager
- * 
+ *
  * Provides instant UI feedback by applying changes immediately,
  * then rolling back if the server request fails.
- * 
+ *
  * Features:
  * - Instant UI updates
  * - Automatic rollback on failure
@@ -193,18 +193,14 @@ class OptimisticUpdateManager {
    * Get all pending updates
    */
   getPendingUpdates(): OptimisticUpdate[] {
-    return Array.from(this.updates.values()).filter(
-      (update) => update.status === 'pending'
-    )
+    return Array.from(this.updates.values()).filter((update) => update.status === 'pending')
   }
 
   /**
    * Get updates by entity type
    */
   getUpdatesByEntity(entityType: string): OptimisticUpdate[] {
-    return Array.from(this.updates.values()).filter(
-      (update) => update.entityType === entityType
-    )
+    return Array.from(this.updates.values()).filter((update) => update.entityType === entityType)
   }
 
   /**
@@ -222,7 +218,7 @@ class OptimisticUpdateManager {
       (update) =>
         update.status === 'pending' &&
         update.entityType === entityType &&
-        (entityId === undefined || update.entityId === entityId)
+        (entityId === undefined || update.entityId === entityId),
     )
   }
 

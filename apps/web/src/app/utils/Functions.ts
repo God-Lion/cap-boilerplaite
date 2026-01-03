@@ -54,10 +54,7 @@ export function isMatch(member: Member, query: QueryItem[]): boolean {
       const value = query[i]
       const property = value.property
       const content = value.value
-      if (
-        member[property].toLowerCase().match(content.toLowerCase())?.index === 0
-      )
-        find = true
+      if (member[property].toLowerCase().match(content.toLowerCase())?.index === 0) find = true
     }
   }
   return find
@@ -65,8 +62,7 @@ export function isMatch(member: Member, query: QueryItem[]): boolean {
 
 export function isPropertyDefined(object: any, property: string): boolean {
   const properties = Object.getOwnPropertyNames(object)
-  for (let i = 0; i < properties.length; i++)
-    if (properties[i] === property) return true
+  for (let i = 0; i < properties.length; i++) if (properties[i] === property) return true
   return false
 }
 
@@ -94,20 +90,12 @@ export function getDepartements(): Departement[] {
         .filter((value: ZoneRow) => value.CODE_DEP === row.CODE_DEP)
         .reduce((acc: Arrondissement[], zoneRow: ZoneRow) => {
           const arr = zoneRow.ARRONDISSEMENT
-          if (
-            arr &&
-            arr !== 'NULL' &&
-            !acc.some((a) => a.arrondissement === arr)
-          ) {
+          if (arr && arr !== 'NULL' && !acc.some((a) => a.arrondissement === arr)) {
             const communes: Commune[] = zoneData
               .filter((r: ZoneRow) => r.CODE_ARR === zoneRow.CODE_ARR)
               .reduce((commAcc: Commune[], commRow: ZoneRow) => {
                 const comm = commRow.COMMUNE
-                if (
-                  comm &&
-                  comm !== 'NULL' &&
-                  !commAcc.some((c) => c.commune === comm)
-                ) {
+                if (comm && comm !== 'NULL' && !commAcc.some((c) => c.commune === comm)) {
                   const localites: Localite[] = zoneData
                     .filter((r: ZoneRow) => r.COMMUNE === comm)
                     .map((r: ZoneRow) => r.LOCALITE)

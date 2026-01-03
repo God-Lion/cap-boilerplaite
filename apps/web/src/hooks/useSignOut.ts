@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/store/index'
+import { useAuth } from '@cap/platform-core'
 
 interface UseSignOutOptions {
   onSuccess?: () => void

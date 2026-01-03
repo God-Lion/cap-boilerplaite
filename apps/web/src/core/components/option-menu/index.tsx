@@ -25,7 +25,7 @@ const MenuItemWrapper = ({
 }) => {
   if (option.href) {
     return (
-      <Box component={Link} href={option.href} {...option.linkProps}>
+      <Box component={Link} to={option.href} {...option.linkProps}>
         {children}
       </Box>
     )
@@ -46,18 +46,16 @@ const OptionMenu = ({
 
   // States
   const [open, setOpen] = React.useState(false)
-  const anchorRef = React.useRef<HTMLButtonElement>(null)
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const { settings } = useSettings()
 
-  const handleToggle = () => {
+  const handleToggle = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
     setOpen((prevOpen) => !prevOpen)
   }
 
   const handleClose = (event: Event | SyntheticEvent) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
+    if (anchorEl && anchorEl.contains(event.target as HTMLElement)) {
       return
     }
 
@@ -66,12 +64,7 @@ const OptionMenu = ({
 
   return (
     <>
-      <IconButton
-        ref={anchorRef}
-        size='small'
-        onClick={handleToggle}
-        {...iconButtonProps}
-      >
+      <IconButton size='small' onClick={handleToggle} {...iconButtonProps}>
         {typeof icon === 'string' ? (
           <i className={classnames(icon, iconClassName)} />
         ) : (icon as ReactNode) ? (
@@ -82,7 +75,7 @@ const OptionMenu = ({
       </IconButton>
       <Popper
         open={open}
-        anchorEl={anchorRef.current}
+        anchorEl={anchorEl}
         placement={leftAlignMenu ? 'bottom-start' : 'bottom-end'}
         transition
         disablePortal
@@ -90,13 +83,7 @@ const OptionMenu = ({
       >
         {({ TransitionProps }) => (
           <Fade {...TransitionProps}>
-            <Paper
-              className={
-                settings.skin === 'bordered'
-                  ? 'border shadow-none'
-                  : 'shadow-lg'
-              }
-            >
+            <Paper className={settings.skin === 'bordered' ? 'border shadow-none' : 'shadow-lg'}>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList autoFocusItem={open}>
                   {options.map((option: OptionType, index: number) => {
@@ -107,11 +94,7 @@ const OptionMenu = ({
                         </MenuItem>
                       )
                     } else if ('divider' in option) {
-                      return (
-                        option.divider && (
-                          <Divider key={index} {...option.dividerProps} />
-                        )
-                      )
+                      return option.divider && <Divider key={index} {...option.dividerProps} />
                     } else {
                       return (
                         <MenuItem

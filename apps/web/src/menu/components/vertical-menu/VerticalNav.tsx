@@ -12,10 +12,7 @@ import StyledVerticalNav from '../../styles/vertical/StyledVerticalNav'
 import StyledVerticalNavContainer from '../../styles/vertical/StyledVerticalNavContainer'
 import StyledVerticalNavBgColorContainer from '../../styles/vertical/StyledVerticalNavBgColorContainer'
 import styles from '../../styles/vertical/verticalNavBgImage.module.css'
-import {
-  defaultBreakpoints,
-  verticalNavToggleDuration,
-} from '../../defaultConfigs'
+import { defaultBreakpoints, verticalNavToggleDuration } from '../../defaultConfigs'
 // import { Drawer } from '@mui/material'
 
 export type VerticalNavProps = React.HTMLAttributes<HTMLHtmlElement> & {
@@ -76,8 +73,7 @@ const VerticalNav = (props: VerticalNavProps) => {
 
   // Find the breakpoint from which screen size responsive behavior should enable and if its reached or not
   const breakpointReached = useMediaQuery(
-    customBreakpoint ??
-      (breakpoint ? mergedBreakpoints[breakpoint] : breakpoint),
+    customBreakpoint ?? (breakpoint ? mergedBreakpoints[breakpoint] : breakpoint),
   )
 
   // UseEffect, update verticalNav state to set initial values and update values on change
@@ -92,8 +88,7 @@ const VerticalNav = (props: VerticalNavProps) => {
 
     if (!breakpointReached) {
       updateVerticalNavState({ isToggled: false })
-      verticalNavCollapsedRef.current &&
-        updateVerticalNavState({ isCollapsed: true })
+      verticalNavCollapsedRef.current && updateVerticalNavState({ isCollapsed: true })
     } else {
       if (isCollapsedContext && !verticalNavCollapsedRef.current) {
         verticalNavCollapsedRef.current = true
@@ -103,13 +98,7 @@ const VerticalNav = (props: VerticalNavProps) => {
       isHoveredContext && updateVerticalNavState({ isHovered: false })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    width,
-    collapsedWidth,
-    scrollWithContent,
-    breakpointReached,
-    updateVerticalNavState,
-  ])
+  }, [width, collapsedWidth, scrollWithContent, breakpointReached, updateVerticalNavState])
 
   React.useEffect(() => {
     if (defaultCollapsed) {
@@ -129,11 +118,7 @@ const VerticalNav = (props: VerticalNavProps) => {
       })
     }, transitionDuration)
 
-    if (
-      !isCollapsedContext &&
-      !breakpointReached &&
-      verticalNavCollapsedRef.current
-    ) {
+    if (!isCollapsedContext && !breakpointReached && verticalNavCollapsedRef.current) {
       verticalNavCollapsedRef.current = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -9,6 +9,8 @@ import spacing from './spacing'
 import shadows from './shadows'
 import customShadows from './customShadows'
 import themeConfig from '../configs/themeConfig'
+import typography from './typography'
+
 // import typography from './typography'
 
 // const public_sans = Public_Sans({
@@ -16,17 +18,47 @@ import themeConfig from '../configs/themeConfig'
 //   weight: ['300', '400', '500', '600', '700', '800', '900'],
 // })
 
-const defaultCoreTheme = (
-  settings: Settings,
-  mode: SystemMode,
-  direction: Theme['direction'],
-): Theme => {
+// const defaultCoreTheme = (
+//   settings: Settings,
+//   mode: SystemMode,
+//   direction: Theme['direction'],
+// ): Theme => {
+//   return {
+//     direction,
+//     components: overrides(settings.skin as Skin),
+//     colorSchemes: colorSchemes(settings.skin as Skin),
+//     ...spacing,
+//     shape: themeConfig.shape,
+//     shadows: shadows(mode),
+//     // typography: typography(public_sans.style.fontFamily),
+//     customShadows: customShadows(mode),
+//     mainColorChannels: {
+//       light: '47 43 61',
+//       dark: '225 222 245',
+//       lightShadow: '47 43 61',
+//       darkShadow: '19 17 32',
+//     },
+//   } as unknown as Theme
+// }
+
+// export default defaultCoreTheme
+
+const theme = (settings: Settings, mode: SystemMode, direction: Theme['direction']): Theme => {
   return {
     direction,
     components: overrides(settings.skin as Skin),
     colorSchemes: colorSchemes(settings.skin as Skin),
     ...spacing,
-    shape: themeConfig.shape,
+    shape: {
+      borderRadius: 6,
+      customBorderRadius: {
+        xs: 2,
+        sm: 4,
+        md: 6,
+        lg: 8,
+        xl: 10,
+      },
+    },
     shadows: shadows(mode),
     // typography: typography(public_sans.style.fontFamily),
     customShadows: customShadows(mode),
@@ -39,4 +71,4 @@ const defaultCoreTheme = (
   } as unknown as Theme
 }
 
-export default defaultCoreTheme
+export default theme

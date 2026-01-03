@@ -183,29 +183,17 @@ export default function LocalTable({
                           colSpan={header.colSpan}
                           style={{
                             //using our new feature
-                            padding:
-                              density === 'sm'
-                                ? '4px'
-                                : density === 'md'
-                                  ? '8px'
-                                  : '16px',
+                            padding: density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px',
                             transition: 'padding 0.2s',
                           }}
                         >
                           {header.isPlaceholder ? null : (
-                            <div
-                              onClick={header.column.getToggleSortingHandler()}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
+                            <div onClick={header.column.getToggleSortingHandler()}>
+                              {flexRender(header.column.columnDef.header, header.getContext())}
                               {{
                                 asc: <ArrowUpward />,
                                 desc: <ArrowDownward />,
-                              }[
-                                header.column.getIsSorted() as 'asc' | 'desc'
-                              ] ?? null}
+                              }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
                               {/* {header.column.getCanFilter() ? (
                               <div>
                                 <Filter column={header.column} table={table} />
@@ -238,10 +226,7 @@ export default function LocalTable({
                       <TableRow key={`TableRow${Math.random()}`}>
                         {table.getHeaderGroups().map((_) => (
                           <TableCell key={`${Math.random()}`}>
-                            <Skeleton
-                              variant='text'
-                              sx={{ fontSize: '1rem' }}
-                            />
+                            <Skeleton variant='text' sx={{ fontSize: '1rem' }} />
                           </TableCell>
                         ))}
                       </TableRow>
@@ -257,18 +242,11 @@ export default function LocalTable({
                                 style={{
                                   //using our new feature
                                   padding:
-                                    density === 'sm'
-                                      ? '4px'
-                                      : density === 'md'
-                                        ? '8px'
-                                        : '16px',
+                                    density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px',
                                   transition: 'padding 0.2s',
                                 }}
                               >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext(),
-                                )}
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
                               </TableCell>
                             )
                           })}

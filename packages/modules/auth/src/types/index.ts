@@ -29,3 +29,5 @@ export type {
   UpdateEmailMutationVars,
   UpdatePhotoMutationVars,
 } from './api.types'
+
+export * from './auth.types'

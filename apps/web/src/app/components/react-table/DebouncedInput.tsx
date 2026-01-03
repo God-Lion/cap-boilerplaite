@@ -27,13 +27,7 @@ const DebouncedInput = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
-  return (
-    <TextField
-      {...props}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    />
-  )
+  return <TextField {...props} value={value} onChange={(e) => setValue(e.target.value)} />
 }
 
 export default DebouncedInput

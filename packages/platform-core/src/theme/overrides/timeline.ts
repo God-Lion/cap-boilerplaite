@@ -45,8 +45,7 @@ const timeline: Theme['components'] = {
       {
         props: { variant: 'filled', color: 'grey' },
         style: {
-          boxShadow:
-            '0 0 0 3px rgb(var(--mui-palette-action-activeChannel) / 0.04)',
+          boxShadow: '0 0 0 3px rgb(var(--mui-palette-action-activeChannel) / 0.04)',
         },
       },
       {

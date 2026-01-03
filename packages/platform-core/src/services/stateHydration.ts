@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from 'react'
 import { useAppStore } from './../store'
 import { localStorageManager, sessionStorageManager, STORAGE_KEYS } from './storage'
@@ -143,10 +141,12 @@ export const importState = (file: File): Promise<void> => {
 
         // Restore state
         if (state.auth) localStorageManager.set(STORAGE_KEYS.USER_DATA, state.auth)
-        if (state.preferences) localStorageManager.set(STORAGE_KEYS.USER_PREFERENCES, state.preferences)
+        if (state.preferences)
+          localStorageManager.set(STORAGE_KEYS.USER_PREFERENCES, state.preferences)
         if (state.savedJobs) localStorageManager.set(STORAGE_KEYS.SAVED_JOBS, state.savedJobs)
         if (state.profiles) localStorageManager.set(STORAGE_KEYS.RESUME_PROFILES, state.profiles)
-        if (state.notifications) localStorageManager.set(STORAGE_KEYS.NOTIFICATIONS, state.notifications)
+        if (state.notifications)
+          localStorageManager.set(STORAGE_KEYS.NOTIFICATIONS, state.notifications)
 
         resolve()
       } catch (error) {

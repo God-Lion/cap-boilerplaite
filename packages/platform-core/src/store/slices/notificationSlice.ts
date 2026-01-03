@@ -29,9 +29,7 @@ export interface NotificationSlice {
   unreadCount: number
 
   // Actions
-  addNotification: (
-    notification: Omit<Notification, 'id' | 'timestamp' | 'read'>,
-  ) => void
+  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void
   markAsRead: (id: string) => void
   markAllAsRead: () => void
   deleteNotification: (id: string) => void

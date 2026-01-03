@@ -1,6 +1,6 @@
 import React from 'react'
 // import type { ThemeColor } from 'src/types'
-import type { ThemeColor } from 'src/core/types'
+import type { ThemeColor } from '@cap/platform-core'
 import DialogCloseButton from '../DialogCloseButton'
 import {
   Dialog,
@@ -73,9 +73,7 @@ const BillingCard = ({ open, setOpen, data }: BillingCardProps) => {
       >
         {data ? 'Edit Card' : 'Add New Card'}
         <Typography component='span' className='flex flex-col text-center'>
-          {data
-            ? 'Edit your saved card details'
-            : 'Add card for future billing'}
+          {data ? 'Edit your saved card details' : 'Add card for future billing'}
         </Typography>
       </DialogTitle>
       <form onSubmit={(e) => e.preventDefault()}>
@@ -89,9 +87,7 @@ const BillingCard = ({ open, setOpen, data }: BillingCardProps) => {
                 label='Card Number'
                 placeholder='0000 0000 0000 0000'
                 value={cardData.cardNumber}
-                onChange={(e) =>
-                  setCardData({ ...cardData, cardNumber: e.target.value })
-                }
+                onChange={(e) => setCardData({ ...cardData, cardNumber: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -102,9 +98,7 @@ const BillingCard = ({ open, setOpen, data }: BillingCardProps) => {
                 autoComplete='off'
                 placeholder='John Doe'
                 value={cardData.name}
-                onChange={(e) =>
-                  setCardData({ ...cardData, name: e.target.value })
-                }
+                onChange={(e) => setCardData({ ...cardData, name: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
@@ -115,9 +109,7 @@ const BillingCard = ({ open, setOpen, data }: BillingCardProps) => {
                 label='Expiry'
                 placeholder='MM/YY'
                 value={cardData.expiryDate}
-                onChange={(e) =>
-                  setCardData({ ...cardData, expiryDate: e.target.value })
-                }
+                onChange={(e) => setCardData({ ...cardData, expiryDate: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
@@ -128,9 +120,7 @@ const BillingCard = ({ open, setOpen, data }: BillingCardProps) => {
                 autoComplete='off'
                 placeholder='123'
                 value={cardData.cardCvv}
-                onChange={(e) =>
-                  setCardData({ ...cardData, cardCvv: e.target.value })
-                }
+                onChange={(e) => setCardData({ ...cardData, cardCvv: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -145,12 +135,7 @@ const BillingCard = ({ open, setOpen, data }: BillingCardProps) => {
           <Button variant='contained' type='submit' onClick={handleClose}>
             {data ? 'Update' : 'Submit'}
           </Button>
-          <Button
-            variant='contained'
-            type='reset'
-            color='secondary'
-            onClick={handleClose}
-          >
+          <Button variant='contained' type='reset' color='secondary' onClick={handleClose}>
             Cancel
           </Button>
         </DialogActions>

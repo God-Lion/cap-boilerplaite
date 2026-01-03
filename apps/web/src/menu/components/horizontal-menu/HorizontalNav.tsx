@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import classnames from 'classnames'
 import type { CSSObject } from '@emotion/styled'
 import type { BreakpointType, ChildrenType } from '../../types'
@@ -17,7 +17,7 @@ import StyledHorizontalNav from '../../styles/horizontal/StyledHorizontalNav'
 // Default Config Imports
 import { defaultBreakpoints } from '../../defaultConfigs'
 
-export type HorizontalNavProps = React.HTMLAttributes<HTMLDivElement> & {
+export type HorizontalNavProps = HTMLAttributes<HTMLDivElement> & {
   switchToVertical?: boolean
   hideMenu?: boolean
   breakpoint?: BreakpointType
@@ -63,8 +63,7 @@ const HorizontalNav = (props: HorizontalNavProps) => {
 
   // Find the breakpoint from which screen size responsive behavior should enable and if its reached or not
   const breakpointReached = useMediaQuery(
-    customBreakpoint ??
-      (breakpoint ? mergedBreakpoints[breakpoint] : breakpoint),
+    customBreakpoint ?? (breakpoint ? mergedBreakpoints[breakpoint] : breakpoint),
   )
 
   // Set the breakpointReached value in the state
@@ -72,7 +71,6 @@ const HorizontalNav = (props: HorizontalNavProps) => {
     if (prevBreakpoint.current === breakpointReached) return
     updateIsBreakpointReached(breakpointReached)
     prevBreakpoint.current = breakpointReached
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breakpointReached])
 
   // If switchToVertical is true, then render the VerticalNav component if breakpoint is reached
@@ -84,9 +82,7 @@ const HorizontalNav = (props: HorizontalNavProps) => {
         customBreakpoint={customBreakpoint}
         verticalNavProps={verticalNavProps}
       >
-        {VerticalNavContent && (
-          <VerticalNavContent>{children}</VerticalNavContent>
-        )}
+        {VerticalNavContent && <VerticalNavContent>{children}</VerticalNavContent>}
       </VerticalNavInHorizontal>
     )
   }
@@ -98,10 +94,7 @@ const HorizontalNav = (props: HorizontalNavProps) => {
 
   // If switchToVertical & hideMenu are false, then render the HorizontalNav component
   return (
-    <StyledHorizontalNav
-      customStyles={customStyles}
-      className={horizontalMenuClasses}
-    >
+    <StyledHorizontalNav customStyles={customStyles} className={horizontalMenuClasses}>
       {children}
     </StyledHorizontalNav>
   )

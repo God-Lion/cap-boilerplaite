@@ -20,13 +20,11 @@ const tabs: Theme['components'] = {
                 ...(ownerState.textColor === 'secondary'
                   ? {
                       color: 'var(--mui-palette-secondary-main)',
-                      borderBlockEnd:
-                        '2px solid var(--mui-palette-secondary-lightOpacity)',
+                      borderBlockEnd: '2px solid var(--mui-palette-secondary-lightOpacity)',
                     }
                   : {
                       color: 'var(--mui-palette-primary-main)',
-                      borderBlockEnd:
-                        '2px solid var(--mui-palette-primary-lightOpacity)',
+                      borderBlockEnd: '2px solid var(--mui-palette-primary-lightOpacity)',
                     }),
               }
             : {
@@ -34,13 +32,11 @@ const tabs: Theme['components'] = {
                 ...(ownerState.textColor === 'secondary'
                   ? {
                       color: 'var(--mui-palette-secondary-main)',
-                      borderInlineEnd:
-                        '2px solid var(--mui-palette-secondary-mainOpacity)',
+                      borderInlineEnd: '2px solid var(--mui-palette-secondary-mainOpacity)',
                     }
                   : {
                       color: 'var(--mui-palette-primary-main)',
-                      borderInlineEnd:
-                        '2px solid var(--mui-palette-primary-mainOpacity)',
+                      borderInlineEnd: '2px solid var(--mui-palette-primary-mainOpacity)',
                     }),
               }),
           '& .MuiTabScrollButton-root': {

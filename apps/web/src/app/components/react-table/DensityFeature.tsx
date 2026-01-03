@@ -18,9 +18,7 @@ export const DensityFeature: TableFeature<any> = {
   },
 
   // define the new feature's default options
-  getDefaultOptions: <TData extends RowData>(
-    table: Table<TData>,
-  ): DensityOptions => {
+  getDefaultOptions: <TData extends RowData>(table: Table<TData>): DensityOptions => {
     return {
       enableDensity: true,
       onDensityChange: makeStateUpdater('density', table),

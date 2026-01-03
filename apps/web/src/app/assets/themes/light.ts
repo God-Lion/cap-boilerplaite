@@ -12,21 +12,5 @@ const lightTheme = createTheme({
       main: '#07AEB5', // '#004AAD',
     },
   },
-  // palette: {
-  //   mode: 'light',
-  //   primary: {
-  //     // main: '#b2ff59',
-  //     main: '#30cd9f'
-  //   },
-  //   secondary: {
-  //     // main: green[500],
-  //     main: '#ff7043'
-  //   }
-  // },
-  // Button: {
-  //   primary: {
-  //     main: '#215E43',
-  //   },
-  // },
 })
 export default lightTheme

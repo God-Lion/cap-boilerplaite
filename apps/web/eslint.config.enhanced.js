@@ -1,6 +1,6 @@
 // Enhanced ESLint Config with Architectural Rules
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
+import storybook from 'eslint-plugin-storybook'
 
 import js from '@eslint/js'
 import globals from 'globals'
@@ -64,10 +64,7 @@ export default tseslint.config(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
   // 🔒 RULE 1: Component Isolation - UI Components Cannot Import from App
@@ -91,22 +88,12 @@ export default tseslint.config(
                 '❌ ARCHITECTURAL VIOLATION: UI components cannot import from app directory. Use prop drilling or composition instead. UI components must be pure and reusable.',
             },
             {
-              group: [
-                '**/services/**',
-                '../services/**',
-                '../../services/**',
-                '@/services/**',
-              ],
+              group: ['**/services/**', '../services/**', '../../services/**', '@/services/**'],
               message:
                 '❌ ARCHITECTURAL VIOLATION: UI components must be stateless. Move business logic to app layer.',
             },
             {
-              group: [
-                '**/store/**',
-                '../store/**',
-                '../../store/**',
-                '@/store/**',
-              ],
+              group: ['**/store/**', '../store/**', '../../store/**', '@/store/**'],
               message:
                 '❌ ARCHITECTURAL VIOLATION: UI components cannot access global state directly. Pass data via props.',
             },
@@ -140,5 +127,5 @@ export default tseslint.config(
       'no-restricted-imports': 'off', // Stories can import anything for demonstration
     },
   },
-  storybook.configs['flat/recommended']
-);
+  storybook.configs['flat/recommended'],
+)

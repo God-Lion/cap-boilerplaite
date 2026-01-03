@@ -1,4 +1,5 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb'
+import encryption from '../encryption'
 
 // IndexedDB Schema
 interface AppDB extends DBSchema {
@@ -75,13 +76,18 @@ class StorageManager {
   static async saveToIndexedDB<T extends keyof AppDB>(
     storeName: T,
     key: string,
-    data: any
+    data: any,
   ): Promise<void> {
     try {
       const db = await this.initDB()
+
+      // Encrypt the data
+      const json = JSON.stringify(data)
+      const encryptedData = await this.encryptData(json)
+
       await db.put(storeName as any, {
         id: key,
-        data,
+        data: encryptedData,
         timestamp: Date.now(),
       })
     } catch (error) {
@@ -95,12 +101,16 @@ class StorageManager {
    */
   static async getFromIndexedDB<T extends keyof AppDB>(
     storeName: T,
-    key: string
+    key: string,
   ): Promise<any | null> {
     try {
       const db = await this.initDB()
       const result = await db.get(storeName as any, key)
-      return result?.data || null
+      if (!result?.data) return null
+
+      // Decrypt the data
+      const decryptedJson = await this.decryptData(result.data)
+      return JSON.parse(decryptedJson)
     } catch (error) {
       console.error('IndexedDB get error:', error)
       return null
@@ -110,13 +120,24 @@ class StorageManager {
   /**
    * Get all data from a store
    */
-  static async getAllFromIndexedDB<T extends keyof AppDB>(
-    storeName: T
-  ): Promise<any[]> {
+  static async getAllFromIndexedDB<T extends keyof AppDB>(storeName: T): Promise<any[]> {
     try {
       const db = await this.initDB()
       const results = await db.getAll(storeName as any)
-      return results.map(r => r.data)
+
+      // Decrypt all results
+      const decryptedResults = await Promise.all(
+        results.map(async (r) => {
+          try {
+            const json = await this.decryptData(r.data)
+            return JSON.parse(json)
+          } catch (e) {
+            return r.data // Fallback for unencrypted data
+          }
+        }),
+      )
+
+      return decryptedResults
     } catch (error) {
       console.error('IndexedDB getAll error:', error)
       return []
@@ -128,7 +149,7 @@ class StorageManager {
    */
   static async deleteFromIndexedDB<T extends keyof AppDB>(
     storeName: T,
-    key: string
+    key: string,
   ): Promise<void> {
     try {
       const db = await this.initDB()
@@ -142,9 +163,7 @@ class StorageManager {
   /**
    * Clear entire store
    */
-  static async clearIndexedDBStore<T extends keyof AppDB>(
-    storeName: T
-  ): Promise<void> {
+  static async clearIndexedDBStore<T extends keyof AppDB>(storeName: T): Promise<void> {
     try {
       const db = await this.initDB()
       await db.clear(storeName as any)
@@ -158,9 +177,10 @@ class StorageManager {
    * Save to LocalStorage
    * Use for user preferences (with optional encryption for sensitive data)
    */
-  static saveToLocalStorage(key: string, data: any, encrypt = false): void {
+  static async saveToLocalStorage(key: string, data: any, encrypt = false): Promise<void> {
     try {
-      const value = encrypt ? this.encryptData(JSON.stringify(data)) : JSON.stringify(data)
+      const json = JSON.stringify(data)
+      const value = encrypt ? await this.encryptData(json) : json
       localStorage.setItem(key, value)
     } catch (error) {
       console.error('LocalStorage save error:', error)
@@ -171,12 +191,12 @@ class StorageManager {
   /**
    * Get from LocalStorage
    */
-  static getFromLocalStorage<T = any>(key: string, decrypt = false): T | null {
+  static async getFromLocalStorage<T = any>(key: string, decrypt = false): Promise<T | null> {
     try {
       const value = localStorage.getItem(key)
       if (!value) return null
 
-      const parsed = decrypt ? this.decryptData(value) : value
+      const parsed = decrypt ? await this.decryptData(value) : value
       return JSON.parse(parsed)
     } catch (error) {
       console.error('LocalStorage get error:', error)
@@ -272,28 +292,28 @@ class StorageManager {
   }
 
   /**
-   * Simple obfuscation using Base64 encoding
-   * 
-   * NOTE: This is NOT secure encryption! Base64 is easily reversible.
-   * Use this only for non-sensitive data obfuscation.
-   * 
-   * For production with sensitive data, implement Web Crypto API:
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto
+   * Real AES-GCM Encryption using Web Crypto API
    */
-  private static encryptData(data: string): string {
-    // Only show warning in development mode
-    if (import.meta.env.DEV) {
-      console.warn('⚠️ Using Base64 encoding (NOT secure encryption)')
-    }
-    return btoa(data)
+  private static async encryptData(data: string): Promise<string> {
+    // In a real application, this should be a stable key derived from a user secret or environment
+    const masterKey =
+      (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'god-lion-default-secure-key-2025'
+    return encryption.encryptData(data, masterKey)
   }
 
   /**
-   * Decode Base64 encoded data
-   * NOTE: This is NOT decryption! Base64 is easily reversible.
+   * Real AES-GCM Decryption using Web Crypto API
    */
-  private static decryptData(data: string): string {
-    return atob(data)
+  private static async decryptData(data: string): Promise<string> {
+    const masterKey =
+      (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'god-lion-default-secure-key-2025'
+    try {
+      return await encryption.decryptData(data, masterKey)
+    } catch (error) {
+      console.error('Decryption failed, data might be legacy Base64 or corrupted')
+      // Fallback to legacy atob for migration period if needed, or just fail
+      throw error
+    }
   }
 
   /**
@@ -343,7 +363,6 @@ class StorageManager {
 export default StorageManager
 
 // Export storage managers for backward compatibility
-
 
 // Storage keys
 export const STORAGE_KEYS = {

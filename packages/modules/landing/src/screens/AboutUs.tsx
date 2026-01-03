@@ -84,8 +84,8 @@ export const AboutUs: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            We're revolutionizing the job search experience with the power of
-            AI, connecting talented individuals with their dream careers.
+            We're revolutionizing the job search experience with the power of AI, connecting
+            talented individuals with their dream careers.
           </Typography>
         </Box>
 
@@ -120,26 +120,16 @@ export const AboutUs: React.FC = () => {
                 >
                   Our Mission
                 </Typography>
-                <Typography
-                  variant='body1'
-                  color='text.secondary'
-                  sx={{ lineHeight: 1.8 }}
-                >
-                  Our mission is to empower every job seeker with personalized,
-                  intelligent tools that uncover the best career opportunities.
-                  We believe in a future where finding a fulfilling job is not a
-                  challenge, but an inspiring journey of self-discovery and
+                <Typography variant='body1' color='text.secondary' sx={{ lineHeight: 1.8 }}>
+                  Our mission is to empower every job seeker with personalized, intelligent tools
+                  that uncover the best career opportunities. We believe in a future where finding a
+                  fulfilling job is not a challenge, but an inspiring journey of self-discovery and
                   growth.
                 </Typography>
-                <Typography
-                  variant='body1'
-                  color='text.secondary'
-                  sx={{ lineHeight: 1.8 }}
-                >
-                  By leveraging cutting-edge artificial intelligence, we analyze
-                  your unique skills and aspirations to match you with roles
-                  that don't just pay the bills, but also ignite your passion
-                  and drive your professional development forward.
+                <Typography variant='body1' color='text.secondary' sx={{ lineHeight: 1.8 }}>
+                  By leveraging cutting-edge artificial intelligence, we analyze your unique skills
+                  and aspirations to match you with roles that don't just pay the bills, but also
+                  ignite your passion and drive your professional development forward.
                 </Typography>
               </Stack>
             </Grid>
@@ -162,13 +152,9 @@ export const AboutUs: React.FC = () => {
             >
               The Innovators Behind the Platform
             </Typography>
-            <Typography
-              variant='body1'
-              color='text.secondary'
-              sx={{ maxWidth: 800, mx: 'auto' }}
-            >
-              We are a passionate team of engineers, designers, and career
-              strategists dedicated to building a smarter way to find work.
+            <Typography variant='body1' color='text.secondary' sx={{ maxWidth: 800, mx: 'auto' }}>
+              We are a passionate team of engineers, designers, and career strategists dedicated to
+              building a smarter way to find work.
             </Typography>
           </Box>
 
@@ -200,18 +186,10 @@ export const AboutUs: React.FC = () => {
                     }}
                   />
                   <CardContent>
-                    <Typography
-                      variant='h6'
-                      component='div'
-                      sx={{ fontWeight: 700 }}
-                    >
+                    <Typography variant='h6' component='div' sx={{ fontWeight: 700 }}>
                       {member.name}
                     </Typography>
-                    <Typography
-                      variant='body2'
-                      color='primary'
-                      sx={{ fontWeight: 500 }}
-                    >
+                    <Typography variant='body2' color='primary' sx={{ fontWeight: 500 }}>
                       {member.role}
                     </Typography>
                   </CardContent>

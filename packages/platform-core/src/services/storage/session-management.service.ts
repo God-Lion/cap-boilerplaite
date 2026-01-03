@@ -43,7 +43,7 @@ class SecureSessionManagementService {
     maxConcurrentSessions: MAX_CONCURRENT_SESSIONS,
     requireDeviceVerification: true,
     rememberMe: false,
-    multiDevice: true
+    multiDevice: true,
   }
 
   initialize(config?: Partial<SessionConfig>): void {
@@ -73,7 +73,7 @@ class SecureSessionManagementService {
       deviceFingerprint,
       rememberMe,
       userAgent: navigator.userAgent,
-      sessionId
+      sessionId,
     }
 
     this.saveSession(sessionData)
@@ -97,7 +97,7 @@ class SecureSessionManagementService {
       }
 
       if (this.config.requireDeviceVerification) {
-        this.verifyDeviceFingerprint(session.deviceFingerprint).then(isValid => {
+        this.verifyDeviceFingerprint(session.deviceFingerprint).then((isValid) => {
           if (!isValid) {
             console.warn('Device fingerprint mismatch - potential session hijacking')
             this.destroySession()
@@ -125,10 +125,7 @@ class SecureSessionManagementService {
     }
 
     if (!session.rememberMe) {
-      session.expiresAt = Math.min(
-        now + this.config.timeout,
-        session.absoluteExpiresAt
-      )
+      session.expiresAt = Math.min(now + this.config.timeout, session.absoluteExpiresAt)
     }
 
     this.saveSession(session)
@@ -221,7 +218,7 @@ class SecureSessionManagementService {
       absoluteExpiresIn: this.formatDuration(absoluteTimeUntilExpiry),
       lastActivity: this.formatTimestamp(lastActivity),
       deviceFingerprint: session.deviceFingerprint.substring(0, 8),
-      sessionAge: this.formatDuration(sessionAge)
+      sessionAge: this.formatDuration(sessionAge),
     }
   }
 
@@ -234,11 +231,11 @@ class SecureSessionManagementService {
       const now = Date.now()
 
       return allSessions
-        .filter(s => {
+        .filter((s) => {
           if (userId && s.user._id !== userId) return false
           return now <= s.absoluteExpiresAt
         })
-        .map(s => ({
+        .map((s) => ({
           id: s.sessionId,
           userId: s.user._id,
           device: this.parseUserAgent(s.userAgent).device,
@@ -246,7 +243,7 @@ class SecureSessionManagementService {
           ip: s.ipAddress || 'Unknown',
           location: 'Unknown',
           lastActive: new Date(s.lastActivity).toISOString(),
-          current: s.sessionId === this.getSession()?.sessionId
+          current: s.sessionId === this.getSession()?.sessionId,
         }))
     } catch (error) {
       console.error('Error getting active sessions:', error)
@@ -275,7 +272,7 @@ class SecureSessionManagementService {
       navigator.hardwareConcurrency?.toString() || 'unknown',
       (navigator as any).deviceMemory?.toString() || 'unknown',
       navigator.platform,
-      navigator.maxTouchPoints?.toString() || '0'
+      navigator.maxTouchPoints?.toString() || '0',
     ]
 
     const componentString = components.join('|')
@@ -325,7 +322,7 @@ class SecureSessionManagementService {
       if (!sessionsData) return false
 
       const sessions: SessionData[] = JSON.parse(sessionsData)
-      const filteredSessions = sessions.filter(s => s.sessionId !== sessionId)
+      const filteredSessions = sessions.filter((s) => s.sessionId !== sessionId)
 
       localStorage.setItem(SESSIONS_KEY, JSON.stringify(filteredSessions))
       return true
@@ -342,7 +339,7 @@ class SecureSessionManagementService {
 
       const sessions: SessionData[] = JSON.parse(sessionsData)
       const userSessions = sessions
-        .filter(s => s.user._id === userId)
+        .filter((s) => s.user._id === userId)
         .sort((a, b) => a.createdAt - b.createdAt)
 
       if (userSessions.length > 0) {
@@ -363,7 +360,7 @@ class SecureSessionManagementService {
       const sessions: SessionData[] = JSON.parse(sessionsData)
       const now = Date.now()
 
-      const activeSessions = sessions.filter(s => now <= s.absoluteExpiresAt)
+      const activeSessions = sessions.filter((s) => now <= s.absoluteExpiresAt)
 
       localStorage.setItem(SESSIONS_KEY, JSON.stringify(activeSessions))
     } catch (error) {
@@ -419,7 +416,7 @@ class SecureSessionManagementService {
       }, 1000)
     }
 
-    events.forEach(event => {
+    events.forEach((event) => {
       window.addEventListener(event, activityHandler, { passive: true })
     })
 

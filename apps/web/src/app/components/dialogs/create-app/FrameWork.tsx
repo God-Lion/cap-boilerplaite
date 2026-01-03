@@ -1,5 +1,5 @@
 import React from 'react'
-import CustomAvatar from 'src/core/components/mui/Avatar'
+import CustomAvatar from '../../../../core/components/mui/Avatar'
 import DirectionalIcon from 'app/components/DirectionalIcon'
 import { Typography, Radio, Button } from '@mui/material'
 
@@ -10,12 +10,7 @@ type Props = {
   handlePrev: () => void
 }
 
-const FrameWork = ({
-  activeStep,
-  isLastStep,
-  handleNext,
-  handlePrev,
-}: Props) => {
+const FrameWork = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
   // States
   const [value, setValue] = React.useState<string>('react')
 
@@ -33,12 +28,7 @@ const FrameWork = ({
         >
           <div className='flex items-center gap-3'>
             <CustomAvatar skin='light' color='info' variant='rounded' size={46}>
-              <img
-                src='/images/logos/react.png'
-                alt='react'
-                height={30}
-                width={30}
-              />
+              <img src='/images/logos/react.png' alt='react' height={30} width={30} />
             </CustomAvatar>
             <div className='flex flex-col gap-1'>
               <Typography color='text.primary' className='font-medium'>
@@ -47,11 +37,7 @@ const FrameWork = ({
               <Typography variant='body2'>Create truly native apps</Typography>
             </div>
           </div>
-          <Radio
-            value='react'
-            onChange={handleChange}
-            checked={value === 'react'}
-          />
+          <Radio value='react' onChange={handleChange} checked={value === 'react'} />
         </div>
 
         <div
@@ -59,51 +45,25 @@ const FrameWork = ({
           className='flex items-center justify-between cursor-pointer gap-4'
         >
           <div className='flex items-center gap-3'>
-            <CustomAvatar
-              skin='light'
-              color='error'
-              variant='rounded'
-              size={46}
-            >
-              <img
-                src='/images/logos/angular.png'
-                alt='angular'
-                height={30}
-                width={30}
-              />
+            <CustomAvatar skin='light' color='error' variant='rounded' size={46}>
+              <img src='/images/logos/angular.png' alt='angular' height={30} width={30} />
             </CustomAvatar>
             <div className='flex flex-col gap-1'>
               <Typography color='text.primary' className='font-medium'>
                 Angular
               </Typography>
-              <Typography variant='body2'>
-                Most suited for your application
-              </Typography>
+              <Typography variant='body2'>Most suited for your application</Typography>
             </div>
           </div>
-          <Radio
-            value='angular'
-            onChange={handleChange}
-            checked={value === 'angular'}
-          />
+          <Radio value='angular' onChange={handleChange} checked={value === 'angular'} />
         </div>
         <div
           onClick={() => setValue('vuejs')}
           className='flex items-center justify-between cursor-pointer gap-4'
         >
           <div className='flex items-center gap-3'>
-            <CustomAvatar
-              skin='light'
-              color='success'
-              variant='rounded'
-              size={46}
-            >
-              <img
-                src='/images/logos/vue.png'
-                alt='vue'
-                height={30}
-                width={30}
-              />
+            <CustomAvatar skin='light' color='success' variant='rounded' size={46}>
+              <img src='/images/logos/vue.png' alt='vue' height={30} width={30} />
             </CustomAvatar>
             <div className='flex flex-col gap-1'>
               <Typography color='text.primary' className='font-medium'>
@@ -112,11 +72,7 @@ const FrameWork = ({
               <Typography variant='body2'>Progressive Framework</Typography>
             </div>
           </div>
-          <Radio
-            value='vuejs'
-            onChange={handleChange}
-            checked={value === 'vuejs'}
-          />
+          <Radio value='vuejs' onChange={handleChange} checked={value === 'vuejs'} />
         </div>
         <div
           onClick={() => setValue('laravel')}
@@ -124,12 +80,7 @@ const FrameWork = ({
         >
           <div className='flex items-center gap-3'>
             <CustomAvatar skin='light' color='warning' variant='rounded'>
-              <img
-                src='/images/logos/laravel.png'
-                alt='laravel'
-                height={30}
-                width={30}
-              />
+              <img src='/images/logos/laravel.png' alt='laravel' height={30} width={30} />
             </CustomAvatar>
             <div className='flex flex-col gap-1'>
               <Typography color='text.primary' className='font-medium'>
@@ -138,11 +89,7 @@ const FrameWork = ({
               <Typography variant='body2'>PHP web frameworks</Typography>
             </div>
           </div>
-          <Radio
-            value='laravel'
-            onChange={handleChange}
-            checked={value === 'laravel'}
-          />
+          <Radio value='laravel' onChange={handleChange} checked={value === 'laravel'} />
         </div>
       </div>
       <div className='flex items-center justify-between'>
@@ -152,10 +99,7 @@ const FrameWork = ({
           disabled={activeStep === 0}
           onClick={handlePrev}
           startIcon={
-            <DirectionalIcon
-              ltrIconClass='tabler-arrow-left'
-              rtlIconClass='tabler-arrow-right'
-            />
+            <DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right' />
           }
         >
           Previous
@@ -168,10 +112,7 @@ const FrameWork = ({
             isLastStep ? (
               <i className='tabler-check' />
             ) : (
-              <DirectionalIcon
-                ltrIconClass='tabler-arrow-right'
-                rtlIconClass='tabler-arrow-left'
-              />
+              <DirectionalIcon ltrIconClass='tabler-arrow-right' rtlIconClass='tabler-arrow-left' />
             )
           }
         >

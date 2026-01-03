@@ -1,0 +1,82 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img "God Lion Seeker" [ref=e9]
+          - button [ref=e10] [cursor=pointer]:
+            - img [ref=e11]
+        - navigation [ref=e14]:
+          - list [ref=e15]:
+            - listitem [ref=e16]:
+              - list [ref=e17]:
+                - listitem [ref=e18]:
+                  - generic [ref=e19]: Apps & Pages
+                - listitem [ref=e20]:
+                  - generic [ref=e21] [cursor=pointer]:
+                    - generic [ref=e22]: Auth Pages
+                    - img [ref=e25]
+    - generic [ref=e27]:
+      - banner:
+        - generic [ref=e29]:
+          - generic [ref=e32] [cursor=pointer]:
+            - button [ref=e33]:
+              - img [ref=e34]
+            - paragraph [ref=e36]: Search ⌘K
+          - generic [ref=e37]:
+            - button [ref=e38] [cursor=pointer]:
+              - img [ref=e39]
+            - button "Switch theme mode - currently Light" [ref=e41] [cursor=pointer]:
+              - img [ref=e42]
+            - button [ref=e44] [cursor=pointer]:
+              - img [ref=e45]
+            - button [ref=e47] [cursor=pointer]:
+              - img [ref=e49]
+            - img [ref=e54] [cursor=pointer]
+      - main [ref=e58]:
+        - main [ref=e59]:
+          - generic [ref=e61]:
+            - img [ref=e63]
+            - heading "Password reset" [level=1] [ref=e65]
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - generic [ref=e69]:
+                  - generic: Email
+                  - generic [ref=e70]:
+                    - textbox "Email" [ref=e71]
+                    - group:
+                      - generic: Email
+                - generic [ref=e73]:
+                  - generic:
+                    - text: Password
+                    - generic: "*"
+                  - generic [ref=e74]:
+                    - textbox "Password" [ref=e75]
+                    - button "toggle password visibility" [ref=e77] [cursor=pointer]:
+                      - img [ref=e78]
+                    - group:
+                      - generic: Password *
+                - generic [ref=e81]:
+                  - generic:
+                    - text: Confirm Password
+                    - generic: "*"
+                  - generic [ref=e82]:
+                    - textbox "Confirm Password" [ref=e83]
+                    - group:
+                      - generic: Confirm Password *
+              - button "Reset" [ref=e84] [cursor=pointer]
+      - contentinfo [ref=e85]:
+        - paragraph [ref=e88]:
+          - text: © 2026, Made by
+          - link "GLDeveloper" [ref=e89] [cursor=pointer]:
+            - /url: /
+  - generic:
+    - region "Notifications Alt+T"
+  - generic [ref=e90]:
+    - img [ref=e92]
+    - button "Open Tanstack query devtools" [ref=e141] [cursor=pointer]:
+      - img [ref=e142]
+```

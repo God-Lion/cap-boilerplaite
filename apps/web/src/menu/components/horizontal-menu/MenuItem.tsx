@@ -17,10 +17,7 @@ import StyledMenuSuffix from '../../styles/StyledMenuSuffix'
 import StyledHorizontalMenuItem from '../../styles/horizontal/StyledHorizontalMenuItem'
 import styles from '../../styles/horizontal/horizontalUl.module.css'
 
-export type MenuItemProps = Omit<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  'prefix'
-> &
+export type MenuItemProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'prefix'> &
   RootStylesType &
   Partial<ChildrenType> & {
     icon?: React.ReactElement
@@ -38,10 +35,7 @@ export type MenuItemProps = Omit<
     level?: number
   }
 
-const MenuItem: React.ForwardRefRenderFunction<HTMLLIElement, MenuItemProps> = (
-  props,
-  ref,
-) => {
+const MenuItem: React.ForwardRefRenderFunction<HTMLLIElement, MenuItemProps> = (props, ref) => {
   // Props
   const {
     children,
@@ -64,8 +58,7 @@ const MenuItem: React.ForwardRefRenderFunction<HTMLLIElement, MenuItemProps> = (
   // const tree = useFloatingTree()
   const { toggleVerticalNav, isToggled } = useVerticalNav()
   const { getItemProps } = React.useContext(HorizontalSubMenuContext)
-  const { menuItemStyles, renderExpandedMenuItemIcon, textTruncate } =
-    useHorizontalMenu()
+  const { menuItemStyles, renderExpandedMenuItemIcon, textTruncate } = useHorizontalMenu()
 
   const getMenuItemStyles = (
     element: 'root' | 'button' | 'icon' | 'label' | 'prefix' | 'suffix',
@@ -81,9 +74,7 @@ const MenuItem: React.ForwardRefRenderFunction<HTMLLIElement, MenuItemProps> = (
       if (styleFunction) {
         // If the style function is a function, call it and return the result.
         // Otherwise, return the style function itself.
-        return typeof styleFunction === 'function'
-          ? styleFunction(params)
-          : styleFunction
+        return typeof styleFunction === 'function' ? styleFunction(params) : styleFunction
       }
     }
   }

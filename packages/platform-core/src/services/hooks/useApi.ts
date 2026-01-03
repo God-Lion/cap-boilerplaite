@@ -27,7 +27,7 @@ interface UseApiReturn<T> extends UseApiState<T> {
 
 /**
  * Enhanced hook for handling API calls with better state management
- * 
+ *
  * @example
  * ```tsx
  * const { data, loading, error, execute } = useApi(
@@ -37,14 +37,14 @@ interface UseApiReturn<T> extends UseApiState<T> {
  *     onError: (error) => toast.error(error.message)
  *   }
  * )
- * 
+ *
  * // Later in your code
  * await execute(userId)
  * ```
  */
 export function useApi<T = any>(
   apiFunction: (...args: any[]) => Promise<FetchResponse<T>>,
-  options?: UseApiOptions<T>
+  options?: UseApiOptions<T>,
 ): UseApiReturn<T> {
   const [state, setState] = useState<UseApiState<T>>({
     data: options?.initialData ?? null,
@@ -114,7 +114,7 @@ export function useApi<T = any>(
         throw apiError
       }
     },
-    [apiFunction, options]
+    [apiFunction, options],
   )
 
   const reset = useCallback(() => {
@@ -150,7 +150,7 @@ export function useApi<T = any>(
 export function useApiEffect<T = any>(
   apiFunction: () => Promise<FetchResponse<T>>,
   deps: any[] = [],
-  options?: UseApiOptions<T>
+  options?: UseApiOptions<T>,
 ): UseApiReturn<T> {
   const apiState = useApi(apiFunction, options)
 
@@ -167,7 +167,7 @@ export function useApiEffect<T = any>(
  */
 export function useApiAll<T extends any[] = any[]>(
   apiFunctions: Array<(...args: any[]) => Promise<FetchResponse>>,
-  options?: UseApiOptions<T>
+  options?: UseApiOptions<T>,
 ) {
   const [state, setState] = useState<UseApiState<T>>({
     data: null,
@@ -186,9 +186,7 @@ export function useApiAll<T extends any[] = any[]>(
           success: false,
         }))
 
-        const responses = await Promise.all(
-          apiFunctions.map((fn) => fn(...args))
-        )
+        const responses = await Promise.all(apiFunctions.map((fn) => fn(...args)))
         const data = responses.map((res) => res.data) as T
 
         setState({
@@ -214,7 +212,7 @@ export function useApiAll<T extends any[] = any[]>(
         throw apiError
       }
     },
-    [apiFunctions, options]
+    [apiFunctions, options],
   )
 
   const reset = useCallback(() => {
@@ -230,7 +228,7 @@ export function useApiAll<T extends any[] = any[]>(
     ...state,
     execute,
     reset,
-    setData: () => { },
-    setError: () => { },
+    setData: () => {},
+    setError: () => {},
   }
 }

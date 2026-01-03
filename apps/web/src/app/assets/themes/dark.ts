@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material'
 import { orange, red } from '@mui/material/colors'
-import { primary, surface, surfaceMixed } from 'src/assets/colors'
+import { primary, surface, surfaceMixed } from '../colors'
 
 const darkTheme = createTheme({
   palette: {

@@ -15,13 +15,10 @@ export type {
   LayoutComponentPosition,
   ChildrenType,
   ThemeColor,
+  Dictionary,
 } from './core-types'
 
-export * from './module';
-export * from '../store';
-export * from '../configs/themeConfig';
-export * from './app-types';
-
-
-
-
+export * from './module'
+export * from '../store'
+export * from '../configs/themeConfig'
+export * from './app-types'

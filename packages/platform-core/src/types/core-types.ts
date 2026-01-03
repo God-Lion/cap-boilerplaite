@@ -10,7 +10,7 @@ export type SystemMode = 'light' | 'dark'
 
 export type Direction = 'ltr' | 'rtl'
 
-export type LayoutComponentWidth = 'full' | 'boxed' | 'compact'
+export type LayoutComponentWidth = 'compact' | 'wide' | 'full'
 
 export type LayoutComponentPosition = 'fixed' | 'static'
 
@@ -18,10 +18,8 @@ export type ChildrenType = {
   children: ReactNode
 }
 
-export type ThemeColor =
-  | 'primary'
-  | 'secondary'
-  | 'error'
-  | 'warning'
-  | 'info'
-  | 'success'
+export type DemoName = 'demo-1' | 'demo-2' | 'demo-3' | 'demo-4' | 'demo-5' | 'demo-6' | null
+
+export type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
+
+export type Dictionary = Record<string, any>

@@ -1,13 +1,5 @@
 import { useForm } from 'react-hook-form'
-import {
-  Box,
-  Button,
-  Grid,
-  Typography,
-  CardContent,
-  Input,
-  Avatar,
-} from '@mui/material'
+import { Box, Button, Grid, Typography, CardContent, Input, Avatar } from '@mui/material'
 import { AccountCircle } from '@mui/icons-material'
 // import { FormLayout } from 'src/components/form'
 import FormLayout from './FormLayout'
@@ -24,11 +16,7 @@ export default function UpdateAboutYou() {
   })
   const onSubmit = () => {}
   return (
-    <FormLayout
-      title='About You'
-      description='Update your publicly shared info'
-      warning={''}
-    >
+    <FormLayout title='About You' description='Update your publicly shared info' warning={''}>
       <Box component='form' onSubmit={controlForm.handleSubmit(onSubmit)}>
         <Grid
           container
@@ -42,13 +30,7 @@ export default function UpdateAboutYou() {
               display: 'flex',
             }}
           >
-            <Grid
-              item
-              alignItems='center'
-              justifyContent='fl#EF9A9Aex-start'
-              xs={12}
-              sm={4}
-            >
+            <Grid item alignItems='center' justifyContent='fl#EF9A9Aex-start' xs={12} sm={4}>
               <label htmlFor='icon-button-file'>
                 <Input
                   sx={{ display: 'none' }}

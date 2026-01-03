@@ -1,4 +1,5 @@
 import React from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { useForm, Controller } from 'react-hook-form'
 import {
   Box,
@@ -12,9 +13,10 @@ import {
   Stack,
 } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { IUserReponse, useAuth, HttpError } from '@cap/platform-core'
+import { IUserResponse, useAuth, HttpError } from '@cap/platform-core'
+import FormLayout from './FormLayout'
 
-export default function ChangeEmail({ user }: { user: IUserReponse }) {
+export default function ChangeEmail({ user }: { user: IUserResponse }) {
   const { refreshAuth } = useAuth()
   const [loading, setLoading] = React.useState<boolean>(false)
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
@@ -36,8 +38,7 @@ export default function ChangeEmail({ user }: { user: IUserReponse }) {
         email?: string
         password: string
       }
-      const hasChangedEmail =
-        user.firstName.toLowerCase() !== data.email?.toLowerCase()
+      const hasChangedEmail = user.firstName.toLowerCase() !== data.email?.toLowerCase()
       const hasChangedEmailCase = !hasChangedEmail && user.email !== data.email
 
       if (hasChangedEmail) body = { ...body, email: data.email }
@@ -115,10 +116,8 @@ export default function ChangeEmail({ user }: { user: IUserReponse }) {
                   },
                   onBlur: (e) => {
                     const email = e.target.value
-                    const hasChangedEmail =
-                      user.firstName.toLowerCase() !== email?.toLowerCase()
-                    const hasChangedEmailCase =
-                      !hasChangedEmail && user.email !== email
+                    const hasChangedEmail = user.firstName.toLowerCase() !== email?.toLowerCase()
+                    const hasChangedEmailCase = !hasChangedEmail && user.email !== email
                     if (!email)
                       controlForm.setError(
                         'email',
@@ -134,8 +133,7 @@ export default function ChangeEmail({ user }: { user: IUserReponse }) {
                         'email',
                         {
                           type: 'exist',
-                          message:
-                            'The submitted email matches your current email',
+                          message: 'The submitted email matches your current email',
                         },
                         { shouldFocus: true },
                       )

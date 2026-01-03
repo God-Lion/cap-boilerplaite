@@ -1,7 +1,6 @@
 import React from 'react'
 import DialogCloseButton from '../DialogCloseButton'
-import 'src/core/components/mui/Avatar'
-import themeConfig from 'src/configs/themeConfig'
+import { themeConfig } from '@cap/platform-core'
 import {
   Dialog,
   DialogTitle,
@@ -111,54 +110,16 @@ const ShareProject = ({ open, setOpen }: ShareProjectProps) => {
         </Typography>
       </DialogTitle>
       <DialogContent className='flex flex-col gap-6 pbs-0 sm:pli-16 sm:pbe-16'>
-        <div className='flex flex-col gap-2'>
-          {/* <CustomAutocomplete
-            fullWidth
-            options={autocompleteOptions || []}
-            ListboxComponent={List}
-            id='add-member'
-            getOptionLabel={(option) => option.name}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                size='small'
-                placeholder='Add project members...'
-                label='Add Members'
-              />
-            )}
-            renderOption={(props, option) => (
-              <ListItem
-                {...props}
-                key={option.name}
-                sx={{ width: 'calc(100% - 1rem)' }}
-              >
-                <ListItemAvatar>
-                  <CustomAvatar
-                    src={`/images/avatars/${option.avatar}`}
-                    alt={option.name}
-                    size={30}
-                  />
-                </ListItemAvatar>
-                <ListItemText primary={option.name} />
-              </ListItem>
-            )}
-          /> */}
-        </div>
+        <div className='flex flex-col gap-2'></div>
         <div className='flex flex-col gap-4'>
           <Typography variant='h5'>{`${data.length} Members`}</Typography>
           <div className='flex flex-col flex-wrap gap-4'>
             {data.map((member, index) => (
               <div key={index} className='flex items-center is-full gap-4'>
-                <Avatar
-                  src={`/images/avatars/${member.avatar}`}
-                  alt={member.name}
-                />
+                <Avatar src={`/images/avatars/${member.avatar}`} alt={member.name} />
                 <div className='flex justify-between items-center is-full overflow-hidden'>
                   <div className='flex flex-col items-start overflow-hidden'>
-                    <Typography
-                      className='truncate is-full'
-                      color='text.primary'
-                    >
+                    <Typography className='truncate is-full' color='text.primary'>
                       {member.name}
                     </Typography>
                     <Typography variant='body2' className='truncate is-full'>
@@ -166,11 +127,7 @@ const ShareProject = ({ open, setOpen }: ShareProjectProps) => {
                     </Typography>
                   </div>
 
-                  <IconButton
-                    className='sm:hidden'
-                    size='small'
-                    onClick={handleClick}
-                  >
+                  <IconButton className='sm:hidden' size='small' onClick={handleClick}>
                     <i className='tabler-chevron-down text-base' />
                   </IconButton>
 

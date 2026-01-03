@@ -25,9 +25,9 @@ const card = (skin: Skin): Theme['components'] => {
             paddingBlockStart: 0,
           },
           '& + .MuiCollapse-root .MuiCardContent-root:first-of-type, & + .MuiCollapse-root .MuiCardActions-root:first-of-type':
-          {
-            paddingBlockStart: 0,
-          },
+            {
+              paddingBlockStart: 0,
+            },
         }),
         subheader: ({ theme }) => ({
           ...theme.typography.subtitle1,
@@ -52,14 +52,13 @@ const card = (skin: Skin): Theme['components'] => {
           '&:last-child': {
             paddingBlockEnd: theme.spacing(6),
           },
-          '& + .MuiCardHeader-root, & + .MuiCardContent-root, & + .MuiCardActions-root':
-          {
+          '& + .MuiCardHeader-root, & + .MuiCardContent-root, & + .MuiCardActions-root': {
             paddingBlockStart: 0,
           },
           '& + .MuiCollapse-root .MuiCardHeader-root:first-of-type, & + .MuiCollapse-root .MuiCardContent-root:first-of-type, & + .MuiCollapse-root .MuiCardActions-root:first-of-type':
-          {
-            paddingBlockStart: 0,
-          },
+            {
+              paddingBlockStart: 0,
+            },
           '& > .MuiTabPanel-root': {
             paddingInline: 0,
             paddingBlockEnd: 0,
@@ -83,14 +82,13 @@ const card = (skin: Skin): Theme['components'] => {
               paddingInline: theme.spacing(3),
             },
           },
-          '& + .MuiCardHeader-root, & + .MuiCardContent-root, & + .MuiCardActions-root':
-          {
+          '& + .MuiCardHeader-root, & + .MuiCardContent-root, & + .MuiCardActions-root': {
             paddingBlockStart: 0,
           },
           '& + .MuiCollapse-root .MuiCardHeader-root:first-of-type, & + .MuiCollapse-root .MuiCardContent-root:first-of-type, & + .MuiCollapse-root .MuiCardActions-root:first-of-type':
-          {
-            paddingBlockStart: 0,
-          },
+            {
+              paddingBlockStart: 0,
+            },
         }),
       },
     },

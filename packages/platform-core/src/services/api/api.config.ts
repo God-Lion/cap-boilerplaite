@@ -8,8 +8,8 @@ const getBaseURL = (): string => {
   // Always return a valid URL - never empty string
   if (!envApiUrl) {
     if (isDev) {
-      console.warn('VITE_API_URL not set, using default: http://localhost:8000')
-      return 'http://localhost:8000'
+      console.warn('VITE_API_URL not set, using default: http://localhost:3333')
+      return 'http://localhost:3333'
     }
     console.error('VITE_API_URL not configured for production')
     throw new Error('VITE_API_URL must be configured in production')
@@ -33,7 +33,6 @@ export const API_CONFIG = {
   },
 } as const
 
-
 export const ENDPOINTS = {
   // Health & Metrics
   health: {
@@ -52,7 +51,7 @@ export const ENDPOINTS = {
   // Auth
   auth: {
     register: '/api/auth/register',
-    signup: '/signup',
+    signup: '/api/auth/register',
     login: '/api/auth/login',
     logout: '/api/auth/logout',
     forgotPassword: '/api/auth/forgot-password',
@@ -61,10 +60,12 @@ export const ENDPOINTS = {
     session: '/api/auth/session',
     trackFailedLogin: '/api/auth/track-failed-login',
     verifyEmail: (email: string, signature: string) =>
-      `/verification/email/${email}?signature=${signature}`,
+      `/api/auth/verification/email/${email}?signature=${signature}`,
+    verifyResetPassword: (email: string, signature: string) =>
+      `/api/auth/reset-password/${email}?signature=${signature}`,
+    resendVerification: '/api/auth/verification/email/resend',
     verifyEmailToken: (token: string) => `/api/auth/verify-email/${token}`,
-    validateUser: (id: string | number, token: string) =>
-      `/validate/${id}/${token}`,
+    validateUser: (id: string | number, token: string) => `/api/auth/validate/${id}/${token}`,
     mfa: {
       setup: '/api/auth/mfa/setup',
       verify: '/api/auth/mfa/verify',
@@ -76,6 +77,12 @@ export const ENDPOINTS = {
     revokeAllSessions: '/api/auth/sessions/revoke-all',
     loginHistory: '/api/auth/login-history',
     securityLogs: '/api/auth/security-logs',
+    passkey: {
+      registerStart: '/api/auth/passkey/register/start',
+      registerFinish: '/api/auth/passkey/register/finish',
+      loginStart: '/api/auth/passkey/login/start',
+      loginFinish: '/api/auth/passkey/login/finish',
+    },
   },
 
   // User
@@ -109,78 +116,12 @@ export const ENDPOINTS = {
   // Translation
   translation: (code: string) => `/translate/${code}.json`,
 
-  // Career Recommendations
-  career: {
-    analyzeFile: '/api/career/analyze/file',
-    analyzeText: '/api/career/analyze/text',
-    getAnalysis: (id: number) => `/api/career/analysis/${id}`,
-    getHistory: '/api/career/history',
-    exportAnalysis: (id: number) => `/api/career/export/${id}`,
-    deleteAnalysis: (id: number) => `/api/career/analysis/${id}`,
-    listRoles: '/api/career/roles',
-    getRoleDetails: (roleId: string) => `/api/career/roles/${roleId}`,
-    analyzeAnonymous: '/api/career/analyze-anonymous',
-    matchAnonymous: '/api/career/match-anonymous',
-    getGuestSession: (sessionId: string) => `/api/career/session/${sessionId}`,
-    deleteGuestSession: (sessionId: string) => `/api/career/session/${sessionId}`,
-  },
-
   // Guest/Anonymous Routes
   guest: {
     analyzeAnonymous: '/api/guest/analyze-anonymous',
     matchAnonymous: '/api/guest/match-anonymous',
     getSession: (sessionId: string) => `/api/guest/session/${sessionId}`,
     deleteSession: (sessionId: string) => `/api/guest/session/${sessionId}`,
-  },
-
-  // Jobs Management
-  jobs: {
-    list: '/api/jobs',
-    byId: (id: number) => `/api/jobs/${id}`,
-    search: '/api/jobs/search',
-    create: '/api/jobs',
-    update: (id: number) => `/api/jobs/${id}`,
-    delete: (id: number) => `/api/jobs/${id}`,
-    statistics: '/api/jobs/statistics',
-    save: (id: number) => `/api/jobs/${id}/save`,
-    unsave: (id: number) => `/api/jobs/${id}/save`,
-    saved: '/api/jobs/saved',
-    apply: (id: number) => `/api/jobs/${id}/apply`,
-    applications: '/api/jobs/applications',
-    updateApplicationStatus: (applicationId: number) =>
-      `/api/jobs/applications/${applicationId}/status`,
-  },
-
-  // Scraper
-  scraper: {
-    start: '/api/scraping/start',
-    sessions: '/api/scraping/sessions',
-    session: (id: number | string) => `/api/scraping/sessions/${id}`,
-    stop: (id: number | string) => `/api/scraping/sessions/${id}/stop`,
-  },
-
-  // Companies
-  companies: {
-    list: '/api/companies/',
-    byId: (id: number) => `/api/companies/${id}`,
-    search: '/api/companies/search/',
-    jobs: (id: number) => `/api/companies/${id}/jobs`,
-    create: '/api/companies/',
-    update: (id: number) => `/api/companies/${id}`,
-    delete: (id: number) => `/api/companies/${id}`,
-  },
-
-  // Job Analysis
-  jobAnalysis: {
-    list: '/api/analysis/',
-    byJobId: (jobId: number) => `/api/analysis/jobs/${jobId}/analysis`,
-    stats: '/api/analysis/stats',
-    recommended: '/api/analysis/recommended',
-    create: '/api/analysis',
-    update: (jobId: number) => `/api/analysis/${jobId}`,
-    delete: (jobId: number) => `/api/analysis/${jobId}`,
-    bulkCreate: '/api/analysis/bulk',
-    bulkDelete: '/api/analysis/bulk-delete',
   },
 
   // Statistics
@@ -329,8 +270,9 @@ export const QUERY_KEYS = {
       status: ['auth', 'mfa', 'status'] as const,
     },
     sessions: ['auth', 'sessions'] as const,
+    // cspell:ignore pitr
     loginHistory: (limit: number) => ['auth', 'login-history', limit] as const,
-    securityLogs: (params: any) => ['auth', 'security-logs', params] as const,
+    securityLogs: (params: unknown) => ['auth', 'security-logs', params] as const,
     linkedAccounts: ['auth', 'linked-accounts'] as const,
     emailPreferences: ['auth', 'email-preferences'] as const,
   },
@@ -338,112 +280,11 @@ export const QUERY_KEYS = {
   translation: (code: string) => ['translation', code] as const,
   settings: ['settings'] as const,
   validateUser: (id: string | number, token: string) => ['validateUser', id, token] as const,
-  categories: ['categories'] as const,
-  participants: {
-    all: ['participants'] as const,
-    byEdition: (editionId: number) => ['edition', 'participant', editionId] as const,
-    bySlug: (slug: string) => ['participant', slug] as const,
-    phase: ['participants', 'phase'] as const,
-  },
 
   users: {
     all: ['users'] as const,
     byId: (id: number) => ['users', id] as const,
     byUserType: (userTypeId: number) => ['users', userTypeId] as const,
-  },
-
-  // Resume Profiles
-  profiles: {
-    all: ['profiles'] as const,
-    byId: (id: number) => ['profiles', id] as const,
-    active: ['profiles', 'active'] as const,
-    activeStatus: (id: number) => ['profiles', id, 'active-status'] as const,
-  },
-
-  // Career
-  career: {
-    all: ['career'] as const,
-    analysis: (id: number) => ['career', 'analysis', id] as const,
-    history: (email: string) => ['career', 'history', email] as const,
-    roles: ['career', 'roles'] as const,
-    roleDetails: (roleId: string) => ['career', 'role', roleId] as const,
-    guestSession: (sessionId: string) => ['career', 'guest', sessionId] as const,
-  },
-
-  // Guest/Anonymous
-  guest: {
-    all: ['guest'] as const,
-    session: (sessionId: string) => ['guest', 'session', sessionId] as const,
-    analysis: (sessionId: string) => ['guest', 'analysis', sessionId] as const,
-    matches: (sessionId: string, limit: number) => ['guest', 'matches', sessionId, limit] as const,
-  },
-
-  // Jobs
-  jobs: {
-    all: ['jobs'] as const,
-    list: (params: string) => ['jobs', 'list', params] as const,
-    byId: (id: number) => ['jobs', id] as const,
-    search: (query: string) => ['jobs', 'search', query] as const,
-    statistics: ['jobs', 'statistics'] as const,
-    saved: ['jobs', 'saved'] as const,
-    applications: ['jobs', 'applications'] as const,
-    applicationById: (id: number) => ['jobs', 'applications', id] as const,
-  },
-
-  // Applications
-  applications: {
-    all: ['applications'] as const,
-    list: (params: string) => ['applications', 'list', params] as const,
-    byId: (id: number) => ['applications', id] as const,
-    search: (query: string) => ['applications', 'search', query] as const,
-    statistics: ['applications', 'statistics'] as const,
-    timeline: (id: number) => ['applications', id, 'timeline'] as const,
-  },
-
-  // Scraper
-  scraper: {
-    all: ['scraper'] as const,
-    list: (params: string) => ['scraper', 'list', params] as const,
-    byId: (id: number | string) => ['scraper', 'detail', id] as const,
-    sessions: (params: string) => ['scraper', 'sessions', params] as const,
-    session: (id: number | string) => ['scraper', 'session', id] as const,
-    search: (query: string) => ['scraper', 'search', query] as const,
-    activeSessions: ['scraper', 'active'] as const,
-    history: (limit: number) => ['scraper', 'history', limit] as const,
-    statistics: ['scraper', 'statistics'] as const,
-  },
-
-  // Companies
-  companies: {
-    all: ['companies'] as const,
-    list: (params: string) => ['companies', 'list', params] as const,
-    byId: (id: number) => ['companies', id] as const,
-    search: (query: string) => ['companies', 'search', query] as const,
-    jobs: (companyId: number, params: string) => ['companies', companyId, 'jobs', params] as const,
-  },
-
-  // Job Analysis
-  jobAnalysis: {
-    all: ['jobAnalysis'] as const,
-    list: (params: string) => ['jobAnalysis', 'list', params] as const,
-    byJobId: (jobId: number) => ['jobAnalysis', 'job', jobId] as const,
-    stats: ['jobAnalysis', 'stats'] as const,
-    recommended: (params: string) => ['jobAnalysis', 'recommended', params] as const,
-  },
-
-  // Statistics
-  statistics: {
-    all: ['statistics'] as const,
-    overview: ['statistics', 'overview'] as const,
-    jobsByLocation: (params: string) => ['statistics', 'jobs-by-location', params] as const,
-    jobsByCompany: (params: string) => ['statistics', 'jobs-by-company', params] as const,
-    jobsByType: ['statistics', 'jobs-by-type'] as const,
-    jobsByExperience: ['statistics', 'jobs-by-experience'] as const,
-    scrapingActivity: (params: string) => ['statistics', 'scraping-activity', params] as const,
-    topSkills: (params: string) => ['statistics', 'top-skills', params] as const,
-    recentJobs: (params: string) => ['statistics', 'recent-jobs', params] as const,
-    sessionStatistics: ['statistics', 'session-statistics'] as const,
-    trends: (params: string) => ['statistics', 'trends', params] as const,
   },
 
   // Dashboard
@@ -460,7 +301,8 @@ export const QUERY_KEYS = {
     all: ['automation'] as const,
     config: ['automation', 'config'] as const,
     status: ['automation', 'status'] as const,
-    history: (params?: string) => params ? ['automation', 'history', params] as const : ['automation', 'history'] as const,
+    history: (params?: string) =>
+      params ? (['automation', 'history', params] as const) : (['automation', 'history'] as const),
     stats: ['automation', 'stats'] as const,
     logs: (params: string) => ['automation', 'logs', params] as const,
   },

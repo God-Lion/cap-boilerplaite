@@ -52,11 +52,7 @@ export interface ChildrenType {
 export interface RenderExpandedMenuItemIcon {
   icon?:
     | ReactElement
-    | ((params: {
-        level?: number
-        active?: boolean
-        disabled?: boolean
-      }) => ReactElement | null)
+    | ((params: { level?: number; active?: boolean; disabled?: boolean }) => ReactElement | null)
     | null
   level?: number
 }

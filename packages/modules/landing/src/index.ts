@@ -30,18 +30,6 @@ export {
   type WorkflowState,
 } from './context'
 
-// Components
-export { WorkflowPipeline } from './components'
-
-// Hooks - Workflow Orchestration
-export {
-  useWorkflowOrchestrator,
-  type StepExecutionResult,
-  type PipelineMetrics,
-  type PipelineStatus,
-  type StepConfig,
-} from './hooks'
-
 import { CAPModule } from '@cap/platform-core'
 import { landingRoutes } from './routes/routes'
 
@@ -50,4 +38,3 @@ export const LandingModule: CAPModule = {
   version: '1.0.0',
   routes: landingRoutes,
 }
-

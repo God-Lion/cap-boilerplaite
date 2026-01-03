@@ -13,6 +13,8 @@ import { useSettings as useZustandSettings } from '../store'
 import themeConfig from '../configs/themeConfig'
 import primaryColorConfig from '../configs/primaryColorConfig'
 import { useObjectCookie } from '../services/hooks'
+import demoConfigs from '../configs/demoConfigs'
+import { DemoName } from '../types/core-types'
 
 export type Settings = {
   mode?: Mode
@@ -33,58 +35,62 @@ type UpdateSettingsOptions = {
 // SettingsContextProps type
 type SettingsContextProps = {
   settings: Settings
-  updateSettings: (
-    settings: Partial<Settings>,
-    options?: UpdateSettingsOptions,
-  ) => void
+  updateSettings: (settings: Partial<Settings>, options?: UpdateSettingsOptions) => void
   isSettingsChanged: boolean
   resetSettings: () => void
   updatePageSettings: (settings: Partial<Settings>) => () => void
 }
 
 // Initial Settings Context (kept for backward compatibility)
-export const SettingsContext = React.createContext<SettingsContextProps | null>(
-  null,
-)
+export const SettingsContext = React.createContext<SettingsContextProps | null>(null)
 
 export const SettingsProvider: React.FC<{
   children: React.ReactNode
   settingsCookie: Settings | null
   mode?: Mode
+  demoName?: DemoName
 }> = (props) => {
-  const initialSettings: Settings = {
-    mode: themeConfig.mode,
-    skin: themeConfig.skin,
-    semiDark: themeConfig.semiDark,
-    layout: themeConfig.layout,
-    navbarContentWidth: themeConfig.navbar.contentWidth,
-    contentWidth: themeConfig.contentWidth,
-    footerContentWidth: themeConfig.footer.contentWidth,
-    primaryColor: primaryColorConfig[0].main,
-  }
+  const demoName = props.demoName || null
+  const demoConfigurations = React.useMemo(() => {
+    return demoName ? demoConfigs[demoName] : {}
+  }, [demoName])
+  const initialSettings: Settings = React.useMemo(
+    () => ({
+      mode: themeConfig.mode,
+      skin: themeConfig.skin,
+      semiDark: themeConfig.semiDark,
+      layout: themeConfig.layout,
+      navbarContentWidth: themeConfig.navbar.contentWidth,
+      contentWidth: themeConfig.contentWidth,
+      footerContentWidth: themeConfig.footer.contentWidth,
+      primaryColor: primaryColorConfig[0].main,
+      ...(demoName && demoConfigurations),
+    }),
+    [demoName, demoConfigurations],
+  )
 
-  const updatedInitialSettings = {
-    ...initialSettings,
-    mode: props.mode || themeConfig.mode,
-  }
+  const updatedInitialSettings = React.useMemo(
+    () => ({
+      ...initialSettings,
+      mode: props.mode || (demoName && demoConfigurations.mode) || themeConfig.mode,
+    }),
+    [initialSettings, props.mode, demoName, demoConfigurations],
+  )
 
   // Cookies
   const [settingsCookie, updateSettingsCookie] = useObjectCookie<Settings>(
-    themeConfig.settingsCookieName,
-    updatedInitialSettings,
+    demoName
+      ? themeConfig.settingsCookieName.replace('demo-1', demoName)
+      : themeConfig.settingsCookieName,
+    JSON.stringify(props.settingsCookie) !== '{}' ? props.settingsCookie : updatedInitialSettings,
   )
 
   // State
   const [_settingsState, _updateSettingsState] = React.useState<Settings>(
-    JSON.stringify(settingsCookie) !== '{}'
-      ? settingsCookie
-      : updatedInitialSettings,
+    JSON.stringify(settingsCookie) !== '{}' ? settingsCookie : updatedInitialSettings,
   )
 
-  const updateSettings = (
-    settings: Partial<Settings>,
-    options?: UpdateSettingsOptions,
-  ) => {
+  const updateSettings = (settings: Partial<Settings>, options?: UpdateSettingsOptions) => {
     const { updateCookie = true } = options || {}
     _updateSettingsState((prev) => {
       const newSettings = { ...prev, ...settings }
@@ -119,8 +125,7 @@ export const SettingsProvider: React.FC<{
 
   const isSettingsChanged = React.useMemo(
     () => JSON.stringify(initialSettings) !== JSON.stringify(_settingsState),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [_settingsState],
+    [initialSettings, _settingsState],
   )
 
   return (
@@ -149,7 +154,7 @@ export const useSettings = () => {
 
   // Wrap updateSettings to handle the updateCookie option (ignored in Zustand)
   const updateSettings = (settings: Partial<Settings>) => {
-    zustandSettings.updateSettings(settings)
+    zustandSettings.updateSettings(settings as any)
   }
 
   return {

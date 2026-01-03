@@ -1,4 +1,3 @@
-
 import { IParticipant } from './IUser'
 
 export interface ICategory {

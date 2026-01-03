@@ -1,12 +1,12 @@
 import { differenceInYears, parseISO } from 'date-fns'
-import departements from 'app/utils/departement_state.json'
+import { DemoName, SystemMode } from '../types/core-types'
+import themeConfig from '../configs/themeConfig'
+import demoConfigs from '../configs/demoConfigs'
+import { Settings } from '../contexts/settingsContext'
+import { getCookie, getJsonCookie } from './cookieUtils'
 
 export const isObjectEmpty = (objectName: object) => {
-  return (
-    objectName &&
-    Object.keys(objectName).length === 0 &&
-    objectName.constructor === Object
-  )
+  return objectName && Object.keys(objectName).length === 0 && objectName.constructor === Object
 }
 
 export const isKeyIn = (obj: object, key: string) => {
@@ -40,9 +40,7 @@ export const showPermissions = (userTypeID: number) => {
 
 export function category(dateBirth: string | object): number {
   const birthDate =
-    typeof dateBirth === 'string'
-      ? parseISO(dateBirth)
-      : new Date(dateBirth as Date)
+    typeof dateBirth === 'string' ? parseISO(dateBirth) : new Date(dateBirth as Date)
   const age = differenceInYears(new Date(), birthDate)
   if (age >= 7 && age <= 12) return 1
   if (age >= 13 && age <= 17) return 2
@@ -50,11 +48,82 @@ export function category(dateBirth: string | object): number {
   return -1
 }
 
-export function getCommunes(): Array<string> {
-  const communes: Array<string> = []
-  for (const departement of departements)
-    for (const arrondissement of departement.arrondissement)
-      for (const commune of arrondissement.commune)
-        communes.push(commune.commune)
-  return communes
+/**
+ * Get the demo name from URL query params or localStorage
+ * In a client-side SPA, we use URL params or localStorage instead of server headers
+ */
+export const getDemoName = (): DemoName => {
+  if (typeof window === 'undefined') return null
+
+  // Check URL params first
+  const urlParams = new URLSearchParams(window.location.search)
+  const urlDemo = urlParams.get('demo') as DemoName
+
+  if (urlDemo && Object.keys(demoConfigs).includes(urlDemo)) {
+    return urlDemo
+  }
+
+  // Fall back to localStorage
+  const storedDemo = localStorage.getItem('demoName') as DemoName
+  if (storedDemo && Object.keys(demoConfigs).includes(storedDemo)) {
+    return storedDemo
+  }
+
+  return null
+}
+
+/**
+ * Get settings from cookie (client-side)
+ */
+export const getSettingsFromCookie = (): Settings => {
+  const demoName = getDemoName()
+
+  const cookieName = demoName
+    ? themeConfig.settingsCookieName.replace('demo-1', demoName)
+    : themeConfig.settingsCookieName
+
+  return getJsonCookie<Settings>(cookieName, {} as Settings)
+}
+
+/**
+ * Get the mode setting
+ */
+export const getMode = () => {
+  const settingsCookie = getSettingsFromCookie()
+  const demoName = getDemoName()
+
+  // Get mode from cookie or fallback to demo config or theme config
+  const _mode = settingsCookie.mode || (demoName && demoConfigs[demoName]?.mode) || themeConfig.mode
+
+  return _mode
+}
+
+/**
+ * Get system mode (resolved from 'system' preference)
+ */
+export const getSystemMode = (): SystemMode => {
+  const mode = getMode()
+
+  const colorPrefCookie = getCookie('colorPref') as SystemMode | null
+
+  return (mode === 'system' ? colorPrefCookie || 'light' : mode) || 'light'
+}
+
+/**
+ * Get server mode (for SSR compatibility, returns resolved mode)
+ */
+export const getServerMode = () => {
+  const mode = getMode()
+  const systemMode = getSystemMode()
+
+  return mode === 'system' ? systemMode : mode
+}
+
+/**
+ * Get skin setting
+ */
+export const getSkin = () => {
+  const settingsCookie = getSettingsFromCookie()
+
+  return settingsCookie.skin || 'default'
 }

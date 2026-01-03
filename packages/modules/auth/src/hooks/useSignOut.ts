@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useLogout } from '../hooks/useAuthQuery'
-import { useAuth, Session, StorageManager } from '@cap/platform-core'
-
+import { useAuth, StorageManager } from '@cap/platform-core'
 
 // import StorageManager from '../storage'
 
@@ -32,7 +31,7 @@ interface UseSignOutOptions {
  */
 export const useSignOut = (options: UseSignOutOptions = {}) => {
   const {
-    redirectTo = '/auth/signin',
+    redirectTo = '/auth/sign-in',
     onSuccess: customOnSuccess,
     onError: customOnError,
   } = options

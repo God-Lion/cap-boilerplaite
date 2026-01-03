@@ -9,28 +9,16 @@ interface AuthRouteProps {
   requiresVerification?: boolean
 }
 
-const AuthRoute = ({
-  element,
-  allowedRoles,
-  requiresVerification = false,
-}: AuthRouteProps) => {
+const AuthRoute = ({ element, allowedRoles, requiresVerification = false }: AuthRouteProps) => {
   const { user, isAuthenticated, refreshAuth } = useAuth()
   const location = useLocation()
   const [isChecking, setIsChecking] = useState(true)
   const [sessionError, setSessionError] = useState<string | null>(null)
 
-  // Use ref to track if component is mounted and prevent duplicate calls
+  // Use ref to track if component is mounted
   const isMountedRef = useRef(false)
-  const hasCheckedRef = useRef(false)
 
   useEffect(() => {
-    // Prevent duplicate session checks (React 18 Strict Mode calls effects twice)
-    if (hasCheckedRef.current) {
-      setIsChecking(false)
-      return
-    }
-
-    hasCheckedRef.current = true
     isMountedRef.current = true
 
     const checkSession = async () => {
@@ -55,11 +43,11 @@ const AuthRoute = ({
     return () => {
       isMountedRef.current = false
     }
-  }, []) // Empty dependency array - only run once
+  }, [refreshAuth])
 
   if (isChecking) {
     return (
-      <Backdrop open style={{ background: '#FFF', zIndex: 1301 }}>
+      <Backdrop open style={{ background: '#FFF', zIndex: 1400 }}>
         <CircularProgress color='inherit' />
       </Backdrop>
     )
@@ -81,10 +69,7 @@ const AuthRoute = ({
         <Alert severity='warning' sx={{ maxWidth: 500 }}>
           {sessionError}
         </Alert>
-        <Button
-          variant='contained'
-          onClick={() => (window.location.href = '/auth/signin')}
-        >
+        <Button variant='contained' onClick={() => (window.location.href = '/auth/signin')}>
           Go to Login
         </Button>
       </Box>
@@ -95,9 +80,15 @@ const AuthRoute = ({
     return <Navigate to='/auth/signin' replace state={{ from: location }} />
   }
 
+  interface UserWithRole {
+    role: string
+    isVerified?: boolean
+    emailVerified?: boolean
+  }
+
   if (allowedRoles && allowedRoles.length > 0) {
-    const userRole = (user as any).role
-    const hasAccess = allowedRoles.includes(userRole)
+    const userRole = (user as unknown as UserWithRole).role
+    const hasAccess = allowedRoles.includes(userRole as unknown as Roles)
 
     if (!hasAccess) {
       return (
@@ -115,10 +106,7 @@ const AuthRoute = ({
           <Alert severity='error' sx={{ maxWidth: 500 }}>
             You don't have permission to access this page.
           </Alert>
-          <Button
-            variant='contained'
-            onClick={() => (window.location.href = '/dashboard')}
-          >
+          <Button variant='contained' onClick={() => (window.location.href = '/dashboard')}>
             Go to Dashboard
           </Button>
         </Box>
@@ -127,7 +115,8 @@ const AuthRoute = ({
   }
 
   if (requiresVerification) {
-    const isVerified = (user as any).isVerified || (user as any).emailVerified
+    const u = user as unknown as UserWithRole
+    const isVerified = u.isVerified || u.emailVerified
 
     if (!isVerified) {
       return (
@@ -143,8 +132,8 @@ const AuthRoute = ({
           }}
         >
           <Alert severity='warning' sx={{ maxWidth: 500 }}>
-            Please verify your email address to access this feature. Check your
-            inbox for a verification email.
+            Please verify your email address to access this feature. Check your inbox for a
+            verification email.
           </Alert>
           <Button
             variant='contained'
@@ -160,7 +149,7 @@ const AuthRoute = ({
   return (
     <Suspense
       fallback={
-        <Backdrop open style={{ background: '#FFF', zIndex: 1301 }}>
+        <Backdrop open style={{ background: '#FFF', zIndex: 1400 }}>
           <CircularProgress color='inherit' />
         </Backdrop>
       }

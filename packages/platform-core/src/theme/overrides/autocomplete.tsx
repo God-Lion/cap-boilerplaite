@@ -19,8 +19,7 @@ const autocomplete = (skin: Skin): Theme['components'] => ({
     },
     styleOverrides: {
       root: {
-        '& .MuiButtonBase-root.Mui-disabled i, & .MuiButtonBase-root.Mui-disabled svg':
-        {
+        '& .MuiButtonBase-root.Mui-disabled i, & .MuiButtonBase-root.Mui-disabled svg': {
           color: 'var(--mui-palette-action-disabled)',
         },
         '& .MuiOutlinedInput-input': {

@@ -1,0 +1,71 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img "God Lion Seeker" [ref=e9]
+          - button [ref=e10] [cursor=pointer]:
+            - img [ref=e11]
+        - navigation [ref=e14]:
+          - list [ref=e15]:
+            - listitem [ref=e16]:
+              - list [ref=e17]:
+                - listitem [ref=e18]:
+                  - generic [ref=e19]: Apps & Pages
+                - listitem [ref=e20]:
+                  - generic [ref=e21] [cursor=pointer]:
+                    - generic [ref=e22]: Auth Pages
+                    - img [ref=e25]
+    - generic [ref=e27]:
+      - banner:
+        - generic [ref=e29]:
+          - generic [ref=e32] [cursor=pointer]:
+            - button [ref=e33]:
+              - img [ref=e34]
+            - paragraph [ref=e36]: Search ⌘K
+          - generic [ref=e37]:
+            - button [ref=e38] [cursor=pointer]:
+              - img [ref=e39]
+            - button "Switch theme mode - currently Light" [ref=e41] [cursor=pointer]:
+              - img [ref=e42]
+            - button [ref=e44] [cursor=pointer]:
+              - img [ref=e45]
+            - button [ref=e47] [cursor=pointer]:
+              - img [ref=e49]
+            - img [ref=e54] [cursor=pointer]
+      - main [ref=e58]:
+        - main [ref=e59]:
+          - generic [ref=e61]:
+            - img "God Lion Seeker Logo" [ref=e63]
+            - img [ref=e65]
+            - heading "Enter Verification Code" [level=1] [ref=e67]
+            - paragraph [ref=e68]: We've sent a 6-digit code to your email. The code expires in 10 minutes.
+            - generic [ref=e69]:
+              - generic [ref=e70]:
+                - textbox "Please enter OTP character 1" [ref=e71]
+                - textbox "Please enter OTP character 2" [ref=e72]
+                - textbox "Please enter OTP character 3" [ref=e73]
+                - textbox "Please enter OTP character 4" [ref=e74]
+                - textbox "Please enter OTP character 5" [ref=e75]
+                - textbox "Please enter OTP character 6" [ref=e76]
+              - generic [ref=e77]:
+                - button "Verify" [ref=e78] [cursor=pointer]
+                - generic [ref=e79]:
+                  - paragraph [ref=e80]: Didn't receive the code?
+                  - link "Resend" [ref=e81] [cursor=pointer]:
+                    - /url: /auth/verification/otp
+      - contentinfo [ref=e82]:
+        - paragraph [ref=e85]:
+          - text: © 2026, Made by
+          - link "GLDeveloper" [ref=e86] [cursor=pointer]:
+            - /url: /
+  - generic:
+    - region "Notifications Alt+T"
+  - generic [ref=e87]:
+    - img [ref=e89]
+    - button "Open Tanstack query devtools" [ref=e138] [cursor=pointer]:
+      - img [ref=e139]
+```

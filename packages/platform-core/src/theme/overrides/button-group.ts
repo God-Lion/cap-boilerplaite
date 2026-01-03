@@ -252,8 +252,7 @@ const buttonGroup: Theme['components'] = {
         style: {
           '& .MuiButtonGroup-firstButton, & .MuiButtonGroup-middleButton': {
             '&, &.Mui-disabled': {
-              borderBottom:
-                '1px solid var(--mui-palette-secondary-darkOpacity)',
+              borderBottom: '1px solid var(--mui-palette-secondary-darkOpacity)',
             },
           },
         },

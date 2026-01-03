@@ -1,0 +1,97 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - img "God Lion Seeker" [ref=e9]
+          - button [ref=e10] [cursor=pointer]:
+            - img [ref=e11]
+        - navigation [ref=e14]:
+          - list [ref=e15]:
+            - listitem [ref=e16]:
+              - list [ref=e17]:
+                - listitem [ref=e18]:
+                  - generic [ref=e19]: Apps & Pages
+                - listitem [ref=e20]:
+                  - generic [ref=e21] [cursor=pointer]:
+                    - generic [ref=e22]: Auth Pages
+                    - img [ref=e25]
+    - generic [ref=e27]:
+      - banner:
+        - generic [ref=e29]:
+          - generic [ref=e32] [cursor=pointer]:
+            - button [ref=e33]:
+              - img [ref=e34]
+            - paragraph [ref=e36]: Search ⌘K
+          - generic [ref=e37]:
+            - button [ref=e38] [cursor=pointer]:
+              - img [ref=e39]
+            - button "Switch theme mode - currently Light" [ref=e41] [cursor=pointer]:
+              - img [ref=e42]
+            - button [ref=e44] [cursor=pointer]:
+              - img [ref=e45]
+            - button [ref=e47] [cursor=pointer]:
+              - img [ref=e49]
+            - img [ref=e54] [cursor=pointer]
+      - main [ref=e58]:
+        - main [ref=e59]:
+          - generic [ref=e61]:
+            - img "God Lion Seeker Logo" [ref=e63]
+            - generic [ref=e64]:
+              - heading "Set a New Password" [level=1] [ref=e65]
+              - paragraph [ref=e66]: Your new password must be different from previous passwords and meet the criteria below.
+            - generic [ref=e67]:
+              - generic [ref=e68]:
+                - generic [ref=e70]:
+                  - generic: New Password
+                  - generic [ref=e71]:
+                    - textbox "New Password" [ref=e72]
+                    - button [ref=e74] [cursor=pointer]:
+                      - img [ref=e75]
+                    - group:
+                      - generic: New Password
+                - generic [ref=e78]:
+                  - generic: Confirm New Password
+                  - generic [ref=e79]:
+                    - textbox "Confirm New Password" [ref=e80]
+                    - button [ref=e82] [cursor=pointer]:
+                      - img [ref=e83]
+                    - group:
+                      - generic: Confirm New Password
+              - generic [ref=e85]:
+                - generic [ref=e86]:
+                  - progressbar [ref=e87]
+                  - paragraph [ref=e89]: Strong
+                - generic [ref=e90]:
+                  - generic [ref=e92]:
+                    - generic:
+                      - checkbox "At least 8 characters" [checked] [disabled]
+                      - img
+                    - paragraph [ref=e93]: At least 8 characters
+                  - generic [ref=e95]:
+                    - generic:
+                      - checkbox "Contains an uppercase letter" [checked] [disabled]
+                      - img
+                    - paragraph [ref=e96]: Contains an uppercase letter
+                  - generic [ref=e98]:
+                    - generic:
+                      - checkbox "Contains a number" [checked] [disabled]
+                      - img
+                    - paragraph [ref=e99]: Contains a number
+                  - generic [ref=e101]:
+                    - generic:
+                      - checkbox "Contains a special character (!@#$%)" [checked] [disabled]
+                      - img
+                    - paragraph [ref=e102]: Contains a special character (!@#$%)
+              - button "Update Password" [ref=e103] [cursor=pointer]
+      - contentinfo [ref=e104]:
+        - paragraph [ref=e107]:
+          - text: © 2026, Made by
+          - link "GLDeveloper" [ref=e108] [cursor=pointer]:
+            - /url: /
+  - generic:
+    - region "Notifications Alt+T"
+```

@@ -47,10 +47,7 @@ const AddContent = ({ handleClose }: { handleClose: () => void }) => {
           placeholder='Enter Permission Name'
           className='mbe-2'
         />
-        <FormControlLabel
-          control={<Checkbox />}
-          label='Set as core permission'
-        />
+        <FormControlLabel control={<Checkbox />} label='Set as core permission' />
       </DialogContent>
       <DialogActions className='flex max-sm:flex-col max-sm:items-center max-sm:gap-2 justify-center pbs-0 sm:pbe-16 sm:pli-16'>
         <Button type='submit' variant='contained' onClick={handleClose}>
@@ -74,9 +71,8 @@ const EditContent = ({ handleClose, data }: EditProps) => {
     <DialogContent className='overflow-visible pbs-0 sm:pli-16'>
       <Alert severity='warning' className='mbe-8'>
         <AlertTitle>Warning!</AlertTitle>
-        By editing the permission name, you might break the system permissions
-        functionality. Please ensure you&#39;re absolutely certain before
-        proceeding.
+        By editing the permission name, you might break the system permissions functionality. Please
+        ensure you&#39;re absolutely certain before proceeding.
       </Alert>
       <div className='flex items-end gap-4 mbe-2'>
         <TextField

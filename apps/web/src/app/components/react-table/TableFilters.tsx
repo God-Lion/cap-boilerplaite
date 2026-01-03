@@ -2,13 +2,7 @@ import React from 'react'
 import type { IPerson } from './types'
 import { CardContent, Grid, MenuItem, TextField } from '@mui/material'
 
-const TableFilters = ({
-  setData,
-  tableData,
-}: {
-  setData: any
-  tableData?: Array<IPerson>
-}) => {
+const TableFilters = ({ setData, tableData }: { setData: any; tableData?: Array<IPerson> }) => {
   // const [role, setRole] = React.useState<IPerson['user_type']>('')
   const [status, setStatus] = React.useState<string>('')
   // const [plan, setPlan] = React.useState<IContent['currentPlan']>('')

@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Typography,
-  Grid,
-  FormControlLabel,
-  Switch,
-  Button,
-  TextField,
-} from '@mui/material'
+import { Typography, Grid, FormControlLabel, Switch, Button, TextField } from '@mui/material'
 
 import DirectionalIcon from 'app/components/DirectionalIcon'
 
@@ -37,9 +30,7 @@ const Billing = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
             label='Card Number'
             placeholder='0000 0000 0000 0000'
             value={cardData.number}
-            onChange={(e) =>
-              setCardData({ ...cardData, number: e.target.value })
-            }
+            onChange={(e) => setCardData({ ...cardData, number: e.target.value })}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
@@ -61,9 +52,7 @@ const Billing = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
             label='Expiry'
             placeholder='MM/YY'
             value={cardData.expiry}
-            onChange={(e) =>
-              setCardData({ ...cardData, expiry: e.target.value })
-            }
+            onChange={(e) => setCardData({ ...cardData, expiry: e.target.value })}
           />
         </Grid>
         <Grid size={{ xs: 6, sm: 3 }}>
@@ -90,10 +79,7 @@ const Billing = ({ activeStep, isLastStep, handleNext, handlePrev }: Props) => {
             disabled={activeStep === 0}
             onClick={handlePrev}
             startIcon={
-              <DirectionalIcon
-                ltrIconClass='tabler-arrow-left'
-                rtlIconClass='tabler-arrow-right'
-              />
+              <DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right' />
             }
           >
             Previous
