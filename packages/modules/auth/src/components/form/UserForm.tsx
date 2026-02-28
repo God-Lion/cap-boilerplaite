@@ -1,4 +1,5 @@
 import React from 'react'
+// Generic Auth Form Component
 import {
   Box,
   Button,
@@ -15,44 +16,50 @@ import {
   Select,
   TextField,
 } from '@mui/material'
-import { makeStyles } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { useForm, Controller } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { cinInput } from './InputCustom'
-// import { handleUserRegister, handlePutUser } from '../../services/app/index'
 
-const useStyles = makeStyles((theme) => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-    width: 100,
-    height: 100,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}))
+export default function UserForm({
+  data,
+  handleClose,
+  _handleClickStatus,
+  setIsUpdated,
+}: {
+  data: any
+  handleClose: () => void
+  _handleClickStatus: any
+  setIsUpdated: (val: boolean) => void
+}) {
+  const { t } = useTranslation()
 
-export default function UserForm({ data, handleClose, handleClickStatus, setIsUpdated }) {
-  const classes = useStyles()
+  const schema = z.object({
+    id_user: z.union([z.string(), z.number()]).optional(),
+    userTypeID: z
+      .union([z.string(), z.number()])
+      .refine((val) => val !== '', t('auth.common.field_required')),
+    store_fk: z.string().optional(),
+    first_name: z.string().min(1, t('auth.common.field_required')),
+    last_name: z.string().min(1, t('auth.common.field_required')),
+    username: z.string().min(1, t('auth.common.field_required')),
+    adress: z.string().min(1, t('auth.common.field_required')),
+    cin_nif: z.string().min(1, t('auth.common.field_required')),
+    email: z.string().email(t('auth.user_form.invalid_email')),
+    phone: z.string().min(1, t('auth.common.field_required')),
+    password: z.string().min(1, t('auth.common.field_required')),
+    photo: z.string().optional(),
+    createByAdmin: z.boolean().optional(),
+    actif: z.boolean().optional(),
+  })
 
-  const [admin, setAdmin] = React.useState(false)
   const controlForm = useForm({
+    resolver: zodResolver(schema),
     defaultValues: {
+      id_user: '',
       userTypeID: '',
       store_fk: '',
       first_name: '',
@@ -69,7 +76,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
     },
   })
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (_data: any) => {
     // if (data?.id_user) {
     //   const response = await handlePutUser(data)
     //   if (response?.status === 200)
@@ -118,18 +125,17 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
       controlForm.setValue('password', data?.password)
       controlForm.setValue('photo', data?.photo)
       controlForm.setValue('createByAdmin', data?.createByAdmin === 1 ? true : false)
-      setAdmin(controlForm.getValues('createByAdmin'))
       controlForm.setValue('actif', data?.actif === 1 ? true : false)
     }
   }, [controlForm, data])
 
   return (
     <div>
-      <Container component='main' maxWidth='sm' style={{}}>
-        <div className={classes.paper}>
+      <Container component='main' maxWidth='sm'>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Box component='form' onSubmit={controlForm.handleSubmit(onSubmit)} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='userTypeID'
                   control={controlForm.control}
@@ -138,7 +144,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                       fullWidth
                       error={controlForm.formState?.errors?.userTypeID !== undefined}
                     >
-                      <InputLabel id='demo-simple-select-label'>Type utilisateur</InputLabel>
+                      <InputLabel required>{t('auth.user_form.cin_nif')}</InputLabel>
                       <Select
                         {...field}
                         style={{ width: '100%' }}
@@ -164,7 +170,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='store_fk'
                   control={controlForm.control}
@@ -182,7 +188,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Controller
                   name='first_name'
                   control={controlForm.control}
@@ -192,7 +198,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                       required
                       autoFocus
                       type='text'
-                      label='Prénom'
+                      label={t('auth.user_form.first_name')}
                       fullWidth
                       variant='outlined'
                       error={controlForm.formState?.errors?.first_name !== undefined}
@@ -201,7 +207,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Controller
                   name='last_name'
                   control={controlForm.control}
@@ -211,7 +217,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                       required
                       autoFocus
                       type='text'
-                      label='Nom'
+                      label={t('auth.user_form.last_name')}
                       fullWidth
                       variant='outlined'
                       error={controlForm.formState?.errors?.last_name !== undefined}
@@ -220,7 +226,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Controller
                   name='username'
                   control={controlForm.control}
@@ -230,7 +236,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                       required
                       autoFocus
                       type='text'
-                      label='Pseudo'
+                      label={t('auth.user_form.username')}
                       fullWidth
                       variant='outlined'
                       error={controlForm.formState?.errors?.username !== undefined}
@@ -239,7 +245,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='adress'
                   control={controlForm.control}
@@ -248,7 +254,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                       {...field}
                       autoFocus
                       type='address'
-                      label='Adresse'
+                      label={t('auth.user_form.address')}
                       fullWidth
                       variant='outlined'
                       error={controlForm.formState?.errors?.adress !== undefined}
@@ -257,7 +263,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='cin_nif'
                   control={controlForm.control}
@@ -267,10 +273,10 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                       variant='outlined'
                       error={controlForm.formState?.errors?.cin_nif !== undefined}
                     >
-                      <InputLabel required>Cin Nif</InputLabel>
+                      <InputLabel required>{t('auth.user_form.cin_nif')}</InputLabel>
                       <OutlinedInput
                         {...field}
-                        onChange={(nif) => field.onChange(nif)}
+                        onChange={(nif: React.ChangeEvent<HTMLInputElement>) => field.onChange(nif)}
                         inputComponent={cinInput}
                       />
                       <FormHelperText>
@@ -280,23 +286,17 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='email'
                   control={controlForm.control}
-                  rules={{
-                    pattern: {
-                      value: /\S+@\S+\.\S+/,
-                      message: 'Adresse e-mail invalide',
-                    },
-                  }}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       required
                       autoFocus
                       type='email'
-                      label='Email'
+                      label={t('auth.common.email')}
                       fullWidth
                       variant='outlined'
                       error={controlForm.formState?.errors?.email !== undefined}
@@ -305,7 +305,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='phone'
                   control={controlForm.control}
@@ -313,23 +313,21 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                     <PhoneInput
                       {...field}
                       country={'ht'}
-                      placeholder='Téléphone'
+                      placeholder={t('auth.user_form.phone')}
                       inputProps={{
                         name: 'phone',
                         required: true,
                         autoFocus: false,
                       }}
                       inputStyle={{
-                        paddding: 12,
+                        padding: 12,
                         width: '100%',
                       }}
-                      error={controlForm.formState?.errors?.phone !== undefined}
-                      helperText={controlForm.formState?.errors?.phone?.message}
                     />
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='password'
                   control={controlForm.control}
@@ -339,7 +337,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                       required
                       autoFocus
                       type='text'
-                      label='Mot de passe'
+                      label={t('auth.common.password')}
                       fullWidth
                       variant='outlined'
                       error={controlForm.formState?.errors?.password !== undefined}
@@ -348,7 +346,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Controller
                   name='photo'
                   control={controlForm.control}
@@ -357,7 +355,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                       {...field}
                       autoFocus
                       type='text'
-                      label='Photo'
+                      label={t('auth.user_form.photo')}
                       fullWidth
                       variant='outlined'
                       error={controlForm.formState?.errors?.photo !== undefined}
@@ -366,7 +364,7 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name='actif'
                   control={controlForm.control}
@@ -374,11 +372,12 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
                     <FormControl component='fieldset'>
                       <FormControlLabel
                         control={<Checkbox {...field} />}
-                        label='Actif'
+                        label={t('auth.user_form.active')}
                         labelPlacement='end'
+                        // eslint-disable-next-line react-hooks/incompatible-library
                         checked={data?.id ? controlForm.watch('actif') : true}
-                        onClick={(event) => {
-                          controlForm.setValue('actif', event?.target?.value)
+                        onChange={(event, checked) => {
+                          controlForm.setValue('actif', checked)
                         }}
                       />
                     </FormControl>
@@ -390,27 +389,25 @@ export default function UserForm({ data, handleClose, handleClickStatus, setIsUp
               <Button
                 variant='contained'
                 color='error'
-                position='left'
                 onClick={() => {
                   controlForm.reset()
                   handleClose()
                 }}
               >
-                Annuler
+                {t('auth.common.cancel')}
               </Button>
               <Button
                 autoFocus
                 type='submit'
                 color='primary'
                 variant='contained'
-                position='right'
-                className={classes.submit}
+                sx={{ margin: (theme) => theme.spacing(3, 0, 2) }}
               >
-                {data?.id_user ? 'Modifier' : 'Sauvegarder'}
+                {data?.id_user ? t('auth.common.modify') : t('auth.common.save')}
               </Button>
             </DialogActions>
           </Box>
-        </div>
+        </Box>
       </Container>
     </div>
   )

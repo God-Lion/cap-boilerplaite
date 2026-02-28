@@ -20,7 +20,7 @@ export default function FormLayout({
       padding='10px'
       // sx={{ backgroundColor: '#EF9A9A' }}
     >
-      <Grid item xs={12} sm={4}>
+      <Grid size={{ xs: 12, sm: 4 }}>
         <Typography
           variant='h5'
           component='h4'
@@ -50,9 +50,7 @@ export default function FormLayout({
           {warning}
         </Typography>
       </Grid>
-      <Grid item xs={12} sm={8}>
-        {children}
-      </Grid>
+      <Grid size={{ xs: 12, sm: 8 }}>{children}</Grid>
     </Grid>
   )
 }

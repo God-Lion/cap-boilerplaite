@@ -1,12 +1,24 @@
 import { useForm, Controller } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Grid, TextField } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 // import { FormLayout } from 'src/components/form'
 import FormLayout from './FormLayout'
 
 export default function UpdateSocialLinks() {
+  const { t } = useTranslation()
+
+  const schema = z.object({
+    facebookUrl: z.string().url(t('auth.common.field_required')),
+    instagramUrl: z.string().url(t('auth.common.field_required')),
+    threadUrl: z.string().url(t('auth.common.field_required')),
+    twitterUrl: z.string().url(t('auth.common.field_required')),
+  })
+
   const controlForm = useForm({
+    resolver: zodResolver(schema),
     defaultValues: {
-      user_id: NaN,
       facebookUrl: '',
       instagramUrl: '',
       threadUrl: '',
@@ -16,22 +28,16 @@ export default function UpdateSocialLinks() {
   const onSubmit = () => {}
   return (
     <FormLayout
-      title='Update Social Links'
-      description='Share where others can find you'
+      title={t('auth.account.update_social_links')}
+      description={t('auth.account.update_social_links_description')}
       warning={''}
     >
       <Box component='form' onSubmit={controlForm.handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={12}>
+          <Grid size={{ xs: 12, sm: 12 }}>
             <Controller
               name='facebookUrl'
               control={controlForm.control}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'renseigner ton nom',
-                },
-              }}
               render={({ field, formState }) => (
                 <TextField
                   {...field}
@@ -39,30 +45,24 @@ export default function UpdateSocialLinks() {
                   fullWidth
                   // disabled={disabled}
                   type='URL'
-                  label='Facebook URL'
+                  label={t('auth.account.facebook_url')}
                   error={formState?.errors?.facebookUrl !== undefined}
                   helperText={formState?.errors?.facebookUrl?.message}
                 />
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={12}>
+          <Grid size={{ xs: 12, sm: 12 }}>
             <Controller
               name='instagramUrl'
               control={controlForm.control}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'renseigner ton prenom',
-                },
-              }}
               render={({ field, formState }) => (
                 <TextField
                   {...field}
                   required
                   fullWidth
                   type='url'
-                  label='Instagram URL'
+                  label={t('auth.account.instagram_url')}
                   // disabled={disabled}
                   error={formState?.errors?.instagramUrl !== undefined}
                   helperText={formState?.errors?.instagramUrl?.message}
@@ -70,23 +70,17 @@ export default function UpdateSocialLinks() {
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={12}>
+          <Grid size={{ xs: 12, sm: 12 }}>
             <Controller
               name='threadUrl'
               control={controlForm.control}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'renseigner ton prenom',
-                },
-              }}
               render={({ field, formState }) => (
                 <TextField
                   {...field}
                   required
                   fullWidth
                   type='url'
-                  label='Thread URL'
+                  label={t('auth.account.threads_url')}
                   // disabled={disabled}
                   error={formState?.errors?.threadUrl !== undefined}
                   helperText={formState?.errors?.threadUrl?.message}
@@ -94,23 +88,17 @@ export default function UpdateSocialLinks() {
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={12}>
+          <Grid size={{ xs: 12, sm: 12 }}>
             <Controller
               name='twitterUrl'
               control={controlForm.control}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'renseigner ton prenom',
-                },
-              }}
               render={({ field, formState }) => (
                 <TextField
                   {...field}
                   required
                   fullWidth
                   type='url'
-                  label='X (twitter) URL'
+                  label={t('auth.account.twitter_url')}
                   // disabled={disabled}
                   error={formState?.errors?.twitterUrl !== undefined}
                   helperText={formState?.errors?.twitterUrl?.message}
@@ -119,7 +107,7 @@ export default function UpdateSocialLinks() {
             />
           </Grid>
 
-          {/* <Grid item xs={12} sx={{ mt: '30px' }}>
+          {/* <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
               <Stack direction='row' spacing={2} justifyContent='start'>
                 <Button type='submit' variant='contained' color='primary'>
                   Save changes

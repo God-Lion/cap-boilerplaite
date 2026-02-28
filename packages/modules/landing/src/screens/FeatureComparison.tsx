@@ -22,9 +22,9 @@ import {
   Stack,
   Card,
   CardContent,
-  Grid,
   Divider,
 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
@@ -218,7 +218,7 @@ export const FeatureComparison: React.FC = () => {
 
       {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 6 }}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card variant='outlined'>
             <CardContent>
               <Stack spacing={2}>
@@ -242,7 +242,7 @@ export const FeatureComparison: React.FC = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card variant='outlined' sx={{ borderColor: 'primary.main', borderWidth: 2 }}>
             <CardContent>
               <Stack spacing={2}>

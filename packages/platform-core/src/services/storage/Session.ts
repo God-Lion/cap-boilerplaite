@@ -107,7 +107,8 @@ export default class Session {
         const parsed = typeof decrypted === 'string' ? JSON.parse(decrypted) : decrypted
         return Array.isArray(parsed) ? parsed : []
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      console.error('Session fetch/decrypt error:', err)
       this.save([])
       return []
     }

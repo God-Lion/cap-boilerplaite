@@ -1,5 +1,7 @@
 // MUI Imports
 import type { Theme } from '@mui/material/styles'
+import type {} from '@mui/lab/themeAugmentation'
+import type { TabPanelProps } from '@mui/lab/TabPanel'
 
 const tabs: Theme['components'] = {
   MuiTabs: {

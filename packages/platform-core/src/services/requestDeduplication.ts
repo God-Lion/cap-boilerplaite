@@ -13,7 +13,7 @@
  * - Memory-efficient with automatic garbage collection
  */
 
-import { FetchRequestConfig, FetchResponse } from './api/api.fetch.client'
+import { FetchRequestConfig, FetchResponse } from './api/api.client'
 
 interface PendingRequest {
   promise: Promise<FetchResponse>

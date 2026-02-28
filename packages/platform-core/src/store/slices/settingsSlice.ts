@@ -15,12 +15,16 @@ export interface Settings {
   primaryColor: string
 }
 
+export type LayoutOverride = 'public' | 'admin' | 'noLayout' | 'none'
+
 export interface SettingsSlice {
   settings: Settings
   isSettingsChanged: boolean
+  layoutOverride: LayoutOverride
   updateSettings: (settings: Partial<Settings>) => void
   resetSettings: () => void
   updatePageSettings: (settings: Partial<Settings>) => () => void
+  updateLayoutOverride: (layout: LayoutOverride) => void
 }
 
 const defaultSettings: Settings = {
@@ -42,6 +46,7 @@ export const createSettingsSlice: StateCreator<
 > = (set, get) => ({
   settings: defaultSettings,
   isSettingsChanged: false,
+  layoutOverride: 'none',
 
   updateSettings: (newSettings: Partial<Settings>) => {
     set((state) => {
@@ -72,5 +77,11 @@ export const createSettingsSlice: StateCreator<
     return () => {
       set({ settings: currentSettings })
     }
+  },
+
+  updateLayoutOverride: (layout: LayoutOverride) => {
+    set((state) => {
+      state.layoutOverride = layout
+    })
   },
 })

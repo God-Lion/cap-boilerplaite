@@ -1,7 +1,6 @@
 import {
   Container,
   Typography,
-  Grid,
   TextField,
   Button,
   Box,
@@ -10,6 +9,7 @@ import {
   Link,
   IconButton,
 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { themeConfig } from '@cap/platform-core'
 import { EmailOutlined, PeopleOutline, HelpOutline, LinkedIn, Twitter } from '@mui/icons-material'
 
@@ -35,16 +35,16 @@ const ContactUs = () => {
 
         <Grid container spacing={8}>
           {/* Left Side: Contact Form */}
-          <Grid item xs={12} md={7}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <Typography variant='h4' component='h2' gutterBottom>
               Send us a Message
             </Typography>
             <Box component='form' noValidate autoComplete='off'>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField required fullWidth id='full-name' label='Full Name' name='fullName' />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     required
                     fullWidth
@@ -54,10 +54,10 @@ const ContactUs = () => {
                     type='email'
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <TextField required fullWidth id='subject' label='Subject' name='subject' />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <TextField
                     required
                     fullWidth
@@ -68,7 +68,7 @@ const ContactUs = () => {
                     rows={6}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Button
                     type='submit'
                     variant='contained'
@@ -84,7 +84,7 @@ const ContactUs = () => {
           </Grid>
 
           {/* Right Side: Other Ways to Reach Us */}
-          <Grid item xs={12} md={5}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Typography variant='h4' component='h2' gutterBottom>
               Other Ways to Reach Us
             </Typography>

@@ -16,7 +16,8 @@ export const isKeyIn = (obj: object, key: string) => {
 }
 
 export const removeAttr = (obj: object, keys: Array<string>) => {
-  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   for (const key of keys) if (isKeyIn(obj, key)) delete obj[key]
   return obj
 }

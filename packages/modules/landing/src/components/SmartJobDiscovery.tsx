@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Container, Typography, Paper, alpha, useTheme } from '@mui/material'
-import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid2'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ChecklistIcon from '@mui/icons-material/Checklist'
 import TrackChangesIcon from '@mui/icons-material/TrackChanges'
@@ -33,7 +33,7 @@ const SmartJobDiscovery: React.FC = () => {
       <Container maxWidth='lg'>
         <Grid container spacing={6} alignItems='center'>
           {/* Text Content - Left */}
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -122,7 +122,7 @@ const SmartJobDiscovery: React.FC = () => {
           </Grid>
 
           {/* Animated Visualizer - Right */}
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Box
               sx={{
                 position: 'relative',

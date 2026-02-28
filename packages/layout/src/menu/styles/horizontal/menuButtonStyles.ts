@@ -21,18 +21,18 @@ export const menuButtonStyles = (props: MenuButtonStylesProps) => {
     paddingInline: '20px',
 
     '&:hover': {
-      backgroundColor: '#f3f3f3',
+      backgroundColor: 'var(--mui-palette-action-hover)',
     },
 
     '&:focus-visible': {
       outline: 'none',
-      backgroundColor: '#f3f3f3',
+      backgroundColor: 'var(--mui-palette-action-hover)',
     },
 
     ...(disabled && {
       pointerEvents: 'none',
       cursor: 'default',
-      color: '#adadad',
+      color: 'var(--mui-palette-text-disabled)',
     }),
 
     // All the active styles are applied to the button including menu items or submenu
@@ -40,12 +40,15 @@ export const menuButtonStyles = (props: MenuButtonStylesProps) => {
       ...(level === 0
         ? {
             color: 'white',
-            backgroundColor: '#765feb',
+            backgroundColor: 'var(--mui-palette-primary-main)',
           }
         : {
             ...(children
-              ? { backgroundColor: '#f3f3f3' }
-              : { color: '#765feb', backgroundColor: '#765feb1f' }),
+              ? { backgroundColor: 'var(--mui-palette-action-hover)' }
+              : {
+                  color: 'var(--mui-palette-primary-main)',
+                  backgroundColor: 'var(--mui-palette-primary-mainOpacity)',
+                }),
           }),
     },
   })

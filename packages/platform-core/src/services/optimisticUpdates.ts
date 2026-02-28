@@ -13,7 +13,7 @@
  * - TypeScript support
  */
 
-import { HttpError } from './api/api.fetch.client'
+import { HttpError } from './api/api.client'
 
 export type OptimisticUpdateType = 'create' | 'update' | 'delete' | 'custom'
 

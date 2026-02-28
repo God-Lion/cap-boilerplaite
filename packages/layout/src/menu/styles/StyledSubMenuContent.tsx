@@ -4,7 +4,7 @@ import type { SubMenuContentProps } from '../components/vertical-menu/SubMenuCon
 const StyledSubMenuContent = styled.div<SubMenuContentProps>`
   display: none;
   overflow: hidden;
-  z-index: 999;
+  z-index: calc(var(--drawer-z-index) + 1);
   transition: ${({ transitionDuration }) => `block-size ${transitionDuration}ms ease-in-out`};
   box-sizing: border-box;
 

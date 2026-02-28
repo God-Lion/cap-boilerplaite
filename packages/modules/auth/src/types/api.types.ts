@@ -24,16 +24,24 @@ export interface User {
   created_at?: string
   updated_at?: string
   mfa_enabled?: boolean
+  orgName?: string
 }
 
 // ============================================================================
-// Request Types - EXISTING
+// Core Entity Types
 // ============================================================================
+
+export interface SsoDiscoveryResponse {
+  provider: 'oidc' | 'saml' | 'google' | 'github' | 'microsoft' | 'password'
+  clientId?: string
+  organizationId?: number
+  loginUrl?: string
+}
 
 export interface LoginRequest {
   email: string
   password: string
-  remember_me?: boolean
+  rememberMe?: boolean
 }
 
 export interface RegisterRequest {
@@ -51,7 +59,9 @@ export interface ForgotPasswordRequest {
 
 export interface ResetPasswordRequest {
   token: string
-  new_password: string
+  email: string
+  password: string
+  confirmPassword: string
 }
 
 export interface TrackFailedLoginRequest {
@@ -92,8 +102,13 @@ export interface MfaSetupRequest {
   method: 'totp' | 'sms' | 'email'
 }
 
+export interface TotpConfirmEnrollmentRequest {
+  code: string
+}
+
 export interface MfaVerifyRequest {
   code: string
+  secret?: string
   remember_device?: boolean
 }
 
@@ -123,6 +138,19 @@ export interface OAuthLoginRequest {
 export interface LinkOAuthRequest {
   provider: 'google' | 'facebook'
   code: string
+}
+
+export interface UpdatePreferencesRequest {
+  isEnabledProfile?: boolean
+  isEnabledMiniPlayer?: boolean
+  isEnabledAutoplayNext?: boolean
+  isEnabledMentions?: boolean
+  emailOnComment?: boolean
+  emailOnCommentReply?: boolean
+  emailOnAchievement?: boolean
+  emailOnNewDeviceLogin?: boolean
+  emailOnWatchlist?: boolean
+  emailOnMention?: boolean
 }
 
 // ============================================================================
@@ -187,9 +215,22 @@ export interface PasskeyLoginOptionsResponse {
 // MFA
 export interface MfaSetupResponse {
   secret?: string
-  qr_code_url?: string
-  backup_codes: string[]
+  qrCode?: string
+  qr_code_url: string
+  url?: string
+  backup_codes: Array<string>
   method: string
+}
+
+export interface TotpEnrollmentResponse {
+  qrDataUrl: string
+  manualEntry: string
+}
+
+export interface TotpConfirmEnrollmentResponse {
+  enrolled: boolean
+  recoveryCodes: string[]
+  message: string
 }
 
 export interface MfaVerifyResponse {
@@ -219,7 +260,7 @@ export interface UserSession {
 }
 
 export interface SessionsResponse {
-  sessions: UserSession[]
+  sessions: Array<UserSession>
   current_session_id: string
 }
 
@@ -236,7 +277,7 @@ export interface LoginAttempt {
 }
 
 export interface LoginHistoryResponse {
-  attempts: LoginAttempt[]
+  attempts: Array<LoginAttempt>
   total: number
 }
 
@@ -284,4 +325,14 @@ export interface UpdateEmailMutationVars {
 
 export interface UpdatePhotoMutationVars {
   data: UpdatePhotoRequest
+}
+
+export interface SecurityLogParams {
+  page?: number
+  limit?: number
+  userId?: string
+  action?: string
+  from?: string // ISO date
+  to?: string // ISO date
+  [key: string]: string | number | boolean | undefined
 }

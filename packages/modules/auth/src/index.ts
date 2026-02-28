@@ -8,6 +8,8 @@ export * from './hooks'
 export * from './types'
 export * from './services'
 export * from './screens'
+export * from './components'
+export * from './utils/schema'
 
 export const AuthModule: CAPModule = {
   id: 'auth-module',

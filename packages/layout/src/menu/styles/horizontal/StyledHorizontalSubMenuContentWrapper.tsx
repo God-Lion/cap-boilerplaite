@@ -7,7 +7,7 @@ import type { RootStylesType } from '../../types'
 const StyledHorizontalSubMenuContentWrapper = styled.div<{
   $rootStyles?: RootStylesType['rootStyles']
 }>`
-  z-index: 10;
+  z-index: calc(var(--drawer-z-index) + 1);
 
   ${({ $rootStyles }) => $rootStyles};
 `

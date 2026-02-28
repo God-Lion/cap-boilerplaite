@@ -10,17 +10,21 @@ export interface ISession {
 }
 
 export interface IUserResponse {
-  _id: string
+  id?: string | number
+  _id?: string
   firstName: string
   lastName: string
   email: string
-  phone?: string
+  phone?: string | null
   role: number
-  isActive: boolean
+  isActive?: boolean
+  isActif?: number | boolean
+  isAdmin?: boolean
+  isEmailVerified?: boolean
   createdAt: string
   updatedAt: string
-  avatar?: string
-  sessions?: ISession[]
+  avatar?: string | null
+  sessions?: Array<ISession>
 }
 
 export interface IAuth extends IUserResponse {
@@ -30,6 +34,8 @@ export interface IAuth extends IUserResponse {
   full_name?: string
   role: number
   email: string
+  rememberMe?: boolean
+  isAdmin?: boolean
 }
 
 export interface ILogin {
@@ -77,5 +83,5 @@ export interface IProfileSettingsResponse {
   message: string
   success: boolean
   user?: IUserResponse
-  sessions?: ISession[]
+  sessions?: Array<ISession>
 }

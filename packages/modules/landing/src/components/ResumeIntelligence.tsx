@@ -9,7 +9,7 @@ import {
   useTheme,
   CircularProgress,
 } from '@mui/material'
-import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid2'
 import { useNavigate } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -28,7 +28,7 @@ const ResumeIntelligence: React.FC = () => {
       <Container maxWidth='lg'>
         <Grid container spacing={6} alignItems='center'>
           {/* Text Content - Left */}
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -92,7 +92,7 @@ const ResumeIntelligence: React.FC = () => {
           </Grid>
 
           {/* Resume Preview with Annotations - Right */}
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Box
               sx={{
                 position: 'relative',

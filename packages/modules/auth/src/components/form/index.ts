@@ -1,7 +1,7 @@
 export { default as Layout } from './Layout'
 export { default as FormLayout } from './FormLayout'
 export { default as ChangeAccount } from './ChangeAccount'
-export { default as ChangeEmail } from './ChangeEmail'
+export { default as ChangeEmailForm } from './ChangeEmail'
 export { default as ChangePhone } from './ChangePhone'
 export { default as SocialAuthentication } from './SocialAuthentication'
 export { default as DesactivateAccount } from './DesactivateAccount'

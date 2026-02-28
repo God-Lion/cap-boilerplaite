@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Stack } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { Path } from '@cap/module-auth'
 
 /**
  * Placeholder component for authentication buttons (Login/Register)
@@ -11,10 +12,10 @@ const AuthButtons: React.FC = () => {
 
   return (
     <Stack direction='row' spacing={1}>
-      <Button variant='outlined' size='small' onClick={() => navigate('/auth/signin')}>
+      <Button variant='outlined' size='small' onClick={() => navigate(Path.auth.signin)}>
         Login
       </Button>
-      <Button variant='contained' size='small' onClick={() => navigate('/auth/signup')}>
+      <Button variant='contained' size='small' onClick={() => navigate(Path.auth.signup)}>
         Register
       </Button>
     </Stack>

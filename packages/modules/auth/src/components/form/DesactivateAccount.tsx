@@ -1,4 +1,5 @@
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import {
   Box,
   Button,
@@ -14,6 +15,7 @@ import {
 // import { IUserResponse } from '@cap/platform-core'
 
 export default function DesactivateAccount() {
+  const { t } = useTranslation()
   const controlForm = useForm({
     defaultValues: {
       user_id: NaN,
@@ -39,11 +41,11 @@ export default function DesactivateAccount() {
                 component='fieldset'
                 error={formState?.errors?.desactivate !== undefined}
               >
-                <Typography variant='h6'>Delete Account </Typography>
+                <Typography variant='h6'>{t('auth.account.delete_account')} </Typography>
                 <FormControlLabel
                   // required
                   control={<Checkbox {...field} />}
-                  label='I confirm my account deactivation'
+                  label={t('auth.account.deactivate_confirm')}
                   labelPlacement='end'
                   // disabled={disabled}
                   onClick={() => field.onChange(!field.value)}
@@ -54,7 +56,7 @@ export default function DesactivateAccount() {
             )}
           />
         </Grid>
-        <Grid size={{ xs: 12 }} sx={{ mt: '30px' }}>
+        <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
           <Stack direction='row' spacing={2} justifyContent='start'>
             <Button
               // type='reset'
@@ -68,7 +70,7 @@ export default function DesactivateAccount() {
               //   navigate('/home')
               // }}
             >
-              Desactivate account
+              {t('auth.account.deactivate_submit_button')}
             </Button>
           </Stack>
         </Grid>

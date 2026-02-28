@@ -111,7 +111,7 @@ export default function NavBar() {
   const theme: Theme = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
-  const { user } = useAuth()
+  const { user, isAuthenticated } = useAuth()
 
   const guestPages = [
     { name: 'Home', link: '' },
@@ -164,6 +164,8 @@ export default function NavBar() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null)
   }
+
+  console.log('isAuthenticated', isAuthenticated)
 
   return (
     <AppBar position='static'>

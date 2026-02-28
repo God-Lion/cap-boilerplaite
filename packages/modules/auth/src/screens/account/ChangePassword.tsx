@@ -1,0 +1,477 @@
+import React, { useState, useMemo } from 'react'
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+  Card,
+  CardContent,
+  CssBaseline,
+  useTheme,
+  alpha,
+} from '@mui/material'
+import { Lock, Visibility, VisibilityOff, LockReset, ArrowBack, Mail } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
+import { themeConfig } from '@cap/platform-core'
+import { Controller, useForm, useWatch } from 'react-hook-form'
+
+interface ChangePasswordFormData {
+  password: string
+  confirmPassword: string
+}
+
+function ChangePassword() {
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword)
+
+  const controlForm = useForm<ChangePasswordFormData>({
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
+  // Password Logic
+  const passwordValue = useWatch({ control: controlForm.control, name: 'password' }) || ''
+
+  const requirements = useMemo(
+    () => [
+      { label: t('auth.set_new_password.char_limit'), met: passwordValue.length >= 8 },
+      { label: t('auth.set_new_password.uppercase'), met: /[A-Z]/.test(passwordValue) },
+      {
+        label: t('auth.set_new_password.number'),
+        met: /[0-9!@#$%^&*(),.?":{}|<>]/.test(passwordValue),
+      },
+    ],
+    [passwordValue, t],
+  )
+
+  const strength = useMemo(() => {
+    if (!passwordValue) return 0
+    return (requirements.filter((r) => r.met).length / requirements.length) * 100
+  }, [passwordValue, requirements])
+
+  const getStrengthLabel = (val: number) => {
+    if (val <= 33) return t('auth.register.strength_weak')
+    if (val <= 66) return t('auth.register.strength_medium')
+    return t('auth.register.strength_strong')
+  }
+
+  const getStrengthColor = (val: number, theme: any) => {
+    if (val <= 33) return theme.palette.error.main
+    if (val <= 66) return theme.palette.warning.main
+    return theme.palette.success.main
+  }
+
+  const onSubmit = (data: ChangePasswordFormData) => {
+    console.log('Form Submitted', data)
+  }
+
+  return (
+    <>
+      <title>
+        {t('auth.set_new_password.title_page')} - {themeConfig.templateName}
+      </title>
+      <Container
+        component='main'
+        maxWidth={false}
+        disableGutters
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100dvh',
+          justifyContent: 'center',
+          alignItems: 'center',
+          bgcolor: 'background.default',
+          py: { xs: 8, sm: 12 },
+          position: 'relative',
+          overflow: 'hidden',
+          fontFamily: "'Manrope', sans-serif",
+        }}
+      >
+        <CssBaseline />
+        {/* Abstract Background Pattern */}
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: (theme) =>
+              `radial-gradient(${theme.palette.divider} 0.5px, transparent 0.5px)`,
+            backgroundSize: '24px 24px',
+            maskImage: 'linear-gradient(180deg, white, rgba(255, 255, 255, 0))',
+            opacity: 0.2,
+            pointerEvents: 'none',
+          }}
+        />
+
+        <Card
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            maxWidth: '480px',
+            position: 'relative',
+            overflow: 'hidden',
+            borderRadius: '12px',
+            boxShadow: (theme) => theme.shadows[4],
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            mx: { xs: 2, sm: 4 },
+            zIndex: 1,
+          }}
+        >
+          <CardContent
+            sx={{
+              padding: { xs: '32px 24px', sm: '32px 40px' },
+              '&:last-child': { pb: { xs: '32px', sm: '40px' } },
+            }}
+          >
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              {/* Header Icon */}
+              <Box
+                sx={{
+                  width: 56,
+                  height: 56,
+                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 3,
+                }}
+              >
+                <LockReset sx={{ color: 'primary.main', fontSize: 32 }} />
+              </Box>
+
+              <Typography
+                variant='h4'
+                fontWeight='700'
+                textAlign='center'
+                sx={{
+                  fontSize: '1.5rem',
+                  lineHeight: 1.2,
+                  color: 'text.primary',
+                  fontFamily: 'inherit',
+                  mb: 1,
+                }}
+              >
+                {t('auth.account.change_password')}
+              </Typography>
+              <Typography
+                variant='body1'
+                color='text.secondary'
+                textAlign='center'
+                sx={{ fontSize: '0.875rem', fontFamily: 'inherit', lineHeight: 1.5, mb: 4 }}
+              >
+                {t('auth.account.change_password_desc')}
+              </Typography>
+
+              <Box
+                component='form'
+                onSubmit={controlForm.handleSubmit(onSubmit)}
+                noValidate
+                sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}
+              >
+                {/* New Password Field */}
+                <Box>
+                  <Typography
+                    component='label'
+                    htmlFor='password'
+                    sx={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      color: 'text.primary',
+                      mb: 1,
+                    }}
+                  >
+                    {t('auth.set_new_password.password_label')}
+                  </Typography>
+                  <Controller
+                    name='password'
+                    control={controlForm.control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id='password'
+                        fullWidth
+                        placeholder={t('auth.set_new_password.password_placeholder')}
+                        type={showPassword ? 'text' : 'password'}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <Mail sx={{ fontSize: 20, color: 'text.disabled' }} />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position='end'>
+                              <Lock sx={{ fontSize: 18, color: 'text.disabled' }} />
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
+                            height: 48,
+                            bgcolor: 'background.paper',
+                            '& fieldset': { borderColor: 'divider' },
+                            '&:hover fieldset': { borderColor: 'primary.main' },
+                            '&.Mui-focused fieldset': {
+                              borderColor: 'primary.main',
+                              borderWidth: '1px',
+                            },
+                          },
+                          '& .MuiInputBase-input': { fontSize: '1rem' },
+                        }}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    name='password'
+                    control={controlForm.control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id='password'
+                        fullWidth
+                        placeholder={t('auth.set_new_password.password_placeholder')}
+                        type={showPassword ? 'text' : 'password'}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position='end'>
+                              <IconButton onClick={handleClickShowPassword} edge='end'>
+                                {showPassword ? (
+                                  <VisibilityOff sx={{ fontSize: 20 }} />
+                                ) : (
+                                  <Visibility sx={{ fontSize: 20 }} />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
+                            height: 48,
+                            bgcolor: 'background.paper',
+                            '& fieldset': { borderColor: 'divider' },
+                            '&:hover fieldset': { borderColor: 'primary.main' },
+                            '&.Mui-focused fieldset': {
+                              borderColor: 'primary.main',
+                              borderWidth: '1px',
+                            },
+                          },
+                          '& .MuiInputBase-input': { fontSize: '1rem' },
+                        }}
+                      />
+                    )}
+                  />
+
+                  {/* Strength Meter */}
+                  <Box sx={{ mt: 1.5 }}>
+                    <Box sx={{ display: 'flex', gap: 1, height: 4, mb: 1 }}>
+                      {[1, 2, 3, 4].map((i) => (
+                        <Box
+                          key={i}
+                          sx={{
+                            flex: 1,
+                            height: '100%',
+                            borderRadius: 'full',
+                            bgcolor:
+                              strength >= i * 25 ? getStrengthColor(strength, theme) : 'divider',
+                          }}
+                        />
+                      ))}
+                    </Box>
+                    <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+                      {t('auth.register.password_strength')}{' '}
+                      <Typography
+                        component='span'
+                        sx={{
+                          fontSize: 'inherit',
+                          fontWeight: 500,
+                          color: getStrengthColor(strength, theme),
+                        }}
+                      >
+                        {getStrengthLabel(strength)}
+                      </Typography>
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* Confirm Password Field */}
+                <Box>
+                  <Typography
+                    component='label'
+                    htmlFor='confirmPassword'
+                    sx={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      color: 'text.primary',
+                      mb: 1,
+                    }}
+                  >
+                    {t('auth.set_new_password.confirm_password_label')}
+                  </Typography>
+                  <Controller
+                    name='confirmPassword'
+                    control={controlForm.control}
+                    rules={{
+                      required: true,
+                      validate: (val) =>
+                        val === (passwordValue || '') || t('auth.register.passwords_must_match'),
+                    }}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        id='confirmPassword'
+                        fullWidth
+                        placeholder={t('auth.set_new_password.confirm_password_placeholder')}
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position='end'>
+                              <IconButton onClick={handleClickShowConfirmPassword} edge='end'>
+                                {showConfirmPassword ? (
+                                  <VisibilityOff sx={{ fontSize: 20 }} />
+                                ) : (
+                                  <Visibility sx={{ fontSize: 20 }} />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
+                            height: 48,
+                            bgcolor: 'background.paper',
+                            '& fieldset': { borderColor: 'divider' },
+                            '&:hover fieldset': { borderColor: 'primary.main' },
+                            '&.Mui-focused fieldset': {
+                              borderColor: 'primary.main',
+                              borderWidth: '1px',
+                            },
+                          },
+                          '& .MuiInputBase-input': { fontSize: '1rem' },
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
+
+                {/* Requirements Card */}
+                <Box
+                  sx={{
+                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.05),
+                    borderRadius: '8px',
+                    p: 2,
+                    border: '1px solid',
+                    borderColor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                  }}
+                >
+                  <Typography
+                    sx={{ fontSize: '0.75rem', fontWeight: 600, color: 'text.primary', mb: 1.5 }}
+                  >
+                    {t('auth.register.password_requirements')}
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {requirements.map((req, idx) => (
+                      <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box
+                          sx={{
+                            width: 4,
+                            height: 4,
+                            borderRadius: '50%',
+                            bgcolor: req.met ? 'success.main' : 'text.disabled',
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            fontSize: '0.75rem',
+                            color: req.met ? 'success.main' : 'text.secondary',
+                            fontWeight: req.met ? 500 : 400,
+                          }}
+                        >
+                          {req.label}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Button
+                  type='submit'
+                  fullWidth
+                  variant='contained'
+                  sx={{
+                    py: 1.75,
+                    borderRadius: '8px',
+                    bgcolor: 'primary.main',
+                    color: 'primary.contrastText',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    mt: 1,
+                    boxShadow: (theme) =>
+                      `0 4px 6px -1px ${alpha(theme.palette.primary.main, 0.2)}`,
+                    '&:hover': {
+                      bgcolor: 'primary.dark',
+                      boxShadow: 'none',
+                    },
+                  }}
+                >
+                  {t('auth.account.update_password')}
+                </Button>
+
+                {/* Back Link */}
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Button
+                    onClick={() => window.history.back()}
+                    startIcon={<ArrowBack sx={{ fontSize: 18 }} />}
+                    sx={{
+                      textTransform: 'none',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      color: 'text.secondary',
+                      '&:hover': {
+                        color: 'text.primary',
+                        bgcolor: 'transparent',
+                      },
+                    }}
+                  >
+                    {t('auth.account.cancel')}
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Box sx={{ mt: 4, textAlign: 'center' }}>
+          <Typography sx={{ fontSize: '0.75rem', color: 'text.disabled' }}>
+            © {new Date().getFullYear()} {t('auth.common.app_name')}{' '}
+            {t('auth.common.all_rights_reserved')}
+          </Typography>
+        </Box>
+      </Container>
+    </>
+  )
+}
+
+export default ChangePassword

@@ -70,7 +70,7 @@ const StyledSubMenu = styled.li<StyledSubMenuProps>`
   margin-block-start: 4px;
 
   &.${menuClasses.open} > .${menuClasses.button} {
-    background-color: #f3f3f3;
+    background-color: var(--mui-palette-action-hover);
   }
 
   ${({ menuItemStyles }) => menuItemStyles};
@@ -357,9 +357,6 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (pr
         component={component}
         tabIndex={disabled ? -1 : 0}
         {...rest}
-        style={{
-          backgroundColor: '#66BB6A',
-        }}
       >
         {/* Sub Menu Icon */}
         {renderMenuIcon({

@@ -18,6 +18,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu'
 import { Logo } from '@cap/layout'
 import { themeConfig } from '@cap/platform-core'
+import { Path } from '@cap/module-auth'
 
 const GuestNavbar = () => {
   const theme = useTheme()
@@ -127,7 +128,7 @@ const GuestNavbar = () => {
             <Stack direction='row' spacing={2} alignItems='center'>
               <Button
                 variant='outlined'
-                onClick={() => handleNavigate('/auth/sign-up')}
+                onClick={() => handleNavigate(Path.auth.signup)}
                 sx={{
                   display: { xs: 'none', md: 'flex' },
                   minWidth: 84,
@@ -150,7 +151,7 @@ const GuestNavbar = () => {
               </Button>
               <Button
                 variant='contained'
-                onClick={() => handleNavigate('/auth/sign-in')}
+                onClick={() => handleNavigate(Path.auth.signin)}
                 sx={{
                   display: { xs: 'none', md: 'flex' },
                   minWidth: 84,

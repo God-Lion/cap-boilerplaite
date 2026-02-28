@@ -2,7 +2,8 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, IconButton, Tooltip, CircularProgress } from '@mui/material'
 import { LogoutOutlined } from '@mui/icons-material'
-import { useLogout } from '../hooks/useAuthQuery'
+import { useSignout } from '../hooks/useAuthQuery'
+import { useTranslation } from 'react-i18next'
 import { useAuth, StorageManager } from '@cap/platform-core'
 
 interface SignOutButtonProps {
@@ -31,10 +32,11 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
   showText = true,
   onSignOutComplete,
 }) => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { signOut: zustandSignOut } = useAuth()
 
-  const { mutate: logout, isPending } = useLogout({
+  const { mutate: logout, isPending } = useSignout({
     onSuccess: () => {
       console.log('[SignOut] Logout successful')
 
@@ -50,7 +52,7 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
       // Redirect to login page
       navigate('/auth/sign-in', { replace: true })
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('[SignOut] Logout error:', error)
 
       // Even if API call fails, clear local data and redirect
@@ -68,13 +70,13 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
 
   if (variant === 'icon') {
     return (
-      <Tooltip title='Sign Out'>
+      <Tooltip title={t('auth.profile.logout')}>
         <IconButton
           onClick={handleSignOut}
           disabled={isPending}
           size={size}
           color='inherit'
-          aria-label='sign out'
+          aria-label={t('auth.profile.logout')}
         >
           {isPending ? <CircularProgress size={20} color='inherit' /> : <LogoutOutlined />}
         </IconButton>
@@ -91,9 +93,9 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
       variant='outlined'
       color='error'
       startIcon={isPending ? <CircularProgress size={16} /> : <LogoutOutlined />}
-      aria-label='sign out'
+      aria-label={t('auth.profile.logout')}
     >
-      {showText && (isPending ? 'Signing out...' : 'Sign Out')}
+      {showText && (isPending ? t('auth.profile.signing_out') : t('auth.profile.logout'))}
     </Button>
   )
 }

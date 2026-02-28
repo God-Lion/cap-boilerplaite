@@ -87,7 +87,7 @@ const StyledHeader = styled.header<StyledHeaderProps>`
         &:before {
           content: '';
           position: absolute;
-          z-index: -1;
+          z-index: var(--z-behind);
           inset-block-start: 0;
           inset-inline: 0;
           block-size: 100%;

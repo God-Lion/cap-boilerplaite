@@ -131,7 +131,8 @@ class StorageManager {
           try {
             const json = await this.decryptData(r.data)
             return JSON.parse(json)
-          } catch (e) {
+          } catch (err: unknown) {
+            console.error('Failed to decrypt data:', err)
             return r.data // Fallback for unencrypted data
           }
         }),
@@ -190,15 +191,22 @@ class StorageManager {
 
   /**
    * Get from LocalStorage
+   * Note: If decrypt=true and decryption fails, this throws an error to allow fallback handling
    */
-  static async getFromLocalStorage<T = any>(key: string, decrypt = false): Promise<T | null> {
-    try {
-      const value = localStorage.getItem(key)
-      if (!value) return null
+  static async getFromLocalStorage<T = unknown>(key: string, decrypt = false): Promise<T | null> {
+    const value = localStorage.getItem(key)
+    if (!value) return null
 
+    try {
       const parsed = decrypt ? await this.decryptData(value) : value
       return JSON.parse(parsed)
     } catch (error) {
+      // If decryption was requested and failed, throw so caller can handle fallback
+      if (decrypt) {
+        console.error('LocalStorage decrypt/parse error:', error)
+        throw error
+      }
+      // For non-decrypt operations, log and return null
       console.error('LocalStorage get error:', error)
       return null
     }
@@ -354,7 +362,8 @@ class StorageManager {
       storage.setItem(test, test)
       storage.removeItem(test)
       return true
-    } catch (e) {
+    } catch (err: unknown) {
+      console.error('Storage availability check failed:', err)
       return false
     }
   }
@@ -366,7 +375,7 @@ export default StorageManager
 
 // Storage keys
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'auth_token',
+  AUTH_TOKEN: 'god-lion-auth-tokens',
   REFRESH_TOKEN: 'refresh_token',
   USER_DATA: 'user_data',
   USER_PREFERENCES: 'user_preferences',

@@ -10,7 +10,6 @@ import {
   Box,
   Container,
   Typography,
-  Grid,
   Card,
   CardContent,
   CardActions,
@@ -28,6 +27,7 @@ import {
   AccordionDetails,
   Divider,
 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { CheckCircle, ExpandMore } from '@mui/icons-material'
 import { themeConfig } from '@cap/platform-core'
 
@@ -209,7 +209,7 @@ export const Pricing: React.FC = () => {
         {/* Pricing Cards */}
         <Grid container spacing={3} sx={{ mb: 10 }}>
           {pricingPlans.map((plan, index) => (
-            <Grid item xs={12} md={4} key={index}>
+            <Grid key={index} size={{ xs: 12, md: 4 }}>
               <Card
                 elevation={plan.featured ? 8 : 1}
                 sx={{

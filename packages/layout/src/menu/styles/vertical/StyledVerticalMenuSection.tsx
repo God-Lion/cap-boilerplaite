@@ -16,7 +16,7 @@ const StyledVerticalMenuSection = styled.li<StyledVerticalMenuSectionProps>`
 
   & .${menuClasses.menuSectionContent} {
     font-size: 14px;
-    color: #aaaaaa;
+    color: var(--mui-palette-text-disabled);
   }
 
   ${({ menuSectionStyles }) => menuSectionStyles};

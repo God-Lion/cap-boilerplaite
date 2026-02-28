@@ -13,7 +13,7 @@
  * })
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import React from 'react'
 
 interface UseRouteStateOptions<T> {
   storage?: 'session' | 'local'
@@ -32,7 +32,7 @@ export function useRouteState<T>(
   const storageObject = storage === 'session' ? sessionStorage : localStorage
 
   // Initialize state from storage or use initial value
-  const [state, setState] = useState<T>(() => {
+  const [state, setState] = React.useState<T>(() => {
     try {
       const saved = storageObject.getItem(storageKey)
       if (saved) {
@@ -45,7 +45,7 @@ export function useRouteState<T>(
   })
 
   // Save to storage whenever state changes
-  useEffect(() => {
+  React.useEffect(() => {
     try {
       storageObject.setItem(storageKey, serialize(state))
     } catch (error) {
@@ -54,7 +54,7 @@ export function useRouteState<T>(
   }, [key, state, storageKey, serialize, storageObject])
 
   // Clear function to reset state and remove from storage
-  const clearState = useCallback(() => {
+  const clearState = React.useCallback(() => {
     try {
       storageObject.removeItem(storageKey)
       setState(initialValue)
@@ -73,7 +73,7 @@ export function useHasRouteState(key: string, storage: 'session' | 'local' = 'se
   const storageKey = `route_state_${key}`
   const storageObject = storage === 'session' ? sessionStorage : localStorage
 
-  const [hasState, setHasState] = useState(() => {
+  const [hasState, setHasState] = React.useState(() => {
     try {
       return storageObject.getItem(storageKey) !== null
     } catch {
@@ -81,7 +81,7 @@ export function useHasRouteState(key: string, storage: 'session' | 'local' = 'se
     }
   })
 
-  useEffect(() => {
+  React.useEffect(() => {
     const checkState = () => {
       try {
         setHasState(storageObject.getItem(storageKey) !== null)
@@ -108,7 +108,7 @@ export function useHasRouteState(key: string, storage: 'session' | 'local' = 'se
 export function useClearAllRouteStates(storage: 'session' | 'local' = 'session'): () => void {
   const storageObject = storage === 'session' ? sessionStorage : localStorage
 
-  return useCallback(() => {
+  return React.useCallback(() => {
     try {
       const keys = Object.keys(storageObject)
       keys.forEach((key) => {
@@ -133,7 +133,7 @@ export function useRestoreRouteState<T>(
   const storageKey = `route_state_${key}`
   const storageObject = storage === 'session' ? sessionStorage : localStorage
 
-  useEffect(() => {
+  React.useEffect(() => {
     try {
       const saved = storageObject.getItem(storageKey)
       if (saved && onRestore) {

@@ -2,7 +2,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { TextField, Button, Box } from '@mui/material'
-import { useChangePassword } from '../../hooks/useAuthQuery'
+import { useChangePassword } from '../../hooks/useUserQuery'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const schema = z
   .object({
@@ -18,6 +20,8 @@ const schema = z
 type FormData = z.infer<typeof schema>
 
 export function ChangePasswordForm() {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -35,7 +39,7 @@ export function ChangePasswordForm() {
         alert('Password changed successfully! Please login again.')
         reset()
         // Redirect to login
-        window.location.href = '/auth/sign-in'
+        navigate('/auth/sign-in')
       },
       onError: (error: any) => {
         alert(error.response?.data?.detail || 'Failed to change password')
@@ -48,7 +52,7 @@ export function ChangePasswordForm() {
       <TextField
         fullWidth
         type='password'
-        label='Current Password'
+        label={t('auth.account.current_password')}
         {...register('current_password')}
         error={!!errors.current_password}
         helperText={errors.current_password?.message}
@@ -58,7 +62,7 @@ export function ChangePasswordForm() {
       <TextField
         fullWidth
         type='password'
-        label='New Password'
+        label={t('auth.account.new_password')}
         {...register('new_password')}
         error={!!errors.new_password}
         helperText={errors.new_password?.message}
@@ -68,7 +72,7 @@ export function ChangePasswordForm() {
       <TextField
         fullWidth
         type='password'
-        label='Confirm New Password'
+        label={t('auth.account.confirm_password_label')}
         {...register('confirm_password')}
         error={!!errors.confirm_password}
         helperText={errors.confirm_password?.message}
@@ -78,11 +82,14 @@ export function ChangePasswordForm() {
       <Button
         type='submit'
         variant='contained'
+        data-testid='change-password-submit'
         fullWidth
         sx={{ mt: 3 }}
         disabled={changePasswordMutation.isPending}
       >
-        {changePasswordMutation.isPending ? 'Changing...' : 'Change Password'}
+        {changePasswordMutation.isPending
+          ? t('auth.common.saving')
+          : t('auth.account.update_password')}
       </Button>
     </Box>
   )

@@ -18,7 +18,7 @@ import {
 import { Settings, Logout } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useAuth, IUserResponse } from '@cap/platform-core'
-import { useLogout } from '../hooks/useAuthQuery'
+import { useSignout } from '../hooks/useAuthQuery'
 
 const Profile: React.FC<{ user: IUserResponse }> = ({ user }) => (
   <Stack direction='column'>
@@ -34,7 +34,7 @@ const Profile: React.FC<{ user: IUserResponse }> = ({ user }) => (
     >
       <Avatar
         variant='circular'
-        src={user?.avatar}
+        src={user?.avatar || undefined}
         alt={`${user?.firstName || ''} ${user?.lastName || ''}`}
         sx={{
           width: 40,
@@ -59,7 +59,7 @@ const AuthProfile = () => {
   const { t } = useTranslation()
   const { user: authUser, signOut: zustandSignOut } = useAuth()
 
-  const { mutate: logout, isPending } = useLogout({
+  const { mutate: logout, isPending } = useSignout({
     onSuccess: () => {
       zustandSignOut()
       navigate('/auth/sign-in', { replace: true })
@@ -111,7 +111,7 @@ const AuthProfile = () => {
           >
             <Avatar
               alt={`${user?.firstName || ''} ${user?.lastName || ''}`}
-              src={user?.avatar}
+              src={user?.avatar || undefined}
               sx={{ width: 32, height: 32, border: '2px solid', borderColor: 'primary.light' }}
             />
           </IconButton>

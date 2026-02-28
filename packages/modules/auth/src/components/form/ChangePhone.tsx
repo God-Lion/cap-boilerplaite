@@ -4,6 +4,7 @@ import { Box, Grid, IconButton, TextField, InputAdornment } from '@mui/material'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 import { IUserResponse } from '@cap/platform-core'
 import FormLayout from './FormLayout'
 // import { FormLayout } from 'src/components/form'
@@ -12,6 +13,7 @@ import FormLayout from './FormLayout'
 const PhoneInputWrapper = PhoneInput as unknown as React.ComponentType<any>
 
 export default function ChangePhone({ user }: { user: IUserResponse }) {
+  const { t } = useTranslation()
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
   const handleShowPassword = () => setShowPassword(!showPassword)
   const controlForm = useForm({
@@ -24,8 +26,8 @@ export default function ChangePhone({ user }: { user: IUserResponse }) {
 
   return (
     <FormLayout
-      title='Change phone number'
-      description='Update your publicly displayed username'
+      title={t('auth.account.change_phone')}
+      description={t('auth.account.change_phone_description')}
       warning={''}
     >
       <Box
@@ -42,7 +44,7 @@ export default function ChangePhone({ user }: { user: IUserResponse }) {
                 <PhoneInputWrapper
                   {...field}
                   country={'ht'}
-                  placeholder='Téléphone'
+                  placeholder={t('auth.account.phone')}
                   inputProps={{
                     name: 'phone',
                     required: true,
@@ -77,7 +79,7 @@ export default function ChangePhone({ user }: { user: IUserResponse }) {
                   {...field}
                   required
                   type={showPassword ? 'text' : 'password'}
-                  label='Mot de passe'
+                  label={t('auth.common.password')}
                   fullWidth
                   autoComplete='password'
                   InputProps={{
@@ -100,7 +102,7 @@ export default function ChangePhone({ user }: { user: IUserResponse }) {
             />
           </Grid>
 
-          {/* <Grid item xs={12} sx={{ mt: '30px' }}>
+          {/* <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
             <Stack direction='row' spacing={2} justifyContent='start'>
               <Button type='submit' variant='contained' color='primary'>
                 Save changes

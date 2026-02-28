@@ -11,6 +11,8 @@ import ModeDropdown from '../shared/ModeDropdown'
 import NavSearch from '../shared/search'
 import UserDropdown from '../shared/UserDropdown'
 
+import { Path } from '@cap/module-auth'
+
 const shortcuts: Array<ShortcutsType> = [
   {
     url: '/apps/calendar',
@@ -25,13 +27,13 @@ const shortcuts: Array<ShortcutsType> = [
     subtitle: 'Manage Accounts',
   },
   {
-    url: '/apps/user/list',
+    url: Path.admin.users,
     icon: 'tabler-user',
     title: 'Users',
     subtitle: 'Manage Users',
   },
   {
-    url: '/apps/roles',
+    url: Path.admin.roles,
     icon: 'tabler-users-group',
     title: 'Role Management',
     subtitle: 'Permissions',
@@ -43,10 +45,10 @@ const shortcuts: Array<ShortcutsType> = [
     subtitle: 'User Dashboard',
   },
   {
-    url: '/pages/account-settings',
+    url: Path.account.overview,
     icon: 'tabler-settings',
     title: 'Settings',
-    subtitle: 'Account Settings',
+    subtitle: 'Account Overview',
   },
 ]
 
@@ -114,12 +116,28 @@ const NavbarContent = () => {
         <NavToggle />
         <NavSearch />
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <RoleIndicator showLabel={true} size='small' />
-        <LanguageDropdown />
-        <ModeDropdown />
-        <ShortcutsDropdown shortcuts={shortcuts} />
-        <NotificationsDropdown notifications={notifications} />
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 0.5,
+            '& .MuiIconButton-root': {
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                background: 'hsla(var(--mui-mainColor-hsl), 0.08)',
+                transform: 'translateY(-2px)',
+                '& i, & svg': { color: 'primary.main' },
+              },
+            },
+          }}
+        >
+          <LanguageDropdown />
+          <ModeDropdown />
+          <ShortcutsDropdown shortcuts={shortcuts} />
+          <NotificationsDropdown notifications={notifications} />
+        </Box>
         <UserDropdown />
       </Box>
     </Box>

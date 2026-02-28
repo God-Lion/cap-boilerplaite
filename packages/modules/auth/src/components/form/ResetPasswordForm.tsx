@@ -14,10 +14,20 @@ import {
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import 'react-phone-input-2/lib/style.css'
+import { useTranslation } from 'react-i18next'
 import { useForm, Controller } from 'react-hook-form'
-import { authService } from '@cap/platform-core'
+import authService from '../../services/auth.service'
 
-export default function ResetPasswordForm({ handleClose, data, handleClickStatus, setIsUpdated }) {
+export default function ResetPasswordForm({
+  handleClose,
+  data,
+  handleClickStatus,
+}: {
+  handleClose: () => void
+  data: any
+  handleClickStatus: (val: any) => void
+}) {
+  const { t } = useTranslation()
   const controlForm = useForm({
     defaultValues: {
       username: '',
@@ -31,7 +41,7 @@ export default function ResetPasswordForm({ handleClose, data, handleClickStatus
     if (data) controlForm.setValue('username', data?.username)
   }, [controlForm, data])
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     if (data?.username) {
       try {
         const response = await authService.resetPassword(data)
@@ -39,15 +49,15 @@ export default function ResetPasswordForm({ handleClose, data, handleClickStatus
           handleClickStatus({
             type: 'success',
             state: 'modify',
-            msg: 'Le mot de passe a été réinitialisé',
+            msg: t('auth.user_form.success_reset_password'),
           })
           handleClose()
         }
-      } catch (error) {
+      } catch {
         handleClickStatus({
           type: 'error',
           state: 'modify',
-          msg: 'La modification du mot de passe a échoué',
+          msg: t('auth.user_form.error_reset_password'),
         })
       }
     }
@@ -58,24 +68,23 @@ export default function ResetPasswordForm({ handleClose, data, handleClickStatus
     <Container maxWidth='sm' style={{}}>
       <Box component='form' onSubmit={controlForm.handleSubmit(onSubmit)} sx={{ mt: 3 }}>
         <Typography sx={{ mb: 3 }}>{data?.email_user}</Typography>
-        <Grid container spacing={2} item xs={12}>
-          <Grid item xs={12}>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name='newPassword'
               control={controlForm.control}
               rules={{
                 required: {
                   value: true,
-                  message: 'Mot de passe requis',
+                  message: t('auth.common.password_required'),
                 },
                 minLength: {
                   value: 8,
-                  message: 'Le mot de passe doit contenir au moins 8 caractères',
+                  message: t('auth.login.password_length'),
                 },
                 pattern: {
                   value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
-                  message:
-                    'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial',
+                  message: t('auth.login.password_complexity'),
                 },
               }}
               render={({ field }) => (
@@ -83,14 +92,14 @@ export default function ResetPasswordForm({ handleClose, data, handleClickStatus
                   {...field}
                   required
                   type={showPassword ? 'text' : 'password'}
-                  label='Nouveau mot de passe'
+                  label={t('auth.login.new_password')}
                   fullWidth
                   autoComplete='password'
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
                         <IconButton
-                          aria-label='toggle password visibility'
+                          aria-label={t('auth.login.toggle_password')}
                           onClick={handleShowPassword}
                           edge='end'
                         >
@@ -116,13 +125,12 @@ export default function ResetPasswordForm({ handleClose, data, handleClickStatus
                 }}
                 variant='contained'
                 color='error'
-                position='left'
                 sx={{ mr: '20px' }}
               >
-                Annuler
+                {t('auth.common.cancel')}
               </Button>
-              <Button type='submit' variant='contained' position='right'>
-                Changer le mot de passe
+              <Button type='submit' variant='contained'>
+                {t('auth.login.change_password')}
               </Button>
             </Stack>
           </Grid>

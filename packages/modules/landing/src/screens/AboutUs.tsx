@@ -1,14 +1,6 @@
 import React from 'react'
-import {
-  Box,
-  Container,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-  Stack,
-} from '@mui/material'
+import { Box, Container, Typography, Card, CardContent, CardMedia, Stack } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { themeConfig } from '@cap/platform-core'
 
 // Team member interface
@@ -92,7 +84,7 @@ export const AboutUs: React.FC = () => {
         {/* Mission Section */}
         <Box sx={{ py: { xs: 6, md: 10 } }}>
           <Grid container spacing={4} alignItems='center'>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Box
                 sx={{
                   width: '100%',
@@ -107,7 +99,7 @@ export const AboutUs: React.FC = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Stack spacing={3}>
                 <Typography
                   variant='h3'
@@ -161,7 +153,7 @@ export const AboutUs: React.FC = () => {
           {/* Team Grid */}
           <Grid container spacing={3}>
             {teamMembers.map((member, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
+              <Grid key={index} size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card
                   elevation={0}
                   sx={{

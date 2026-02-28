@@ -1,13 +1,40 @@
-import { useForm } from 'react-hook-form'
-import { Box, Button, Grid, Typography, CardContent, Input, Avatar } from '@mui/material'
+import { useForm, Controller } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Box,
+  Button,
+  Grid,
+  Typography,
+  CardContent,
+  Input,
+  Avatar,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+  Stack,
+} from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { AccountCircle } from '@mui/icons-material'
 // import { FormLayout } from 'src/components/form'
 import FormLayout from './FormLayout'
 
 export default function UpdateAboutYou() {
+  const { t } = useTranslation()
+
+  const schema = z.object({
+    lastname: z.string().min(1, t('auth.common.field_required')),
+    firstname: z.string().min(1, t('auth.common.field_required')),
+    sexe: z.string().min(1, t('auth.common.field_required')),
+    address: z.string().min(1, t('auth.common.field_required')),
+  })
+
   const controlForm = useForm({
+    resolver: zodResolver(schema),
     defaultValues: {
-      user_id: NaN,
       lastname: '',
       firstname: '',
       sexe: '',
@@ -16,21 +43,23 @@ export default function UpdateAboutYou() {
   })
   const onSubmit = () => {}
   return (
-    <FormLayout title='About You' description='Update your publicly shared info' warning={''}>
+    <FormLayout
+      title={t('auth.account.about_you')}
+      description={t('auth.account.about_you_description')}
+      warning={''}
+    >
       <Box component='form' onSubmit={controlForm.handleSubmit(onSubmit)}>
-        <Grid
-          container
-          alignItems='flex-start'
-          // xs={12}
-          // sx={{ mt: '30px' }}
-        >
+        <Grid container alignItems='flex-start' sx={{ mt: '30px' }} size={{ xs: 12 }}>
           <CardContent
             sx={{
               padding: 0,
               display: 'flex',
             }}
           >
-            <Grid item alignItems='center' justifyContent='fl#EF9A9Aex-start' xs={12} sm={4}>
+            <Grid
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}
+              size={{ xs: 12, sm: 4 }}
+            >
               <label htmlFor='icon-button-file'>
                 <Input
                   sx={{ display: 'none' }}
@@ -40,14 +69,11 @@ export default function UpdateAboutYou() {
                   id='icon-button-file'
                   type='file'
                   onChange={(e: any) => {
-                    // @ts-ignore
                     const file = e.target.files[0]
                     // field.onChange(file)
                     const reader = new FileReader()
                     reader.onload = () => {
-                      // @ts-ignore
                       // controlForm.setValue('imageDrawing', {
-                      //   // @ts-ignore
                       //   result: event.target.result,
                       //   file: file,
                       // })
@@ -58,7 +84,7 @@ export default function UpdateAboutYou() {
                 <Avatar
                   variant='rounded'
                   // src={user.avatar}
-                  alt='no image'
+                  alt={t('auth.account.no_image')}
                   style={{
                     width: '120px',
                     height: '120px',
@@ -83,7 +109,7 @@ export default function UpdateAboutYou() {
                 ml: '2px',
               }}
             >
-              <Grid item xs={12} sm={4} sx={{ mb: '7px' }}>
+              <Grid sx={{ mb: '7px' }} size={{ xs: 12, sm: 4 }}>
                 <Button
                   fullWidth
                   variant='contained'
@@ -94,135 +120,118 @@ export default function UpdateAboutYou() {
                     fontSize: '0.8125rem',
                   }}
                 >
-                  Upload new photo
+                  {t('auth.account.upload_new_photo')}
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={12} sx={{ my: '5px' }}>
+              <Grid sx={{ my: '5px' }} size={{ xs: 12, sm: 12 }}>
                 <Typography fontSize='0.9375rem' lineHeight='1.46667'>
-                  Allowed JPG, GIF or PNG. Max size of 800K
+                  {t('auth.account.upload_constraints')}
                 </Typography>
               </Grid>
             </Grid>
           </CardContent>
         </Grid>
         <Grid container spacing={2}>
-          {/* <Grid item xs={12} sm={12}>
-              <Controller
-                name='lastname'
-                control={controlForm.control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'renseigner ton nom',
-                  },
-                }}
-                render={({ field, formState }) => (
-                  <TextField
-                    {...field}
-                    required
-                    fullWidth
-                    // disabled={disabled}
-                    type='text'
-                    label='Nom'
-                    error={formState?.errors?.lastName !== undefined}
-                    helperText={formState?.errors?.lastName?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Controller
-                name='firstname'
-                control={controlForm.control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'renseigner ton prenom',
-                  },
-                }}
-                render={({ field, formState }) => (
-                  <TextField
-                    {...field}
-                    required
-                    fullWidth
-                    type='text'
-                    label='Prénom'
-                    // disabled={disabled}
-                    error={formState?.errors?.firstName !== undefined}
-                    helperText={formState?.errors?.firstName?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Controller
-                name='sexe'
-                control={controlForm.control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'renseigner ce champ',
-                  },
-                }}
-                render={({ field, formState }) => (
-                  <FormControl
-                    fullWidth
-                    // disabled={disabled}
-                    error={formState?.errors?.sexe !== undefined}
-                  >
-                    <InputLabel required>Sexe</InputLabel>
-                    <Select label='Sexe' {...field}>
-                      {[
-                        { key: 'M', label: 'Masculin' },
-                        { key: 'F', label: 'Feminin' },
-                      ]?.map((value, index) => (
-                        <MenuItem key={index} value={value.key}>
-                          {value.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText>
-                      {formState?.errors?.sexe?.message}
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Controller
-                name='address'
-                control={controlForm.control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'renseigner ce champs',
-                  },
-                }}
-                render={({ field, formState }) => (
-                  <TextField
-                    {...field}
-                    required
-                    fullWidth
-                    // disabled={disabled}
-                    type='text'
-                    label='Addresse'
-                    error={formState?.errors?.address !== undefined}
-                    helperText={formState?.errors?.address?.message}
-                  />
-                )}
-              />
-            </Grid> */}
+          <Grid size={{ xs: 12, sm: 12 }}>
+            <Controller
+              name='lastname'
+              control={controlForm.control}
+              render={({ field, formState }) => (
+                <TextField
+                  {...field}
+                  required
+                  fullWidth
+                  // disabled={disabled}
+                  type='text'
+                  label={t('auth.account.last_name')}
+                  error={formState?.errors?.lastname !== undefined}
+                  helperText={formState?.errors?.lastname?.message}
+                  margin='normal'
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 12 }}>
+            <Controller
+              name='firstname'
+              control={controlForm.control}
+              render={({ field, formState }) => (
+                <TextField
+                  {...field}
+                  required
+                  fullWidth
+                  type='text'
+                  label={t('auth.account.first_name')}
+                  // disabled={disabled}
+                  error={formState?.errors?.firstname !== undefined}
+                  helperText={formState?.errors?.firstname?.message}
+                  margin='normal'
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 12 }}>
+            <Controller
+              name='sexe'
+              control={controlForm.control}
+              render={({ field, formState }) => (
+                <FormControl
+                  fullWidth
+                  margin='normal'
+                  // disabled={disabled}
+                  error={formState?.errors?.sexe !== undefined}
+                >
+                  <InputLabel required>{t('auth.account.gender')}</InputLabel>
+                  <Select label={t('auth.account.gender')} {...field}>
+                    {[
+                      { key: 'M', label: t('auth.account.gender_male') },
+                      { key: 'F', label: t('auth.account.gender_female') },
+                    ]?.map((value, index) => (
+                      <MenuItem key={index} value={value.key}>
+                        {value.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>{formState?.errors?.sexe?.message}</FormHelperText>
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 12 }}>
+            <Controller
+              name='address'
+              control={controlForm.control}
+              render={({ field, formState }) => (
+                <TextField
+                  {...field}
+                  required
+                  fullWidth
+                  // disabled={disabled}
+                  type='text'
+                  label={t('auth.account.address')}
+                  error={formState?.errors?.address !== undefined}
+                  helperText={formState?.errors?.address?.message}
+                  margin='normal'
+                />
+              )}
+            />
+          </Grid>
 
-          {/* <Grid item xs={12} sx={{ mt: '30px' }}>
-              <Stack direction='row' spacing={2} justifyContent='start'>
-                <Button type='submit' variant='contained' color='primary'>
-                  Save changes
-                </Button>
-                <Button type='reset' variant='outlined' color='error'>
-                  Annuler
-                </Button>
-              </Stack>
-            </Grid> */}
+          <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
+            <Stack direction='row' spacing={2} justifyContent='start'>
+              <Button type='submit' variant='contained' color='primary'>
+                {t('auth.common.save_changes')}
+              </Button>
+              <Button
+                type='reset'
+                variant='outlined'
+                color='error'
+                onClick={() => controlForm.reset()}
+              >
+                {t('auth.common.cancel')}
+              </Button>
+            </Stack>
+          </Grid>
         </Grid>
       </Box>
     </FormLayout>

@@ -28,24 +28,26 @@ export const menuButtonStyles = (props: MenuButtonStylesProps) => {
     }px`,
 
     '&:hover, &[aria-expanded="true"]': {
-      backgroundColor: '#f3f3f3',
+      backgroundColor: 'var(--mui-palette-action-hover)',
     },
 
     '&:focus-visible': {
       outline: 'none',
-      backgroundColor: '#f3f3f3',
+      backgroundColor: 'var(--mui-palette-action-hover)',
     },
 
     ...(disabled && {
       pointerEvents: 'none',
       cursor: 'default',
-      color: '#adadad',
+      color: 'var(--mui-palette-text-disabled)',
     }),
 
     // All the active styles are applied to the button including menu items or submenu
     [`&.${menuClasses.active}`]: {
       ...(!children && { color: 'white' }),
-      backgroundColor: children ? '#f3f3f3' : '#765feb',
+      backgroundColor: children
+        ? 'var(--mui-palette-action-hover)'
+        : 'var(--mui-palette-primary-main)',
     },
   })
 }

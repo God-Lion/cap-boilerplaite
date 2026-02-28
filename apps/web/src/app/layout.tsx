@@ -1,4 +1,4 @@
-// cspell:ignore Customizer Navbars
+// cspell:ignore Customizer Navbars tabler
 import React from 'react'
 import type { ChildrenType } from '@cap/platform-core'
 import {
@@ -19,22 +19,18 @@ import Button from '@mui/material/Button'
 import { ArrowUpward } from '@mui/icons-material'
 import PublicNavbar from './Menu/Navbars/Navbar'
 import GuestNavbar from './Menu/Navbars/GuestNavbar'
-import { useAuth, Locale, getMode, getSystemMode } from '@cap/platform-core'
+import { useAppStore, Locale, getMode, getSystemMode, type AppStore } from '@cap/platform-core'
 import { useTranslation } from 'react-i18next'
 import { useLang, getDictionary } from './utils/getDictionary'
 import VerticalMenu from './Menu/vertical/VerticalMenu'
 import HorizontalMenu from './Menu/HorizontalMenu'
 import Navbar from './Menu/vertical/Navbar'
 
-const NavBartWrapper = () => {
-  const { isAuthenticated } = useAuth()
+const NavbarWrapper = React.memo(function NavbarWrapper() {
+  const isAuthenticated = useAppStore((state: AppStore) => state.isAuthenticated)
 
-  console.log('isAuthenticated ', isAuthenticated)
-
-  if (!isAuthenticated) return <GuestNavbar />
-
-  return <PublicNavbar />
-}
+  return isAuthenticated ? <PublicNavbar /> : <GuestNavbar />
+})
 
 const Layout: React.FC<ChildrenType> = ({ children }) => {
   const { i18n: i18nInstance } = useTranslation()
@@ -49,7 +45,7 @@ const Layout: React.FC<ChildrenType> = ({ children }) => {
       <LayoutWrapper
         systemMode={systemMode}
         publicLayout={
-          <PublicLayout header={<NavBartWrapper />} footer={<PublicFooter />}>
+          <PublicLayout header={<NavbarWrapper />} footer={<PublicFooter />}>
             {children}
           </PublicLayout>
         }
@@ -99,7 +95,6 @@ const Layout: React.FC<ChildrenType> = ({ children }) => {
             // Equivalent to .items-center
           }}
         >
-          {/* <i className='tabler-arrow-up' /> */}
           <ArrowUpward />
         </Button>
       </ScrollToTop>

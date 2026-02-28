@@ -1,106 +1,37 @@
-import { localStorageManager } from './storage'
-
 export interface TokenData {
   accessToken: string
-  refreshToken: string
+  // Refresh token is now handled via HttpOnly cookie, but kept for legacy compatibility
+  refreshToken?: string
   expiresAt: number
 }
 
-const TOKEN_STORAGE_KEY = 'god-lion-auth-tokens'
-
 class SecureTokenManager {
   private accessToken: string | null = null
-  private refreshToken: string | null = null
   private expiresAt: number | null = null
-  private initialized = false
+  // Always initialized as we don't load from storage
+  // Debug: unique instance ID to detect multiple instances
+  private readonly instanceId = Math.random().toString(36).substring(7)
 
   constructor() {
-    // Initialize tokens from storage
-    this.init()
+    console.log(`[SecureTokenManager] Instance created: ${this.instanceId}`)
   }
 
   /**
-   * Initialize tokens from storage
+   * Initialize tokens - No-op now as we don't load from storage
    */
   async init(): Promise<void> {
-    if (this.initialized) return
-    await this.loadFromStorage()
+    return
   }
 
   /**
-   * Load tokens from localStorage
+   * Ensure tokens are initialized - No-op
    */
-  private async loadFromStorage(): Promise<void> {
-    try {
-      // Use encryption for token storage
-      const storedTokens = await localStorageManager.get<TokenData>(TOKEN_STORAGE_KEY, true)
-
-      if (storedTokens) {
-        // Validate token structure
-        if (storedTokens.accessToken && storedTokens.refreshToken && storedTokens.expiresAt) {
-          this.accessToken = storedTokens.accessToken
-          this.refreshToken = storedTokens.refreshToken
-          this.expiresAt = storedTokens.expiresAt
-
-          if ((import.meta as any).env?.DEV) {
-            console.log('[SecureTokenManager] Tokens loaded from storage')
-          }
-        }
-      }
-    } catch (error) {
-      console.error('[SecureTokenManager] Failed to load tokens from storage:', error)
-      // Clear potentially corrupted data
-      await this.clearStorage()
-    } finally {
-      this.initialized = true
-    }
-  }
-
-  /**
-   * Save tokens to localStorage
-   */
-  private async saveToStorage(): Promise<void> {
-    try {
-      if (this.accessToken && this.refreshToken && this.expiresAt) {
-        const tokens: TokenData = {
-          accessToken: this.accessToken,
-          refreshToken: this.refreshToken,
-          expiresAt: this.expiresAt,
-        }
-
-        // Use encryption for token storage
-        await localStorageManager.set(TOKEN_STORAGE_KEY, tokens, true)
-
-        if ((import.meta as any).env?.DEV) {
-          console.log('[SecureTokenManager] Tokens saved to storage')
-        }
-      }
-    } catch (error) {
-      console.error('[SecureTokenManager] Failed to save tokens to storage:', error)
-    }
-  }
-
-  /**
-   * Clear tokens from localStorage
-   */
-  private async clearStorage(): Promise<void> {
-    try {
-      localStorageManager.remove(TOKEN_STORAGE_KEY)
-
-      if ((import.meta as any).env?.DEV) {
-        console.log('[SecureTokenManager] Tokens cleared from storage')
-      }
-    } catch (error) {
-      console.error('[SecureTokenManager] Failed to clear tokens from storage:', error)
-    }
+  async ensureInitialized(): Promise<void> {
+    return
   }
 
   getAccessToken(): string | null {
     return this.accessToken
-  }
-
-  getRefreshToken(): string | null {
-    return this.refreshToken
   }
 
   getExpiresAt(): number | null {
@@ -108,64 +39,42 @@ class SecureTokenManager {
   }
 
   getTokens(): TokenData | null {
-    if (!this.accessToken || !this.refreshToken || !this.expiresAt) {
+    // Require access token to consider valid
+    if (!this.accessToken) {
       return null
     }
 
     return {
       accessToken: this.accessToken,
-      refreshToken: this.refreshToken,
-      expiresAt: this.expiresAt,
+      expiresAt: this.expiresAt || 0,
     }
   }
 
-  async setTokens(tokens: TokenData): Promise<void> {
+  async setTokens(tokens: TokenData, _persist?: boolean): Promise<void> {
+    console.log(`[SecureTokenManager:${this.instanceId}] setTokens called:`, {
+      accessToken: tokens.accessToken?.substring(0, 20) + '...',
+      expiresAt: tokens.expiresAt,
+    })
     this.accessToken = tokens.accessToken
-    this.refreshToken = tokens.refreshToken
     this.expiresAt = tokens.expiresAt
-
-    // Persist to storage
-    await this.saveToStorage()
   }
 
   async setAccessToken(token: string): Promise<void> {
     this.accessToken = token
-
-    // Persist to storage if we have all required data
-    if (this.refreshToken && this.expiresAt) {
-      await this.saveToStorage()
-    }
-  }
-
-  async setRefreshToken(token: string): Promise<void> {
-    this.refreshToken = token
-
-    // Persist to storage if we have all required data
-    if (this.accessToken && this.expiresAt) {
-      await this.saveToStorage()
-    }
   }
 
   async setExpiresAt(expiresAt: number): Promise<void> {
     this.expiresAt = expiresAt
-
-    // Persist to storage if we have all required data
-    if (this.accessToken && this.refreshToken) {
-      await this.saveToStorage()
-    }
   }
 
   async clearTokens(): Promise<void> {
     this.accessToken = null
-    this.refreshToken = null
     this.expiresAt = null
-
-    // Clear from storage
-    await this.clearStorage()
   }
 
   isTokenExpired(): boolean {
     if (!this.expiresAt) return true
+    if (!this.accessToken) return true
 
     const now = Date.now()
     const bufferTime = 5 * 60 * 1000 // 5 minutes buffer
@@ -174,14 +83,11 @@ class SecureTokenManager {
   }
 
   hasTokens(): boolean {
-    return this.accessToken !== null && this.refreshToken !== null
+    return this.accessToken !== null
   }
 
-  /**
-   * Check if tokens are initialized (loaded from storage)
-   */
   isInitialized(): boolean {
-    return this.initialized
+    return true
   }
 }
 

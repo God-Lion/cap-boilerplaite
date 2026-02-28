@@ -10,7 +10,7 @@ const pagination: Theme['components'] = {
     },
     variants: [
       {
-        props: { variant: 'text', color: 'primary' },
+        props: { color: 'primary' },
         style: {
           '& .MuiPaginationItem-root.Mui-selected.Mui-disabled': {
             backgroundColor: 'var(--mui-palette-primary-main)',
@@ -19,7 +19,7 @@ const pagination: Theme['components'] = {
         },
       },
       {
-        props: { variant: 'text', color: 'secondary' },
+        props: { color: 'secondary' },
         style: {
           '& .MuiPaginationItem-root.Mui-selected.Mui-disabled': {
             backgroundColor: 'var(--mui-palette-secondary-main)',
@@ -56,7 +56,7 @@ const pagination: Theme['components'] = {
         },
       },
       {
-        props: { variant: 'tonal' },
+        props: { variant: 'text' },
         style: {
           '& .MuiPaginationItem-root:not(.MuiPaginationItem-ellipsis)': {
             backgroundColor: 'var(--mui-palette-action-selected)',
@@ -64,7 +64,7 @@ const pagination: Theme['components'] = {
         },
       },
       {
-        props: { variant: 'tonal', color: 'standard' },
+        props: { variant: 'text', color: 'standard' },
         style: {
           '& .MuiPaginationItem-root.Mui-selected': {
             backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
@@ -83,7 +83,7 @@ const pagination: Theme['components'] = {
         },
       },
       {
-        props: { variant: 'tonal', color: 'primary' },
+        props: { variant: 'text', color: 'primary' },
         style: {
           '& .MuiPaginationItem-root.Mui-selected': {
             backgroundColor: 'var(--mui-palette-primary-main)',
@@ -106,7 +106,7 @@ const pagination: Theme['components'] = {
         },
       },
       {
-        props: { variant: 'tonal', color: 'secondary' },
+        props: { variant: 'text', color: 'secondary' },
         style: {
           '& .MuiPaginationItem-root.Mui-selected': {
             backgroundColor: 'var(--mui-palette-secondary-main)',

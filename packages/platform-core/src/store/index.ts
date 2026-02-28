@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
+import { useEffect, useState } from 'react'
 import encryption from '../services/encryption'
 
 import { createAuthSlice, AuthSlice } from './slices/authSlice'
@@ -9,9 +10,11 @@ import { createJobsSlice, JobsSlice } from './slices/jobsSlice'
 import { createProfileSlice, ProfileSlice } from './slices/profileSlice'
 import { createNotificationSlice, NotificationSlice } from './slices/notificationSlice'
 import { createPreferencesSlice, PreferencesSlice } from './slices/preferences/preferences'
-import { createSettingsSlice, SettingsSlice } from './slices/settingsSlice'
+import { createSettingsSlice, SettingsSlice, LayoutOverride } from './slices/settingsSlice'
 import { createNavigationSlice, NavigationSlice } from './slices/navigationSlice'
 import { createThemeSlice, ThemeSlice } from './slices/themeSlice'
+
+export type { LayoutOverride }
 
 export type AppStore = AuthSlice &
   GuestSlice &
@@ -23,15 +26,58 @@ export type AppStore = AuthSlice &
   NavigationSlice &
   ThemeSlice
 
+// Hydration tracking
+let hasHydrated = false
+const hydrationListeners: Set<() => void> = new Set()
+
+export const getHasHydrated = () => hasHydrated
+
+export const onHydrationComplete = (callback: () => void) => {
+  if (hasHydrated) {
+    callback()
+    return () => {}
+  }
+  hydrationListeners.add(callback)
+  return () => hydrationListeners.delete(callback)
+}
+
+const setHydrated = () => {
+  hasHydrated = true
+  hydrationListeners.forEach((cb) => cb())
+  hydrationListeners.clear()
+}
+
+/**
+ * Hook to check if Zustand store has been hydrated from async storage
+ * Use this to wait before checking auth state
+ */
+export const useHasHydrated = () => {
+  const [hydrated, setHydrated] = useState(hasHydrated)
+
+  useEffect(() => {
+    if (hasHydrated) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setHydrated(true)
+      return
+    }
+    const unsubscribe = onHydrationComplete(() => setHydrated(true))
+    return unsubscribe
+  }, [])
+
+  return hydrated
+}
+
 /**
  * Custom Secure Storage for Zustand
  */
 const secureStorage = {
   getItem: async (name: string): Promise<string | null> => {
+    console.log('[secureStorage] getItem called for:', name)
     // For auth, we want to decrypt. For others, maybe not.
     // However, Zustand expects the return to be a string that it then parses.
     // So we should return the raw JSON string (potentially decrypted).
     const value = localStorage.getItem(name)
+    console.log('[secureStorage] raw value from localStorage:', value ? 'FOUND' : 'NULL')
     if (!value) return null
 
     // Check if this is a key we want to decrypt
@@ -41,16 +87,24 @@ const secureStorage = {
         const masterKey =
           (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY ||
           'god-lion-default-secure-key-2025'
-        return await encryption.decryptData(value, masterKey)
+        const decrypted = await encryption.decryptData(value, masterKey)
+        console.log(
+          '[secureStorage] decryption success. Content:',
+          decrypted.substring(0, 100) + '...',
+        )
+        return decrypted
       } catch (e) {
         // Fallback to plain text if decryption fails (e.g. legacy data)
+        console.warn('[secureStorage] decryption failed, returning raw value', e)
         return value
       }
     }
     return value
   },
   setItem: async (name: string, value: string): Promise<void> => {
+    console.log('[secureStorage] setItem called for:', name)
     if (name === 'god-lion-seeker-optimizer-storage') {
+      console.log('[secureStorage] payload to encrypt:', value.substring(0, 100) + '...')
       const masterKey =
         (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'god-lion-default-secure-key-2025'
       const encrypted = await encryption.encryptData(value, masterKey)
@@ -60,6 +114,7 @@ const secureStorage = {
     }
   },
   removeItem: (name: string): void => {
+    console.log('[secureStorage] removeItem called for:', name)
     localStorage.removeItem(name)
   },
 }
@@ -91,6 +146,58 @@ export const useAppStore = create<AppStore>()(
       {
         name: 'god-lion-seeker-optimizer-storage',
         storage: createJSONStorage(() => secureStorage as any),
+        onRehydrateStorage: (_state) => {
+          console.log('[useAppStore] hydration started')
+          return (state, error) => {
+            if (error) {
+              console.error('[useAppStore] hydration failed:', error)
+              // Mark hydration complete even on failure so app doesn't hang
+              setHydrated()
+            } else {
+              console.log('[useAppStore] hydration finished')
+              console.log('[useAppStore] Hydrated Auth State:', state?.isAuthenticated, state?.user)
+              // Use queueMicrotask to ensure state is fully applied before marking hydration complete
+              // This prevents race conditions where components check auth state before it's updated
+              queueMicrotask(() => {
+                console.log('[useAppStore] setHydrated called (after microtask)')
+                setHydrated()
+              })
+            }
+          }
+        },
+        merge: (persistedState: any, currentState) => {
+          console.log('[useAppStore] merge called')
+          console.log(
+            '[useAppStore] persistedState structure keys:',
+            Object.keys(persistedState || {}),
+          )
+
+          if (!persistedState) {
+            return currentState
+          }
+
+          // Deep merge for nested objects if needed, or simple shallow merge if structure matches
+          // Since partialize created a nested structure (auth, preferences, etc),
+          // checking if we need to flatten it back implies that the store is flat but we persisted it nested.
+          // However, based on createAuthSlice, the store IS flat (user, isAuthenticated are top level).
+          // But partialize returns { auth: { user, isAuthenticated } }.
+          // So we MUST flatten it back.
+
+          return {
+            ...currentState,
+            ...persistedState, // If there are any top level keys
+            ...(persistedState.auth || {}), // Flatten auth
+            preferences: {
+              ...(currentState.preferences || {}),
+              ...(persistedState.preferences || {}),
+            },
+            settings: {
+              ...(currentState.settings || {}),
+              ...(persistedState.settings || {}),
+            },
+            mode: persistedState.theme?.mode || currentState.mode, // Flatten theme
+          }
+        },
         partialize: (state) => ({
           auth: {
             user: state.user,

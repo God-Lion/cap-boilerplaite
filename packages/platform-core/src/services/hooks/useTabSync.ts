@@ -12,7 +12,7 @@
  * sendMessage({ type: 'JOB_SAVED', jobId: '123' })
  */
 
-import { useEffect, useCallback, useRef, useState } from 'react'
+import React from 'react'
 
 interface TabSyncMessage<T = any> {
   type: string
@@ -48,19 +48,19 @@ export function useTabSync<T = any>(
 ): UseTabSyncReturn<T> {
   const { useBroadcastChannel = true, useStorageEvent = true } = options
 
-  const [lastMessage, setLastMessage] = useState<TabSyncMessage<T> | null>(null)
-  const [connectedTabs, setConnectedTabs] = useState(1)
-  const [isLeaderTab, setIsLeaderTab] = useState(false)
+  const [lastMessage, setLastMessage] = React.useState<TabSyncMessage<T> | null>(null)
+  const [connectedTabs, setConnectedTabs] = React.useState(1)
+  const [isLeaderTab, setIsLeaderTab] = React.useState(false)
 
-  const tabIdRef = useRef(generateTabId())
-  const broadcastChannelRef = useRef<BroadcastChannel | null>(null)
-  const heartbeatIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
-  const tabCheckIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const tabIdRef = React.useRef(generateTabId())
+  const broadcastChannelRef = React.useRef<BroadcastChannel | null>(null)
+  const heartbeatIntervalRef = React.useRef<NodeJS.Timeout | undefined>(undefined)
+  const tabCheckIntervalRef = React.useRef<NodeJS.Timeout | undefined>(undefined)
 
   /**
    * Update connected tabs count
    */
-  const updateConnectedTabs = useCallback(() => {
+  const updateConnectedTabs = React.useCallback(() => {
     try {
       const tabsData = localStorage.getItem(`${channelName}_tabs`)
       if (tabsData) {
@@ -86,7 +86,7 @@ export function useTabSync<T = any>(
   /**
    * Initialize BroadcastChannel
    */
-  useEffect(() => {
+  React.useEffect(() => {
     if (useBroadcastChannel && typeof BroadcastChannel !== 'undefined') {
       try {
         broadcastChannelRef.current = new BroadcastChannel(channelName)
@@ -123,7 +123,7 @@ export function useTabSync<T = any>(
   /**
    * Setup storage event listener (fallback)
    */
-  useEffect(() => {
+  React.useEffect(() => {
     if (useStorageEvent) {
       const handleStorageEvent = (e: StorageEvent) => {
         if (e.key === `tab_sync_${channelName}` && e.newValue) {
@@ -156,7 +156,7 @@ export function useTabSync<T = any>(
   /**
    * Send heartbeat to track active tabs
    */
-  const sendHeartbeat = useCallback(() => {
+  const sendHeartbeat = React.useCallback(() => {
     try {
       const tabsData = localStorage.getItem(`${channelName}_tabs`)
       const tabs = tabsData ? JSON.parse(tabsData) : {}
@@ -171,7 +171,8 @@ export function useTabSync<T = any>(
   /**
    * Setup heartbeat interval
    */
-  useEffect(() => {
+  React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     sendHeartbeat() // Initial heartbeat
 
     heartbeatIntervalRef.current = setInterval(() => {
@@ -207,7 +208,7 @@ export function useTabSync<T = any>(
   /**
    * Send message to other tabs
    */
-  const sendMessage = useCallback(
+  const sendMessage = React.useCallback(
     (type: string, payload: T) => {
       const message: TabSyncMessage<T> = {
         type,

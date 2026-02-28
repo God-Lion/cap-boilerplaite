@@ -1,4 +1,7 @@
 import type { Theme } from '@mui/material/styles'
+import type {} from '@mui/lab/themeAugmentation'
+import '../types/mui.d.ts'
+
 import type { Settings } from '../contexts/settingsContext'
 import type { SystemMode, Skin } from '../types'
 
@@ -8,8 +11,7 @@ import colorSchemes from './colorSchemes'
 import spacing from './spacing'
 import shadows from './shadows'
 import customShadows from './customShadows'
-import themeConfig from '../configs/themeConfig'
-import typography from './typography'
+import { zIndexScale } from './zIndex'
 
 // import typography from './typography'
 
@@ -62,6 +64,7 @@ const theme = (settings: Settings, mode: SystemMode, direction: Theme['direction
     shadows: shadows(mode),
     // typography: typography(public_sans.style.fontFamily),
     customShadows: customShadows(mode),
+    zIndex: zIndexScale,
     mainColorChannels: {
       light: '47 43 61',
       dark: '225 222 245',

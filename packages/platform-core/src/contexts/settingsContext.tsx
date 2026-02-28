@@ -42,6 +42,7 @@ type SettingsContextProps = {
 }
 
 // Initial Settings Context (kept for backward compatibility)
+// eslint-disable-next-line react-refresh/only-export-components
 export const SettingsContext = React.createContext<SettingsContextProps | null>(null)
 
 export const SettingsProvider: React.FC<{
@@ -148,6 +149,7 @@ export const SettingsProvider: React.FC<{
  *
  * This hook now uses Zustand internally for backward compatibility
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSettings = () => {
   // Use Zustand store directly
   const zustandSettings = useZustandSettings()

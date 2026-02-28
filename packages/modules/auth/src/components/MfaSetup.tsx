@@ -19,6 +19,7 @@ export function MfaSetup() {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<'setup' | 'verify'>('setup')
   const [qrCode, setQrCode] = useState('')
+  const [secret, setSecret] = useState('')
   const [backupCodes, setBackupCodes] = useState<string[]>([])
   const [verifyCode, setVerifyCode] = useState('')
 
@@ -31,7 +32,8 @@ export function MfaSetup() {
       { method: 'totp' },
       {
         onSuccess: (response) => {
-          setQrCode(response.data.qr_code_url || '')
+          setQrCode(response.data.qr_code_url)
+          setSecret(response.data.secret || '')
           setBackupCodes(response.data.backup_codes)
           setStep('verify')
         },
@@ -41,7 +43,7 @@ export function MfaSetup() {
 
   const handleVerify = () => {
     verifyMutation.mutate(
-      { code: verifyCode },
+      { code: verifyCode, secret },
       {
         onSuccess: () => {
           setOpen(false)
@@ -51,7 +53,7 @@ export function MfaSetup() {
     )
   }
 
-  if (mfaStatus?.data.enabled) {
+  if (mfaStatus?.enabled) {
     return (
       <Alert
         severity='success'

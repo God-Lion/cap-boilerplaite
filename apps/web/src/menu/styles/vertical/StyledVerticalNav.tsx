@@ -14,7 +14,7 @@ const StyledVerticalNav = styled.aside<StyledVerticalNavProps>`
     inset-block-start: 0;
     block-size: 100dvh;
   `}
-  z-index: 9;
+  z-index: var(--drawer-z-index);
 
   /* Transition */
   transition-property: inline-size, min-inline-size, margin-inline-start, inset-inline-start;
@@ -39,7 +39,7 @@ const StyledVerticalNav = styled.aside<StyledVerticalNavProps>`
     block-size: 100%;
     inset-block-start: 0;
     inset-inline-start: ${({ width }) => `-${width}px`};
-    z-index: 100;
+    z-index: var(--drawer-z-index);
     margin: 0;
     &.${verticalNavClasses.collapsed} {
       inset-inline-start: -${({ collapsedWidth }) => `${collapsedWidth}px`};

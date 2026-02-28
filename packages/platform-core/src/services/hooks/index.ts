@@ -1,6 +1,5 @@
 // Shared hooks index file
 export * from './useApi'
-export * from './useApiHooks'
 export * from './useDebounce'
 export * from './useSSE'
 export { default as usePersistentForm } from './usePersistentForm'

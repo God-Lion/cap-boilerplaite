@@ -45,10 +45,10 @@ export class WorkerService {
         console.log('App is ready to work offline.')
         this.onOfflineReadyCallback?.()
       },
-      onRegistered: (registration) => {
+      onRegistered: (registration: ServiceWorkerRegistration | undefined) => {
         console.log('Service Worker registered:', registration)
       },
-      onRegisterError: (error) => {
+      onRegisterError: (error: unknown) => {
         console.error('Service Worker registration failed:', error)
       },
     })

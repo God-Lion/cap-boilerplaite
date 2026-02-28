@@ -18,8 +18,9 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { AttachMoney, Help, Logout, Person, Settings } from '@mui/icons-material'
-import { useSettings, useAuth } from '@cap/platform-core'
+import { useSettings, useAuth, zIndexScale } from '@cap/platform-core'
 import { useSignOut } from '@cap/module-auth'
+import Path from '@cap/module-auth/src/screens/path'
 
 const BadgeContentSpan = styled('span')({
   width: 8,
@@ -44,7 +45,8 @@ const UserDropdown = () => {
   const { settings } = useSettings()
 
   // Extract user data from IAuth structure
-  const user = authUser?.user
+  const user = authUser?.user || authUser
+  console.log('[UserDropdown] Current user:', user)
 
   const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(open ? null : event.currentTarget)
@@ -89,13 +91,12 @@ const UserDropdown = () => {
       <Popper
         open={open}
         transition
-        disablePortal
         placement='bottom-end'
         anchorEl={anchorEl}
         sx={{
           minInlineSize: '240px',
           marginBlockStart: '0.75rem !important',
-          zIndex: 1,
+          zIndex: zIndexScale.dropdown,
         }}
       >
         {({ TransitionProps, placement }) => (
@@ -106,10 +107,13 @@ const UserDropdown = () => {
             }}
           >
             <Paper
+              className='glass-effect animate-scale-in'
               sx={{
+                borderRadius: '12px !important',
+                overflow: 'hidden',
                 ...(settings.skin === 'bordered'
                   ? { border: 1, boxShadow: 'none' }
-                  : { boxShadow: 'var(--mui-customShadows-lg)' }),
+                  : { boxShadow: 'var(--premium-shadow)' }),
               }}
             >
               <ClickAwayListener
@@ -151,24 +155,44 @@ const UserDropdown = () => {
                     }}
                   />
                   <MenuItem
-                    onClick={(e) => handleDropdownClose(e, '/pages/user-profile')}
+                    onClick={(e) => handleDropdownClose(e, Path.account.overview)}
                     sx={{
-                      marginInline: '0.5rem',
+                      marginInline: '8px !important',
+                      marginBlock: '4px !important',
+                      borderRadius: '8px !important',
                       gap: '0.75rem',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        background: 'hsla(var(--mui-mainColor-hsl), 0.05) !important',
+                        transform: 'translateX(4px)',
+                        '& svg': { color: 'primary.main' },
+                      },
                     }}
                   >
-                    <Person sx={{ fontSize: '22px' }} />
-                    <Typography color='text.primary'>My Profile</Typography>
+                    <Person sx={{ fontSize: '22px', transition: 'color 0.2s' }} />
+                    <Typography color='text.primary' sx={{ fontWeight: 500 }}>
+                      My Profile
+                    </Typography>
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleDropdownClose(e, '/pages/account-settings')}
+                    onClick={(e) => handleDropdownClose(e, Path.account.edit)}
                     sx={{
-                      marginInline: '0.5rem',
+                      marginInline: '8px !important',
+                      marginBlock: '4px !important',
+                      borderRadius: '8px !important',
                       gap: '0.75rem',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        background: 'hsla(var(--mui-mainColor-hsl), 0.05) !important',
+                        transform: 'translateX(4px)',
+                        '& svg': { color: 'primary.main' },
+                      },
                     }}
                   >
-                    <Settings sx={{ fontSize: '22px' }} />
-                    <Typography color='text.primary'>Settings</Typography>
+                    <Settings sx={{ fontSize: '22px', transition: 'color 0.2s' }} />
+                    <Typography color='text.primary' sx={{ fontWeight: 500 }}>
+                      Settings
+                    </Typography>
                   </MenuItem>
                   <MenuItem
                     onClick={(e) => handleDropdownClose(e, '/pages/pricing')}

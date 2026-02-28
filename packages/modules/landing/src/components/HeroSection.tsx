@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Container, Typography, Button, alpha, useTheme } from '@mui/material'
-import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid2'
 import { useNavigate } from 'react-router-dom'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 
@@ -52,7 +52,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
       <Container maxWidth='lg' sx={{ position: 'relative', zIndex: 1 }}>
         <Grid container spacing={6} alignItems='center'>
           {/* Text Content */}
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -132,7 +132,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
           </Grid>
 
           {/* Dashboard Preview */}
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Box
               sx={{
                 position: 'relative',

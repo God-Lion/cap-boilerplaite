@@ -1,3 +1,4 @@
+/* cspell:ignore notif */
 import { useEffect, useState } from 'react'
 import { useAppStore } from './../store'
 import { localStorageManager, sessionStorageManager, STORAGE_KEYS } from './storage'
@@ -27,9 +28,11 @@ export const useStateHydration = (): HydrationStatus => {
 
         // 1. Check for authentication
         const hasAuthToken = localStorageManager.has(STORAGE_KEYS.AUTH_TOKEN)
+        console.log('[useStateHydration] Checking for auth token:', hasAuthToken)
 
         if (hasAuthToken) {
           // Refresh authentication if token exists
+          console.log('[useStateHydration] Token found, refreshing auth...')
           await refreshAuth()
         } else {
           // Create guest session if no auth
@@ -57,7 +60,7 @@ export const useStateHydration = (): HydrationStatus => {
     }
 
     hydrateState()
-  }, [])
+  }, [refreshAuth, guestSession, createGuestSession])
 
   return status
 }

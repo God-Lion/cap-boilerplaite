@@ -1,11 +1,10 @@
 import React from 'react'
 import type { ReactElement } from 'react'
 import type { SystemMode } from '@cap/platform-core'
-import { useSettings } from '@cap/platform-core'
+import { useSettings, useAppStore, useStateHydration, type AppStore } from '@cap/platform-core'
 import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import useLayoutInit from './hooks/useLayoutInit'
-import { useLocation } from 'react-router-dom'
-import { AuthModule } from '@cap/module-auth'
 
 type LayoutWrapperProps = {
   systemMode: SystemMode
@@ -14,9 +13,6 @@ type LayoutWrapperProps = {
   noLayout?: ReactElement
   publicLayout?: ReactElement
 }
-
-const ADMIN_PATH_PREFIXES = ['/admin', '/provider']
-
 const LayoutWrapper = ({
   systemMode,
   verticalLayout,
@@ -25,24 +21,42 @@ const LayoutWrapper = ({
   publicLayout,
 }: LayoutWrapperProps) => {
   const { settings } = useSettings()
-  const { pathname } = useLocation()
+  const { isHydrating } = useStateHydration()
+
+  // Use direct selectors for better performance
+  const isAuthenticated = useAppStore((state: AppStore) => state.isAuthenticated)
+  const isAdmin = useAppStore((state: AppStore) => state.user?.isAdmin)
+  const layoutOverride = useAppStore((state: AppStore) => state.layoutOverride)
 
   useLayoutInit(systemMode)
 
-  const normalizedPath = pathname.toLowerCase()
+  const isNoLayout = layoutOverride === 'noLayout'
 
-  const isNoLayout = React.useMemo(() => {
+  const isAdminLayout = React.useMemo(() => {
+    // If we have an explicit override, respect it
+    if (layoutOverride === 'admin') return true
+    if (layoutOverride === 'public') return false
+
+    // Default behavior: Admins get the dashboard layout, everyone else gets public
+    if (isAuthenticated) return !!isAdmin
+
+    return false
+  }, [isAuthenticated, isAdmin, layoutOverride])
+
+  if (isHydrating) {
     return (
-      AuthModule.authRouteConfig?.some(
-        (route) => route.layout === 'noLayout' && route.path.toLowerCase() === normalizedPath,
-      ) ?? false
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          blockSize: '100vh',
+        }}
+      >
+        <CircularProgress />
+      </Box>
     )
-  }, [normalizedPath])
-
-  const isAdminLayout = React.useMemo(
-    () => ADMIN_PATH_PREFIXES.some((prefix) => normalizedPath.startsWith(prefix)),
-    [normalizedPath],
-  )
+  }
 
   if (isNoLayout) return noLayout ?? null
 

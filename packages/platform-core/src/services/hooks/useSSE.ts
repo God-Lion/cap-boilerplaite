@@ -2,7 +2,7 @@
  * React Hook for Server-Sent Events (SSE)
  * Provides easy-to-use hooks for real-time server updates
  */
-import { useEffect, useRef, useState, useCallback } from 'react'
+import React from 'react'
 import { API_CONFIG } from '../config'
 
 export interface SSEMessage<T = any> {
@@ -47,18 +47,18 @@ export function useSSE<T = any>(endpoint: string, options: SSEOptions = {}): SSE
     maxReconnectAttempts = 5,
   } = options
 
-  const [data, setData] = useState<T | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [isConnected, setIsConnected] = useState(false)
-  const [lastEvent, setLastEvent] = useState<string | null>(null)
+  const [data, setData] = React.useState<T | null>(null)
+  const [error, setError] = React.useState<string | null>(null)
+  const [isConnected, setIsConnected] = React.useState(false)
+  const [lastEvent, setLastEvent] = React.useState<string | null>(null)
 
-  const eventSourceRef = useRef<EventSource | null>(null)
-  const reconnectAttemptsRef = useRef(0)
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const eventSourceRef = React.useRef<EventSource | null>(null)
+  const reconnectAttemptsRef = React.useRef(0)
+  const reconnectTimeoutRef = React.useRef<NodeJS.Timeout | undefined>(undefined)
 
-  const connectRef = useRef<() => void>(() => {})
+  const connectRef = React.useRef<() => void>(() => {})
 
-  const connect = useCallback(() => {
+  const connect = React.useCallback(() => {
     if (eventSourceRef.current) {
       return
     }
@@ -142,11 +142,11 @@ export function useSSE<T = any>(endpoint: string, options: SSEOptions = {}): SSE
   }, [endpoint, onOpen, onError, reconnect, reconnectInterval, maxReconnectAttempts])
 
   // Update ref
-  useEffect(() => {
+  React.useEffect(() => {
     connectRef.current = connect
   }, [connect])
 
-  const disconnect = useCallback(() => {
+  const disconnect = React.useCallback(() => {
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current)
     }
@@ -159,13 +159,14 @@ export function useSSE<T = any>(endpoint: string, options: SSEOptions = {}): SSE
     }
   }, [onClose])
 
-  const reconnectManually = useCallback(() => {
+  const reconnectManually = React.useCallback(() => {
     disconnect()
     reconnectAttemptsRef.current = 0
     connect()
   }, [connect, disconnect])
 
-  useEffect(() => {
+  React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     connect()
 
     return () => {
@@ -210,7 +211,7 @@ export function useScrapingProgress(sessionId: number | null) {
   const isStopped = data?.status === 'stopped'
 
   // Auto-close connection when complete
-  useEffect(() => {
+  React.useEffect(() => {
     if (isComplete || isFailed || isStopped) {
       const timer = setTimeout(() => {
         close()
@@ -266,7 +267,7 @@ export interface AnalysisResult {
 
 export function useAnalysisProgress(analysisId: number | null) {
   const endpoint = analysisId ? `/api/sse/analysis/${analysisId}` : ''
-  const [result, setResult] = useState<AnalysisResult | null>(null)
+  const [result, setResult] = React.useState<AnalysisResult | null>(null)
 
   const { data, error, isConnected, lastEvent, close } = useSSE<
     AnalysisProgressData | AnalysisResult
@@ -276,8 +277,9 @@ export function useAnalysisProgress(analysisId: number | null) {
   })
 
   // Extract result when available
-  useEffect(() => {
+  React.useEffect(() => {
     if (lastEvent === 'result' && data && 'top_roles' in data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResult(data as AnalysisResult)
     }
   }, [lastEvent, data])
@@ -287,7 +289,7 @@ export function useAnalysisProgress(analysisId: number | null) {
     !isComplete && data && 'stage' in data ? (data as AnalysisProgressData) : null
 
   // Auto-close connection when complete
-  useEffect(() => {
+  React.useEffect(() => {
     if (isComplete) {
       const timer = setTimeout(() => {
         close()

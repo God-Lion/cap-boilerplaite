@@ -8,144 +8,49 @@ import {
   UseMutationOptions,
 } from '@tanstack/react-query'
 import {
-  QUERY_KEYS,
   FetchResponse,
   HttpError,
   Session,
   secureTokenManager,
+  API_CONFIG,
 } from '@cap/platform-core'
-
-import { authService } from '../services/auth.service'
 
 import {
   TokenResponse,
   MessageResponse,
   VerifyEmailResponse,
   SessionResponse,
-  ProfileSettingsResponse,
-  UpdateResponse,
   LoginMutationVars,
   RegisterMutationVars,
   ForgotPasswordMutationVars,
   ResetPasswordMutationVars,
-  UpdateNamesMutationVars,
-  UpdateEmailMutationVars,
-  UpdatePhotoMutationVars,
-  // New types
-  ChangePasswordRequest,
   MfaSetupRequest,
   MfaSetupResponse,
-  MfaVerifyRequest,
   MfaVerifyResponse,
-  MfaStatusResponse,
   SessionsResponse,
-  DeactivateAccountRequest,
-  ReactivateAccountRequest,
   LoginHistoryResponse,
-  LinkOAuthRequest,
-  LinkedAccountsResponse,
   MfaLoginVerifyRequest,
+  MfaVerifyRequest,
+  SecurityLogParams,
+  SsoDiscoveryResponse,
+  TotpEnrollmentResponse,
+  TotpConfirmEnrollmentResponse,
 } from '../types/api.types'
+import { useSSESubscription } from './useSSE'
+import { ENDPOINTS } from '../services/endpoints'
 
-// ============================================================================
-// EXISTING QUERY HOOKS (GET operations)
-// ============================================================================
-
-/**
- * Get current session
- */
-export function useSession(
-  options?: Omit<
-    UseQueryOptions<FetchResponse<SessionResponse>, HttpError>,
-    'queryKey' | 'queryFn'
-  >,
-) {
-  return useQuery({
-    queryKey: QUERY_KEYS.auth.session,
-    queryFn: () => authService.getSession(),
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    retry: false, // Don't retry if unauthorized
-    ...options,
-  })
-}
-
-/**
- * Get profile settings
- */
-export function useProfileSettings(
-  options?: Omit<
-    UseQueryOptions<FetchResponse<ProfileSettingsResponse>, HttpError>,
-    'queryKey' | 'queryFn'
-  >,
-) {
-  return useQuery({
-    queryKey: QUERY_KEYS.auth.profileSettings,
-    queryFn: () => authService.getProfileSettings(),
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    ...options,
-  })
-}
+import { QUERY_KEYS } from '../services'
+import authService from '../services/auth.service'
+import { useAuthStore } from '../store'
 
 // ============================================================================
 // EXISTING MUTATION HOOKS (POST, PUT, DELETE operations)
 // ============================================================================
 
 /**
- * Login mutation
+ * Signup/Register mutation
  */
-export function useLogin(
-  options?: UseMutationOptions<FetchResponse<TokenResponse>, HttpError, LoginMutationVars, unknown>,
-) {
-  const queryClient = useQueryClient()
-
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: ({ data }) => authService.login(data),
-    onSuccess: (...args) => {
-      const [response] = args
-      console.log('[useLogin] onSuccess triggered', {
-        response,
-        hasCustomCallback: !!customOnSuccess,
-      })
-
-      if (response.data.token) {
-        const expiresIn = response.data.expires_in || 3600
-        const expiresAt = Date.now() + expiresIn * 1000
-
-        secureTokenManager.setTokens({
-          accessToken: response.data.token,
-          refreshToken: response.data.refresh_token,
-          expiresAt,
-        })
-
-        try {
-          const session = new Session()
-          session.write('user', response.data.user)
-          console.log('[useLogin] User data stored in session')
-        } catch (error) {
-          console.warn('[useLogin] Failed to store in Session:', error)
-        }
-
-        console.log('[useLogin] Tokens stored securely in memory')
-      }
-
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-
-      console.log('[useLogin] Calling custom onSuccess callback')
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-/**
- * Register mutation
- */
-export function useRegister(
+export function useSignup(
   options?: UseMutationOptions<
     FetchResponse<MessageResponse>,
     HttpError,
@@ -154,26 +59,93 @@ export function useRegister(
   >,
 ) {
   return useMutation({
-    mutationFn: ({ data }) => authService.register(data),
+    mutationFn: ({ data }) => authService.signup(data),
     ...options,
   })
 }
 
+export const useRegister = useSignup
 /**
- * Logout mutation
+ * Signin mutation
  */
-export function useLogout(
-  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, void, unknown>,
+export function useSignin(
+  options?: UseMutationOptions<FetchResponse<TokenResponse>, HttpError, LoginMutationVars, unknown>,
 ) {
   const queryClient = useQueryClient()
 
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
 
+  const { setAuthenticated, setUser, setMfaRequired, setSessionId } = useAuthStore()
+  const { setAuthStep, setErrorBanner } = useAuthStore()
+
   return useMutation({
-    mutationFn: () => authService.logout(),
+    mutationFn: ({ data }) => authService.signin(data),
+    onSuccess: (...args) => {
+      const [response] = args
+
+      if (response.data.mfa_required) {
+        setMfaRequired(true)
+        setAuthStep('mfa')
+        if (response.data.userId) {
+          // Store userId or sessionId if needed for second factor
+        }
+      } else if (response.data.token) {
+        const expiresIn = response.data.expires_in || 3600
+        const expiresAt = Date.now() + expiresIn * 1000
+
+        secureTokenManager.setTokens({
+          accessToken: response.data.token,
+          expiresAt,
+        })
+
+        setUser(response.data.user)
+        setAuthenticated(true)
+        setAuthStep('complete')
+
+        // sessionId handled if present in response
+        if (response.data.userId) {
+          setSessionId(response.data.userId.toString())
+        }
+
+        try {
+          const session = new Session()
+          session.write('user', response.data.user)
+        } catch (err) {
+          // Session write failure is non-critical during login flow
+          console.error('Failed to write session data:', err)
+        }
+      }
+
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
+      customOnSuccess?.(...args)
+    },
+    onError: (error, ...rest) => {
+      setErrorBanner(error.message || 'Login failed')
+      customOnError?.(error, ...rest)
+    },
+    ...restOptions,
+  })
+}
+/**
+ * Logout mutation
+ */
+export function useSignout(
+  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, void, unknown>,
+) {
+  const queryClient = useQueryClient()
+  const { clearAuth } = useAuthStore()
+  const { setAuthStep } = useAuthStore()
+
+  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  return useMutation({
+    mutationFn: () => authService.signout(),
     onSuccess: (...args) => {
       secureTokenManager.clearTokens()
-      localStorage.removeItem('user')
+
+      // Reset Zustand auth store
+      clearAuth()
+      setAuthStep('credentials')
 
       queryClient.clear()
 
@@ -185,24 +157,46 @@ export function useLogout(
     ...restOptions,
   })
 }
-
 /**
- * Verify email mutation
+ * Refresh token mutation
  */
-export function useVerifyEmail(
+export function useRefreshToken(
   options?: UseMutationOptions<
-    FetchResponse<VerifyEmailResponse>,
+    FetchResponse<TokenResponse>,
     HttpError,
-    { token: string },
+    { refreshToken?: string },
     unknown
   >,
 ) {
+  const queryClient = useQueryClient()
+
+  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
   return useMutation({
-    mutationFn: ({ token }) => authService.verifyEmail(token),
-    ...options,
+    mutationFn: () => authService.refreshToken(),
+    onSuccess: (...args) => {
+      const [response] = args
+      if (response.data.token) {
+        const expiresIn = response.data.expires_in || 3600
+        const expiresAt = Date.now() + expiresIn * 1000
+
+        secureTokenManager.setTokens({
+          accessToken: response.data.token,
+          // refresh_token is handled via HttpOnly cookie
+          expiresAt,
+        })
+      }
+
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
+
+      customOnSuccess?.(...args)
+    },
+    onError: (...args) => {
+      customOnError?.(...args)
+    },
+    ...restOptions,
   })
 }
-
 /**
  * Forgot password mutation
  */
@@ -238,327 +232,109 @@ export function useResetPassword(
 }
 
 /**
- * Refresh token mutation
+ * Verify reset password token
  */
-export function useRefreshToken(
+export function useVerifyResetPassword(
+  email: string,
+  signature: string,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: ['auth', 'verify-reset-password', email, signature],
+    queryFn: () => authService.verifyResetPassword(email, signature),
+    enabled: !!email && !!signature,
+    retry: false,
+    ...options,
+  })
+}
+/**
+ * Verify email mutation
+ */
+export function useVerifyEmail(
   options?: UseMutationOptions<
-    FetchResponse<TokenResponse>,
+    FetchResponse<VerifyEmailResponse>,
     HttpError,
-    { refreshToken: string },
+    { email: string; signature: string },
     unknown
   >,
 ) {
-  const queryClient = useQueryClient()
-
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
   return useMutation({
-    mutationFn: ({ refreshToken }) => authService.refreshToken(refreshToken),
-    onSuccess: (...args) => {
-      const [response] = args
-      if (response.data.token) {
-        const expiresIn = response.data.expires_in || 3600
-        const expiresAt = Date.now() + expiresIn * 1000
-
-        secureTokenManager.setTokens({
-          accessToken: response.data.token,
-          refreshToken: response.data.refresh_token,
-          expiresAt,
-        })
-      }
-
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
+    mutationFn: ({ email, signature }) => authService.verifyEmail(email, signature),
+    ...options,
   })
 }
 
-/**
- * Update names mutation
- */
-export function useUpdateNames(
-  options?: UseMutationOptions<
-    FetchResponse<UpdateResponse>,
-    HttpError,
-    UpdateNamesMutationVars,
-    unknown
-  >,
-) {
-  const queryClient = useQueryClient()
-
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: ({ data }) => authService.updateNames(data),
-    onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.auth.profileSettings,
-      })
-
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-/**
- * Update email mutation
- */
-export function useUpdateEmail(
-  options?: UseMutationOptions<
-    FetchResponse<UpdateResponse>,
-    HttpError,
-    UpdateEmailMutationVars,
-    unknown
-  >,
-) {
-  const queryClient = useQueryClient()
-
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: ({ data }) => authService.updateEmail(data),
-    onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.auth.profileSettings,
-      })
-
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-/**
- * Update photo mutation
- */
-export function useUpdatePhoto(
-  options?: UseMutationOptions<
-    FetchResponse<UpdateResponse>,
-    HttpError,
-    UpdatePhotoMutationVars,
-    unknown
-  >,
-) {
-  const queryClient = useQueryClient()
-
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: ({ data }) => authService.updatePhoto(data),
-    onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.auth.profileSettings,
-      })
-
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-// ============================================================================
-// NEW HOOKS - Change Password (Critical)
-// ============================================================================
-
-/**
- * Change Password Hook
- */
-export function useChangePassword(
+export function useResendVerification(
   options?: UseMutationOptions<
     FetchResponse<MessageResponse>,
     HttpError,
-    ChangePasswordRequest,
+    { email: string },
     unknown
   >,
 ) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
   return useMutation({
-    mutationFn: (data) => authService.changePassword(data),
-    onSuccess: (...args) => {
-      // Clear tokens - force re-login for security
-      secureTokenManager.clearTokens()
-      queryClient.clear()
-
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
+    mutationFn: ({ email }) => authService.resendVerification(email),
+    ...options,
   })
 }
 
-// ============================================================================
-// NEW HOOKS - Multi-Factor Authentication
-// ============================================================================
-
-/**
- * Setup MFA
- */
-export function useSetupMfa(
-  options?: UseMutationOptions<
-    FetchResponse<MfaSetupResponse>,
-    HttpError,
-    MfaSetupRequest,
-    unknown
-  >,
+export function useVerifyEmailToken(
+  email: string,
+  signature: string,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
-  return useMutation({
-    mutationFn: (data) => authService.setupMfa(data),
+  return useQuery({
+    queryKey: ['auth', 'verify-email-token', email, signature],
+    queryFn: () => authService.verifyEmailToken(email, signature),
+    enabled: !!email && !!signature,
+    retry: false,
+    ...options,
+  })
+}
+
+export function useValidateUser(
+  email: string,
+  token: string,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: ['auth', 'validate-user', email, token],
+    queryFn: () => authService.validateUser(email, token),
+    enabled: !!email && !!token,
+    retry: false,
     ...options,
   })
 }
 
 /**
- * Verify MFA
+ * Get current session
  */
-export function useVerifyMfa(
-  options?: UseMutationOptions<
-    FetchResponse<MfaVerifyResponse>,
-    HttpError,
-    MfaVerifyRequest,
-    unknown
-  >,
-) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: (data) => authService.verifyMfa(data),
-    onSuccess: (...args) => {
-      const [response] = args
-      const { token, refresh_token, expires_in } = response.data
-
-      secureTokenManager.setTokens({
-        accessToken: token,
-        refreshToken: refresh_token,
-        expiresAt: Date.now() + expires_in * 1000,
-      })
-
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      queryClient.invalidateQueries({ queryKey: ['auth', 'mfa', 'status'] })
-
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-/**
- * Verify MFA during Login
- */
-export function useMfaLoginVerify(
-  options?: UseMutationOptions<
-    FetchResponse<MfaVerifyResponse>,
-    HttpError,
-    MfaLoginVerifyRequest,
-    unknown
-  >,
-) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: (data) => authService.mfaLoginVerify(data),
-    onSuccess: (...args) => {
-      const [response] = args
-      const { token, refresh_token, expires_in } = response.data
-
-      secureTokenManager.setTokens({
-        accessToken: token,
-        refreshToken: refresh_token,
-        expiresAt: Date.now() + expires_in * 1000,
-      })
-
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-/**
- * Disable MFA
- */
-export function useDisableMfa(
-  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, void, unknown>,
-) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: () => authService.disableMfa(),
-    onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: ['auth', 'mfa', 'status'] })
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-/**
- * Get MFA Status
- */
-export function useMfaStatus(
+export function useSession(
   options?: Omit<
-    UseQueryOptions<FetchResponse<MfaStatusResponse>, HttpError>,
+    UseQueryOptions<FetchResponse<SessionResponse>, HttpError>,
     'queryKey' | 'queryFn'
   >,
 ) {
+  const { setUser, setAuthenticated } = useAuthStore()
+
   return useQuery({
-    queryKey: ['auth', 'mfa', 'status'],
-    queryFn: () => authService.getMfaStatus(),
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    queryKey: QUERY_KEYS.auth.session,
+    queryFn: async () => {
+      const response = await authService.getSession()
+      if (response.data?.user) {
+        setUser(response.data.user)
+        setAuthenticated(true)
+      } else {
+        setUser(null)
+        setAuthenticated(false)
+      }
+      return response
+    },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    retry: false, // Don't retry if unauthorized
     ...options,
   })
 }
-
-/**
- * Regenerate Backup Codes
- */
-export function useRegenerateBackupCodes(
-  options?: UseMutationOptions<FetchResponse<{ backup_codes: string[] }>, HttpError, void, unknown>,
-) {
-  return useMutation({
-    mutationFn: () => authService.regenerateBackupCodes(),
-    ...options,
-  })
-}
-
-// ============================================================================
-// NEW HOOKS - Session Management
-// ============================================================================
-
 /**
  * Get All Sessions
  */
@@ -577,28 +353,6 @@ export function useSessions(
 }
 
 /**
- * Revoke Session
- */
-export function useRevokeSession(
-  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, string, unknown>,
-) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: (sessionId) => authService.revokeSession(sessionId),
-    onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: ['auth', 'sessions'] })
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-/**
  * Revoke All Sessions
  */
 export function useRevokeAllSessions(
@@ -611,74 +365,6 @@ export function useRevokeAllSessions(
     mutationFn: () => authService.revokeAllSessions(),
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: ['auth', 'sessions'] })
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-// ============================================================================
-// NEW HOOKS - Account Management
-// ============================================================================
-
-/**
- * Deactivate Account
- */
-export function useDeactivateAccount(
-  options?: UseMutationOptions<
-    FetchResponse<MessageResponse>,
-    HttpError,
-    DeactivateAccountRequest,
-    unknown
-  >,
-) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: (data) => authService.deactivateAccount(data),
-    onSuccess: (...args) => {
-      secureTokenManager.clearTokens()
-      queryClient.clear()
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-
-/**
- * Reactivate Account
- */
-export function useReactivateAccount(
-  options?: UseMutationOptions<
-    FetchResponse<TokenResponse>,
-    HttpError,
-    ReactivateAccountRequest,
-    unknown
-  >,
-) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
-  return useMutation({
-    mutationFn: (data) => authService.reactivateAccount(data),
-    onSuccess: (...args) => {
-      const [response] = args
-      const { token, refresh_token, expires_in } = response.data
-
-      secureTokenManager.setTokens({
-        accessToken: token,
-        refreshToken: refresh_token,
-        expiresAt: Date.now() + expires_in * 1000,
-      })
-
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -714,7 +400,7 @@ export function useLoginHistory(
  * Get Security Logs
  */
 export function useSecurityLogs(
-  params?: any,
+  params?: SecurityLogParams,
   options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
@@ -725,37 +411,131 @@ export function useSecurityLogs(
   })
 }
 
-// ============================================================================
-// NEW HOOKS - OAuth
-// ============================================================================
-
 /**
- * OAuth Login
+ * Setup MFA
  */
-export function useOAuthLogin(
+export function useSetupMfa(
   options?: UseMutationOptions<
-    FetchResponse<TokenResponse>,
+    FetchResponse<MfaSetupResponse>,
     HttpError,
-    { provider: 'google' | 'facebook'; code: string },
+    MfaSetupRequest,
     unknown
   >,
+) {
+  return useMutation({
+    mutationFn: (data) => authService.mfa.setup(data),
+    ...options,
+  })
+}
+
+/**
+ * Verify MFA
+ */
+export function useVerifyMfa(
+  options?: UseMutationOptions<FetchResponse<MfaVerifyResponse>, HttpError, MfaVerifyRequest>,
+) {
+  const queryClient = useQueryClient()
+  const { setAuthenticated, setUser, setMfaRequired } = useAuthStore()
+  const { setAuthStep } = useAuthStore()
+  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  return useMutation({
+    mutationFn: (data) => authService.mfa.verify(data),
+    onSuccess: (...args) => {
+      const [response] = args
+      const { token, expires_in, user } = response.data
+
+      secureTokenManager.setTokens({
+        accessToken: token,
+        expiresAt: Date.now() + expires_in * 1000,
+      })
+
+      // Update Zustand auth store
+      setUser(user)
+      setAuthenticated(true)
+      setMfaRequired(false)
+      setAuthStep('complete')
+
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
+      queryClient.invalidateQueries({ queryKey: ['auth', 'mfa', 'status'] })
+
+      customOnSuccess?.(...args)
+    },
+    onError: (...args) => {
+      customOnError?.(...args)
+    },
+    ...restOptions,
+  })
+}
+
+/**
+ * Get MFA Status
+ */
+export function useMfaStatus() {
+  const user = useAuthStore((state) => state.user)
+  return {
+    data: {
+      enabled: user?.mfa_enabled || false,
+    },
+    isLoading: false,
+    isError: false,
+  }
+}
+
+/**
+ * Disable MFA
+ */
+export function useDisableMfa(
+  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, void, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
 
   return useMutation({
-    mutationFn: ({ provider, code }) => authService.oauthLogin(provider, code),
+    mutationFn: () => authService.mfa.disable(),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ['auth', 'mfa', 'status'] })
+      customOnSuccess?.(...args)
+    },
+    onError: (...args) => {
+      customOnError?.(...args)
+    },
+    ...restOptions,
+  })
+}
+
+export function useRecoveryCode(
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: ['auth', 'mfa', 'recovery-code'],
+    queryFn: () => authService.mfa.recoveryCode(),
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}
+
+export function useVerifyRecoveryMfa(
+  options?: UseMutationOptions<FetchResponse<MfaVerifyResponse>, HttpError, string>,
+) {
+  const queryClient = useQueryClient()
+  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
+
+  return useMutation({
+    mutationFn: (code) => authService.mfa.verifyRecovery(code),
     onSuccess: (...args) => {
       const [response] = args
-      const { token, refresh_token, expires_in } = response.data
+      const { token, expires_in } = response.data
 
       secureTokenManager.setTokens({
         accessToken: token,
-        refreshToken: refresh_token,
+        // refresh_token is handled via HttpOnly cookie
         expiresAt: Date.now() + expires_in * 1000,
       })
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
+      queryClient.invalidateQueries({ queryKey: ['auth', 'mfa', 'recovery-code'] })
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -766,23 +546,40 @@ export function useOAuthLogin(
 }
 
 /**
- * Link OAuth Provider
+ * Verify MFA during Login
  */
-export function useLinkOAuthProvider(
+export function useMfaLoginVerify(
   options?: UseMutationOptions<
-    FetchResponse<MessageResponse>,
+    FetchResponse<MfaVerifyResponse>,
     HttpError,
-    LinkOAuthRequest,
+    MfaLoginVerifyRequest,
     unknown
   >,
 ) {
   const queryClient = useQueryClient()
+  const { setAuthenticated, setUser, setMfaRequired } = useAuthStore()
+  const { setAuthStep } = useAuthStore()
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
 
   return useMutation({
-    mutationFn: (data) => authService.linkOAuthProvider(data),
+    mutationFn: (data) => authService.mfa.verifyLogin(data),
     onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: ['auth', 'linked-accounts'] })
+      const [response] = args
+      const { token, expires_in, user } = response.data
+
+      secureTokenManager.setTokens({
+        accessToken: token,
+        expiresAt: Date.now() + expires_in * 1000,
+      })
+
+      // Update Zustand auth store
+      setUser(user)
+      setAuthenticated(true)
+      setMfaRequired(false)
+      setAuthStep('complete')
+
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
+
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -793,85 +590,144 @@ export function useLinkOAuthProvider(
 }
 
 /**
- * Unlink OAuth Provider
+ * Regenerate Backup Codes
  */
-export function useUnlinkOAuthProvider(
-  options?: UseMutationOptions<
-    FetchResponse<MessageResponse>,
-    HttpError,
-    'google' | 'facebook',
-    unknown
-  >,
+export function useRegenerateBackupCodes(
+  options?: UseMutationOptions<FetchResponse<{ backup_codes: string[] }>, HttpError, void, unknown>,
 ) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-
   return useMutation({
-    mutationFn: (provider) => authService.unlinkOAuthProvider(provider),
-    onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: ['auth', 'linked-accounts'] })
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
+    mutationFn: () => authService.mfa.regenerateBackupCodes(),
+    ...options,
   })
 }
 
+// ============================================================================
+// NEW HOOKS - TOTP 2-Step Enrollment
+// ============================================================================
+
 /**
- * Get Linked Accounts
+ * Get TOTP Enrollment Options (Step 1)
  */
-export function useLinkedAccounts(
+export function useTotpEnrollmentOptions(
   options?: Omit<
-    UseQueryOptions<FetchResponse<LinkedAccountsResponse>, HttpError>,
+    UseQueryOptions<FetchResponse<TotpEnrollmentResponse>, HttpError>,
     'queryKey' | 'queryFn'
   >,
 ) {
   return useQuery({
-    queryKey: ['auth', 'linked-accounts'],
-    queryFn: () => authService.getLinkedAccounts(),
-    staleTime: 1000 * 60 * 10,
+    queryKey: ['auth', 'mfa', 'totp', 'enroll'],
+    queryFn: () => authService.mfa.totp.enrollStart(),
+    staleTime: 0, // Should always fetch fresh QR
+    ...options,
+  })
+}
+
+/**
+ * Confirm TOTP Enrollment (Step 2)
+ */
+export function useTotpConfirmEnrollment(
+  options?: UseMutationOptions<
+    FetchResponse<TotpConfirmEnrollmentResponse>,
+    HttpError,
+    { code: string }
+  >,
+) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ code }) => authService.mfa.totp.enrollConfirm(code),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['auth', 'mfa', 'status'] })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
+    },
     ...options,
   })
 }
 
 // ============================================================================
-// NEW HOOKS - Email Preferences
+// NEW HOOKS - Passkeys (WebAuthn)
 // ============================================================================
 
-/**
- * Get Email Preferences
- */
-export function useEmailPreferences(
+export function useGetRegistrationOptions(
   options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
-    queryKey: ['auth', 'email-preferences'],
-    queryFn: () => authService.getEmailPreferences(),
-    staleTime: 1000 * 60 * 10,
+    queryKey: ['auth', 'passkeys', 'registration-options'],
+    queryFn: () => authService.passkeys.getRegistrationOptions(),
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}
+/**
+ * Passkey Registration Hook
+ */
+export function usePasskeyRegistration(
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, any, unknown>,
+) {
+  return useMutation({
+    mutationFn: (data) => authService.passkeys.verifyRegistration(data),
+    ...options,
+  })
+}
+
+export function usePasskeyGetLoginOptions(
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | undefined, unknown>,
+) {
+  return useMutation({
+    mutationFn: (email) => authService.passkeys.getLoginOptions(email),
     ...options,
   })
 }
 
 /**
- * Update Email Preferences
+ * Passkey Login Hook
  */
-export function useUpdateEmailPreferences(
-  options?: UseMutationOptions<
-    FetchResponse<MessageResponse>,
-    HttpError,
-    Record<string, boolean>,
-    unknown
-  >,
+export function usePasskeyLogin(
+  options?: UseMutationOptions<FetchResponse<TokenResponse>, HttpError, any, unknown>,
+) {
+  const queryClient = useQueryClient()
+  const { setAuthenticated, setUser } = useAuthStore()
+  const { setAuthStep } = useAuthStore()
+  const { onSuccess: customOnSuccess, ...restOptions } = options || {}
+
+  return useMutation({
+    mutationFn: (data) => authService.passkeys.verifyLogin(data),
+    onSuccess: (...args) => {
+      const [response] = args
+      if (response.data.token) {
+        const expiresIn = response.data.expires_in || 3600
+        const expiresAt = Date.now() + expiresIn * 1000
+
+        secureTokenManager.setTokens({
+          accessToken: response.data.token,
+          expiresAt,
+        })
+      }
+
+      // Update Zustand auth store
+      setUser(response.data.user)
+      setAuthenticated(true)
+      setAuthStep('complete')
+
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
+      customOnSuccess?.(...args)
+    },
+    ...restOptions,
+  })
+}
+
+/**
+ * Revoke Session
+ */
+export function useRevokeSession(
+  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, string, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
 
   return useMutation({
-    mutationFn: (preferences) => authService.updateEmailPreferences(preferences),
+    mutationFn: (sessionId) => authService.revokeSession(sessionId),
     onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: ['auth', 'email-preferences'] })
+      queryClient.invalidateQueries({ queryKey: ['auth', 'sessions'] })
       customOnSuccess?.(...args)
     },
     onError: (...args) => {
@@ -886,17 +742,17 @@ export function useUpdateEmailPreferences(
 // ============================================================================
 
 /**
- * Check if user is authenticated
+ * Check if user is authenticated (Query-based)
  */
-export function useIsAuthenticated(): boolean {
+export function useIsAuthenticatedQuery(): boolean {
   const { data: session } = useSession({ retry: false })
   return !!session?.data?.user
 }
 
 /**
- * Get current user
+ * Get current user (Query-based)
  */
-export function useCurrentUser() {
+export function useCurrentUserQuery() {
   const { data: session, ...rest } = useSession()
   return {
     user: session?.data?.user,
@@ -908,7 +764,7 @@ export function useCurrentUser() {
  * Check user role
  */
 export function useHasRole(role: string): boolean {
-  const { user } = useCurrentUser()
+  const { user } = useCurrentUserQuery()
   return user?.role === role
 }
 
@@ -916,52 +772,61 @@ export function useHasRole(role: string): boolean {
  * Check multiple roles
  */
 export function useHasAnyRole(roles: string[]): boolean {
-  const { user } = useCurrentUser()
+  const { user } = useCurrentUserQuery()
   return roles.includes(user?.role || '')
 }
-// ============================================================================
-// NEW HOOKS - Passkeys (WebAuthn)
-// ============================================================================
 
 /**
- * Passkey Registration Hook
+ * SSO Discovery Hook
  */
-export function usePasskeyRegistration(
-  options?: UseMutationOptions<FetchResponse<any>, HttpError, any, unknown>,
+export function useSsoDiscovery(
+  email: string,
+  options?: Omit<
+    UseQueryOptions<
+      FetchResponse<SsoDiscoveryResponse>,
+      HttpError,
+      FetchResponse<SsoDiscoveryResponse>,
+      [string, string]
+    >,
+    'queryKey'
+  >,
 ) {
-  return useMutation({
-    mutationFn: (data) => authService.verifyPasskeyRegistration(data),
+  return useQuery({
+    queryKey: ['sso_discovery', email],
+    queryFn: () => authService.discoverSso(email),
+    enabled: Boolean(email) && email.includes('@'),
+    retry: false, // Don't retry heavily on discovery failures
     ...options,
   })
 }
 
 /**
- * Passkey Login Hook
+ * SSE Hooks for progress tracking
  */
-export function usePasskeyLogin(
-  options?: UseMutationOptions<FetchResponse<TokenResponse>, HttpError, any, unknown>,
-) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, ...restOptions } = options || {}
 
-  return useMutation({
-    mutationFn: (data) => authService.verifyPasskeyLogin(data),
-    onSuccess: (...args) => {
-      const [response] = args
-      if (response.data.token) {
-        const expiresIn = response.data.expires_in || 3600
-        const expiresAt = Date.now() + expiresIn * 1000
+export function useScrapingProgress(jobId: string | number) {
+  const url = `${API_CONFIG.baseURL}${ENDPOINTS.sse.scrapingProgress(jobId)}`
+  return useSSESubscription<{
+    progress: number
+    status: string
+    message: string
+    records_processed?: number
+  }>(url)
+}
 
-        secureTokenManager.setTokens({
-          accessToken: response.data.token,
-          refreshToken: response.data.refresh_token,
-          expiresAt,
-        })
-      }
+export function useAnalysisProgress(analysisId: string | number) {
+  const url = `${API_CONFIG.baseURL}${ENDPOINTS.sse.analysisProgress(analysisId)}`
+  return useSSESubscription<{
+    progress: number
+    status: string
+    message: string
+  }>(url)
+}
 
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
-      customOnSuccess?.(...args)
-    },
-    ...restOptions,
-  })
+export function useNotificationsStream() {
+  const url = `${API_CONFIG.baseURL}${ENDPOINTS.notifications.sse}`
+  return useSSESubscription<{
+    type: string
+    user_id: number
+  }>(url)
 }

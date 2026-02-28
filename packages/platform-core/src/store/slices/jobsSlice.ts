@@ -36,32 +36,34 @@ export const createJobsSlice: StateCreator<AppStore, [['zustand/immer', never]],
     limit: 20,
     total: 0,
   },
-  setJobs: (jobs) => set({ jobs }),
-  addJob: (job) => set((state) => ({ jobs: [...state.jobs, job] })),
-  updateJob: (job) =>
-    set((state) => ({
-      jobs: state.jobs.map((j) => (j.id === job.id ? job : j)),
+  setJobs: (jobs: Job[]) => set({ jobs }),
+  addJob: (job: Job) => set((state: JobsSlice) => ({ jobs: [...state.jobs, job] })),
+  updateJob: (job: Job) =>
+    set((state: JobsSlice) => ({
+      jobs: state.jobs.map((j: Job) => (j.id === job.id ? job : j)),
     })),
-  deleteJob: (jobId) =>
-    set((state) => ({
-      jobs: state.jobs.filter((j) => j.id !== jobId),
+  deleteJob: (jobId: number) =>
+    set((state: JobsSlice) => ({
+      jobs: state.jobs.filter((j: Job) => j.id !== jobId),
     })),
-  saveJob: (job) =>
-    set((state) => ({
+  saveJob: (job: Job) =>
+    set((state: JobsSlice) => ({
       savedJobs: [...state.savedJobs, job],
     })),
-  unsaveJob: (jobId) =>
-    set((state) => ({
-      savedJobs: state.savedJobs.filter((job) => job.id !== jobId),
+  unsaveJob: (jobId: number) =>
+    set((state: JobsSlice) => ({
+      savedJobs: state.savedJobs.filter((job: Job) => job.id !== jobId),
     })),
-  addApplication: (application) =>
-    set((state) => ({
+  addApplication: (application: JobApplication) =>
+    set((state: JobsSlice) => ({
       applications: [...state.applications, application],
     })),
-  updateApplication: (application) =>
-    set((state) => ({
-      applications: state.applications.map((a) => (a.id === application.id ? application : a)),
+  updateApplication: (application: JobApplication) =>
+    set((state: JobsSlice) => ({
+      applications: state.applications.map((a: JobApplication) =>
+        a.id === application.id ? application : a,
+      ),
     })),
-  setSearchFilters: (filters) => set({ searchFilters: filters }),
+  setSearchFilters: (filters: JobSearchParams) => set({ searchFilters: filters }),
   resetSearchFilters: () => set({ searchFilters: {} }),
 })

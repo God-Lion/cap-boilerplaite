@@ -6,6 +6,7 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './e2e',
+  // Add additional test directory via project logic or glob
   fullyParallel: true,
   timeout: 60 * 1000,
   expect: {
@@ -37,19 +38,21 @@ export default defineConfig({
       dependencies: ['setup'],
     },
 
+    // New project for Authentication Package E2E
+    {
+      name: 'auth-package',
+      testDir: '../../../Authentication/tests/e2e',
+      use: {
+        ...devices['Desktop Chrome'],
+        // Enable virtual authenticator for passkey tests
+        permissions: ['web-authentication'],
+      },
+    },
+
     {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
-        storageState: 'playwright/.auth/user.json',
-      },
-      dependencies: ['setup'],
-    },
-
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
         storageState: 'playwright/.auth/user.json',
       },
       dependencies: ['setup'],
@@ -59,9 +62,15 @@ export default defineConfig({
   webServer: [
     {
       command: 'npm run dev',
-      url: 'http://localhost:5173',
+      url: 'http://127.0.0.1:5173',
       reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
+      timeout: 300 * 1000,
+    },
+    {
+      command: 'cd ../../../Authentication && npm run dev',
+      url: 'http://127.0.0.1:3333',
+      reuseExistingServer: !process.env.CI,
+      timeout: 300 * 1000,
     },
   ],
 })

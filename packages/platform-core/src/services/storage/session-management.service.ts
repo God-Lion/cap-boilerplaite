@@ -35,7 +35,7 @@ const REFRESH_THRESHOLD = 5 * 60 * 1000
 const MAX_CONCURRENT_SESSIONS = 3
 
 class SecureSessionManagementService {
-  private activityCheckInterval: NodeJS.Timeout | null = null
+  private activityCheckInterval: ReturnType<typeof setInterval> | null = null
   private config: SessionConfig = {
     timeout: DEFAULT_TIMEOUT,
     absoluteTimeout: ABSOLUTE_TIMEOUT,
@@ -58,7 +58,7 @@ class SecureSessionManagementService {
 
     const activeSessions = await this.getActiveSessions(authData._id)
     if (activeSessions.length >= this.config.maxConcurrentSessions) {
-      await this.terminateOldestSession(authData._id)
+      await this.terminateOldestSession(authData._id ?? '')
     }
 
     const now = Date.now()
@@ -237,7 +237,7 @@ class SecureSessionManagementService {
         })
         .map((s) => ({
           id: s.sessionId,
-          userId: s.user._id,
+          userId: s.user._id ?? '',
           device: this.parseUserAgent(s.userAgent).device,
           browser: this.parseUserAgent(s.userAgent).browser,
           ip: s.ipAddress || 'Unknown',
@@ -270,6 +270,7 @@ class SecureSessionManagementService {
       screen.height.toString(),
       new Date().getTimezoneOffset().toString(),
       navigator.hardwareConcurrency?.toString() || 'unknown',
+
       (navigator as any).deviceMemory?.toString() || 'unknown',
       navigator.platform,
       navigator.maxTouchPoints?.toString() || '0',
@@ -406,7 +407,7 @@ class SecureSessionManagementService {
   private startActivityMonitoring(): void {
     const events = ['mousedown', 'keydown', 'scroll', 'touchstart', 'click']
 
-    let throttleTimeout: NodeJS.Timeout | null = null
+    let throttleTimeout: ReturnType<typeof setTimeout> | null = null
     const activityHandler = () => {
       if (throttleTimeout) return
 
@@ -441,10 +442,10 @@ class SecureSessionManagementService {
 
     if (now > session.expiresAt || now > session.absoluteExpiresAt) {
       this.destroySession()
-
-      if (window.location.pathname !== '/auth/signin') {
-        window.location.href = '/auth/signin?reason=session_expired'
-      }
+      // Log the expiry - let React Router handle navigation
+      console.warn(
+        '[SessionManager] Session expired, destroyed. Application should redirect to login.',
+      )
       return
     }
 

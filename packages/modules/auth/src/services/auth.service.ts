@@ -1,340 +1,217 @@
-// src/Modules/Auth/services/auth.service.ts - ENHANCED VERSION
-// ============================================================================
-// Complete Auth Service with All Missing Features Implemented
-// ============================================================================
-
-import { apiClient, FetchResponse, ENDPOINTS } from '@cap/platform-core'
+import type { RegistrationResponseJSON, AuthenticationResponseJSON } from '@simplewebauthn/browser'
+import {
+  apiClient,
+  FetchResponse,
+  IForgetPassword,
+  ILogin,
+  IResetPassword,
+  ISignup,
+} from '@cap/platform-core'
 
 import {
-  // Existing types
-  LoginRequest,
-  RegisterRequest,
-  ForgotPasswordRequest,
-  ResetPasswordRequest,
-  TrackFailedLoginRequest,
-  UpdateNamesRequest,
-  UpdateEmailRequest,
-  UpdatePhotoRequest,
-  TokenResponse,
-  MessageResponse,
-  VerifyEmailResponse,
-  SessionResponse,
-  TrackFailedLoginResponse,
-  ProfileSettingsResponse,
-  UpdateResponse,
   // New types
-  ChangePasswordRequest,
   MfaSetupRequest,
-  MfaSetupResponse,
+  MfaLoginVerifyRequest,
   MfaVerifyRequest,
-  MfaVerifyResponse,
-  MfaStatusResponse,
-  SessionsResponse,
-  DeactivateAccountRequest,
-  ReactivateAccountRequest,
-  LoginHistoryResponse,
-  LinkOAuthRequest,
-  LinkedAccountsResponse,
+  SecurityLogParams,
 } from '../types/api.types'
+import { ENDPOINTS } from './endpoints'
 
-// ============================================================================
-// Enhanced Auth Service Class
-// ============================================================================
+const authService = {
+  signup: (body: ISignup): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.signup, body)
+  },
 
-class AuthService {
-  // ========================================================================
-  // EXISTING METHODS (Keep as is)
-  // ========================================================================
+  signin: (body: ILogin): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.login, body)
+  },
 
-  async register(data: RegisterRequest): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>(ENDPOINTS.auth.register, data)
-  }
+  signout: (): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.logout)
+  },
 
-  async login(data: LoginRequest): Promise<FetchResponse<TokenResponse>> {
-    return apiClient.post<TokenResponse>(ENDPOINTS.auth.login, data)
-  }
+  refreshToken: (): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.refresh)
+  },
 
-  async logout(): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>(ENDPOINTS.auth.logout)
-  }
+  forgotPassword: (body: IForgetPassword): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.forgotPassword, body)
+  },
 
-  async verifyEmail(token: string): Promise<FetchResponse<VerifyEmailResponse>> {
-    return apiClient.get<VerifyEmailResponse>(ENDPOINTS.auth.verifyEmailToken(token))
-  }
+  resetPassword: (body: IResetPassword): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.resetPassword, body)
+  },
 
-  async forgotPassword(data: ForgotPasswordRequest): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>(ENDPOINTS.auth.forgotPassword, data)
-  }
+  discoverSso: (email: string): Promise<FetchResponse> => {
+    // Pass email as query param: /api/auth/sso/discover?email=user@domain.com
+    return apiClient.get(ENDPOINTS.auth.sso.discover, { params: { email } })
+  },
 
-  async resetPassword(data: ResetPasswordRequest): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>(ENDPOINTS.auth.resetPassword, data)
-  }
+  verifyResetPassword: (email: string, signature: string): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.verifyResetPassword(email, signature))
+  },
 
-  async refreshToken(refreshToken: string): Promise<FetchResponse<TokenResponse>> {
-    return apiClient.post<TokenResponse>(
-      ENDPOINTS.auth.refresh,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      },
-    )
-  }
+  verifyEmail: (email: string, signature: string): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.verifyEmail(email, signature))
+  },
 
-  async getSession(): Promise<FetchResponse<SessionResponse>> {
-    return apiClient.get<SessionResponse>(ENDPOINTS.auth.session)
-  }
+  resendVerification: (email: string): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.resendVerification, { email })
+  },
 
-  async trackFailedLogin(
-    data: TrackFailedLoginRequest,
-  ): Promise<FetchResponse<TrackFailedLoginResponse>> {
-    return apiClient.post<TrackFailedLoginResponse>(ENDPOINTS.auth.trackFailedLogin, data)
-  }
+  verifyEmailToken: (email: string, signature: string): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.verifyEmailToken(email, signature))
+  },
 
-  async getProfileSettings(): Promise<FetchResponse<ProfileSettingsResponse>> {
-    return apiClient.get<ProfileSettingsResponse>(ENDPOINTS.user.settings)
-  }
-
-  async updateNames(data: UpdateNamesRequest): Promise<FetchResponse<UpdateResponse>> {
-    return apiClient.put<UpdateResponse>(ENDPOINTS.user.updateNames, data)
-  }
-
-  async updateEmail(data: UpdateEmailRequest): Promise<FetchResponse<UpdateResponse>> {
-    return apiClient.put<UpdateResponse>(ENDPOINTS.user.updateEmail, data)
-  }
-
-  async updatePhoto(data: UpdatePhotoRequest): Promise<FetchResponse<UpdateResponse>> {
-    return apiClient.uploadFormData<UpdateResponse>(
-      ENDPOINTS.user.updatePhoto(data.id),
-      { photo: data.photo },
-      'patch',
-    )
-  }
+  validateUser: (id: string | number, token: string): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.validateUser(id, token))
+  },
 
   // ========================================================================
-  // NEW METHODS - Change Password (Critical Missing Feature)
+  // Session Management
   // ========================================================================
+  getSession: (): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.session)
+  },
 
-  /**
-   * Change user password
-   * Requires current password for security
-   */
-  async changePassword(data: ChangePasswordRequest): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.put<MessageResponse>('/api/user/change-password', data)
-  }
+  getSessions: (): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.sessions)
+  },
 
-  // ========================================================================
-  // NEW METHODS - Multi-Factor Authentication
-  // ========================================================================
+  revokeSession: (sessionId: string): Promise<FetchResponse> => {
+    return apiClient.delete(ENDPOINTS.auth.revokeSession(sessionId))
+  },
 
-  /**
-   * Setup MFA for current user
-   * Returns QR code and backup codes
-   */
-  async setupMfa(data: MfaSetupRequest): Promise<FetchResponse<MfaSetupResponse>> {
-    return apiClient.post<MfaSetupResponse>(ENDPOINTS.auth.mfa.setup, data)
-  }
+  revokeAllSessions: (): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.revokeAllSessions)
+  },
 
-  /**
-   * Verify MFA code and enable MFA
-   */
-  async verifyMfa(data: MfaVerifyRequest): Promise<FetchResponse<MfaVerifyResponse>> {
-    return apiClient.post<MfaVerifyResponse>(ENDPOINTS.auth.mfa.verify, data)
-  }
-
-  /**
-   * Verify MFA code during login
-   */
-  async mfaLoginVerify(data: MfaLoginVerifyRequest): Promise<FetchResponse<MfaVerifyResponse>> {
-    return apiClient.post<MfaVerifyResponse>('/api/auth/mfa/verify-login', data)
-  }
-
-  /**
-   * Disable MFA
-   */
-  async disableMfa(): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>(ENDPOINTS.auth.mfa.disable)
-  }
-
-  /**
-   * Get MFA status
-   */
-  async getMfaStatus(): Promise<FetchResponse<MfaStatusResponse>> {
-    return apiClient.get<MfaStatusResponse>('/api/auth/mfa/status')
-  }
-
-  /**
-   * Regenerate backup codes
-   */
-  async regenerateBackupCodes(): Promise<FetchResponse<{ backup_codes: string[] }>> {
-    return apiClient.post('/api/auth/mfa/regenerate-backup-codes')
-  }
+  trackFailedLogin: (body: { email: string }): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.trackFailedLogin, body)
+  },
 
   // ========================================================================
-  // NEW METHODS - Session Management
+  // Login History & Security Logs
   // ========================================================================
 
-  /**
-   * Get all active sessions for current user
-   */
-  async getSessions(): Promise<FetchResponse<SessionsResponse>> {
-    return apiClient.get<SessionsResponse>('/api/auth/sessions')
-  }
-
-  /**
-   * Revoke a specific session
-   */
-  async revokeSession(sessionId: string): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.delete<MessageResponse>(`/api/auth/sessions/${sessionId}`)
-  }
-
-  /**
-   * Revoke all sessions except current
-   */
-  async revokeAllSessions(): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>('/api/auth/sessions/revoke-all')
-  }
-
-  // ========================================================================
-  // NEW METHODS - Account Deactivation
-  // ========================================================================
-
-  /**
-   * Deactivate user account (soft delete)
-   */
-  async deactivateAccount(data: DeactivateAccountRequest): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>('/api/user/deactivate', data)
-  }
-
-  /**
-   * Reactivate a deactivated account
-   */
-  async reactivateAccount(data: ReactivateAccountRequest): Promise<FetchResponse<TokenResponse>> {
-    return apiClient.post<TokenResponse>('/api/auth/reactivate', data)
-  }
-
-  // ========================================================================
-  // NEW METHODS - Login History / Audit Log
-  // ========================================================================
-
-  /**
-   * Get login history for current user
-   */
-  async getLoginHistory(limit: number = 50): Promise<FetchResponse<LoginHistoryResponse>> {
-    return apiClient.get<LoginHistoryResponse>('/api/auth/login-history', {
+  getLoginHistory: (limit: number = 50): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.loginHistory, {
       params: { limit },
     })
-  }
+  },
 
-  /**
-   * Get security logs
-   */
-  async getSecurityLogs(params?: {
-    limit?: number
-    offset?: number
-    event_type?: string
-  }): Promise<FetchResponse<{ logs: any[] }>> {
-    return apiClient.get('/api/auth/security-logs', { params })
-  }
+  getSecurityLogs: (params?: SecurityLogParams): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.securityLogs, { params })
+  },
 
-  // ========================================================================
-  // NEW METHODS - OAuth / Social Login
-  // ========================================================================
+  mfa: {
+    setup: (data?: MfaSetupRequest): Promise<FetchResponse> => {
+      return data
+        ? apiClient.post(ENDPOINTS.auth.mfa.setup, data)
+        : apiClient.post(ENDPOINTS.auth.mfa.setup)
+    },
 
-  /**
-   * Login with OAuth provider
-   */
-  async oauthLogin(
-    provider: 'google' | 'facebook',
-    code: string,
-  ): Promise<FetchResponse<TokenResponse>> {
-    return apiClient.post<TokenResponse>('/api/auth/oauth/login', {
-      provider,
-      code,
-    })
-  }
+    verify: (data: MfaVerifyRequest): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.mfa.verify, data)
+    },
 
-  /**
-   * Link OAuth account to existing user
-   */
-  async linkOAuthProvider(data: LinkOAuthRequest): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>('/api/auth/oauth/link', data)
-  }
+    disable: (): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.mfa.disable)
+    },
 
-  /**
-   * Unlink OAuth account
-   */
-  async unlinkOAuthProvider(
-    provider: 'google' | 'facebook',
-  ): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.delete<MessageResponse>(`/api/auth/oauth/unlink/${provider}`)
-  }
+    recoveryCode: (): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.mfa.recoveryCodes)
+    },
 
-  /**
-   * Get linked OAuth accounts
-   */
-  async getLinkedAccounts(): Promise<FetchResponse<LinkedAccountsResponse>> {
-    return apiClient.get<LinkedAccountsResponse>('/api/auth/oauth/linked')
-  }
+    verifyRecovery: (code: string): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.mfa.recoveryVerify, { code })
+    },
 
-  // ========================================================================
-  // NEW METHODS - Email Preferences
-  // ========================================================================
+    verifyLogin: (data: MfaLoginVerifyRequest): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.mfa.verifyLogin, data)
+    },
 
-  /**
-   * Get email preferences
-   */
-  async getEmailPreferences(): Promise<FetchResponse<any>> {
-    return apiClient.get('/api/user/email-preferences')
-  }
+    regenerateBackupCodes: (): Promise<FetchResponse<{ backup_codes: string[] }>> => {
+      return apiClient.post(ENDPOINTS.auth.mfa.regenerateBackupCodes)
+    },
 
-  /**
-   * Update email preferences
-   */
-  async updateEmailPreferences(
-    preferences: Record<string, boolean>,
-  ): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.put('/api/user/email-preferences', preferences)
-  }
+    totp: {
+      enrollStart: (): Promise<FetchResponse> => {
+        return apiClient.get(ENDPOINTS.auth.mfa.totp.enrollStart)
+      },
+
+      enrollConfirm: (code: string): Promise<FetchResponse> => {
+        return apiClient.post(ENDPOINTS.auth.mfa.totp.enrollConfirm, { code })
+      },
+    },
+  },
+
+  passkeys: {
+    getRegistrationOptions: (): Promise<FetchResponse> => {
+      return apiClient.get(ENDPOINTS.auth.passkey.registerStart)
+    },
+
+    verifyRegistration: (data: RegistrationResponseJSON): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.passkey.registerFinish, data)
+    },
+
+    getLoginOptions: (email?: string): Promise<FetchResponse> => {
+      return apiClient.get(ENDPOINTS.auth.passkey.loginStart, { params: { email } })
+    },
+
+    verifyLogin: (data: AuthenticationResponseJSON): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.passkey.loginFinish, data)
+    },
+  },
 
   // ========================================================================
-  // NEW METHODS - Device Management
+  // Passwordless (Magic Link)
   // ========================================================================
+  passwordless: {
+    /** Send a magic link to the user's email */
+    send: (email: string): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.passwordless.send, { email })
+    },
 
-  /**
-   * Get trusted devices
-   */
-  async getTrustedDevices(): Promise<FetchResponse<any>> {
-    return apiClient.get('/api/auth/trusted-devices')
-  }
+    /** Verify a magic link token */
+    verify: (token: string): Promise<FetchResponse> => {
+      return apiClient.get(ENDPOINTS.auth.passwordless.verify, { params: { token } })
+    },
+  },
 
-  /**
-   * Remove trusted device
-   */
-  async removeTrustedDevice(deviceId: string): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.delete(`/api/auth/trusted-devices/${deviceId}`)
-  }
   // ========================================================================
-  // NEW METHODS - Passkeys (WebAuthn)
+  // OIDC Device Code
   // ========================================================================
+  deviceCode: {
+    /** Request a device code */
+    authorize: (clientId: string): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.oidcDevice.authorize, { client_id: clientId })
+    },
+  },
 
-  async getPasskeyRegistrationOptions(): Promise<FetchResponse<any>> {
-    return apiClient.get(ENDPOINTS.auth.passkey.registerStart)
-  }
+  // ========================================================================
+  // OIDC Compliance & SAML SSO
+  // ========================================================================
+  oidc: {
+    userinfo: (): Promise<FetchResponse> => {
+      return apiClient.get(ENDPOINTS.auth.oidc.userinfo)
+    },
+    introspect: (token: string): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.oidc.introspect, { token })
+    },
+    revoke: (token: string): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.oidc.revoke, { token })
+    },
+    endSession: (): Promise<FetchResponse> => {
+      return apiClient.get(ENDPOINTS.auth.oidc.endSession)
+    },
+  },
 
-  async verifyPasskeyRegistration(data: any): Promise<FetchResponse<any>> {
-    return apiClient.post(ENDPOINTS.auth.passkey.registerFinish, data)
-  }
-
-  async getPasskeyLoginOptions(email?: string): Promise<FetchResponse<any>> {
-    return apiClient.get(ENDPOINTS.auth.passkey.loginStart, { params: { email } })
-  }
-
-  async verifyPasskeyLogin(data: any): Promise<FetchResponse<any>> {
-    return apiClient.post(ENDPOINTS.auth.passkey.loginFinish, data)
-  }
+  saml: {
+    sso: (data: any): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.saml.sso, data)
+    },
+  },
 }
 
-// Export singleton instance
-export const authService = new AuthService()
+export default authService

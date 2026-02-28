@@ -1,8 +1,7 @@
 import { StateCreator } from 'zustand'
-import { fetchClient } from '../../services/api/api.fetch.client'
+import { fetchClient, ENDPOINTS } from '../../services/api/api.client'
 import { IAuth, ILogin } from '../../types'
 import { IResponse } from '../../types'
-import { API_CONFIG, ENDPOINTS } from '../../services/api/api.config'
 import { secureTokenManager, TokenData as AuthTokens } from '../../services/secureTokenManager'
 import { AppStore } from '..'
 
@@ -44,7 +43,7 @@ export const createAuthSlice: StateCreator<
 
   // Sign In
   signIn: async (credentials: ILogin) => {
-    set((state) => {
+    set((state: AuthSlice) => {
       state.isLoading = true
       state.error = null
     })
@@ -57,7 +56,7 @@ export const createAuthSlice: StateCreator<
         await get().refreshAuth()
       }
     } catch (error: any) {
-      set((state) => {
+      set((state: AuthSlice) => {
         state.isLoading = false
         state.error = error.response?.data?.message || 'Sign in failed'
         state.isAuthenticated = false
@@ -69,9 +68,9 @@ export const createAuthSlice: StateCreator<
   // Sign Out
   signOut: async (callback?: (status: number) => void) => {
     try {
-      const response = await fetchClient.get(`${API_CONFIG.baseURL}/signout`)
+      const response = await fetchClient.get(ENDPOINTS.auth.logout)
 
-      set((state) => {
+      set((state: AuthSlice) => {
         state.user = null
         state.isAuthenticated = false
         state.tokens = null
@@ -83,7 +82,7 @@ export const createAuthSlice: StateCreator<
       if (callback) callback(response.status)
     } catch (error) {
       console.error('Sign out error:', error)
-      set((state) => {
+      set((state: AuthSlice) => {
         state.user = null
         state.isAuthenticated = false
         state.tokens = null
@@ -91,7 +90,7 @@ export const createAuthSlice: StateCreator<
 
       secureTokenManager.clearTokens()
     } finally {
-      set((state) => {
+      set((state: AuthSlice) => {
         state.isLoading = false
       })
     }
@@ -105,11 +104,19 @@ export const createAuthSlice: StateCreator<
     }
 
     refreshAuthPromise = (async () => {
+      // Ensure token manager is initialized
+      console.log('[refreshAuth] Waiting for SecureTokenManager initialization...')
+      await secureTokenManager.ensureInitialized()
+      console.log('[refreshAuth] SecureTokenManager initialized')
+
       // Check if we have tokens first
       const tokens = secureTokenManager.getTokens()
+      console.log('[refreshAuth] Tokens found:', !!tokens)
 
-      if (!tokens || !tokens.refreshToken) {
-        set((state) => {
+      // Only require accessToken — refreshToken is stored as HttpOnly cookie
+      if (!tokens || !tokens.accessToken) {
+        console.log('[refreshAuth] No access token found. clearing state.')
+        set((state: AuthSlice) => {
           state.user = null
           state.isAuthenticated = false
           state.isLoading = false
@@ -118,23 +125,15 @@ export const createAuthSlice: StateCreator<
         return
       }
 
-      set((state) => {
+      set((state: AuthSlice) => {
         state.isLoading = true
         state.error = null
       })
 
       try {
-        // Call refresh endpoint with refresh token in Authorization header
-        const response = await fetchClient.post<any>(
-          ENDPOINTS.auth.refresh,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${tokens.refreshToken}`,
-              'Content-Type': 'application/json',
-            },
-          },
-        )
+        // Call session endpoint to get current user data
+        // The refresh token is sent automatically via HttpOnly cookie
+        const response = await fetchClient.get<any>(ENDPOINTS.auth.session)
 
         if (response.status === 200 && response.data) {
           // Update tokens if provided in response
@@ -150,7 +149,7 @@ export const createAuthSlice: StateCreator<
           // Set user data - backend might return user data directly or in a 'user' field
           const userData = response.data.user || response.data
 
-          set((state) => {
+          set((state: AuthSlice) => {
             state.user = userData
             state.isAuthenticated = true
             state.isLoading = false
@@ -160,7 +159,7 @@ export const createAuthSlice: StateCreator<
       } catch (error: any) {
         console.error('[refreshAuth] Error:', error.response?.status, error.message)
 
-        set((state) => {
+        set((state: AuthSlice) => {
           state.user = null
           state.isAuthenticated = false
           state.isLoading = false
@@ -223,7 +222,7 @@ export const createAuthSlice: StateCreator<
 
       secureTokenManager.setTokens(newTokens)
 
-      set((state) => {
+      set((state: AuthSlice) => {
         state.tokens = newTokens
       })
 
@@ -231,7 +230,7 @@ export const createAuthSlice: StateCreator<
     } catch (error: any) {
       console.error('[refreshToken] Error:', error)
 
-      set((state) => {
+      set((state: AuthSlice) => {
         state.user = null
         state.isAuthenticated = false
         state.tokens = null
@@ -245,7 +244,7 @@ export const createAuthSlice: StateCreator<
 
   // Update User
   updateUser: (userData: Partial<IAuth>) => {
-    set((state) => {
+    set((state: AuthSlice) => {
       if (state.user) {
         state.user = { ...state.user, ...userData }
       }
@@ -254,23 +253,40 @@ export const createAuthSlice: StateCreator<
 
   // Set User (directly set user data, e.g., after login)
   setUser: (user: IAuth | null) => {
-    set((state) => {
+    set((state: AuthSlice) => {
       state.user = user
       state.isAuthenticated = user !== null
       state.error = null
+
+      // Check if user object contains tokens and persist them
+      if (user && (user.token || user.refreshToken)) {
+        const tokens: AuthTokens = {
+          accessToken: user.token || '',
+          refreshToken: user.refreshToken || '',
+          expiresAt: Date.now() + 3600 * 1000, // Default 1h
+        }
+        state.tokens = tokens
+
+        // Use persist preference if available in user object or default to true
+        const persist = (user as any).rememberMe !== false
+        secureTokenManager.setTokens(tokens, persist)
+      } else if (!user) {
+        state.tokens = null
+        secureTokenManager.clearTokens()
+      }
     })
   },
 
   // Clear Error
   clearError: () => {
-    set((state) => {
+    set((state: AuthSlice) => {
       state.error = null
     })
   },
 
   // Set Tokens
   setTokens: (tokens: AuthTokens | null) => {
-    set((state) => {
+    set((state: AuthSlice) => {
       state.tokens = tokens
     })
 
@@ -283,7 +299,7 @@ export const createAuthSlice: StateCreator<
 
   // Set Loading
   setLoading: (loading: boolean) => {
-    set((state) => {
+    set((state: AuthSlice) => {
       state.isLoading = loading
     })
   },

@@ -6,7 +6,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { HttpError, FetchResponse, fetchClient } from '../api/api.fetch.client'
+import { HttpError, FetchResponse, fetchClient } from '../api/api.client'
 
 import {
   optimisticUpdateManager,

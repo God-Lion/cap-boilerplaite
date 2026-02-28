@@ -6,6 +6,7 @@ import Layout from './app/layout'
 import App from './AppAssembly'
 import { i18n } from '@cap/platform-core'
 import 'react-perfect-scrollbar/dist/css/styles.css'
+import './app/styles/premium-ui.css'
 
 const root = createRoot(document.getElementById('root')!)
 const direction = i18n.langDirection[i18n.defaultLocale]

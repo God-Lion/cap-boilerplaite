@@ -22,6 +22,7 @@ import PersonOffIcon from '@mui/icons-material/PersonOff'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { useNavigate } from 'react-router-dom'
 import { useGuest } from '@cap/platform-core'
+import { Path } from '@cap/module-auth'
 
 interface GuestBannerProps {
   variant?: 'minimal' | 'detailed'
@@ -50,11 +51,11 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
   }
 
   const handleSignUp = () => {
-    navigate('/auth/signup')
+    navigate(Path.auth.signup)
   }
 
   const handleSignIn = () => {
-    navigate('/auth/signin')
+    navigate(Path.auth.signin)
   }
 
   const handleClose = () => {

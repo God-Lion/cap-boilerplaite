@@ -15,8 +15,9 @@ import {
 import { EmailOutlined, MailOutline } from '@mui/icons-material'
 import { Link as RouterLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { themeConfig, AdaptiveLogo, authService } from '@cap/platform-core'
+import { themeConfig, AdaptiveLogo } from '@cap/platform-core'
 import { useForm, Controller } from 'react-hook-form'
+import authService from '../../services/auth.service'
 
 interface FormData {
   email: string
@@ -26,7 +27,7 @@ const EmailVerification: React.FC = () => {
   const { t } = useTranslation()
   const { control, formState, handleSubmit } = useForm<FormData>({
     defaultValues: {
-      email: 'borneluszico@gmail.com',
+      email: '',
     },
   })
 
@@ -164,7 +165,7 @@ const EmailVerification: React.FC = () => {
                     label={t('auth.verification.email_label')}
                     fullWidth
                     autoComplete='email'
-                    placeholder='you@example.com'
+                    placeholder={t('auth.login.email_placeholder')}
                     error={Boolean(formState.errors.email)}
                     helperText={formState.errors.email?.message}
                     InputProps={{

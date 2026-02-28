@@ -13,6 +13,7 @@ import {
   getSystemMode,
   SettingsProvider,
   themeConfig,
+  GlobalZIndexStyles,
 } from '@cap/platform-core'
 import type { ChildrenType, Direction } from '@cap/platform-core'
 import { i18n } from '@cap/platform-core'
@@ -85,6 +86,7 @@ const Providers: React.FC<
       <QueryClientProvider client={queryClient}>
         <I18nextProvider i18n={i18next}>
           <ThemeProvider direction={direction} systemMode={systemMode}>
+            <GlobalZIndexStyles />
             <BrowserRouter>
               <TourProvider steps={tourConfig} defaultOpen={false} rtl={false} styles={tourStyles}>
                 {children}

@@ -13,13 +13,8 @@ import {
 import { useTheme, alpha } from '@mui/material/styles'
 import { CheckCircle, ErrorOutline } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import {
-  FetchResponse,
-  HttpError,
-  authService,
-  AdaptiveLogo,
-  themeConfig,
-} from '@cap/platform-core'
+import { FetchResponse, HttpError, AdaptiveLogo, themeConfig } from '@cap/platform-core'
+import authService from '../../services/auth.service'
 
 const SUPPORT_EMAIL = 'support@example.com'
 
@@ -90,7 +85,7 @@ export default function VerificationEmail() {
                   sx={{ mb: 3, color: theme.palette.primary.main }}
                 />
                 <Typography variant='h6' color='text.secondary'>
-                  Verifying your email...
+                  {t('auth.verification.verifying')}
                 </Typography>
               </Box>
             )}
@@ -198,10 +193,7 @@ export default function VerificationEmail() {
                   }}
                 >
                   <Typography variant='body2' color='text.secondary'>
-                    {t('auth.verification.support_text', {
-                      defaultValue:
-                        'If you continue to experience issues, please contact our support team at',
-                    })}{' '}
+                    {t('auth.verification.support_text')}{' '}
                     <MuiLink
                       component={Link}
                       to={`mailto:${SUPPORT_EMAIL}`}
@@ -224,7 +216,7 @@ export default function VerificationEmail() {
                     textTransform: 'none',
                   }}
                 >
-                  {t('auth.verification.button_resend', { defaultValue: 'Request New Link' })}
+                  {t('auth.verification.request_new_link')}
                 </Button>
 
                 <Button

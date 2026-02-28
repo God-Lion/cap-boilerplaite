@@ -1,14 +1,24 @@
 import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Grid, TextField, Button, Stack, Backdrop, CircularProgress } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import FormLayout from './FormLayout'
 import { useMutation } from '@tanstack/react-query'
 import { IUserResponse, IUpdateNames } from '@cap/platform-core'
 
 export default function ChangeAccount({ user }: { user: IUserResponse }) {
+  const { t } = useTranslation()
   const [loading, setLoading] = React.useState<boolean>(false)
 
+  const schema = z.object({
+    firstname: z.string().min(1, t('auth.common.field_required')),
+    lastname: z.string().min(1, t('auth.common.field_required')),
+  })
+
   const controlForm = useForm<IUpdateNames>({
+    resolver: zodResolver(schema) as any,
     defaultValues: {
       lastname: user.lastName,
       firstname: user.firstName,
@@ -29,7 +39,7 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
           'firstname',
           {
             type: 'exist',
-            message: 'The submitted firstname matches your current firstname',
+            message: t('auth.account.firstname_matches_current'),
           },
           { shouldFocus: true },
         )
@@ -44,7 +54,7 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
           'lastname',
           {
             type: 'exist',
-            message: 'The submitted lastname matches your current lastname',
+            message: t('auth.account.lastname_matches_current'),
           },
           { shouldFocus: true },
         )
@@ -81,8 +91,8 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
         <CircularProgress color='inherit' />
       </Backdrop>
       <FormLayout
-        title='Change info'
-        description='Update your publicly displayed username'
+        title={t('auth.account.change_info')}
+        description={t('auth.account.change_info_description')}
         warning={''}
       >
         <Box
@@ -98,10 +108,6 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
                 name='firstname'
                 control={controlForm.control}
                 rules={{
-                  required: {
-                    value: true,
-                    message: 'renseigner ton prenom',
-                  },
                   onBlur: (e) => {
                     const firstname = e.target.value
                     const hasChangedFirstname =
@@ -124,7 +130,7 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
                         'firstname',
                         {
                           type: 'exist',
-                          message: 'The submitted firstname matches your current firstname',
+                          message: t('auth.account.firstname_matches_current'),
                         },
                         { shouldFocus: true },
                       )
@@ -137,7 +143,7 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
                     required
                     fullWidth
                     type='text'
-                    label='Prénom'
+                    label={t('auth.account.first_name')}
                     // disabled={disabled}
                     error={formState?.errors?.firstname !== undefined}
                     helperText={formState?.errors?.firstname?.message}
@@ -150,10 +156,6 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
                 name='lastname'
                 control={controlForm.control}
                 rules={{
-                  required: {
-                    value: true,
-                    message: 'renseigner ton nom',
-                  },
                   onBlur: (e) => {
                     const lastname = e.target.value
                     const hasChangedLastname =
@@ -174,7 +176,7 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
                         'lastname',
                         {
                           type: 'exist',
-                          message: 'The submitted lastname matches your current lastname',
+                          message: t('auth.account.lastname_matches_current'),
                         },
                         { shouldFocus: true },
                       )
@@ -188,76 +190,17 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
                     fullWidth
                     // disabled={disabled}
                     type='text'
-                    label='Nom'
+                    label={t('auth.account.last_name')}
                     error={formState?.errors?.lastname !== undefined}
                     helperText={formState?.errors?.lastname?.message}
                   />
                 )}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={12}>
-            <Controller
-              name='sexe'
-              control={controlForm.control}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'renseigner ce champ',
-                },
-              }}
-              render={({ field, formState }) => (
-                <FormControl
-                  fullWidth
-                  // disabled={disabled}
-                  error={formState?.errors?.sexe !== undefined}
-                >
-                  <InputLabel required>Sexe</InputLabel>
-                  <Select label='Sexe' {...field}>
-                    {[
-                      { key: 'M', label: 'Masculin' },
-                      { key: 'F', label: 'Feminin' },
-                    ]?.map((value, index) => (
-                      <MenuItem key={index} value={value.key}>
-                        {value.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>
-                    {formState?.errors?.sexe?.message}
-                  </FormHelperText>
-                </FormControl>
-              )}
-            />
-          </Grid> */}
-            {/* <Grid item xs={12} sm={12}>
-            <Controller
-              name='address'
-              control={controlForm.control}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'renseigner ce champs',
-                },
-              }}
-              render={({ field, formState }) => (
-                <TextField
-                  {...field}
-                  required
-                  fullWidth
-                  // disabled={disabled}
-                  type='text'
-                  label='Addresse'
-                  error={formState?.errors?.address !== undefined}
-                  helperText={formState?.errors?.address?.message}
-                />
-              )}
-            />
-          </Grid> */}
-
-            <Grid size={{ xs: 12 }} sx={{ mt: '30px' }}>
+            <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
               <Stack direction='row' spacing={2} justifyContent='start'>
                 <Button type='submit' variant='contained' color='primary'>
-                  Save changes
+                  {t('auth.common.save_changes')}
                 </Button>
               </Stack>
             </Grid>

@@ -98,7 +98,6 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
       <Popper
         open={open}
         transition
-        disablePortal
         placement='bottom-end'
         anchorEl={anchorEl}
         sx={{

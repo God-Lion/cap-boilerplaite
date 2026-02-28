@@ -27,6 +27,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import LockIcon from '@mui/icons-material/Lock'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { useNavigate } from 'react-router-dom'
+import { Path } from '@cap/module-auth'
 
 export interface FeatureLockedModalProps {
   open: boolean
@@ -67,16 +68,16 @@ export const FeatureLockedModal: React.FC<FeatureLockedModalProps> = ({
   const handleSignUp = () => {
     onClose()
     const destination = redirectPath
-      ? `/auth/signup?redirect=${encodeURIComponent(redirectPath)}`
-      : '/auth/signup'
+      ? `${Path.auth.signup}?redirect=${encodeURIComponent(redirectPath)}`
+      : Path.auth.signup
     navigate(destination)
   }
 
   const handleSignIn = () => {
     onClose()
     const destination = redirectPath
-      ? `/auth/signin?redirect=${encodeURIComponent(redirectPath)}`
-      : '/auth/signin'
+      ? `${Path.auth.signin}?redirect=${encodeURIComponent(redirectPath)}`
+      : Path.auth.signin
     navigate(destination)
   }
 

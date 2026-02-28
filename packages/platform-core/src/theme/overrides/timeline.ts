@@ -1,5 +1,6 @@
 // MUI Imports
 import type { Theme } from '@mui/material/styles'
+import type {} from '@mui/lab/themeAugmentation'
 
 const timeline: Theme['components'] = {
   MuiTimeline: {
@@ -11,7 +12,7 @@ const timeline: Theme['components'] = {
   },
   MuiTimelineDot: {
     styleOverrides: {
-      root: ({ theme }) => ({
+      root: ({ theme }: { theme: Theme }) => ({
         margin: theme.spacing(3, 0),
         boxShadow: 'none',
         '&:has(> i), &:has(> svg)': {
@@ -85,61 +86,10 @@ const timeline: Theme['components'] = {
         },
       },
       {
-        props: { variant: 'tonal' },
+        props: { variant: 'filled', color: 'primary' },
         style: {
-          border: 0,
-          '&:has(+ .MuiTimelineConnector-root)': {
-            marginBlock: '1rem',
-          },
-        },
-      },
-      {
-        props: { variant: 'tonal', color: 'grey' },
-        style: {
-          backgroundColor: 'var(--mui-palette-action-selected)',
-          color: 'var(--mui-palette-text-primary)',
-        },
-      },
-      {
-        props: { variant: 'tonal', color: 'primary' },
-        style: {
-          backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
-          color: 'var(--mui-palette-primary-main)',
-        },
-      },
-      {
-        props: { variant: 'tonal', color: 'secondary' },
-        style: {
-          backgroundColor: 'var(--mui-palette-secondary-lightOpacity)',
-          color: 'var(--mui-palette-secondary-main)',
-        },
-      },
-      {
-        props: { variant: 'tonal', color: 'error' },
-        style: {
-          backgroundColor: 'var(--mui-palette-error-lightOpacity)',
-          color: 'var(--mui-palette-error-main)',
-        },
-      },
-      {
-        props: { variant: 'tonal', color: 'warning' },
-        style: {
-          backgroundColor: 'var(--mui-palette-warning-lightOpacity)',
-          color: 'var(--mui-palette-warning-main)',
-        },
-      },
-      {
-        props: { variant: 'tonal', color: 'info' },
-        style: {
-          backgroundColor: 'var(--mui-palette-info-lightOpacity)',
-          color: 'var(--mui-palette-info-main)',
-        },
-      },
-      {
-        props: { variant: 'tonal', color: 'success' },
-        style: {
-          backgroundColor: 'var(--mui-palette-success-lightOpacity)',
-          color: 'var(--mui-palette-success-main)',
+          backgroundColor: 'var(--mui-palette-primary-main)',
+          color: 'var(--mui-palette-primary-contrastText)',
         },
       },
     ],

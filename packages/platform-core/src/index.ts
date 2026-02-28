@@ -1,5 +1,10 @@
+/// <reference types="vite/client" />
+import './types/pwa.d.ts'
+import './types/mui.d.ts'
+
 export { default as defaultCoreTheme } from './theme'
 export { zIndexScale } from './theme/zIndex'
+export { default as GlobalZIndexStyles } from './theme/GlobalZIndexStyles'
 export { SettingsProvider, useSettings, type Settings } from './contexts/settingsContext'
 export * from './types'
 export * from './services'

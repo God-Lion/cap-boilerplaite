@@ -1,5 +1,17 @@
 import type { Skin } from '../types'
-import type { Theme } from '@mui/material/styles'
+
+declare module '@mui/material/styles' {
+  interface Theme {
+    colorSchemes: {
+      light: {
+        palette: any
+      }
+      dark: {
+        palette: any
+      }
+    }
+  }
+}
 
 /**
  * God Lion Seeker Optimizer - Theme Color Schemes
@@ -15,7 +27,7 @@ import type { Theme } from '@mui/material/styles'
  * Dark Theme: Sophisticated, comfortable, low-light friendly
  */
 
-const colorSchemes = (skin: Skin): Theme['colorSchemes'] => {
+const colorSchemes = (skin: Skin): any => {
   return {
     light: {
       palette: {

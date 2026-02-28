@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Paper, Typography } from '@mui/material'
-import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid2'
 import Banner2 from 'app/assets/images/abstract_low_poly_banner_design_1301.jpg'
 
 interface BannerPost {

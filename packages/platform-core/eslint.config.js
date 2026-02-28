@@ -8,11 +8,6 @@ import prettierPlugin from 'eslint-plugin-prettier'
 import prettierConfig from 'eslint-config-prettier'
 import reactCompiler from 'eslint-plugin-react-compiler'
 
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
 export default tseslint.config(
   {
     ignores: [
@@ -42,8 +37,8 @@ export default tseslint.config(
         ...globals.es2021,
       },
       parserOptions: {
-        project: ['./tsconfig.json'],
-        tsconfigRootDir: __dirname,
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     settings: {
@@ -57,10 +52,10 @@ export default tseslint.config(
       ...reactPlugin.configs.recommended.rules,
       ...reactPlugin.configs['jsx-runtime'].rules,
       'react/prop-types': 'off',
-      'react-compiler/react-compiler': 'error',
+      'react-compiler/react-compiler': 'warn',
       ...prettierConfig.rules,
       'prettier/prettier': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },

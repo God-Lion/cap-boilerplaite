@@ -8,7 +8,44 @@ interface ShadowSize {
 }
 
 declare module '@mui/material/styles' {
+  interface ZIndex {
+    base: number
+    content: number
+    elevated: number
+    local: {
+      behind: number
+      base: number
+      above: number
+      highlight: number
+      overlay: number
+    }
+    appBar: number
+    drawer: number
+    dropdown: number
+    modal: number
+    snackbar: number
+    tooltip: number
+    loadingBackdrop: number
+    search: number
+    layout: {
+      header: number
+      footer: number
+      navigation: number
+      backdrop: number
+      modal: number
+    }
+  }
+
   interface Theme {
+    colorSchemes: {
+      light: {
+        palette: any
+      }
+      dark: {
+        palette: any
+      }
+    }
+    zIndex: ZIndex
     customShadows: {
       xs: string
       sm: string
@@ -22,9 +59,24 @@ declare module '@mui/material/styles' {
       warning: ShadowSize
       error: ShadowSize
     }
+    mainColorChannels: {
+      light: string
+      dark: string
+      lightShadow: string
+      darkShadow: string
+    }
   }
 
   interface ThemeOptions {
+    colorSchemes?: {
+      light?: {
+        palette: any
+      }
+      dark?: {
+        palette: any
+      }
+    }
+    zIndex?: Partial<ZIndex>
     customShadows?: {
       xs?: string
       sm?: string
@@ -38,17 +90,43 @@ declare module '@mui/material/styles' {
       warning?: Partial<ShadowSize>
       error?: Partial<ShadowSize>
     }
+    mainColorChannels?: {
+      light?: string
+      dark?: string
+      lightShadow?: string
+      darkShadow?: string
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Components<Theme = unknown> {
+    MuiTimeline?: any
+    MuiTimelineDot?: any
+    MuiTimelineConnector?: any
+    MuiTimelineContent?: any
+    MuiTabPanel?: any
   }
 }
 
 declare module '@mui/material/Pagination' {
   interface PaginationPropsVariantOverrides {
-    tonal: true
+    text: true
+  }
+
+  interface PaginationItemPropsVariantOverrides {
+    text: true
+  }
+}
+
+declare module '@mui/material/PaginationItem' {
+  interface PaginationItemPropsVariantOverrides {
+    text: true
   }
 }
 
 declare module '@mui/lab/TimelineDot' {
   interface TimelineDotPropsVariantOverrides {
-    tonal: true
+    outlined: true
+    filled: true
   }
 }

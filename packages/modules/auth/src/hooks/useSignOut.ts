@@ -1,13 +1,12 @@
 import { useNavigate } from 'react-router-dom'
-import { useLogout } from '../hooks/useAuthQuery'
+import { useSignout } from '../hooks/useAuthQuery'
 import { useAuth, StorageManager } from '@cap/platform-core'
-
-// import StorageManager from '../storage'
+import { useAuthStore } from '../store'
 
 interface UseSignOutOptions {
   redirectTo?: string
   onSuccess?: () => void
-  onError?: (error: any) => void
+  onError?: (error: unknown) => void
 }
 
 /**
@@ -38,13 +37,17 @@ export const useSignOut = (options: UseSignOutOptions = {}) => {
 
   const navigate = useNavigate()
   const { signOut: zustandSignOut } = useAuth()
+  const { clearAuth } = useAuthStore()
+  const { setAuthStep } = useAuthStore()
 
-  const { mutate: logout, isPending: isSigningOut } = useLogout({
+  const { mutate: logout, isPending: isSigningOut } = useSignout({
     onSuccess: () => {
-      console.log('[useSignOut] Logout API call successful')
-
-      // Clear Zustand store
+      // Clear platform-core store
       zustandSignOut()
+
+      // Clear auth module store
+      clearAuth()
+      setAuthStep('credentials')
 
       // Clear all app data from storage (tokens, user data, etc.)
       StorageManager.clearAllUserData()
@@ -56,10 +59,10 @@ export const useSignOut = (options: UseSignOutOptions = {}) => {
       navigate(redirectTo, { replace: true })
     },
     onError: (error: unknown) => {
-      console.error('[useSignOut] Logout API call failed:', error)
-
       // Even if API fails, clear local data
       zustandSignOut()
+      clearAuth()
+      setAuthStep('credentials')
       StorageManager.clearAllUserData()
 
       // Call custom error callback
@@ -71,7 +74,6 @@ export const useSignOut = (options: UseSignOutOptions = {}) => {
   })
 
   const signOut = () => {
-    console.log('[useSignOut] Initiating sign out...')
     logout()
   }
 

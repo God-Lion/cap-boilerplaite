@@ -1,0 +1,22 @@
+const Path = {
+  overview: '/auth/account',
+  view: '/auth/account/view',
+  edit: '/auth/account/edit',
+  changeEmail: '/auth/account/change-email',
+  changePassword: '/auth/account/change-password',
+  deactivate: '/auth/account/deactivate',
+  delete: '/auth/account/delete',
+  sessions: '/auth/account/sessions',
+  security: '/auth/account/security',
+  billing: '/auth/account/billing',
+  settings: '/auth/account/settings',
+  linkedAccounts: '/auth/account/linked-accounts',
+  activeSessions: '/auth/account/active-sessions',
+  emailChangeStatus: '/auth/account/email-change-status',
+  activityTimeline: '/auth/account/activity-timeline',
+  deviceVerification: '/auth/account/device-verification',
+  securityStatus: '/auth/account/security-status',
+  initiateEmailChange: '/auth/account/initiate-email-change',
+  requestEmailChange: '/auth/account/request-email-change',
+}
+export default Path

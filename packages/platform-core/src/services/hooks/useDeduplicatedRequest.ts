@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { fetchClient, FetchRequestConfig, FetchResponse, HttpError } from '../api/api.fetch.client'
+import { fetchClient, FetchRequestConfig, FetchResponse, HttpError } from '../api/api.client'
 import { requestDeduplicator } from './../requestDeduplication'
 
 interface UseDeduplicatedRequestOptions<T> extends FetchRequestConfig {
@@ -71,6 +71,7 @@ function useDeduplicatedRequest<T = any>(
 
   const configKey = JSON.stringify(config)
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const fetchData = useCallback(async () => {
     if (!isMountedRef.current) return
 
@@ -108,6 +109,7 @@ function useDeduplicatedRequest<T = any>(
     }
   }, [url, configKey])
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const cancel = useCallback(() => {
     requestDeduplicator.cancelRequest(config)
   }, [configKey])
@@ -115,6 +117,7 @@ function useDeduplicatedRequest<T = any>(
   // Initial fetch
   useEffect(() => {
     if (enabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchData()
     }
 
@@ -165,6 +168,7 @@ function useDeduplicatedMutation<TData = any, TVariables = any>(
   const fetchConfigKey = JSON.stringify(fetchConfig)
 
   const mutate = useCallback(
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization
     async (url: string, variables?: TVariables): Promise<TData | null> => {
       setLoading(true)
       setError(null)
@@ -204,6 +208,7 @@ function useDeduplicatedMutation<TData = any, TVariables = any>(
     [fetchConfigKey, forceDeduplication, onSuccess, onError],
   )
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const reset = useCallback(() => {
     setData(null)
     setError(null)

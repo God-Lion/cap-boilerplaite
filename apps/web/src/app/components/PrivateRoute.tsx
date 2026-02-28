@@ -4,19 +4,13 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Backdrop, CircularProgress } from '@mui/material'
 import { isObjectEmpty, useAuth, Roles } from '@cap/platform-core'
 import type { IUserResponse } from '@cap/platform-core'
+import { Path } from '@cap/module-auth'
 
 const access = (pathname: string, user: IUserResponse) => {
   if (!isObjectEmpty(user)) {
     const roleId = user.role
     const all = [`/settings`, '/drawingcontest', '/account', '/profile']
-    const routesSuperAdminAccess = [
-      '/admin/',
-      '/admin/logs',
-      '/admin/juges/details',
-      '/admin/drawingcontest',
-      '/admin/users',
-      ...all,
-    ]
+    const routesSuperAdminAccess = ['/admin/', Path.admin.events, Path.admin.users, ...all]
     switch (roleId) {
       case Roles.USER:
         return routesSuperAdminAccess.some((value) => value === pathname)

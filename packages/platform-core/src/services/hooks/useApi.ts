@@ -1,19 +1,18 @@
 // src/shared/hooks/useApi.ts
 
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { FetchResponse } from '../api/api.fetch.client'
-import { ApiError, handleApiError } from '../api/api.client'
+import { FetchResponse, ApiErrorResponse, handleApiError } from '../api/api.client'
 
 interface UseApiState<T> {
   data: T | null
   loading: boolean
-  error: ApiError | null
+  error: ApiErrorResponse | null
   success: boolean
 }
 
 interface UseApiOptions<T> {
   onSuccess?: (data: T) => void
-  onError?: (error: ApiError) => void
+  onError?: (error: ApiErrorResponse) => void
   onSettled?: () => void
   initialData?: T | null
 }
@@ -22,7 +21,7 @@ interface UseApiReturn<T> extends UseApiState<T> {
   execute: (...args: any[]) => Promise<T | undefined>
   reset: () => void
   setData: (data: T | null) => void
-  setError: (error: ApiError | null) => void
+  setError: (error: ApiErrorResponse | null) => void
 }
 
 /**
@@ -53,6 +52,15 @@ export function useApi<T = any>(
     success: false,
   })
 
+  // Use refs to keep functions stable and avoid re-creating execute
+  const apiFunctionRef = useRef(apiFunction)
+  const optionsRef = useRef(options)
+
+  useEffect(() => {
+    apiFunctionRef.current = apiFunction
+    optionsRef.current = options
+  }, [apiFunction, options])
+
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef<AbortController | null>(null)
 
@@ -64,58 +72,55 @@ export function useApi<T = any>(
     }
   }, [])
 
-  const execute = useCallback(
-    async (...args: any[]): Promise<T | undefined> => {
-      // Cancel previous request if still pending
-      abortControllerRef.current?.abort()
-      abortControllerRef.current = new AbortController()
+  const execute = useCallback(async (...args: any[]): Promise<T | undefined> => {
+    // Cancel previous request if still pending
+    abortControllerRef.current?.abort()
+    abortControllerRef.current = new AbortController()
 
-      try {
-        if (!isMountedRef.current) return
+    try {
+      if (!isMountedRef.current) return
 
-        setState((prev) => ({
-          ...prev,
-          loading: true,
-          error: null,
-          success: false,
-        }))
+      setState((prev) => ({
+        ...prev,
+        loading: true,
+        error: null,
+        success: false,
+      }))
 
-        const response = await apiFunction(...args)
-        const responseData = response.data
+      const response = await apiFunctionRef.current(...args)
+      const responseData = response.data
 
-        if (!isMountedRef.current) return
+      if (!isMountedRef.current) return
 
-        setState({
-          data: responseData,
-          loading: false,
-          error: null,
-          success: true,
-        })
+      setState({
+        data: responseData,
+        loading: false,
+        error: null,
+        success: true,
+      })
 
-        options?.onSuccess?.(responseData)
-        options?.onSettled?.()
+      optionsRef.current?.onSuccess?.(responseData)
+      optionsRef.current?.onSettled?.()
 
-        return responseData
-      } catch (err: any) {
-        if (!isMountedRef.current) return
+      return responseData
+    } catch (err: any) {
+      if (!isMountedRef.current) return
 
-        const apiError = handleApiError(err)
+      const apiError = handleApiError(err)
 
-        setState({
-          data: null,
-          loading: false,
-          error: apiError,
-          success: false,
-        })
+      setState({
+        data: null,
+        loading: false,
+        error: apiError,
+        success: false,
+      })
 
-        options?.onError?.(apiError)
-        options?.onSettled?.()
+      optionsRef.current?.onError?.(apiError)
+      optionsRef.current?.onSettled?.()
 
-        throw apiError
-      }
-    },
-    [apiFunction, options],
-  )
+      throw apiError
+    }
+  }, [])
 
   const reset = useCallback(() => {
     abortControllerRef.current?.abort()
@@ -131,7 +136,7 @@ export function useApi<T = any>(
     setState((prev) => ({ ...prev, data }))
   }, [])
 
-  const setError = useCallback((error: ApiError | null) => {
+  const setError = useCallback((error: ApiErrorResponse | null) => {
     setState((prev) => ({ ...prev, error }))
   }, [])
 
@@ -156,8 +161,7 @@ export function useApiEffect<T = any>(
 
   useEffect(() => {
     apiState.execute()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps)
+  }, [apiState.execute, ...deps])
 
   return apiState
 }

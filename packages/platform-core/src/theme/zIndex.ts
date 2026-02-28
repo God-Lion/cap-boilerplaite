@@ -42,6 +42,15 @@ export const zIndexScale = {
   // Custom application layers
   loadingBackdrop: 1400, // Above modal but below tooltip
   search: 1350, // Between dropdown and snackbar
+
+  // Layout semantic layers
+  layout: {
+    header: 1100,
+    footer: 1000,
+    navigation: 1200, // Drawer
+    backdrop: 1250, // Between drawer and modal
+    modal: 1300,
+  },
 } as const
 
 export type ZIndexScale = typeof zIndexScale

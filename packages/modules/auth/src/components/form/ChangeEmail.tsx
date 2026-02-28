@@ -12,11 +12,13 @@ import {
   Button,
   Stack,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { IUserResponse, useAuth, HttpError } from '@cap/platform-core'
 import FormLayout from './FormLayout'
 
 export default function ChangeEmail({ user }: { user: IUserResponse }) {
+  const { t } = useTranslation()
   const { refreshAuth } = useAuth()
   const [loading, setLoading] = React.useState<boolean>(false)
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
@@ -34,20 +36,22 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
 
   const mutation = useMutation({
     mutationFn: async (data: ChangeEmail) => {
-      let body = { password: data.password } as {
+      /*
+      let _body = { password: data.password } as {
         email?: string
         password: string
       }
+      */
       const hasChangedEmail = user.firstName.toLowerCase() !== data.email?.toLowerCase()
       const hasChangedEmailCase = !hasChangedEmail && user.email !== data.email
 
-      if (hasChangedEmail) body = { ...body, email: data.email }
+      // if (hasChangedEmail) _body = { ..._body, email: data.email }
       if (hasChangedEmailCase)
         controlForm.setError(
           'email',
           {
             type: 'exist',
-            message: 'The submitted email matches your current email',
+            message: t('auth.account.email_matches_current'),
           },
           { shouldFocus: true },
         )
@@ -89,8 +93,8 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
         <CircularProgress color='inherit' />
       </Backdrop>
       <FormLayout
-        title='Change phone number'
-        description='Update your publicly displayed username'
+        title={t('auth.account.change_email')}
+        description={t('auth.account.change_email_description')}
         warning={''}
       >
         <Box
@@ -108,11 +112,11 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
                 rules={{
                   required: {
                     value: true,
-                    message: 'renseigner ce champ',
+                    message: t('auth.common.field_required'),
                   },
                   pattern: {
                     value: /\S+@\S+\.\S+/,
-                    message: "L'adresse email n'est pas valide",
+                    message: t('auth.login.invalid_email'),
                   },
                   onBlur: (e) => {
                     const email = e.target.value
@@ -123,7 +127,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
                         'email',
                         {
                           type: 'exist',
-                          message: 'Please provide a new email',
+                          message: t('auth.account.new_email_required'),
                         },
                         { shouldFocus: true },
                       )
@@ -133,7 +137,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
                         'email',
                         {
                           type: 'exist',
-                          message: 'The submitted email matches your current email',
+                          message: t('auth.account.email_matches_current'),
                         },
                         { shouldFocus: true },
                       )
@@ -146,7 +150,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
                     required
                     fullWidth
                     // disabled={disabled}
-                    label='Email'
+                    label={t('auth.common.email')}
                     // InputProps={{
                     //   inputProps: {
                     //     readOnly: true,
@@ -168,7 +172,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
                     {...field}
                     required
                     type={showPassword ? 'text' : 'password'}
-                    label='Mot de passe'
+                    label={t('auth.common.password')}
                     fullWidth
                     autoComplete='password'
                     InputProps={{
@@ -191,10 +195,10 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
               />
             </Grid>
 
-            <Grid size={{ xs: 12 }} sx={{ mt: '30px' }}>
+            <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
               <Stack direction='row' spacing={2} justifyContent='start'>
                 <Button type='submit' variant='contained' color='primary'>
-                  Save changes
+                  {t('auth.common.save_changes')}
                 </Button>
                 {/* <Button type='reset' variant='outlined' color='error'>
                 Annuler

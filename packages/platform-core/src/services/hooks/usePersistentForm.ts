@@ -14,7 +14,7 @@
  * )
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import React from 'react'
 
 interface UsePersistentFormOptions<T> {
   storage?: 'session' | 'local'
@@ -59,7 +59,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   const storageObject = storage === 'session' ? sessionStorage : localStorage
 
   // Form state
-  const [formData, setFormData] = useState<T>(() => {
+  const [formData, setFormData] = React.useState<T>(() => {
     // Try to restore from storage
     try {
       const savedData = storageObject.getItem(storageKey)
@@ -73,18 +73,18 @@ export function usePersistentForm<T extends Record<string, any>>(
     return initialValues
   })
 
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isDirty, setIsDirty] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errors, setErrors] = React.useState<Record<string, string>>({})
+  const [isDirty, setIsDirty] = React.useState(false)
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
 
   // Ref to track initial values
-  const initialValuesRef = useRef(initialValues)
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const initialValuesRef = React.useRef(initialValues)
+  const debounceTimerRef = React.useRef<ReturnType<typeof setTimeout>>(undefined)
 
   /**
    * Save form data to storage (debounced)
    */
-  const saveToStorage = useCallback(
+  const saveToStorage = React.useCallback(
     (data: T) => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current)
@@ -104,7 +104,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Save to storage when form data changes
    */
-  useEffect(() => {
+  React.useEffect(() => {
     if (isDirty) {
       saveToStorage(formData)
     }
@@ -113,7 +113,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Check if form is dirty (has changes)
    */
-  useEffect(() => {
+  React.useEffect(() => {
     const hasChanges = JSON.stringify(formData) !== JSON.stringify(initialValuesRef.current)
     setIsDirty(hasChanges)
   }, [formData])
@@ -121,7 +121,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Handle field change
    */
-  const handleChange = useCallback(
+  const handleChange = React.useCallback(
     (field: keyof T, value: any) => {
       setFormData((prev) => ({
         ...prev,
@@ -148,7 +148,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Set field value
    */
-  const setFieldValue = useCallback((field: keyof T, value: any) => {
+  const setFieldValue = React.useCallback((field: keyof T, value: any) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -158,7 +158,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Set field error
    */
-  const setFieldError = useCallback((field: keyof T, error: string) => {
+  const setFieldError = React.useCallback((field: keyof T, error: string) => {
     setErrors((prev) => ({
       ...prev,
       [field as string]: error,
@@ -168,7 +168,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Validate individual field (override this in options for custom validation)
    */
-  const validateField = useCallback(
+  const validateField = React.useCallback(
     (field: keyof T): boolean => {
       // Basic validation - check if required field is empty
       const value = formData[field]
@@ -184,7 +184,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Validate entire form (override this in options for custom validation)
    */
-  const validateForm = useCallback((): boolean => {
+  const validateForm = React.useCallback((): boolean => {
     let isValid = true
     const newErrors: Record<string, string> = {}
 
@@ -204,7 +204,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Handle form submission
    */
-  const handleSubmit = useCallback(
+  const handleSubmit = React.useCallback(
     async (e?: React.FormEvent) => {
       if (e) {
         e.preventDefault()
@@ -248,7 +248,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Clear form and storage
    */
-  const clearForm = useCallback(() => {
+  const clearForm = React.useCallback(() => {
     setFormData(initialValues)
     setErrors({})
     setIsDirty(false)
@@ -263,7 +263,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Reset form to initial values
    */
-  const resetForm = useCallback(() => {
+  const resetForm = React.useCallback(() => {
     setFormData(initialValues)
     setErrors({})
     setIsDirty(false)
@@ -272,7 +272,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Restore form from storage
    */
-  const restoreForm = useCallback(() => {
+  const restoreForm = React.useCallback(() => {
     try {
       const savedData = storageObject.getItem(storageKey)
       if (savedData) {
@@ -287,7 +287,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Cleanup on unmount
    */
-  useEffect(() => {
+  React.useEffect(() => {
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current)
@@ -298,7 +298,7 @@ export function usePersistentForm<T extends Record<string, any>>(
   /**
    * Warn user before leaving with unsaved changes
    */
-  useEffect(() => {
+  React.useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isDirty) {
         e.preventDefault()
