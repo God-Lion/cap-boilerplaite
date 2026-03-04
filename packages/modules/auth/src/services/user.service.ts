@@ -66,10 +66,10 @@ const userService = {
     return apiClient.patch(ENDPOINTS.user.deactivate(id))
   },
   suspend: (id: string | number): Promise<FetchResponse> => {
-    return apiClient.patch(ENDPOINTS.user.suspend(id))
+    return apiClient.post(ENDPOINTS.user.suspend(id))
   },
   unsuspend: (id: string | number): Promise<FetchResponse> => {
-    return apiClient.patch(ENDPOINTS.user.unsuspend(id))
+    return apiClient.post(ENDPOINTS.user.unsuspend(id))
   },
 
   preferences: (): Promise<FetchResponse> => {

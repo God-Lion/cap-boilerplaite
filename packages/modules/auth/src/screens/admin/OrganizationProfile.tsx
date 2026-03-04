@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   Box,
   Typography,
@@ -26,6 +26,10 @@ import {
   Alert,
   FormControlLabel,
   InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material'
 import {
   Save,
@@ -38,12 +42,20 @@ import {
   CheckCircle,
   Info,
   Mail,
+  Groups,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Path } from '../../screens'
-import { useOrganization, useUpdateOrganization } from '../../hooks/useAdminQuery'
+import {
+  useOrganization,
+  useUpdateOrganization,
+  useVerifyDomain,
+  useUploadOrganizationLogo,
+  adminKeys,
+} from '../../hooks/useAdminQuery'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -69,6 +81,11 @@ export default function OrganizationProfile() {
   const { id } = useParams()
   const [tab, setTab] = useState(0)
 
+  const queryClient = useQueryClient()
+  const verifyDomainMutation = useVerifyDomain()
+  const uploadLogoMutation = useUploadOrganizationLogo()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const { data: orgDataQuery, isLoading, isError } = useOrganization(Number(id))
   const updateOrgMutation = useUpdateOrganization()
 
@@ -78,27 +95,99 @@ export default function OrganizationProfile() {
 
   React.useEffect(() => {
     if (orgData) {
-      setFormData(orgData)
+      setFormData({
+        ...orgData,
+        primaryColor: orgData.brandingConfig?.primaryColor || '',
+        secondaryColor: orgData.brandingConfig?.secondaryColor || '',
+        logo_url: orgData.brandingConfig?.logo_url || '',
+        enforceMfa: orgData.securityPolicies?.enforceMfa || false,
+        ssoOnly: orgData.securityPolicies?.ssoOnly || false,
+        allowPublicSignup: orgData.securityPolicies?.allowPublicSignup || false,
+      })
     }
   }, [orgData])
 
   const handleSave = () => {
     if (!id || !formData) return
 
+    const payload = {
+      name: formData.name,
+      slug: formData.slug,
+      domain: formData.domain,
+      support_email: formData.support_email,
+      status: formData.status,
+      brandingConfig: {
+        ...(orgData?.brandingConfig || {}),
+        primaryColor: formData.primaryColor,
+        secondaryColor: formData.secondaryColor,
+        logo_url: formData.logo_url,
+      },
+      securityPolicies: {
+        ...(orgData?.securityPolicies || {}),
+        enforceMfa: formData.enforceMfa,
+        ssoOnly: formData.ssoOnly,
+        allowPublicSignup: formData.allowPublicSignup,
+      },
+    }
+
     updateOrgMutation.mutate(
       {
         id: Number(id),
-        data: formData,
+        data: payload,
       },
       {
         onSuccess: () => {
-          enqueueSnackbar(t('auth.admin.success_update_org'), { variant: 'success' })
+          enqueueSnackbar(t('auth.admin.successUpdateOrg'), { variant: 'success' })
         },
         onError: (error: any) => {
-          enqueueSnackbar(error.message || t('auth.admin.error_update_org'), { variant: 'error' })
+          enqueueSnackbar(error.message || t('auth.admin.errorUpdateOrg'), { variant: 'error' })
         },
       },
     )
+  }
+
+  // --- Logo upload ---
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 50 * 1024) {
+      enqueueSnackbar(t('auth.admin.logoTooLarge') || 'PNG, SVG or WebP – max 50 KB', {
+        variant: 'error',
+      })
+      return
+    }
+
+    uploadLogoMutation.mutate(
+      { id: Number(id), file },
+      {
+        onSuccess: (response) => {
+          setFormData((prev: any) => ({ ...prev, logo_url: response.data.logo_url }))
+          enqueueSnackbar('Logo uploaded successfully', { variant: 'success' })
+        },
+        onError: (err: any) => {
+          enqueueSnackbar(err.message || 'Failed to upload logo', { variant: 'error' })
+        },
+      },
+    )
+  }
+
+  // --- Domain verification dialog ---
+  const [domainDialogOpen, setDomainDialogOpen] = useState(false)
+  const [pendingDomain, setPendingDomain] = useState('')
+
+  const handleVerifyDomain = () => {
+    if (!pendingDomain.trim()) return
+    verifyDomainMutation.mutate(pendingDomain.trim(), {
+      onSuccess: () => {
+        enqueueSnackbar(`Started verification for ${pendingDomain}`, { variant: 'success' })
+        queryClient.invalidateQueries({ queryKey: adminKeys.organizations.all })
+        setDomainDialogOpen(false)
+        setPendingDomain('')
+      },
+      onError: (err: any) => {
+        enqueueSnackbar(err.message || 'Failed to verify domain', { variant: 'error' })
+      },
+    })
   }
 
   if (isLoading) {
@@ -217,7 +306,7 @@ export default function OrganizationProfile() {
               px: 3,
             }}
           >
-            {updateOrgMutation.isPending ? t('auth.common.saving') : t('auth.common.save_settings')}
+            {updateOrgMutation.isPending ? t('auth.common.saving') : t('auth.common.saveSettings')}
           </Button>
         </Stack>
       </Box>
@@ -247,6 +336,7 @@ export default function OrganizationProfile() {
           <Tab icon={<Palette />} iconPosition='start' label={t('auth.admin.branding')} />
           <Tab icon={<Security />} iconPosition='start' label={t('auth.admin.security')} />
           <Tab icon={<Language />} iconPosition='start' label={t('auth.admin.domains')} />
+          <Tab icon={<Groups />} iconPosition='start' label={t('auth.admin.members')} />
         </Tabs>
       </Box>
 
@@ -276,219 +366,231 @@ export default function OrganizationProfile() {
                 width: '100%',
               }}
             >
-              <Box sx={{ width: '100%', mb: 3 }}>
-                <Card
-                  sx={{
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    boxShadow: 'none',
-                    width: '100%',
-                  }}
-                >
-                  <CardContent sx={{ p: 3 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                      <Business color='primary' sx={{ fontSize: 24 }} />
-                      <Typography
-                        variant='h6'
-                        sx={{
-                          fontWeight: 800,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                        }}
-                      >
-                        {t('auth.admin.basic_info')}
-                      </Typography>
-                    </Box>
-
-                    <Grid container spacing={3}>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <TextField
-                          fullWidth
-                          label='Organization Name'
-                          value={formData?.name || ''}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          variant='outlined'
-                          placeholder='e.g. Acme Corp'
-                        />
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <TextField
-                          fullWidth
-                          label='Workspace Slug'
-                          value={formData?.slug || ''}
-                          onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position='start'>
-                                <Box sx={{ fontSize: '0.9rem', color: 'text.disabled', mr: -0.5 }}>
-                                  /
-                                </Box>
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <TextField
-                          fullWidth
-                          label='Primary Domain'
-                          value={formData?.domain || ''}
-                          onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
-                          placeholder='example.com'
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position='start'>
-                                <Language sx={{ fontSize: 20, color: 'text.disabled' }} />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <TextField
-                          fullWidth
-                          label='Support Email'
-                          value={formData?.support_email || ''}
-                          onChange={(e) =>
-                            setFormData({ ...formData, support_email: e.target.value })
-                          }
-                          placeholder='support@example.com'
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position='start'>
-                                <Mail sx={{ fontSize: 20, color: 'text.disabled' }} />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Divider sx={{ my: 4, opacity: 0.5 }} />
-
-                    <Grid container spacing={3}>
-                      <Grid size={{ xs: 12, sm: 4 }}>
-                        <Typography
-                          variant='caption'
-                          color='text.secondary'
-                          sx={{
-                            fontWeight: 700,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.075em',
-                            display: 'block',
-                            mb: 0.5,
-                          }}
-                        >
-                          {t('auth.admin.reg_date')}
-                        </Typography>
-                        <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
-                          {orgData.created_at
-                            ? new Date(orgData.created_at).toLocaleDateString(undefined, {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })
-                            : '-'}
-                        </Typography>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 4 }}>
-                        <Typography
-                          variant='caption'
-                          color='text.secondary'
-                          sx={{
-                            fontWeight: 700,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.075em',
-                            display: 'block',
-                            mb: 0.5,
-                          }}
-                        >
-                          {t('auth.admin.last_updated')}
-                        </Typography>
-                        <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
-                          {orgData.updated_at
-                            ? new Date(orgData.updated_at).toLocaleDateString(undefined, {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })
-                            : '-'}
-                        </Typography>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 4 }}>
-                        <Typography
-                          variant='caption'
-                          color='text.secondary'
-                          sx={{
-                            fontWeight: 700,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.075em',
-                            display: 'block',
-                            mb: 0.5,
-                          }}
-                        >
-                          {t('auth.admin.members')}
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography
-                            variant='body2'
-                            sx={{ fontWeight: 800, color: 'text.primary' }}
-                          >
-                            {orgData.members_count || 0}
-                          </Typography>
-                          <Typography variant='caption' color='text.secondary'>
-                            {t('auth.admin.members_label', {
-                              count: orgData.members_count || 0,
-                            }).split(' ')[1] || 'Users'}
-                          </Typography>
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </Box>
-
-              <Box sx={{ width: '100%' }}>
-                <Card
-                  sx={{
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    boxShadow: 'none',
-                    bgcolor: (theme) => alpha(theme.palette.info.main, 0.02),
-                    mt: 3,
-                  }}
-                >
-                  <CardContent sx={{ p: 3 }}>
+              <Card
+                sx={{
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow: 'none',
+                  width: '100%',
+                  mb: 3,
+                }}
+              >
+                <CardContent sx={{ p: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                    <Business color='primary' sx={{ fontSize: 24 }} />
                     <Typography
                       variant='h6'
-                      sx={{ fontWeight: 800, mb: 2, textTransform: 'uppercase' }}
-                    >
-                      {t('auth.admin.internal_debug')}
-                    </Typography>
-                    <Divider sx={{ my: 1, opacity: 0.5 }} />
-                    <Box
                       sx={{
-                        color: 'text.secondary',
-                        fontFamily: 'monospace',
-                        wordBreak: 'break-all',
-                        lineHeight: 1.5,
-                        bgcolor: (theme) => alpha(theme.palette.text.primary, 0.05),
-                        p: 2,
-                        borderRadius: 0,
-                        width: 'calc(100% + 32px)',
-                        mx: -2,
-                        mb: -2,
-                        overflowX: 'auto',
+                        fontWeight: 800,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
                       }}
                     >
-                      <strong>{t('auth.admin.raw_data')}:</strong>
-                      <pre style={{ margin: 0, marginTop: '8px' }}>
-                        {JSON.stringify(orgData, null, 2)}
-                      </pre>
+                      {t('auth.admin.basicInfo')}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                      gap: 2,
+                    }}
+                  >
+                    <TextField
+                      fullWidth
+                      label='Organization Name'
+                      value={formData?.name || ''}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      variant='outlined'
+                      placeholder='e.g. Acme Corp'
+                    />
+                    <TextField
+                      fullWidth
+                      label='Workspace Slug'
+                      value={formData?.slug || ''}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      variant='outlined'
+                      helperText='URL-friendly identifier for this workspace'
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <Box sx={{ fontSize: '0.9rem', color: 'text.disabled', mr: -0.5 }}>
+                                /
+                              </Box>
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                    <TextField
+                      fullWidth
+                      label='Primary Domain'
+                      value={formData?.domain || ''}
+                      onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
+                      variant='outlined'
+                      placeholder='example.com'
+                      helperText='The verified domain used for SSO and email routing'
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <Language sx={{ fontSize: 20, color: 'text.disabled' }} />
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                    <TextField
+                      fullWidth
+                      label='Support Email'
+                      value={formData?.support_email || ''}
+                      onChange={(e) => setFormData({ ...formData, support_email: e.target.value })}
+                      variant='outlined'
+                      placeholder='support@example.com'
+                      helperText='Contact email shown to organization members'
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <Mail sx={{ fontSize: 20, color: 'text.disabled' }} />
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  </Box>
+
+                  <Divider sx={{ my: 4, opacity: 0.5 }} />
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 3,
+                    }}
+                  >
+                    <Box sx={{ minWidth: 140 }}>
+                      <Typography
+                        variant='caption'
+                        color='text.secondary'
+                        sx={{
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.075em',
+                          display: 'block',
+                          mb: 0.5,
+                        }}
+                      >
+                        {t('auth.admin.regDate')}
+                      </Typography>
+                      <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
+                        {orgData.created_at
+                          ? new Date(orgData.created_at).toLocaleDateString(undefined, {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })
+                          : '-'}
+                      </Typography>
                     </Box>
-                  </CardContent>
-                </Card>
-              </Box>
+                    <Box sx={{ minWidth: 140 }}>
+                      <Typography
+                        variant='caption'
+                        color='text.secondary'
+                        sx={{
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.075em',
+                          display: 'block',
+                          mb: 0.5,
+                        }}
+                      >
+                        {t('auth.admin.lastUpdated')}
+                      </Typography>
+                      <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
+                        {orgData.updated_at
+                          ? new Date(orgData.updated_at).toLocaleDateString(undefined, {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })
+                          : '-'}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ minWidth: 100 }}>
+                      <Typography
+                        variant='caption'
+                        color='text.secondary'
+                        sx={{
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.075em',
+                          display: 'block',
+                          mb: 0.5,
+                        }}
+                      >
+                        {t('auth.admin.members')}
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
+                          {orgData.members_count ?? orgData.members?.length ?? 0}
+                        </Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          {t('auth.admin.membersLabel', {
+                            count: orgData.members_count ?? orgData.members?.length ?? 0,
+                          }).split(' ')[1] || 'Users'}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+
+              {process.env.NODE_ENV === 'development' && (
+                <Box sx={{ width: '100%' }}>
+                  <Card
+                    sx={{
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      boxShadow: 'none',
+                      bgcolor: (theme) => alpha(theme.palette.info.main, 0.02),
+                      mt: 3,
+                    }}
+                  >
+                    <CardContent sx={{ p: 3 }}>
+                      <Typography
+                        variant='h6'
+                        sx={{ fontWeight: 800, mb: 2, textTransform: 'uppercase' }}
+                      >
+                        {t('auth.admin.internalDebug')}
+                      </Typography>
+                      <Divider sx={{ my: 1, opacity: 0.5 }} />
+                      <Box
+                        sx={{
+                          color: 'text.secondary',
+                          fontFamily: 'monospace',
+                          wordBreak: 'break-all',
+                          lineHeight: 1.5,
+                          bgcolor: (theme) => alpha(theme.palette.text.primary, 0.05),
+                          p: 2,
+                          borderRadius: 0,
+                          width: 'calc(100% + 32px)',
+                          mx: -2,
+                          mb: -2,
+                          overflowX: 'auto',
+                        }}
+                      >
+                        <strong>{t('auth.admin.rawData')}:</strong>
+                        <pre style={{ margin: 0, marginTop: '8px' }}>
+                          {JSON.stringify(orgData, null, 2)}
+                        </pre>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Box>
+              )}
             </Box>
           </Grid>
 
@@ -513,7 +615,7 @@ export default function OrganizationProfile() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                   <Business sx={{ color: 'primary.main' }} />
                   <Typography variant='subtitle1' sx={{ fontWeight: 800 }}>
-                    {t('auth.admin.quick_actions').toUpperCase()}
+                    {t('auth.admin.quickActions').toUpperCase()}
                   </Typography>
                 </Box>
                 <Stack spacing={2}>
@@ -529,7 +631,7 @@ export default function OrganizationProfile() {
                         }
                       />
                     }
-                    label={t('auth.admin.active_status')}
+                    label={t('auth.admin.activeStatus')}
                     sx={{ '& .MuiFormControlLabel-label': { fontWeight: 600 } }}
                   />
                   <Divider />
@@ -543,7 +645,16 @@ export default function OrganizationProfile() {
                     onClick={() => setTab(3)}
                     sx={{ justifyContent: 'flex-start', textTransform: 'none', fontWeight: 700 }}
                   >
-                    {t('auth.admin.manage_domains')}
+                    {t('auth.admin.manageDomains')}
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant='outlined'
+                    startIcon={<Mail />}
+                    onClick={() => navigate(Path.admin.invitations.replace(':id', id!))}
+                    sx={{ justifyContent: 'flex-start', textTransform: 'none', fontWeight: 700 }}
+                  >
+                    {t('auth.admin.memberInvitations')}
                   </Button>
                 </Stack>
               </CardContent>
@@ -583,14 +694,22 @@ export default function OrganizationProfile() {
       </TabPanel>
 
       <TabPanel value={tab} index={1}>
-        <Grid container spacing={4}>
-          <Grid size={{ xs: 12, md: 6 }}>
+        <Grid container spacing={4} sx={{ width: '100%', alignItems: 'stretch' }}>
+          <Grid
+            size={{ xs: 12, md: 6 }}
+            sx={{
+              flexGrow: 1,
+              flexBasis: { xs: '100%', md: '50%' },
+              maxWidth: { xs: '100%', md: '50%' },
+            }}
+          >
             <Card
               sx={{
                 borderRadius: 4,
                 border: '1px solid',
                 borderColor: 'divider',
                 boxShadow: 'none',
+                height: '100%',
               }}
             >
               <CardContent sx={{ p: 3 }}>
@@ -598,7 +717,7 @@ export default function OrganizationProfile() {
                   variant='h6'
                   sx={{ fontWeight: 800, mb: 3, textTransform: 'uppercase' }}
                 >
-                  {t('auth.admin.logo_assets').toUpperCase()}
+                  {t('auth.admin.logoAssets').toUpperCase()}
                 </Typography>
                 <Box
                   sx={{
@@ -609,26 +728,55 @@ export default function OrganizationProfile() {
                     textAlign: 'center',
                     cursor: 'pointer',
                     '&:hover': { bgcolor: 'action.hover' },
+                    position: 'relative',
+                    overflow: 'hidden',
                   }}
+                  onClick={() => fileInputRef.current?.click()}
                 >
-                  <CloudUpload sx={{ fontSize: 48, color: 'text.disabled', mb: 2 }} />
-                  <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                    {t('auth.admin.drop_logo')}
-                  </Typography>
-                  <Typography variant='caption' color='text.disabled'>
-                    PNG, SVG or WebP up to 2MB
-                  </Typography>
+                  <input
+                    type='file'
+                    hidden
+                    ref={fileInputRef}
+                    accept='image/*'
+                    onChange={handleFileChange}
+                  />
+                  {formData?.logo_url ? (
+                    <Box
+                      component='img'
+                      src={formData.logo_url}
+                      alt='Organization Logo'
+                      sx={{ maxHeight: 100, maxWidth: '100%', objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <>
+                      <CloudUpload sx={{ fontSize: 48, color: 'text.disabled', mb: 2 }} />
+                      <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                        {t('auth.admin.dropLogo')}
+                      </Typography>
+                      <Typography variant='caption' color='text.disabled'>
+                        PNG, SVG or WebP – max 50 KB
+                      </Typography>
+                    </>
+                  )}
                 </Box>
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid
+            size={{ xs: 12, md: 6 }}
+            sx={{
+              flexGrow: 1,
+              flexBasis: { xs: '100%', md: '50%' },
+              maxWidth: { xs: '100%', md: '50%' },
+            }}
+          >
             <Card
               sx={{
                 borderRadius: 4,
                 border: '1px solid',
                 borderColor: 'divider',
                 boxShadow: 'none',
+                height: '100%',
               }}
             >
               <CardContent sx={{ p: 3 }}>
@@ -636,7 +784,7 @@ export default function OrganizationProfile() {
                   variant='h6'
                   sx={{ fontWeight: 800, mb: 3, textTransform: 'uppercase' }}
                 >
-                  {t('auth.admin.colors_theme').toUpperCase()}
+                  {t('auth.admin.colorsTheme').toUpperCase()}
                 </Typography>
                 <Stack spacing={3}>
                   <Box
@@ -650,7 +798,7 @@ export default function OrganizationProfile() {
                     <Box sx={{ flex: 1 }}>
                       <TextField
                         fullWidth
-                        label={t('auth.admin.primary_color')}
+                        label={t('auth.admin.primaryColor')}
                         size='small'
                         value={formData?.primaryColor || ''}
                         onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
@@ -681,7 +829,7 @@ export default function OrganizationProfile() {
                     <Box sx={{ flex: 1 }}>
                       <TextField
                         fullWidth
-                        label={t('auth.admin.secondary_color')}
+                        label={t('auth.admin.secondaryColor')}
                         size='small'
                         value={formData?.secondaryColor || ''}
                         onChange={(e) =>
@@ -715,7 +863,7 @@ export default function OrganizationProfile() {
         >
           <CardContent sx={{ p: 3 }}>
             <Typography variant='h6' sx={{ fontWeight: 800, mb: 3, textTransform: 'uppercase' }}>
-              {t('auth.admin.tenant_security_policies').toUpperCase()}
+              {t('auth.admin.tenantSecurityPolicies').toUpperCase()}
             </Typography>
             <Stack divider={<Divider />}>
               <Box
@@ -728,10 +876,10 @@ export default function OrganizationProfile() {
               >
                 <Box>
                   <Typography variant='body1' sx={{ fontWeight: 700 }}>
-                    {t('auth.admin.enforce_mfa_all')}
+                    {t('auth.admin.enforceMfaAll')}
                   </Typography>
                   <Typography variant='body2' color='text.secondary'>
-                    {t('auth.admin.enforce_mfa_desc')}
+                    {t('auth.admin.enforceMfaDesc')}
                   </Typography>
                 </Box>
                 <Switch
@@ -749,10 +897,10 @@ export default function OrganizationProfile() {
               >
                 <Box>
                   <Typography variant='body1' sx={{ fontWeight: 700 }}>
-                    {t('auth.admin.restrict_sso_only')}
+                    {t('auth.admin.restrictSsoOnly')}
                   </Typography>
                   <Typography variant='body2' color='text.secondary'>
-                    {t('auth.admin.restrict_sso_desc')}
+                    {t('auth.admin.restrictSsoDesc')}
                   </Typography>
                 </Box>
                 <Switch
@@ -770,10 +918,10 @@ export default function OrganizationProfile() {
               >
                 <Box>
                   <Typography variant='body1' sx={{ fontWeight: 700 }}>
-                    {t('auth.admin.allow_public_signup')}
+                    {t('auth.admin.allowPublicSignup')}
                   </Typography>
                   <Typography variant='body2' color='text.secondary'>
-                    Allow anyone to sign up for this organization.
+                    {t('auth.admin.allowPublicSignup_desc')}
                   </Typography>
                 </Box>
                 <Switch
@@ -795,55 +943,202 @@ export default function OrganizationProfile() {
           <CardContent sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
               <Typography variant='h6' sx={{ fontWeight: 800, textTransform: 'uppercase' }}>
-                {t('auth.admin.verified_domains').toUpperCase()}
+                {t('auth.admin.verifiedDomains').toUpperCase()}
               </Typography>
-              <Button variant='outlined' size='small' startIcon={<Language />}>
-                {t('auth.admin.add_domain')}
+              <Button
+                variant='outlined'
+                size='small'
+                startIcon={<Language />}
+                onClick={() => setDomainDialogOpen(true)}
+              >
+                {t('auth.admin.addDomain')}
               </Button>
             </Box>
             <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3 }}>
               <Table>
                 <TableHead sx={{ bgcolor: 'action.hover' }}>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.domain_name')}</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.domainName')}</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.status')}</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.dns_record')}</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.dnsRecord')}</TableCell>
                     <TableCell align='right' sx={{ fontWeight: 700 }}>
-                      {t('auth.admin.verified_at')}
+                      {t('auth.admin.verifiedAt')}
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: 600 }}>
-                      {orgData.domain || 'nexus-platform.com'}
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label='Verified'
-                        size='small'
-                        color='success'
-                        icon={<CheckCircle />}
-                        sx={{ fontWeight: 700 }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant='caption' sx={{ fontFamily: 'monospace' }}>
-                        TXT idp-verify=9fk2...
-                      </Typography>
-                    </TableCell>
-                    <TableCell align='right'>
-                      <Typography variant='body2' color='text.secondary'>
-                        2 months ago
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
+                  {orgData.domainVerifications && orgData.domainVerifications.length > 0 ? (
+                    orgData.domainVerifications.map((dv: any) => (
+                      <TableRow key={dv.id}>
+                        <TableCell sx={{ fontWeight: 600 }}>{dv.domain}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={dv.status === 'verified' ? t('auth.admin.verified') : 'Pending'}
+                            size='small'
+                            color={dv.status === 'verified' ? 'success' : 'warning'}
+                            icon={dv.status === 'verified' ? <CheckCircle /> : undefined}
+                            sx={{ fontWeight: 700 }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant='caption' sx={{ fontFamily: 'monospace' }}>
+                            {dv.verification_token || '—'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align='right'>
+                          <Typography variant='body2' color='text.secondary'>
+                            {dv.verified_at ? new Date(dv.verified_at).toLocaleDateString() : '—'}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : orgData.domain ? (
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 600 }}>{orgData.domain}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={t('auth.admin.verified')}
+                          size='small'
+                          color='success'
+                          icon={<CheckCircle />}
+                          sx={{ fontWeight: 700 }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant='caption' sx={{ fontFamily: 'monospace' }}>
+                          —
+                        </Typography>
+                      </TableCell>
+                      <TableCell align='right'>
+                        <Typography variant='body2' color='text.secondary'>
+                          Legacy
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          {t('auth.admin.noDomains')}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
           </CardContent>
         </Card>
       </TabPanel>
+
+      <TabPanel value={tab} index={4}>
+        <Card
+          sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}
+        >
+          <CardContent sx={{ p: 3 }}>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', mb: 4, alignItems: 'center' }}
+            >
+              <Typography variant='h6' sx={{ fontWeight: 800, textTransform: 'uppercase' }}>
+                {t('auth.admin.members').toUpperCase()}
+              </Typography>
+              <Button
+                variant='contained'
+                startIcon={<Mail />}
+                onClick={() => navigate(Path.admin.invitations.replace(':id', id!))}
+              >
+                {t('auth.admin.manageInvitations')}
+              </Button>
+            </Box>
+
+            <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3 }}>
+              <Table>
+                <TableHead sx={{ bgcolor: 'action.hover' }}>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.name')}</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.email')}</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.role')}</TableCell>
+                    <TableCell align='right' sx={{ fontWeight: 700 }}>
+                      {t('auth.admin.joinedAt')}
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orgData.members && orgData.members.length > 0 ? (
+                    orgData.members.map((m: any) => (
+                      <TableRow key={m.id}>
+                        <TableCell sx={{ fontWeight: 600 }}>
+                          {m.user?.firstName} {m.user?.lastName}
+                        </TableCell>
+                        <TableCell>{m.user?.email}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={m.role?.name || t('auth.common.member')}
+                            size='small'
+                            sx={{ fontWeight: 700, textTransform: 'uppercase' }}
+                          />
+                        </TableCell>
+                        <TableCell align='right'>
+                          <Typography variant='body2' color='text.secondary'>
+                            {new Date(m.createdAt).toLocaleDateString()}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          {t('auth.admin.noMembers')}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Card>
+      </TabPanel>
+
+      {/* Domain Verification Dialog */}
+      <Dialog
+        open={domainDialogOpen}
+        onClose={() => setDomainDialogOpen(false)}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle>{t('auth.admin.domainDialogTitle')}</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            fullWidth
+            label={t('auth.admin.domainDialogLabel')}
+            placeholder='example.com'
+            value={pendingDomain}
+            onChange={(e) => setPendingDomain(e.target.value)}
+            sx={{ mt: 1 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDomainDialogOpen(false)
+              setPendingDomain('')
+            }}
+          >
+            {t('auth.common.cancel')}
+          </Button>
+          <Button
+            variant='contained'
+            onClick={handleVerifyDomain}
+            disabled={!pendingDomain.trim() || verifyDomainMutation.isPending}
+            startIcon={verifyDomainMutation.isPending ? <CircularProgress size={16} /> : undefined}
+          >
+            {t('auth.admin.verify')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

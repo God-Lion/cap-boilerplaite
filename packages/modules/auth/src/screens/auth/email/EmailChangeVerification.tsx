@@ -4,6 +4,7 @@ import { Box, Container, Typography, CircularProgress, alpha, Button } from '@mu
 import { CheckCircleOutline, ErrorOutline } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { themeConfig } from '@cap/platform-core'
+import authService from '../../../services/auth.service'
 import Path from '../path'
 
 export default function EmailChangeVerification() {
@@ -14,16 +15,16 @@ export default function EmailChangeVerification() {
 
   useEffect(() => {
     const verifyToken = async () => {
-      // Simulated verification logic
       try {
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-        if (token === 'error') {
-          setStatus('error')
-        } else {
+        const response = await authService.verifyEmailChange(token as string)
+        if (response.status === 200 || response.status === 202) {
           setStatus('success')
           setTimeout(() => navigate(Path.emailChangeSuccess), 2000)
+        } else {
+          setStatus('error')
         }
-      } catch {
+      } catch (err) {
+        console.error('Email verification error:', err)
         setStatus('error')
       }
     }

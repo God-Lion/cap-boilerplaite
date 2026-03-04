@@ -90,7 +90,7 @@ export default function EmailChangeFailed() {
                 startIcon={<ContactSupport />}
                 sx={{ height: 52, borderRadius: '12px', fontWeight: 600, textTransform: 'none' }}
               >
-                {t('auth.common.contact_support', 'Contact Support')}
+                {t('auth.common.contactSupport', 'Contact Support')}
               </Button>
             </Box>
 
@@ -99,7 +99,7 @@ export default function EmailChangeFailed() {
                 onClick={() => navigate(Path.team)}
                 sx={{ textTransform: 'none', fontWeight: 600, color: 'text.secondary' }}
               >
-                {t('auth.common.back_to_dashboard', 'Back to Dashboard')}
+                {t('auth.common.backToDashboard', 'Back to Dashboard')}
               </Button>
             </Box>
           </CardContent>
@@ -108,3 +108,5 @@ export default function EmailChangeFailed() {
     </>
   )
 }
+
+

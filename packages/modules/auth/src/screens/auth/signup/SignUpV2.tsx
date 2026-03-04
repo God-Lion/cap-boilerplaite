@@ -703,7 +703,7 @@ export default function SignUpV2() {
               '&:hover': { color: 'text.primary' },
             }}
           >
-            {t('auth.common.help_center')}
+            {t('auth.common.helpCenter')}
           </MuiLink>
           <MuiLink
             href='#'
@@ -713,7 +713,7 @@ export default function SignUpV2() {
               '&:hover': { color: 'text.primary' },
             }}
           >
-            {t('auth.common.contact_support')}
+            {t('auth.common.contactSupport')}
           </MuiLink>
         </Box>
         {/* Footer */}
@@ -726,10 +726,12 @@ export default function SignUpV2() {
               fontFamily: 'inherit',
             }}
           >
-            © 2024 {t('auth.common.app_name')}. {t('auth.common.all_rights_reserved')}
+            © 2024 {t('auth.common.appName')}. {t('auth.common.allRightsReserved')}
           </Typography>
         </Box>
       </Container>
     </>
   )
 }
+
+

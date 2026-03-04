@@ -128,7 +128,7 @@ export default function Page429TooManyRequests() {
                   '&:hover': { bgcolor: 'text.secondary' },
                 }}
               >
-                {t('auth.common.contact_support', 'Get Help')}
+                {t('auth.common.contactSupport', 'Get Help')}
               </Button>
             </Box>
           </Box>
@@ -146,3 +146,4 @@ export default function Page429TooManyRequests() {
     </>
   )
 }
+

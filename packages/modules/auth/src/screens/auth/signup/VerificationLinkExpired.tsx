@@ -162,7 +162,7 @@ export default function VerificationLinkExpired() {
                   textTransform: 'none',
                 }}
               >
-                {t('auth.common.back_to_login', 'Back to log in')}
+                {t('auth.common.backToLogin', 'Back to log in')}
               </Button>
             </Box>
           </CardContent>
@@ -208,3 +208,4 @@ export default function VerificationLinkExpired() {
     </>
   )
 }
+

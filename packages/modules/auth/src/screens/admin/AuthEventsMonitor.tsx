@@ -130,10 +130,10 @@ export default function AuthEventsMonitor() {
       >
         <Box>
           <Typography variant='h4' sx={{ fontWeight: 900, letterSpacing: '-0.027em', mb: 1 }}>
-            {t('auth.admin.events_monitor')}
+            {t('auth.admin.eventsMonitor')}
           </Typography>
           <Typography variant='body2' color='text.secondary'>
-            {t('auth.admin.events_monitor_subtitle')}
+            {t('auth.admin.eventsMonitor_subtitle')}
           </Typography>
         </Box>
         <Stack direction='row' spacing={1}>
@@ -159,7 +159,7 @@ export default function AuthEventsMonitor() {
             <TextField
               fullWidth
               size='small'
-              placeholder={t('auth.admin.search_events_placeholder')}
+              placeholder={t('auth.admin.searchEventsPlaceholder')}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position='start'>
@@ -191,13 +191,13 @@ export default function AuthEventsMonitor() {
           <TableHead sx={{ bgcolor: alpha(theme.palette.action.hover, 0.5) }}>
             <TableRow>
               <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                {t('auth.admin.col_event_type')}
+                {t('auth.admin.colEventType')}
               </TableCell>
               <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                {t('auth.admin.col_subject_user')}
+                {t('auth.admin.colSubjectUser')}
               </TableCell>
               <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                {t('auth.admin.col_source_ip')}
+                {t('auth.admin.colSourceIp')}
               </TableCell>
               <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>
                 {t('auth.common.timestamp')}
@@ -206,7 +206,7 @@ export default function AuthEventsMonitor() {
                 sx={{ fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}
                 align='right'
               >
-                {t('auth.admin.col_severity')}
+                {t('auth.admin.colSeverity')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -281,7 +281,7 @@ export default function AuthEventsMonitor() {
           sx={{ display: 'flex', alignItems: 'center' }}
         >
           <Info fontSize='inherit' sx={{ mr: 0.5 }} />{' '}
-          {t('auth.admin.events_count_footer', { count: 50 })}
+          {t('auth.admin.eventsCountFooter', { count: 50 })}
         </Typography>
       </Box>
 
@@ -299,3 +299,4 @@ export default function AuthEventsMonitor() {
     </Box>
   )
 }
+

@@ -81,10 +81,10 @@ export default function AccessPolicyBuilder() {
       >
         <Box>
           <Typography variant='h4' sx={{ fontWeight: 900, mb: 1 }}>
-            {t('auth.admin.access_policies')}
+            {t('auth.admin.accessPolicies')}
           </Typography>
           <Typography variant='body1' color='text.secondary'>
-            {t('auth.admin.access_policies_subtitle')}
+            {t('auth.admin.accessPolicies_subtitle')}
           </Typography>
         </Box>
         <Button
@@ -92,7 +92,7 @@ export default function AccessPolicyBuilder() {
           startIcon={<Add />}
           sx={{ px: 3, py: 1.2, borderRadius: 2, fontWeight: 700, textTransform: 'none' }}
         >
-          {t('auth.admin.create_new_policy')}
+          {t('auth.admin.createNewPolicy')}
         </Button>
       </Box>
 
@@ -123,7 +123,7 @@ export default function AccessPolicyBuilder() {
                 color='text.secondary'
                 sx={{ fontWeight: 800, textTransform: 'uppercase' }}
               >
-                {t('auth.admin.active_policies')}
+                {t('auth.admin.activePolicies')}
               </Typography>
               <Typography variant='h5' sx={{ fontWeight: 900 }}>
                 12
@@ -135,7 +135,7 @@ export default function AccessPolicyBuilder() {
                 color='text.secondary'
                 sx={{ fontWeight: 800, textTransform: 'uppercase' }}
               >
-                {t('auth.admin.signals_tracked')}
+                {t('auth.admin.signalsTracked')}
               </Typography>
               <Typography variant='h5' sx={{ fontWeight: 900 }}>
                 IP, Device, MFA
@@ -147,7 +147,7 @@ export default function AccessPolicyBuilder() {
                 color='text.secondary'
                 sx={{ fontWeight: 800, textTransform: 'uppercase' }}
               >
-                {t('auth.admin.last_logic_audit')}
+                {t('auth.admin.lastLogicAudit')}
               </Typography>
               <Typography variant='h5' sx={{ fontWeight: 900 }}>
                 4 hours ago
@@ -155,7 +155,7 @@ export default function AccessPolicyBuilder() {
             </Box>
           </Stack>
           <Button startIcon={<History />} sx={{ textTransform: 'none', fontWeight: 700 }}>
-            {t('auth.admin.view_change_logs')}
+            {t('auth.admin.viewChangeLogs')}
           </Button>
         </CardContent>
       </Card>
@@ -309,10 +309,10 @@ export default function AccessPolicyBuilder() {
               <Add />
             </Avatar>
             <Typography variant='subtitle2' sx={{ fontWeight: 800 }}>
-              {t('auth.admin.define_custom_logic')}
+              {t('auth.admin.defineCustomLogic')}
             </Typography>
             <Typography variant='caption' color='text.secondary'>
-              {t('auth.admin.combine_signals_desc')}
+              {t('auth.admin.combineSignalsDesc')}
             </Typography>
           </Box>
         </Grid>

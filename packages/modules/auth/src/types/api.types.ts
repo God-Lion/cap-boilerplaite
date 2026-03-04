@@ -9,22 +9,27 @@
 // Core Entity Types
 // ============================================================================
 
+import { IRole } from '@cap/platform-core'
+
 export interface User {
   id: number
   email: string
   firstName?: string
   lastName?: string
-  full_name?: string
-  role?: string
+  fullName?: string
+  role?: number
   status?: string
   avatar?: string
-  email_verified?: boolean
-  last_login?: string
-  last_activity?: string
-  created_at?: string
-  updated_at?: string
-  mfa_enabled?: boolean
+  emailVerified?: boolean
+  lastLogin?: string
+  lastActivity?: string
+  createdAt?: string
+  updatedAt?: string
+  mfaEnabled?: boolean
   orgName?: string
+  permissions?: string[]
+  roleName?: string
+  roleObject?: IRole
 }
 
 // ============================================================================

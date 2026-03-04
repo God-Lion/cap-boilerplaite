@@ -192,10 +192,11 @@ export default function EmailChangeStatus() {
             startIcon={<ArrowBack />}
             sx={{ textTransform: 'none', fontWeight: 600, color: 'text.secondary' }}
           >
-            {t('auth.common.back_to_dashboard', 'Back to Dashboard')}
+            {t('auth.common.backToDashboard', 'Back to Dashboard')}
           </Button>
         </Box>
       </Container>
     </>
   )
 }
+

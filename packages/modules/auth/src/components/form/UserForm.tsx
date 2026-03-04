@@ -41,16 +41,16 @@ export default function UserForm({
     id_user: z.union([z.string(), z.number()]).optional(),
     userTypeID: z
       .union([z.string(), z.number()])
-      .refine((val) => val !== '', t('auth.common.field_required')),
+      .refine((val) => val !== '', t('auth.common.fieldRequired')),
     store_fk: z.string().optional(),
-    first_name: z.string().min(1, t('auth.common.field_required')),
-    last_name: z.string().min(1, t('auth.common.field_required')),
-    username: z.string().min(1, t('auth.common.field_required')),
-    adress: z.string().min(1, t('auth.common.field_required')),
-    cin_nif: z.string().min(1, t('auth.common.field_required')),
+    first_name: z.string().min(1, t('auth.common.fieldRequired')),
+    last_name: z.string().min(1, t('auth.common.fieldRequired')),
+    username: z.string().min(1, t('auth.common.fieldRequired')),
+    adress: z.string().min(1, t('auth.common.fieldRequired')),
+    cin_nif: z.string().min(1, t('auth.common.fieldRequired')),
     email: z.string().email(t('auth.user_form.invalid_email')),
-    phone: z.string().min(1, t('auth.common.field_required')),
-    password: z.string().min(1, t('auth.common.field_required')),
+    phone: z.string().min(1, t('auth.common.fieldRequired')),
+    password: z.string().min(1, t('auth.common.fieldRequired')),
     photo: z.string().optional(),
     createByAdmin: z.boolean().optional(),
     actif: z.boolean().optional(),
@@ -412,3 +412,4 @@ export default function UserForm({
     </div>
   )
 }
+

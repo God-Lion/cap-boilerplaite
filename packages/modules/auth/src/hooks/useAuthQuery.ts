@@ -13,6 +13,7 @@ import {
   Session,
   secureTokenManager,
   API_CONFIG,
+  useAppStore,
 } from '@cap/platform-core'
 
 import {
@@ -59,7 +60,7 @@ export function useSignup(
   >,
 ) {
   return useMutation({
-    mutationFn: ({ data }) => authService.signup(data),
+    mutationFn: ({ data }) => authService.signup(data as any),
     ...options,
   })
 }
@@ -101,6 +102,7 @@ export function useSignin(
         setUser(response.data.user)
         setAuthenticated(true)
         setAuthStep('complete')
+        useAppStore.getState().setUser(response.data.user)
 
         // sessionId handled if present in response
         if (response.data.userId) {
@@ -146,6 +148,7 @@ export function useSignout(
       // Reset Zustand auth store
       clearAuth()
       setAuthStep('credentials')
+      useAppStore.getState().signOut()
 
       queryClient.clear()
 
@@ -455,6 +458,7 @@ export function useVerifyMfa(
       setAuthenticated(true)
       setMfaRequired(false)
       setAuthStep('complete')
+      useAppStore.getState().setUser(user)
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
       queryClient.invalidateQueries({ queryKey: ['auth', 'mfa', 'status'] })
@@ -475,7 +479,7 @@ export function useMfaStatus() {
   const user = useAuthStore((state) => state.user)
   return {
     data: {
-      enabled: user?.mfa_enabled || false,
+      enabled: user?.mfaEnabled || false,
     },
     isLoading: false,
     isError: false,
@@ -577,6 +581,7 @@ export function useMfaLoginVerify(
       setAuthenticated(true)
       setMfaRequired(false)
       setAuthStep('complete')
+      useAppStore.getState().setUser(user)
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
 
@@ -707,6 +712,7 @@ export function usePasskeyLogin(
       setUser(response.data.user)
       setAuthenticated(true)
       setAuthStep('complete')
+      useAppStore.getState().setUser(response.data.user)
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.session })
       customOnSuccess?.(...args)
@@ -763,17 +769,20 @@ export function useCurrentUserQuery() {
 /**
  * Check user role
  */
-export function useHasRole(role: string): boolean {
+export function useHasRole(role: string | number): boolean {
   const { user } = useCurrentUserQuery()
-  return user?.role === role
+  if (!user?.role) return false
+  return String(user.role) === String(role)
 }
 
 /**
  * Check multiple roles
  */
-export function useHasAnyRole(roles: string[]): boolean {
+export function useHasAnyRole(roles: (string | number)[]): boolean {
   const { user } = useCurrentUserQuery()
-  return roles.includes(user?.role || '')
+  if (!user?.role) return false
+  const userRoleStr = String(user.role)
+  return roles.some((r) => String(r) === userRoleStr)
 }
 
 /**

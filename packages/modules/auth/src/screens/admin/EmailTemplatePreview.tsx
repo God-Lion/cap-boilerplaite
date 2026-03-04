@@ -46,10 +46,10 @@ export default function EmailTemplatePreview() {
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
           <Typography variant='h4' sx={{ fontWeight: 900, mb: 1 }}>
-            {t('auth.admin.email_preview_title')}
+            {t('auth.admin.emailPreviewTitle')}
           </Typography>
           <Typography variant='body1' color='text.secondary'>
-            {t('auth.admin.email_preview_subtitle')}
+            {t('auth.admin.emailPreviewSubtitle')}
           </Typography>
         </Box>
         <Stack direction='row' spacing={2}>
@@ -58,14 +58,14 @@ export default function EmailTemplatePreview() {
             startIcon={<History />}
             sx={{ textTransform: 'none', fontWeight: 700, borderRadius: 2 }}
           >
-            {t('auth.admin.version_history')}
+            {t('auth.admin.versionHistory')}
           </Button>
           <Button
             variant='contained'
             startIcon={<Edit />}
             sx={{ textTransform: 'none', fontWeight: 800, borderRadius: 2, boxShadow: 'none' }}
           >
-            {t('auth.admin.edit_template')}
+            {t('auth.admin.editTemplate')}
           </Button>
         </Stack>
       </Box>
@@ -169,7 +169,7 @@ export default function EmailTemplatePreview() {
                 spacing={1}
                 sx={{ bgcolor: 'action.hover', p: 0.5, borderRadius: 2 }}
               >
-                <Tooltip title={t('auth.admin.desktop_view')}>
+                <Tooltip title={t('auth.admin.desktopView')}>
                   <IconButton
                     size='small'
                     color={device === 'desktop' ? 'primary' : 'default'}
@@ -178,7 +178,7 @@ export default function EmailTemplatePreview() {
                     <Laptop fontSize='small' />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={t('auth.admin.mobile_view')}>
+                <Tooltip title={t('auth.admin.mobileView')}>
                   <IconButton
                     size='small'
                     color={device === 'mobile' ? 'primary' : 'default'}
@@ -257,3 +257,4 @@ export default function EmailTemplatePreview() {
     </Box>
   )
 }
+

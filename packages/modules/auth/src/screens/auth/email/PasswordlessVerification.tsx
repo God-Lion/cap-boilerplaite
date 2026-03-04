@@ -160,7 +160,7 @@ export default function PasswordlessVerification() {
                   textTransform: 'none',
                 }}
               >
-                {t('auth.common.back_to_login', 'Back to Login')}
+                {t('auth.common.backToLogin', 'Back to Login')}
               </Button>
             </>
           )}
@@ -169,3 +169,4 @@ export default function PasswordlessVerification() {
     </>
   )
 }
+

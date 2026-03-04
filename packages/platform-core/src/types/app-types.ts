@@ -75,10 +75,10 @@ export interface ICustomizedLabel {
   index: number
 }
 
-export interface IDepartement {
+export interface IDepartment {
   code: string
   codePostal: string
-  departement: string
+  department: string
   arrondissement: Array<IArrondissement>
 }
 export interface IArrondissement {
@@ -103,7 +103,7 @@ export interface ISongData {
   file: File
 }
 
-export type ISubcriberPersonalInfo = {
+export type ISubscriberPersonalInfo = {
   category_id?: number
   holderLastname?: string
   holderFirstname?: string
@@ -119,7 +119,7 @@ export type ISubcriberPersonalInfo = {
   phone?: string
 }
 
-export type IFormDrawingContest = ISubcriberPersonalInfo & {
+export type IFormDrawingContest = ISubscriberPersonalInfo & {
   user_id?: number | string
   participationType?: string
   groupMember?: string
@@ -137,7 +137,7 @@ export type IFormDrawingContest = ISubcriberPersonalInfo & {
   presentationDrawing?: string
   terms?: boolean
 }
-export type IMusicSubcribe = ISubcriberPersonalInfo & {
+export type IMusicSubscribe = ISubscriberPersonalInfo & {
   id?: number
   edition_id?: number
   user_id?: number | string
@@ -159,10 +159,8 @@ export type IMusicSubcribe = ISubcriberPersonalInfo & {
 }
 
 export interface IUpdateNames {
-  lastname?: string
-  firstname?: string
-  firstName?: string
   lastName?: string
+  firstName?: string
 }
 
-export type IFormContest = IFormDrawingContest & IMusicSubcribe
+export type IFormContest = IFormDrawingContest & IMusicSubscribe

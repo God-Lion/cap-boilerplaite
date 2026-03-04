@@ -51,6 +51,7 @@ const Path = {
   adminLogin: '/auth/admin/login',
   samlSSOInitiation: '/auth/sso/login',
   team: '/team',
+  joinOrganization: '/auth/join-organization',
 }
 
 export default Path

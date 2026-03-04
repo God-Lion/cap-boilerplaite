@@ -9,7 +9,6 @@ import {
   LinearProgress,
   Chip,
   useTheme,
-  useMediaQuery,
   Link as MuiLink,
 } from '@mui/material'
 import {

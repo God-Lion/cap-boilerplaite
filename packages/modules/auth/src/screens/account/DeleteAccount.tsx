@@ -209,7 +209,7 @@ export default function DeleteAccount() {
             {/* Error Alert */}
             {deleteError && (
               <Alert severity='error' sx={{ mb: 3, borderRadius: '8px' }}>
-                {(deleteError as any)?.message || t('auth.common.error_occurred')}
+                {(deleteError as any)?.message || t('auth.common.errorOccurred')}
               </Alert>
             )}
 
@@ -409,7 +409,7 @@ export default function DeleteAccount() {
                         {...field}
                         fullWidth
                         type={showPassword ? 'text' : 'password'}
-                        placeholder={t('auth.common.password_placeholder')}
+                        placeholder={t('auth.common.passwordPlaceholder')}
                         error={!!errors.password}
                         helperText={errors.password?.message}
                         InputProps={{
@@ -636,3 +636,4 @@ export default function DeleteAccount() {
     </Box>
   )
 }
+

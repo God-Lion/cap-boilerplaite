@@ -78,7 +78,7 @@ import {
   ExportVerification,
   AdminEmailTestingDashboard,
   AdminEmailTemplatePreview,
-  UserListDashboard,
+  UserList,
   BanManagement,
   ImpersonationLogs,
   AdminUserProfile,
@@ -87,7 +87,7 @@ import {
   AdminMFAUsageAnalytics,
   OrganizationListDashboard,
   OrganizationProfile,
-  RoleListDashboard,
+  RoleList,
   RoleDetailView,
   PermissionRegistry,
   PermissionConsentScreen,
@@ -114,6 +114,7 @@ import {
   DirectorySyncDashboard,
   SCIMConfiguration,
   SyncLogsView,
+  JoinOrganization,
 } from '../screens'
 
 import SignUp from '../screens/auth/signup/SignUp'
@@ -122,126 +123,164 @@ import SignUpV2 from '../screens/auth/signup/SignUpV2'
 const adminRouteConfig: Array<AuthRouteConfig> = [
   {
     path: Path.admin.users,
-    element: <AdminRoute element={<UserListDashboard />} minimumRole={Roles.ADMIN} />,
+    element: <AdminRoute element={<UserList />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.admin.userProfile,
-    element: <AdminRoute element={<AdminUserProfile />} minimumRole={Roles.ADMIN} />,
+    element: <AdminRoute element={<AdminUserProfile />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.admin.banManagement,
-    element: <AdminRoute element={<BanManagement />} minimumRole={Roles.ADMIN} />,
-  },
-  {
-    path: Path.admin.organizations,
-    element: <AdminRoute element={<OrganizationListDashboard />} minimumRole={Roles.ADMIN} />,
-  },
-  {
-    path: Path.admin.organizationProfile,
-    element: <AdminRoute element={<OrganizationProfile />} minimumRole={Roles.ADMIN} />,
+    element: <AdminRoute element={<BanManagement />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.admin.impersonationLogs,
-    element: <AdminRoute element={<ImpersonationLogs />} minimumRole={Roles.ADMIN} />,
+    element: (
+      <AdminRoute element={<ImpersonationLogs />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
+  },
+  {
+    path: Path.admin.organizations,
+    element: (
+      <AdminRoute
+        element={<OrganizationListDashboard />}
+        minimumRole={Roles.ADMIN}
+        layout='admin'
+      />
+    ),
+  },
+  {
+    path: Path.admin.organizationProfile,
+    element: (
+      <AdminRoute element={<OrganizationProfile />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
+  },
+
+  {
+    path: Path.admin.invitations,
+    element: (
+      <AdminRoute
+        element={<OrganizationInvitationDashboard />}
+        minimumRole={Roles.ADMIN}
+        layout='admin'
+      />
+    ),
   },
 
   {
     path: Path.admin.roles,
-    element: <AdminRoute element={<RoleListDashboard />} minimumRole={Roles.ADMIN} />,
+    element: <AdminRoute element={<RoleList />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.admin.roleDetail,
-    element: <AdminRoute element={<RoleDetailView />} minimumRole={Roles.ADMIN} />,
+    element: <AdminRoute element={<RoleDetailView />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.admin.permissions,
-    element: <AdminRoute element={<PermissionRegistry />} minimumRole={Roles.ADMIN} />,
+    element: (
+      <AdminRoute element={<PermissionRegistry />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
   },
-  {
-    path: Path.admin.invitations,
-    element: <AdminRoute element={<OrganizationInvitationDashboard />} minimumRole={Roles.ADMIN} />,
-  },
+
   {
     path: Path.admin.policies,
-    element: <AdminRoute element={<AccessPolicyBuilder />} minimumRole={Roles.ADMIN} />,
+    element: (
+      <AdminRoute element={<AccessPolicyBuilder />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
   },
   {
     path: Path.admin.applications,
-    element: <AdminRoute element={<ApplicationDashboard />} minimumRole={Roles.ADMIN} />,
+    element: (
+      <AdminRoute element={<ApplicationDashboard />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
   },
   {
     path: Path.admin.appDetail,
-    element: <AdminRoute element={<ApplicationDetailView />} minimumRole={Roles.ADMIN} />,
+    element: (
+      <AdminRoute element={<ApplicationDetailView />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
   },
   {
     path: Path.admin.scopes,
-    element: <AdminRoute element={<ScopesRegistry />} minimumRole={Roles.ADMIN} />,
+    element: <AdminRoute element={<ScopesRegistry />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.admin.apiExplorer,
-    element: <AdminRoute element={<APIExplorerDashboard />} minimumRole={Roles.ADMIN} />,
+    element: (
+      <AdminRoute element={<APIExplorerDashboard />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
   },
   {
     path: Path.admin.provisioning,
-    element: <AdminRoute element={<DirectorySyncDashboard />} minimumRole={Roles.ADMIN} />,
+    element: (
+      <AdminRoute element={<DirectorySyncDashboard />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
   },
   {
     path: Path.admin.scim,
-    element: <AdminRoute element={<SCIMConfiguration />} minimumRole={Roles.ADMIN} />,
+    element: (
+      <AdminRoute element={<SCIMConfiguration />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
   },
   {
     path: Path.admin.syncLogs,
-    element: <AdminRoute element={<SyncLogsView />} minimumRole={Roles.ADMIN} />,
+    element: <AdminRoute element={<SyncLogsView />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
 ]
 
 const apiTokenRouteConfig: Array<AuthRouteConfig> = [
   {
     path: Path.apiTokens.dashboard,
-    element: <AuthRoute element={<APITokensDashboard />} requiresVerification />,
+    element: <AuthRoute element={<APITokensDashboard />} requiresVerification layout='admin' />,
   },
   {
     path: Path.apiTokens.create_basic,
-    element: <AuthRoute element={<CreateAPITokenBasicInfo />} requiresVerification />,
+    element: (
+      <AuthRoute element={<CreateAPITokenBasicInfo />} requiresVerification layout='admin' />
+    ),
   },
   {
     path: Path.apiTokens.create_restrictions,
-    element: <AuthRoute element={<CreateAPITokenIPRestrictions />} requiresVerification />,
+    element: (
+      <AuthRoute element={<CreateAPITokenIPRestrictions />} requiresVerification layout='admin' />
+    ),
   },
   {
     path: Path.apiTokens.details,
-    element: <AuthRoute element={<APITokenDetails />} requiresVerification />,
+    element: <AuthRoute element={<APITokenDetails />} requiresVerification layout='admin' />,
   },
   {
     path: Path.apiTokens.display,
-    element: <AuthRoute element={<APITokenDisplayUsage />} requiresVerification />,
+    element: <AuthRoute element={<APITokenDisplayUsage />} requiresVerification layout='admin' />,
   },
   {
     path: Path.apiTokens.actions,
-    element: <AuthRoute element={<APITokenActions />} requiresVerification />,
+    element: <AuthRoute element={<APITokenActions />} requiresVerification layout='admin' />,
   },
   {
     path: Path.apiTokens.security_warning,
-    element: <AuthRoute element={<APITokenSecurityWarning />} requiresVerification />,
+    element: (
+      <AuthRoute element={<APITokenSecurityWarning />} requiresVerification layout='admin' />
+    ),
   },
 ]
 
 const accountRouteConfig: Array<AuthRouteConfig> = [
   {
     path: Path.account.overview,
-    element: <AuthRoute element={<AccountOverview />} requiresVerification />, //TO FIX
+    element: <AuthRoute element={<AccountOverview />} requiresVerification layout='admin' />, //TO FIX
   },
   {
     path: Path.account.view,
-    element: <AuthRoute element={<ProfileView />} requiresVerification />,
+    element: <AuthRoute element={<ProfileView />} requiresVerification layout='admin' />,
   },
   {
     path: Path.account.edit,
-    element: <AuthRoute element={<EditProfile />} requiresVerification />, //TO FIX
+    element: <AuthRoute element={<EditProfile />} requiresVerification layout='admin' />, //TO FIX
   },
   {
     path: Path.account.changeEmail,
-    element: <AuthRoute element={<ChangeEmail />} requiresVerification />, //TO FIX
+    element: <AuthRoute element={<ChangeEmail />} requiresVerification layout='admin' />, //TO FIX
   },
   {
     path: Path.account.changePassword,
@@ -277,7 +316,7 @@ const accountRouteConfig: Array<AuthRouteConfig> = [
   },
   {
     path: Path.account.securityStatus,
-    element: <AuthRoute element={<UserSecurityStatus />} requiresVerification />,
+    element: <AuthRoute element={<UserSecurityStatus />} requiresVerification layout='admin' />,
   },
   {
     path: Path.account.initiateEmailChange,
@@ -292,48 +331,40 @@ const accountRouteConfig: Array<AuthRouteConfig> = [
 const emailVerificationRouteConfig: Array<AuthRouteConfig> = [
   {
     path: Path.auth.emailChangeVerificationPending,
-    element: <AuthRoute element={<EmailChangeVerificationPending />} />,
-    layout: 'noLayout',
+    element: <AuthRoute element={<EmailChangeVerificationPending />} layout='noLayout' />,
   },
   {
     path: Path.auth.emailChangeVerification,
     element: <EmailChangeVerification />,
-    layout: 'noLayout',
   },
   {
     path: Path.auth.emailChangeSuccess,
     element: <EmailChangeSuccess />,
-    layout: 'noLayout',
   },
   {
     path: Path.auth.emailChangeFailed,
     element: <EmailChangeFailed />,
-    layout: 'noLayout',
   },
   {
     path: Path.auth.emailVerifiedSuccess,
     element: <EmailVerifiedSuccess />,
-    layout: 'noLayout',
   },
   {
     path: Path.auth.mfaVerification,
-    element: <AuthRoute element={<MFAVerificationScreen />} />,
-    layout: 'noLayout',
+    element: <AuthRoute element={<MFAVerificationScreen />} layout='noLayout' />,
   },
   {
     path: Path.auth.exportVerification,
-    element: <AuthRoute element={<ExportVerification />} />,
-    layout: 'noLayout',
+    element: <AuthRoute element={<ExportVerification />} layout='noLayout' />,
   },
 ]
 
 const mfaRouteConfig: Array<AuthRouteConfig> = [
   {
     path: Path.mfa.setup,
-    element: <AuthRoute element={<MFASetupInitiation />} />,
-    layout: 'noLayout',
+    element: <AuthRoute element={<MFASetupInitiation />} layout='noLayout' />,
   },
-  { path: Path.mfa.verification, element: <MFAVerificationTest />, layout: 'noLayout' },
+  { path: Path.mfa.verification, element: <MFAVerificationTest /> },
   {
     path: Path.mfa.backup_codes,
     element: <AuthRoute element={<MFABackupCodes />} />,
@@ -618,6 +649,9 @@ export const authRouteConfig: Array<AuthRouteConfig> = [
   // Admin
   { path: Path.auth.adminLogin, element: <AdminLoginScreen />, layout: 'noLayout' },
   { path: Path.auth.samlSSOInitiation, element: <SAMLSSOInitiation />, layout: 'noLayout' },
+
+  // Organization Invitation
+  { path: Path.auth.joinOrganization, element: <JoinOrganization />, layout: 'noLayout' },
 ]
 
 // eslint-disable-next-line react-refresh/only-export-components

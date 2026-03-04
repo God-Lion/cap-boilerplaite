@@ -1,7 +1,6 @@
 import React, { Suspense, type ReactNode } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Backdrop, CircularProgress, Alert, Box, Button } from '@mui/material'
-import { IAuth } from '@cap/platform-core'
 import { isObjectEmpty, Roles, useAppStore, type LayoutOverride } from '@cap/platform-core'
 import { useSessionGuard } from './useSessionGuard'
 import { Page403Forbidden } from '../screens'
@@ -14,7 +13,7 @@ interface AdminRouteProps {
 
 const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
 
-const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'none' }: AdminRouteProps) => {
+const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: AdminRouteProps) => {
   const { isLoading, sessionError, isAuthenticated, user } = useSessionGuard()
   const location = useLocation()
   const navigate = useNavigate()
@@ -66,8 +65,13 @@ const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'none' }: Adm
   }
 
   // Securely resolve user data and role
-  const userData = (user as IAuth).user || (user as IAuth)
-  const userRole = userData.role as Roles
+  // Handle cases where user might be the auth object itself or wrapped in a tuple like [userData, isLoading]
+  const rawUser = user as any
+  const userData: any = Array.isArray(rawUser)
+    ? rawUser[0]?.user || rawUser[0]
+    : rawUser?.user || rawUser
+
+  const userRole = (userData?.role as Roles) || Roles.USER
 
   // Strict role check using Roles enum values
   const isAdmin = ADMIN_ROLES.includes(userRole)

@@ -4,6 +4,8 @@ export interface UserDto {
   firstName?: string;
   lastName?: string;
   roleId: number;
+  roleName?: string;
+  permissions: string[];
   avatarUrl?: string;
 }
 

@@ -6,7 +6,7 @@ const Path = {
 
   organizations: '/admin/organizations',
   organizationProfile: '/admin/organizations/:id',
-  invitations: '/admin/invitations',
+  invitations: '/admin/organizations/:id/invitations',
 
   roles: '/admin/roles',
   roleDetail: '/admin/roles/:id',

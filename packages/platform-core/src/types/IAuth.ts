@@ -9,33 +9,46 @@ export interface ISession {
   current?: boolean
 }
 
+import { IRole } from '@cap/platform-core'
+
 export interface IUserResponse {
-  id?: string | number
-  _id?: string
+  id: number
+  email: string
+  role: number
   firstName: string
   lastName: string
-  email: string
+  fullName?: string
+  status?: string
+  emailVerified?: boolean
+  isVerified?: boolean
   phone?: string | null
-  role: number
-  isActive?: boolean
-  isActif?: number | boolean
-  isAdmin?: boolean
-  isEmailVerified?: boolean
+  mfaEnabled: boolean
+  isEnabledProfile?: boolean
+  isEnabledMiniPlayer?: boolean
+  isEnabledAutoplayNext?: boolean
+  isEnabledMentions?: boolean
+  lastLoginAt?: string | null
   createdAt: string
   updatedAt: string
   avatar?: string | null
   sessions?: Array<ISession>
+  permissions?: string[]
+  roleName?: string | null
+  roleObject?: IRole
 }
 
 export interface IAuth extends IUserResponse {
-  user?: IUserResponse
-  token?: string
-  refreshToken?: string
-  full_name?: string
-  role: number
+  user: IUserResponse | null
+  tokens: {
+    accessToken: string
+    refreshToken: string
+  } | null
+  permissions: string[]
+  roleName: string | null
   email: string
   rememberMe?: boolean
   isAdmin?: boolean
+  roleObject?: IRole
 }
 
 export interface ILogin {
@@ -45,15 +58,15 @@ export interface ILogin {
 }
 
 export interface ISignup {
-  firstName?: string
-  lastName?: string
-  firstname?: string
-  lastname?: string
+  firstName: string
+  lastName: string
+  sexe?: string
+  phone?: string | null
   email: string
-  phone?: string
-  password: string
-  confirmPassword: string
-  isTermsSign?: boolean
+  role: number
+  roleName: string
+  permissions?: string[]
+  roleObject?: IRole
 }
 
 export interface IForgetPassword {

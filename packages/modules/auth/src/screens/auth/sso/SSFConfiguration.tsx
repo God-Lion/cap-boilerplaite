@@ -435,6 +435,24 @@ export default function SSFConfiguration() {
             <Button
               fullWidth
               variant='contained'
+              onClick={async () => {
+                try {
+                  await adminService.testSSFStream()
+                  setStatus({
+                    open: true,
+                    type: 'success',
+                    state: 'success',
+                    msg: t('auth.sso.ssf_test_success', 'Test signal broadcasted successfully'),
+                  })
+                } catch (err: unknown) {
+                  setStatus({
+                    open: true,
+                    type: 'error',
+                    state: 'error',
+                    msg: err instanceof Error ? err.message : 'Failed to broadcast test signal',
+                  })
+                }
+              }}
               sx={{
                 mt: 4,
                 height: 48,

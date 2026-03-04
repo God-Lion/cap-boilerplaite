@@ -52,8 +52,28 @@ export {
   useVerifyDomain,
   useCheckDomain,
 
-  // Audit Logs
-  useAuditLogs,
+  // Dashboard & Health
+  useAdminDashboard,
+  useSecurityHealth,
+
+  // Statistics
+  useMFAStats,
+  useUserStats,
+
+  // RBAC & Roles
+  useRoles,
+  useRole,
+  useUpdateRole,
+  useDeleteRole,
+  useDuplicateRole,
+  useRoleStats,
+  usePermissions,
+  useRolePermissions,
+  useSyncRolePermissions,
+  useSyncRoleParents,
+
+  // User Bulk Actions
+  useBulkUserAction,
 
   // Webhooks
   useWebhooks,

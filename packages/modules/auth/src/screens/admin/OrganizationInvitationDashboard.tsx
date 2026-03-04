@@ -26,6 +26,9 @@ import {
   DialogActions,
   MenuItem,
   Tooltip,
+  Menu,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material'
 import {
   Search,
@@ -36,61 +39,107 @@ import {
   CheckCircle,
   Cancel,
   ArrowBack,
+  ContentCopy,
+  Replay,
+  BlockOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Path from '../path'
+import {
+  useOrganizationInvitations,
+  useInviteOrganizationMember,
+  useRevokeOrganizationInvitation,
+} from '../../hooks/useAdminQuery'
+import { useSnackbar } from 'notistack'
 
 interface Invitation {
-  id: string
+  id: string | number
   email: string
   role: string
-  status: 'Pending' | 'Accepted' | 'Expired' | 'Revoked'
-  invitedAt: string
-  expiresAt: string
+  status: 'pending' | 'accepted' | 'expired' | 'revoked'
+  created_at?: string
+  createdAt?: string
+  expires_at?: string
+  expiresAt?: string
 }
-
-const mockInvitations: Invitation[] = [
-  {
-    id: '1',
-    email: 'new_hire@startup.com',
-    role: 'Member',
-    status: 'Pending',
-    invitedAt: '2024-02-14',
-    expiresAt: '2024-02-21',
-  },
-  {
-    id: '2',
-    email: 'lead_dev@another.io',
-    role: 'Admin',
-    status: 'Accepted',
-    invitedAt: '2024-02-10',
-    expiresAt: '2024-02-17',
-  },
-  {
-    id: '3',
-    email: 'consultant@agency.net',
-    role: 'Auditor',
-    status: 'Expired',
-    invitedAt: '2024-01-05',
-    expiresAt: '2024-01-12',
-  },
-]
 
 export default function OrganizationInvitationDashboard() {
   const { t } = useTranslation('common')
   const navigate = useNavigate()
+  const { id } = useParams<{ id: string }>()
   const theme = useTheme()
+  const { enqueueSnackbar } = useSnackbar()
   const [searchTerm, setSearchTerm] = useState('')
   const [inviteModalOpen, setInviteModalOpen] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteRole, setInviteRole] = useState('Member')
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null)
+  const [menuInvite, setMenuInvite] = useState<Invitation | null>(null)
+
+  const { data: response, isLoading } = useOrganizationInvitations(Number(id))
+  const inviteMutation = useInviteOrganizationMember()
+  const revokeMutation = useRevokeOrganizationInvitation()
+
+  if (!id || isNaN(Number(id))) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography color='error'>
+          {t('auth.admin.invalidOrgId', 'Invalid Organization ID')}
+        </Typography>
+        <Button onClick={() => navigate(Path.admin.organizations)}>
+          {t('auth.admin.backToOrgs')}
+        </Button>
+      </Box>
+    )
+  }
+
+  const invitations: Invitation[] = response?.data || []
+
+  // Derived stats
+  const totalSent = invitations.length
+  const pending = invitations.filter((i) => i.status === 'pending').length
+  const accepted = invitations.filter((i) => i.status === 'accepted').length
+  const acceptanceRate = totalSent > 0 ? `${Math.round((accepted / totalSent) * 100)}%` : '0%'
+
+  const filteredInvitations = invitations.filter((inv) =>
+    inv.email.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
+  const handleInvite = () => {
+    if (!inviteEmail.trim()) {
+      enqueueSnackbar(t('auth.admin.errorEmailRequired'), { variant: 'error' })
+      return
+    }
+    inviteMutation.mutate(
+      { orgId: Number(id), data: { email: inviteEmail, role: inviteRole } },
+      {
+        onSuccess: () => {
+          enqueueSnackbar(t('auth.admin.successInvitationSent'), {
+            variant: 'success',
+          })
+          setInviteModalOpen(false)
+          setInviteEmail('')
+          setInviteRole('Member')
+        },
+        onError: (err: any) => {
+          enqueueSnackbar(err.message || t('auth.admin.errorSendInvitation'), {
+            variant: 'error',
+          })
+        },
+      },
+    )
+  }
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Accepted':
+    switch (status.toLowerCase()) {
+      case 'accepted':
         return 'success'
-      case 'Pending':
+      case 'pending':
         return 'warning'
-      case 'Expired':
+      case 'expired':
+        return 'error'
+      case 'revoked':
         return 'error'
       default:
         return 'default'
@@ -98,15 +147,31 @@ export default function OrganizationInvitationDashboard() {
   }
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'Accepted':
+    switch (status.toLowerCase()) {
+      case 'accepted':
         return <CheckCircle sx={{ fontSize: 14 }} />
-      case 'Pending':
+      case 'pending':
         return <Timer sx={{ fontSize: 14 }} />
-      case 'Expired':
+      case 'expired':
+      case 'revoked':
         return <Cancel sx={{ fontSize: 14 }} />
       default:
         return undefined
+    }
+  }
+
+  const getStatusLabel = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'accepted':
+        return t('auth.admin.statusAccepted')
+      case 'pending':
+        return t('auth.admin.statusPending')
+      case 'expired':
+        return t('auth.admin.statusExpired')
+      case 'revoked':
+        return t('auth.admin.statusRevoked')
+      default:
+        return status
     }
   }
 
@@ -116,18 +181,18 @@ export default function OrganizationInvitationDashboard() {
       <Box sx={{ mb: 4 }}>
         <Button
           startIcon={<ArrowBack />}
-          onClick={() => navigate(Path.admin.organizations)}
+          onClick={() => navigate(Path.admin.organizationProfile.replace(':id', id))}
           sx={{ mb: 2, color: 'text.secondary', textTransform: 'none', fontWeight: 600 }}
         >
-          {t('auth.admin.back_to_orgs')}
+          {t('auth.admin.backToProfile')}
         </Button>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box>
             <Typography variant='h4' sx={{ fontWeight: 900, mb: 1 }}>
-              {t('auth.admin.member_invitations')}
+              {t('auth.admin.memberInvitations')}
             </Typography>
             <Typography variant='body1' color='text.secondary'>
-              {t('auth.admin.member_invitations_subtitle')}
+              {t('auth.admin.memberInvitations_subtitle')}
             </Typography>
           </Box>
           <Button
@@ -136,7 +201,7 @@ export default function OrganizationInvitationDashboard() {
             onClick={() => setInviteModalOpen(true)}
             sx={{ px: 3, py: 1.2, borderRadius: 2, fontWeight: 700, textTransform: 'none' }}
           >
-            {t('auth.admin.invite_new_member')}
+            {t('auth.admin.inviteNewMember')}
           </Button>
         </Box>
       </Box>
@@ -151,16 +216,21 @@ export default function OrganizationInvitationDashboard() {
         }}
       >
         {[
-          { label: 'Total Sent', count: 48, icon: <Email />, color: theme.palette.primary.main },
           {
-            label: 'Pending Acceptance',
-            count: 12,
+            label: t('auth.admin.totalSent'),
+            count: totalSent,
+            icon: <Email />,
+            color: theme.palette.primary.main,
+          },
+          {
+            label: t('auth.admin.pendingAcceptance'),
+            count: pending,
             icon: <Timer />,
             color: theme.palette.warning.main,
           },
           {
-            label: 'Acceptance Rate',
-            count: '85%',
+            label: t('auth.admin.acceptanceRate'),
+            count: acceptanceRate,
             icon: <CheckCircle />,
             color: theme.palette.success.main,
           },
@@ -203,7 +273,7 @@ export default function OrganizationInvitationDashboard() {
         >
           <TextField
             fullWidth
-            placeholder={t('auth.common.search_by_email')}
+            placeholder={t('auth.common.searchUsers')}
             size='small'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -221,18 +291,18 @@ export default function OrganizationInvitationDashboard() {
           <Table>
             <TableHead sx={{ bgcolor: alpha(theme.palette.action.hover, 0.5) }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.invited_email')}</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.assigned_role')}</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.invitedEmail')}</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.assignedRole')}</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.status')}</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.sent_date')}</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.expires_at')}</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.sentDate')}</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.expiresAt')}</TableCell>
                 <TableCell align='right' sx={{ fontWeight: 700 }}>
                   {t('auth.common.actions')}
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {mockInvitations.map((invite) => (
+              {filteredInvitations.map((invite) => (
                 <TableRow key={invite.id} hover>
                   <TableCell>
                     <Typography variant='body2' sx={{ fontWeight: 600 }}>
@@ -244,42 +314,143 @@ export default function OrganizationInvitationDashboard() {
                       label={invite.role}
                       size='small'
                       variant='outlined'
-                      sx={{ fontWeight: 700 }}
+                      sx={{ fontWeight: 700, textTransform: 'capitalize' }}
                     />
                   </TableCell>
                   <TableCell>
                     <Chip
                       icon={getStatusIcon(invite.status)}
-                      label={invite.status}
+                      label={getStatusLabel(invite.status)}
                       size='small'
                       color={getStatusColor(invite.status) as any}
                       variant='filled'
-                      sx={{ fontWeight: 800, px: 0.5 }}
+                      sx={{ fontWeight: 800, px: 0.5, textTransform: 'capitalize' }}
                     />
                   </TableCell>
                   <TableCell>
                     <Typography variant='body2' color='text.secondary'>
-                      {invite.invitedAt}
+                      {invite.created_at || (invite as any).createdAt
+                        ? new Date(
+                            invite.created_at || (invite as any).createdAt!,
+                          ).toLocaleDateString()
+                        : '—'}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant='body2' color='text.secondary'>
-                      {invite.expiresAt}
+                      {invite.expires_at || (invite as any).expiresAt
+                        ? new Date(
+                            invite.expires_at || (invite as any).expiresAt!,
+                          ).toLocaleDateString()
+                        : '—'}
                     </Typography>
                   </TableCell>
                   <TableCell align='right'>
-                    <Tooltip title={t('auth.admin.invitation_settings')}>
-                      <IconButton size='small'>
+                    <Tooltip title={t('auth.admin.invitationSettings')}>
+                      <IconButton
+                        size='small'
+                        onClick={(e) => {
+                          setMenuAnchor(e.currentTarget)
+                          setMenuInvite(invite)
+                        }}
+                      >
                         <MoreVert />
                       </IconButton>
                     </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
+              {filteredInvitations.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                    <Typography variant='body2' color='text.secondary'>
+                      {isLoading ? t('auth.common.loading') : t('auth.admin.noInvitationsFound')}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
+
+      {/* Row Action Menu */}
+      <Menu
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={() => setMenuAnchor(null)}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        slotProps={{
+          paper: {
+            sx: { borderRadius: 3, minWidth: 200, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' },
+          },
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            if (menuInvite) {
+              inviteMutation.mutate(
+                { orgId: Number(id), data: { email: menuInvite.email, role: menuInvite.role } },
+                {
+                  onSuccess: () =>
+                    enqueueSnackbar(t('auth.admin.successInvitationSent'), {
+                      variant: 'success',
+                    }),
+                  onError: () =>
+                    enqueueSnackbar(t('auth.admin.errorSendInvitation'), { variant: 'error' }),
+                },
+              )
+            }
+            setMenuAnchor(null)
+          }}
+        >
+          <ListItemIcon>
+            <Replay fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>{t('auth.admin.resendInvitation')}</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            if (menuInvite) {
+              const baseUrl = window.location.origin
+              const link = `${baseUrl}/auth/join-organization?token=${(menuInvite as any).token || ''}&email=${menuInvite.email}`
+              navigator.clipboard.writeText(link)
+              enqueueSnackbar(t('auth.admin.linkCopied'), { variant: 'info' })
+            }
+            setMenuAnchor(null)
+          }}
+        >
+          <ListItemIcon>
+            <ContentCopy fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>{t('auth.admin.copyInviteLink')}</ListItemText>
+        </MenuItem>
+        {menuInvite?.status === 'pending' && (
+          <MenuItem
+            sx={{ color: 'error.main' }}
+            onClick={() => {
+              if (menuInvite) {
+                revokeMutation.mutate(
+                  { orgId: Number(id), invitationId: menuInvite.id },
+                  {
+                    onSuccess: () =>
+                      enqueueSnackbar(t('auth.admin.revokeInvitation'), { variant: 'warning' }),
+                    onError: () =>
+                      enqueueSnackbar(t('auth.admin.errorSendInvitation'), { variant: 'error' }),
+                  },
+                )
+              }
+              setMenuAnchor(null)
+            }}
+          >
+            <ListItemIcon>
+              <BlockOutlined fontSize='small' color='error' />
+            </ListItemIcon>
+            <ListItemText>{t('auth.admin.revokeInvitation')}</ListItemText>
+          </MenuItem>
+        )}
+      </Menu>
 
       {/* Invite Modal */}
       <Dialog
@@ -290,19 +461,27 @@ export default function OrganizationInvitationDashboard() {
         PaperProps={{ sx: { borderRadius: 4 } }}
       >
         <DialogTitle sx={{ fontWeight: 800 }}>
-          {t('auth.admin.invite_member_modal_title')}
+          {t('auth.admin.inviteMemberModalTitle')}
         </DialogTitle>
         <DialogContent>
           <Typography variant='body2' color='text.secondary' sx={{ mb: 3 }}>
-            {t('auth.admin.invite_member_modal_subtitle')}
+            {t('auth.admin.inviteMemberModalSubtitle')}
           </Typography>
           <Stack spacing={3}>
             <TextField
               fullWidth
-              label={t('auth.common.email_address')}
-              placeholder='user@example.com'
+              label={t('auth.common.email')}
+              placeholder={t('auth.admin.emailPlaceholder')}
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
             />
-            <TextField select fullWidth label={t('auth.admin.assigned_role')} defaultValue='Member'>
+            <TextField
+              select
+              fullWidth
+              label={t('auth.admin.assignedRole')}
+              value={inviteRole}
+              onChange={(e) => setInviteRole(e.target.value)}
+            >
               <MenuItem value='Admin'>{t('auth.common.admin')}</MenuItem>
               <MenuItem value='Member'>{t('auth.common.member')}</MenuItem>
               <MenuItem value='Auditor'>{t('auth.common.auditor')}</MenuItem>
@@ -318,13 +497,16 @@ export default function OrganizationInvitationDashboard() {
           </Button>
           <Button
             variant='contained'
-            onClick={() => setInviteModalOpen(false)}
+            onClick={handleInvite}
+            disabled={inviteMutation.isPending || !inviteEmail.trim()}
             sx={{ borderRadius: 2, fontWeight: 700, textTransform: 'none', px: 3 }}
           >
-            {t('auth.admin.send_invitation')}
+            {t('auth.admin.sendInvitation')}
           </Button>
         </DialogActions>
       </Dialog>
     </Box>
   )
 }
+
+

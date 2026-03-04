@@ -264,7 +264,7 @@ export default function MFAVerificationSuccess({
                   color: 'text.secondary',
                 }}
               >
-                {t('auth.common.not_redirected')}{' '}
+                {t('auth.common.notRedirected')}{' '}
                 <MuiLink
                   component={Link}
                   to={redirectPath}
@@ -277,7 +277,7 @@ export default function MFAVerificationSuccess({
                     },
                   }}
                 >
-                  {t('auth.common.click_here')}
+                  {t('auth.common.clickHere')}
                 </MuiLink>
               </Typography>
             </CardContent>
@@ -287,3 +287,4 @@ export default function MFAVerificationSuccess({
     </>
   )
 }
+

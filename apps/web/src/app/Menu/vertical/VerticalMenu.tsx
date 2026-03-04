@@ -17,6 +17,7 @@ import {
 } from '@cap/layout'
 import { ChevronRight } from '@mui/icons-material'
 import { Path } from '@cap/module-auth'
+import { PermissionGuard, RoleGuard, Roles } from '@cap/platform-core'
 
 type RenderExpandIconProps = {
   open?: boolean
@@ -125,17 +126,19 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             </MenuItem>
           </SubMenu>
 
-          {/* Core Management - Promoted to top of section */}
-          <MenuItem component={Link} to={Path.admin.users} icon={<i className='tabler-users' />}>
-            {dictionary['navigation']?.userManagement || 'Users'}
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to={Path.admin.organizations}
-            icon={<i className='tabler-building' />}
-          >
-            {dictionary['navigation']?.organizations || 'Organizations'}
-          </MenuItem>
+          {/* Core Management */}
+          <RoleGuard require={[Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE, Roles.PROVIDERADMIN]}>
+            <MenuItem component={Link} to={Path.admin.users} icon={<i className='tabler-users' />}>
+              {dictionary['navigation']?.userManagement || 'Users'}
+            </MenuItem>
+            <MenuItem
+              component={Link}
+              to={Path.admin.organizations}
+              icon={<i className='tabler-building' />}
+            >
+              {dictionary['navigation']?.organizations || 'Organizations'}
+            </MenuItem>
+          </RoleGuard>
 
           {/* Security Methods */}
           <SubMenu
@@ -154,39 +157,43 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </SubMenu>
 
           {/* Advanced Administration */}
-          <SubMenu
-            label={dictionary['navigation']?.adminPages || 'System Admin'}
-            icon={<i className='tabler-settings' />}
-          >
-            <MenuItem component={Link} to={Path.admin.roles}>
-              {dictionary['navigation']?.rbac || 'Roles & Permissions'}
-            </MenuItem>
-            <MenuItem component={Link} to={Path.admin.provisioning}>
-              {dictionary['navigation']?.provisioning || 'Directory Sync'}
-            </MenuItem>
-            <MenuItem component={Link} to={Path.admin.applications}>
-              {dictionary['navigation']?.developer || 'Developer Tools'}
-            </MenuItem>
-            <MenuItem component={Link} to={Path.auth.oidcConfigBrowser}>
-              {dictionary['navigation']?.oidcProtocols || 'SSO Protocols'}
-            </MenuItem>
-          </SubMenu>
+          <PermissionGuard require={['admin.access']} logic='OR'>
+            <SubMenu
+              label={dictionary['navigation']?.adminPages || 'System Admin'}
+              icon={<i className='tabler-settings' />}
+            >
+              <MenuItem component={Link} to={Path.admin.roles}>
+                {dictionary['navigation']?.rbac || 'Roles & Permissions'}
+              </MenuItem>
+              <MenuItem component={Link} to={Path.admin.provisioning}>
+                {dictionary['navigation']?.provisioning || 'Directory Sync'}
+              </MenuItem>
+              <MenuItem component={Link} to={Path.admin.applications}>
+                {dictionary['navigation']?.developer || 'Developer Tools'}
+              </MenuItem>
+              <MenuItem component={Link} to={Path.auth.oidcConfigBrowser}>
+                {dictionary['navigation']?.oidcProtocols || 'SSO Protocols'}
+              </MenuItem>
+            </SubMenu>
+          </PermissionGuard>
 
           {/* Monitoring & Analytics */}
-          <SubMenu
-            label={dictionary['navigation']?.monitoring || 'Insights'}
-            icon={<i className='tabler-chart-bar' />}
-          >
-            <MenuItem component={Link} to={Path.admin.events}>
-              {dictionary['navigation']?.authEvents || 'Audit Logs'}
-            </MenuItem>
-            <MenuItem component={Link} to={Path.admin.health}>
-              {dictionary['navigation']?.systemHealth || 'System Health'}
-            </MenuItem>
-            <MenuItem component={Link} to={Path.monitoring.mfa_analytics}>
-              {dictionary['navigation']?.mfaAnalytics || 'Security Metrics'}
-            </MenuItem>
-          </SubMenu>
+          <RoleGuard require={[Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE]}>
+            <SubMenu
+              label={dictionary['navigation']?.monitoring || 'Insights'}
+              icon={<i className='tabler-chart-bar' />}
+            >
+              <MenuItem component={Link} to={Path.admin.events}>
+                {dictionary['navigation']?.authEvents || 'Audit Logs'}
+              </MenuItem>
+              <MenuItem component={Link} to={Path.admin.health}>
+                {dictionary['navigation']?.systemHealth || 'System Health'}
+              </MenuItem>
+              <MenuItem component={Link} to={Path.monitoring.mfa_analytics}>
+                {dictionary['navigation']?.mfaAnalytics || 'Security Metrics'}
+              </MenuItem>
+            </SubMenu>
+          </RoleGuard>
         </MenuSection>
 
         {/* Global Apps & Pages */}

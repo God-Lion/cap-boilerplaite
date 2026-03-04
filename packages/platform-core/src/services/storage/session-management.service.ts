@@ -56,9 +56,9 @@ class SecureSessionManagementService {
   async createSession(authData: IAuth, rememberMe: boolean = false): Promise<SessionData> {
     const deviceFingerprint = await this.getDeviceFingerprint()
 
-    const activeSessions = await this.getActiveSessions(authData._id)
+    const activeSessions = await this.getActiveSessions(authData.id)
     if (activeSessions.length >= this.config.maxConcurrentSessions) {
-      await this.terminateOldestSession(authData._id ?? '')
+      await this.terminateOldestSession(authData.id?.toString() ?? '')
     }
 
     const now = Date.now()
@@ -222,7 +222,7 @@ class SecureSessionManagementService {
     }
   }
 
-  async getActiveSessions(userId?: string): Promise<Array<ISession>> {
+  async getActiveSessions(userId?: number | string): Promise<Array<ISession>> {
     try {
       const sessionsData = localStorage.getItem(SESSIONS_KEY)
       if (!sessionsData) return []
@@ -232,12 +232,12 @@ class SecureSessionManagementService {
 
       return allSessions
         .filter((s) => {
-          if (userId && s.user._id !== userId) return false
+          if (userId && s.user.id?.toString() !== userId) return false
           return now <= s.absoluteExpiresAt
         })
         .map((s) => ({
           id: s.sessionId,
-          userId: s.user._id ?? '',
+          userId: s.user.id?.toString() ?? '',
           device: this.parseUserAgent(s.userAgent).device,
           browser: this.parseUserAgent(s.userAgent).browser,
           ip: s.ipAddress || 'Unknown',
@@ -340,7 +340,7 @@ class SecureSessionManagementService {
 
       const sessions: SessionData[] = JSON.parse(sessionsData)
       const userSessions = sessions
-        .filter((s) => s.user._id === userId)
+        .filter((s) => s.user.id?.toString() === userId)
         .sort((a, b) => a.createdAt - b.createdAt)
 
       if (userSessions.length > 0) {

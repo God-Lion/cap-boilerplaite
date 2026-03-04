@@ -58,10 +58,10 @@ export default function EmailTestingDashboard() {
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1100, mx: 'auto' }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant='h4' sx={{ fontWeight: 900, mb: 1 }}>
-          {t('auth.admin.email_testing')}
+          {t('auth.admin.emailTesting')}
         </Typography>
         <Typography variant='body1' color='text.secondary'>
-          {t('auth.admin.email_testing_subtitle')}
+          {t('auth.admin.emailTesting_subtitle')}
         </Typography>
       </Box>
 
@@ -72,12 +72,12 @@ export default function EmailTestingDashboard() {
             <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
               <CardContent sx={{ p: 4 }}>
                 <Typography variant='h6' sx={{ fontWeight: 800, mb: 3 }}>
-                  {t('auth.admin.send_test_email')}
+                  {t('auth.admin.sendTestEmail')}
                 </Typography>
                 <Stack spacing={2}>
                   <TextField
                     fullWidth
-                    label={t('auth.admin.recipient_address')}
+                    label={t('auth.admin.recipientAddress')}
                     placeholder='admin@example.com'
                     value={testEmail}
                     onChange={(e) => setTestEmail(e.target.value)}
@@ -85,7 +85,7 @@ export default function EmailTestingDashboard() {
                   <TextField
                     fullWidth
                     select
-                    label={t('auth.admin.select_template')}
+                    label={t('auth.admin.selectTemplate')}
                     sx={{ '& .MuiSelect-select': { fontWeight: 700 } }}
                     SelectProps={{ native: true }}
                   >
@@ -107,7 +107,7 @@ export default function EmailTestingDashboard() {
                       boxShadow: 'none',
                     }}
                   >
-                    {t('auth.admin.dispatch_test_email')}
+                    {t('auth.admin.dispatchTestEmail')}
                   </Button>
                 </Stack>
               </CardContent>
@@ -151,7 +151,7 @@ export default function EmailTestingDashboard() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
                 <History sx={{ color: 'primary.main' }} />
                 <Typography variant='h6' sx={{ fontWeight: 800 }}>
-                  {t('auth.admin.email_logs')}
+                  {t('auth.admin.emailLogs')}
                 </Typography>
               </Box>
               <List disablePadding>
@@ -220,7 +220,7 @@ export default function EmailTestingDashboard() {
                           }}
                           startIcon={<Visibility sx={{ fontSize: '0.8rem' }} />}
                         >
-                          {t('auth.admin.view_details')}
+                          {t('auth.admin.viewDetails')}
                         </Button>
                       </Box>
                     </ListItem>
@@ -230,7 +230,7 @@ export default function EmailTestingDashboard() {
               </List>
               <Box sx={{ p: 2, textAlign: 'center' }}>
                 <Button variant='text' size='small' sx={{ textTransform: 'none', fontWeight: 700 }}>
-                  {t('auth.admin.export_history')}
+                  {t('auth.admin.exportHistory')}
                 </Button>
               </Box>
             </CardContent>
@@ -240,3 +240,4 @@ export default function EmailTestingDashboard() {
     </Box>
   )
 }
+

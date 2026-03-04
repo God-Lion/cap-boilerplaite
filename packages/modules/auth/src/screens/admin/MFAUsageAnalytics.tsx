@@ -30,14 +30,14 @@ export default function MFAUsageAnalytics() {
 
   const stats = [
     {
-      label: t('auth.admin.overall_mfa_adoption'),
+      label: t('auth.admin.overallMfaAdoption'),
       value: '68.4%',
       trend: '+4.2% monthly',
       color: 'primary',
     },
-    { label: t('auth.admin.avg_auth_time'), value: '4.2s', trend: '-0.3s', color: 'success' },
-    { label: t('auth.admin.mfa_challenges_24h'), value: '1,242', trend: '+12%', color: 'info' },
-    { label: t('auth.admin.success_rate'), value: '99.2%', trend: 'stable', color: 'warning' },
+    { label: t('auth.admin.avgAuthTime'), value: '4.2s', trend: '-0.3s', color: 'success' },
+    { label: t('auth.admin.mfaChallenges24h'), value: '1,242', trend: '+12%', color: 'info' },
+    { label: t('auth.admin.successRate'), value: '99.2%', trend: 'stable', color: 'warning' },
   ]
 
   const methodDistribution = [
@@ -64,7 +64,7 @@ export default function MFAUsageAnalytics() {
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant='body1' color='text.secondary'>
-          {t('auth.admin.mfa_analytics_subtitle')}
+          {t('auth.admin.mfaAnalyticsSubtitle')}
         </Typography>
       </Box>
 
@@ -112,7 +112,7 @@ export default function MFAUsageAnalytics() {
           <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
             <CardContent sx={{ p: 4 }}>
               <Typography variant='h6' sx={{ fontWeight: 800, mb: 4 }}>
-                {t('auth.admin.method_distribution')}
+                {t('auth.admin.methodDistribution')}
               </Typography>
               <Stack spacing={4}>
                 {methodDistribution.map((method) => (
@@ -141,7 +141,7 @@ export default function MFAUsageAnalytics() {
                             {method.name}
                           </Typography>
                           <Typography variant='caption' color='text.secondary'>
-                            {t('auth.admin.users_enrolled_label', { count: method.count })}
+                            {t('auth.admin.usersEnrolledLabel', { count: method.count })}
                           </Typography>
                         </Box>
                       </Stack>
@@ -181,7 +181,7 @@ export default function MFAUsageAnalytics() {
             >
               <CardContent sx={{ p: 4 }}>
                 <Typography variant='body2' sx={{ lineHeight: 1.7, mb: 3 }}>
-                  {t('auth.admin.mfa_insight_desc')}
+                  {t('auth.admin.mfaInsightDesc')}
                 </Typography>
                 <Stack direction='row' spacing={2}>
                   <Chip
@@ -223,10 +223,10 @@ export default function MFAUsageAnalytics() {
                 variant='subtitle1'
                 sx={{ fontWeight: 800, color: 'success.main', mb: 1 }}
               >
-                {t('auth.admin.best_practice_tip')}
+                {t('auth.admin.bestPracticeTip')}
               </Typography>
               <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                {t('auth.admin.best_practice_desc')}
+                {t('auth.admin.bestPracticeDesc')}
               </Typography>
             </Paper>
           </Stack>
@@ -236,3 +236,4 @@ export default function MFAUsageAnalytics() {
   )
 }
 import { History } from '@mui/icons-material'
+

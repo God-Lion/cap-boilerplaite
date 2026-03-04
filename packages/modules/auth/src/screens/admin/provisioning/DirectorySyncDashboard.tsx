@@ -13,12 +13,12 @@ import {
   LinearProgress,
   Paper,
   Divider,
+  Alert,
 } from '@mui/material'
 import {
   Add,
   Sync,
   History,
-  MoreVert,
   CheckCircle,
   Error,
   CloudQueue,
@@ -27,46 +27,32 @@ import {
   Settings,
   ArrowForward,
 } from '@mui/icons-material'
-import { DirectoryConnector } from '../../../types/provisioning.types'
-
-const mockConnectors: DirectoryConnector[] = [
-  {
-    id: 'conn_1',
-    name: 'Azure AD (Primary)',
-    type: 'azure_ad',
-    status: 'active',
-    lastSyncAt: '2024-02-15 14:30',
-    successRate: 99.8,
-    synchronizedUsers: 1420,
-    synchronizedGroups: 42,
-    authConfig: { type: 'oauth2', secretHint: '•••• •••• ab2c' },
-  },
-  {
-    id: 'conn_2',
-    name: 'Okta Staging',
-    type: 'okta',
-    status: 'syncing',
-    lastSyncAt: 'Last sync failed 2h ago',
-    successRate: 85.5,
-    synchronizedUsers: 210,
-    synchronizedGroups: 5,
-    authConfig: { type: 'bearer', secretHint: '•••• •••• z9x2' },
-  },
-  {
-    id: 'conn_3',
-    name: 'Google Workspace',
-    type: 'google_workspace',
-    status: 'failed',
-    lastSyncAt: '2024-02-14 09:15',
-    successRate: 0,
-    synchronizedUsers: 0,
-    synchronizedGroups: 0,
-    authConfig: { type: 'oauth2' },
-  },
-]
+import {
+  useProvisioningConnectors,
+  useSyncProvisioningConnector,
+} from '../../../hooks/useAdminQuery'
+import { useSnackbar } from 'notistack'
 
 export default function DirectorySyncDashboard() {
   const theme = useTheme()
+  const { enqueueSnackbar } = useSnackbar()
+  const { data: connectorsData, isLoading, refetch } = useProvisioningConnectors()
+
+  const syncMutation = useSyncProvisioningConnector({
+    onSuccess: () => {
+      enqueueSnackbar('Synchronization started successfully', { variant: 'success' })
+      refetch()
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.message || 'Failed to start synchronization', { variant: 'error' })
+    },
+  })
+
+  const connectors = connectorsData?.data ?? []
+
+  const handleSync = (id: number) => {
+    syncMutation.mutate(id)
+  }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -165,152 +151,178 @@ export default function DirectorySyncDashboard() {
 
       {/* Connectors Grid */}
       <Grid container spacing={3}>
-        {mockConnectors.map((conn) => (
-          <Grid key={conn.id} size={{ xs: 12, md: 6 }}>
-            <Card
-              sx={{
-                borderRadius: 4,
-                border: '1px solid',
-                borderColor: 'divider',
-                boxShadow: 'none',
-                position: 'relative',
-                overflow: 'visible',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  borderColor: 'primary.main',
-                  transform: 'translateY(-4px)',
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.04)',
-                },
-              }}
-            >
-              <CardContent sx={{ p: 3 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    mb: 3,
-                  }}
-                >
-                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <Avatar
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: 2,
-                        bgcolor: alpha(theme.palette.primary.main, 0.1),
-                        color: 'primary.main',
-                      }}
-                    >
-                      <Sync />
-                    </Avatar>
-                    <Box>
-                      <Typography variant='h6' sx={{ fontWeight: 800 }}>
-                        {conn.name}
-                      </Typography>
-                      <Typography
-                        variant='caption'
-                        color='text.secondary'
-                        sx={{ fontWeight: 700, textTransform: 'uppercase' }}
-                      >
-                        {conn.type.replace('_', ' ')}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <IconButton>
-                    <MoreVert />
-                  </IconButton>
-                </Box>
-
-                <Box sx={{ mb: 3 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                    <Typography variant='caption' sx={{ fontWeight: 700, color: 'text.secondary' }}>
-                      SYNC HEALTH
-                    </Typography>
-                    <Typography
-                      variant='caption'
-                      sx={{
-                        fontWeight: 900,
-                        color: conn.successRate > 90 ? 'success.main' : 'warning.main',
-                      }}
-                    >
-                      {conn.successRate}% SUCCESS
-                    </Typography>
-                  </Box>
-                  <LinearProgress
-                    variant='determinate'
-                    value={conn.successRate}
-                    color={conn.successRate > 90 ? 'success' : 'warning'}
-                    sx={{ height: 6, borderRadius: 3, bgcolor: alpha(theme.palette.divider, 0.5) }}
-                  />
-                </Box>
-
-                <Grid container spacing={2} sx={{ mb: 3 }}>
-                  <Grid size={{ xs: 6 }}>
-                    <Box
-                      sx={{
-                        p: 2,
-                        bgcolor: alpha(theme.palette.action.hover, 0.5),
-                        borderRadius: 2,
-                      }}
-                    >
-                      <Typography
-                        variant='caption'
-                        color='text.secondary'
-                        sx={{ display: 'block', mb: 0.5, fontWeight: 700 }}
-                      >
-                        USERS
-                      </Typography>
-                      <Typography variant='h6' sx={{ fontWeight: 800 }}>
-                        {conn.synchronizedUsers}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid size={{ xs: 6 }}>
-                    <Box
-                      sx={{
-                        p: 2,
-                        bgcolor: alpha(theme.palette.action.hover, 0.5),
-                        borderRadius: 2,
-                      }}
-                    >
-                      <Typography
-                        variant='caption'
-                        color='text.secondary'
-                        sx={{ display: 'block', mb: 0.5, fontWeight: 700 }}
-                      >
-                        GROUPS
-                      </Typography>
-                      <Typography variant='h6' sx={{ fontWeight: 800 }}>
-                        {conn.synchronizedGroups}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-
-                <Divider sx={{ mb: 2 }} />
-
-                <Box
-                  sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {getStatusIcon(conn.status)}
-                    <Typography variant='caption' sx={{ fontWeight: 700, color: 'text.secondary' }}>
-                      {conn.lastSyncAt}
-                    </Typography>
-                  </Box>
-                  <Button
-                    size='small'
-                    endIcon={<ArrowForward />}
-                    sx={{ textTransform: 'none', fontWeight: 700 }}
-                  >
-                    Manage
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
+        {isLoading ? (
+          <Grid size={{ xs: 12 }}>
+            <LinearProgress />
           </Grid>
-        ))}
+        ) : connectors.length === 0 ? (
+          <Grid size={{ xs: 12 }}>
+            <Alert severity='info'>
+              No directory connectors found. Create one to start syncing.
+            </Alert>
+          </Grid>
+        ) : (
+          connectors.map((conn: any) => (
+            <Grid key={conn.id} size={{ xs: 12, md: 6 }}>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow: 'none',
+                  position: 'relative',
+                  overflow: 'visible',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.04)',
+                  },
+                }}
+              >
+                <CardContent sx={{ p: 3 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      mb: 3,
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                      <Avatar
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: 2,
+                          bgcolor: alpha(theme.palette.primary.main, 0.1),
+                          color: 'primary.main',
+                        }}
+                      >
+                        <Sync />
+                      </Avatar>
+                      <Box>
+                        <Typography variant='h6' sx={{ fontWeight: 800 }}>
+                          {conn.name}
+                        </Typography>
+                        <Typography
+                          variant='caption'
+                          color='text.secondary'
+                          sx={{ fontWeight: 700, textTransform: 'uppercase' }}
+                        >
+                          {conn.type.replace('_', ' ')}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <IconButton onClick={() => handleSync(conn.id)}>
+                      <Sync
+                        sx={{
+                          animation: syncMutation.isPending ? 'spin 2s linear infinite' : 'none',
+                        }}
+                      />
+                    </IconButton>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography
+                        variant='caption'
+                        sx={{ fontWeight: 700, color: 'text.secondary' }}
+                      >
+                        SYNC STATUS
+                      </Typography>
+                      <Typography
+                        variant='caption'
+                        sx={{
+                          fontWeight: 900,
+                          color: conn.status === 'active' ? 'success.main' : 'error.main',
+                        }}
+                      >
+                        {conn.status.toUpperCase()}
+                      </Typography>
+                    </Box>
+                    <LinearProgress
+                      variant='determinate'
+                      value={conn.status === 'active' ? 100 : 0}
+                      color={conn.status === 'active' ? 'success' : 'error'}
+                      sx={{
+                        height: 6,
+                        borderRadius: 3,
+                        bgcolor: alpha(theme.palette.divider, 0.5),
+                      }}
+                    />
+                  </Box>
+
+                  <Grid container spacing={2} sx={{ mb: 3 }}>
+                    <Grid size={{ xs: 6 }}>
+                      <Box
+                        sx={{
+                          p: 2,
+                          bgcolor: alpha(theme.palette.action.hover, 0.5),
+                          borderRadius: 2,
+                        }}
+                      >
+                        <Typography
+                          variant='caption'
+                          color='text.secondary'
+                          sx={{ display: 'block', mb: 0.5, fontWeight: 700 }}
+                        >
+                          LAST SYNC
+                        </Typography>
+                        <Typography variant='body2' sx={{ fontWeight: 800 }}>
+                          {conn.lastSyncAt ? new Date(conn.lastSyncAt).toLocaleString() : 'Never'}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid size={{ xs: 6 }}>
+                      <Box
+                        sx={{
+                          p: 2,
+                          bgcolor: alpha(theme.palette.action.hover, 0.5),
+                          borderRadius: 2,
+                        }}
+                      >
+                        <Typography
+                          variant='caption'
+                          color='text.secondary'
+                          sx={{ display: 'block', mb: 0.5, fontWeight: 700 }}
+                        >
+                          SYNC COUNT
+                        </Typography>
+                        <Typography variant='h6' sx={{ fontWeight: 800 }}>
+                          {conn.syncCount || 0}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
+
+                  <Divider sx={{ mb: 2 }} />
+
+                  <Box
+                    sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      {getStatusIcon(conn.status)}
+                      <Typography
+                        variant='caption'
+                        sx={{ fontWeight: 700, color: 'text.secondary' }}
+                      >
+                        {conn.errorMessage || 'System Healthy'}
+                      </Typography>
+                    </Box>
+                    <Button
+                      size='small'
+                      endIcon={<ArrowForward />}
+                      sx={{ textTransform: 'none', fontWeight: 700 }}
+                    >
+                      Manage
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        )}
 
         {/* Configuration Card */}
         <Grid size={{ xs: 12 }}>

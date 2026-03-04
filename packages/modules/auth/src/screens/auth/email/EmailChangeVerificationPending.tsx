@@ -119,7 +119,7 @@ export default function EmailChangeVerificationPending() {
                 }}
               >
                 <ArrowBack sx={{ fontSize: 18 }} />
-                {t('auth.common.back_to_dashboard', 'Back to dashboard')}
+                {t('auth.common.backToDashboard', 'Back to dashboard')}
               </MuiLink>
             </Box>
           </CardContent>
@@ -128,3 +128,4 @@ export default function EmailChangeVerificationPending() {
     </>
   )
 }
+

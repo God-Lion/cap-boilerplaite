@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import encryption from '../services/encryption'
 
 import { createAuthSlice, AuthSlice } from './slices/authSlice'
+import { onTerminalError } from '../services/api/api.client'
 import { createGuestSlice, GuestSlice } from './slices/guestSlice'
 import { createJobsSlice, JobsSlice } from './slices/jobsSlice'
 import { createProfileSlice, ProfileSlice } from './slices/profileSlice'
@@ -219,6 +220,23 @@ export const useAppStore = create<AppStore>()(
     },
   ),
 )
+
+// --- Subscribe to Terminal Auth Errors ---
+// When a terminal authentication failure occurs (e.g. 400 on refresh),
+// we MUST clear the in-memory state to match the cleared storage
+// to prevent infinite refresh loops in React components.
+onTerminalError(() => {
+  const store = useAppStore.getState()
+  if (store.isAuthenticated) {
+    console.warn('[AppStore] Received terminal auth error, forcing state reset')
+    // Resetting state directly via store.setState to ensuring UI reactive updates
+    useAppStore.setState((state) => {
+      state.user = null
+      state.isAuthenticated = false
+      state.tokens = null
+    })
+  }
+})
 
 export const useAuth = () => {
   const user = useAppStore((state) => state.user)

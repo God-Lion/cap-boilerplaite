@@ -13,15 +13,15 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const schema = z.object({
-    firstname: z.string().min(1, t('auth.common.field_required')),
-    lastname: z.string().min(1, t('auth.common.field_required')),
+    firstName: z.string().min(1, t('auth.common.fieldRequired')),
+    lastName: z.string().min(1, t('auth.common.fieldRequired')),
   })
 
   const controlForm = useForm<IUpdateNames>({
     resolver: zodResolver(schema) as any,
     defaultValues: {
-      lastname: user.lastName,
-      firstname: user.firstName,
+      lastName: user.lastName,
+      firstName: user.firstName,
     },
   })
   const mutation = useMutation({
@@ -30,38 +30,38 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
         lastname?: string
         firstname?: string
       }
-      const hasChangedFirstname = user.firstName?.toLowerCase() !== data.firstname?.toLowerCase()
-      const hasChangedFirstnameCase = !hasChangedFirstname && user.firstName !== data.firstname
+      const hasChangedFirstName = user.firstName?.toLowerCase() !== data.firstName?.toLowerCase()
+      const hasChangedFirstNameCase = !hasChangedFirstName && user.firstName !== data.firstName
 
-      if (hasChangedFirstname) body = { ...body, firstname: data.firstname }
-      if (hasChangedFirstnameCase)
+      if (hasChangedFirstName) body = { ...body, firstname: data.firstName }
+      if (hasChangedFirstNameCase)
         controlForm.setError(
-          'firstname',
+          'firstName',
           {
             type: 'exist',
             message: t('auth.account.firstname_matches_current'),
           },
           { shouldFocus: true },
         )
-      else controlForm.clearErrors('firstname')
+      else controlForm.clearErrors('firstName')
 
-      const hasChangedLastname = user.lastName?.toLowerCase() !== data.lastname?.toLowerCase()
-      const hasChangedLastnameCase = !hasChangedLastname && user.lastName !== data.lastname
+      const hasChangedLastName = user.lastName?.toLowerCase() !== data.lastName?.toLowerCase()
+      const hasChangedLastNameCase = !hasChangedLastName && user.lastName !== data.lastName
 
-      if (hasChangedLastname) body = { ...body, lastname: data.lastname }
-      if (hasChangedLastnameCase)
+      if (hasChangedLastName) body = { ...body, lastname: data.lastName }
+      if (hasChangedLastNameCase)
         controlForm.setError(
-          'lastname',
+          'lastName',
           {
             type: 'exist',
             message: t('auth.account.lastname_matches_current'),
           },
           { shouldFocus: true },
         )
-      else controlForm.clearErrors('lastname')
-      console.log(body)
+      else controlForm.clearErrors('lastName')
+      console.log('Sending update profile body:', body)
 
-      // return await userService.updateNames(body)
+      // return await userService.updateProfile(body)
     },
     onMutate: (variables) => {
       console.log('onMutate variables ', variables)
@@ -105,36 +105,36 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, sm: 12 }}>
               <Controller
-                name='firstname'
+                name='firstName'
                 control={controlForm.control}
                 rules={{
                   onBlur: (e) => {
-                    const firstname = e.target.value
-                    const hasChangedFirstname =
-                      user.firstName?.toLowerCase() !== firstname?.toLowerCase()
-                    const hasChangedFirstnameCase =
-                      !hasChangedFirstname && user.firstName !== firstname
+                    const firstName = e.target.value
+                    const hasChangedFirstName =
+                      user.firstName?.toLowerCase() !== firstName?.toLowerCase()
+                    const hasChangedFirstNameCase =
+                      !hasChangedFirstName && user.firstName !== firstName
 
-                    if (!firstname)
+                    if (!firstName)
                       controlForm.setError(
-                        'firstname',
+                        'firstName',
                         {
                           type: 'exist',
-                          message: 'Please provide a new firstname',
+                          message: 'Please provide a new first name',
                         },
                         { shouldFocus: true },
                       )
-                    else controlForm.clearErrors('firstname')
-                    if (!hasChangedFirstname && !hasChangedFirstnameCase)
+                    else controlForm.clearErrors('firstName')
+                    if (!hasChangedFirstName && !hasChangedFirstNameCase)
                       controlForm.setError(
-                        'firstname',
+                        'firstName',
                         {
                           type: 'exist',
                           message: t('auth.account.firstname_matches_current'),
                         },
                         { shouldFocus: true },
                       )
-                    else controlForm.clearErrors('firstname')
+                    else controlForm.clearErrors('firstName')
                   },
                 }}
                 render={({ field, formState }) => (
@@ -145,42 +145,42 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
                     type='text'
                     label={t('auth.account.first_name')}
                     // disabled={disabled}
-                    error={formState?.errors?.firstname !== undefined}
-                    helperText={formState?.errors?.firstname?.message}
+                    error={formState?.errors?.firstName !== undefined}
+                    helperText={formState?.errors?.firstName?.message}
                   />
                 )}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 12 }}>
               <Controller
-                name='lastname'
+                name='lastName'
                 control={controlForm.control}
                 rules={{
                   onBlur: (e) => {
-                    const lastname = e.target.value
-                    const hasChangedLastname =
-                      user.lastName?.toLowerCase() !== lastname?.toLowerCase()
-                    const hasChangedLastnameCase = !hasChangedLastname && user.lastName !== lastname
-                    if (!lastname)
+                    const lastName = e.target.value
+                    const hasChangedLastName =
+                      user.lastName?.toLowerCase() !== lastName?.toLowerCase()
+                    const hasChangedLastNameCase = !hasChangedLastName && user.lastName !== lastName
+                    if (!lastName)
                       controlForm.setError(
-                        'firstname',
+                        'firstName',
                         {
                           type: 'exist',
-                          message: 'Please provide a new firstname',
+                          message: 'Please provide a new first name',
                         },
                         { shouldFocus: true },
                       )
-                    else controlForm.clearErrors('lastname')
-                    if (!hasChangedLastname && !hasChangedLastnameCase)
+                    else controlForm.clearErrors('lastName')
+                    if (!hasChangedLastName && !hasChangedLastNameCase)
                       controlForm.setError(
-                        'lastname',
+                        'lastName',
                         {
                           type: 'exist',
                           message: t('auth.account.lastname_matches_current'),
                         },
                         { shouldFocus: true },
                       )
-                    else controlForm.clearErrors('lastname')
+                    else controlForm.clearErrors('lastName')
                   },
                 }}
                 render={({ field, formState }) => (
@@ -191,8 +191,8 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
                     // disabled={disabled}
                     type='text'
                     label={t('auth.account.last_name')}
-                    error={formState?.errors?.lastname !== undefined}
-                    helperText={formState?.errors?.lastname?.message}
+                    error={formState?.errors?.lastName !== undefined}
+                    helperText={formState?.errors?.lastName?.message}
                   />
                 )}
               />
@@ -200,7 +200,7 @@ export default function ChangeAccount({ user }: { user: IUserResponse }) {
             <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
               <Stack direction='row' spacing={2} justifyContent='start'>
                 <Button type='submit' variant='contained' color='primary'>
-                  {t('auth.common.save_changes')}
+                  {t('auth.common.saveChanges')}
                 </Button>
               </Stack>
             </Grid>

@@ -99,13 +99,13 @@ const ActiveSessionsManagement = ({ adminView, userName, userId }: ActiveSession
       <Box sx={{ mb: 4 }}>
         <Typography variant='h4' fontWeight='bold' gutterBottom>
           {adminView
-            ? t('auth.admin.investigate_sessions', 'Investigate Sessions')
+            ? t('auth.admin.investigateSessions', 'Investigate Sessions')
             : t('auth.account.active_sessions_title', 'Active Sessions')}
         </Typography>
         <Typography variant='body1' color='text.secondary'>
           {adminView
             ? t(
-                'auth.admin.investigate_desc',
+                'auth.admin.investigateDesc',
                 'Detailed technical breakdown of all active security contexts for user {{name}}.',
                 { name: userName || userId },
               )
@@ -159,7 +159,7 @@ const ActiveSessionsManagement = ({ adminView, userName, userId }: ActiveSession
           {/* Other Sessions */}
           <Typography variant='h6' fontWeight='bold' sx={{ mb: 2 }}>
             {adminView
-              ? t('auth.admin.active_tokens', 'Active Access Tokens')
+              ? t('auth.admin.activeTokens', 'Active Access Tokens')
               : t('auth.account.other_active_sessions', 'Other Active Sessions')}
           </Typography>
           <Paper variant='outlined' sx={{ borderRadius: 2 }}>
@@ -261,7 +261,7 @@ const ActiveSessionsManagement = ({ adminView, userName, userId }: ActiveSession
               sx={{ textTransform: 'none', borderRadius: 2 }}
             >
               {adminView
-                ? t('auth.admin.terminate_all', 'Terminate All User Sessions')
+                ? t('auth.admin.terminateAll', 'Terminate All User Sessions')
                 : t('auth.account.logout_all_others', 'Log out of all other sessions')}
             </Button>
           </Box>
@@ -307,3 +307,4 @@ const ActiveSessionsManagement = ({ adminView, userName, userId }: ActiveSession
 }
 
 export default ActiveSessionsManagement
+

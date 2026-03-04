@@ -170,10 +170,10 @@ export default function OrganizationListDashboard() {
       >
         <Box>
           <Typography variant='h4' sx={{ fontWeight: 900, letterSpacing: '-0.02em', mb: 1 }}>
-            {t('auth.admin.org_list_title')}
+            {t('auth.admin.orgListTitle')}
           </Typography>
           <Typography variant='body1' color='text.secondary'>
-            {t('auth.admin.org_list_subtitle')}
+            {t('auth.admin.orgListSubtitle')}
           </Typography>
         </Box>
         <Button
@@ -182,7 +182,7 @@ export default function OrganizationListDashboard() {
           onClick={() => setCreateOpen(true)}
           sx={{ textTransform: 'none', fontWeight: 600, px: 3, py: 1.2, borderRadius: 2 }}
         >
-          {t('auth.admin.new_org')}
+          {t('auth.admin.newOrg')}
         </Button>
       </Box>
 
@@ -196,19 +196,19 @@ export default function OrganizationListDashboard() {
       >
         {[
           {
-            label: t('auth.admin.active_tenants'),
+            label: t('auth.admin.activeTenants'),
             value: '142',
             icon: <Business />,
             color: 'primary',
           },
-          { label: t('auth.admin.total_users'), value: '12.4k', icon: <Groups />, color: 'info' },
+          { label: t('auth.admin.totalUsers'), value: '12.4k', icon: <Groups />, color: 'info' },
           {
-            label: t('auth.admin.system_health'),
+            label: t('auth.admin.systemHealth'),
             value: '99.4%',
             icon: <SignalCellularAlt />,
             color: 'success',
           },
-          { label: t('auth.admin.pending_trials'), value: '8', icon: <Launch />, color: 'warning' },
+          { label: t('auth.admin.pendingTrials'), value: '8', icon: <Launch />, color: 'warning' },
         ].map((stat, idx) => (
           <Card
             key={idx}
@@ -265,7 +265,7 @@ export default function OrganizationListDashboard() {
         }}
       >
         <TextField
-          placeholder={t('auth.common.search_orgs')}
+          placeholder={t('auth.common.searchOrgs')}
           size='small'
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -298,14 +298,14 @@ export default function OrganizationListDashboard() {
         <Table sx={{ minWidth: 800 }}>
           <TableHead sx={{ bgcolor: alpha(theme.palette.action.hover, 0.5) }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.col_organization')}</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.colOrganization')}</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>{t('auth.common.status')}</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.col_tier')}</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.col_members')}</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.col_enterprise')}</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.col_health')}</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.colTier')}</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.colMembers')}</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.colEnterprise')}</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.colHealth')}</TableCell>
               <TableCell align='right' sx={{ fontWeight: 700 }}>
-                {t('auth.admin.col_actions')}
+                {t('auth.admin.colActions')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -322,7 +322,7 @@ export default function OrganizationListDashboard() {
               <TableRow>
                 <TableCell colSpan={7} align='center' sx={{ py: 8 }}>
                   <Typography variant='body2' color='text.secondary'>
-                    {t('auth.common.no_results')}
+                    {t('auth.common.noResults')}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -365,7 +365,7 @@ export default function OrganizationListDashboard() {
                   </TableCell>
                   <TableCell>
                     <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                      {t('auth.admin.col_enterprise')}
+                      {t('auth.admin.colEnterprise')}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -442,23 +442,23 @@ export default function OrganizationListDashboard() {
       </TableContainer>
 
       <Dialog open={createOpen} onClose={() => setCreateOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.new_org')}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.newOrg')}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={3} sx={{ mt: 1 }}>
             <TextField
-              label={t('auth.admin.organization_name')}
+              label={t('auth.admin.organizationName')}
               fullWidth
               value={newOrgData.name}
               onChange={(e) => setNewOrgData({ ...newOrgData, name: e.target.value })}
             />
             <TextField
-              label={t('auth.admin.workspace_slug')}
+              label={t('auth.admin.workspaceSlug')}
               fullWidth
               value={newOrgData.slug}
               onChange={(e) => setNewOrgData({ ...newOrgData, slug: e.target.value })}
             />
             <TextField
-              label={t('auth.admin.domain_name')}
+              label={t('auth.admin.domainName')}
               fullWidth
               value={newOrgData.domain}
               onChange={(e) => setNewOrgData({ ...newOrgData, domain: e.target.value })}
@@ -499,13 +499,13 @@ export default function OrganizationListDashboard() {
           <ListItemIcon>
             <Edit fontSize='small' />
           </ListItemIcon>
-          {t('auth.admin.edit_profile')}
+          {t('auth.admin.editProfile')}
         </MenuItem>
         <MenuItem onClick={handleImpersonate}>
           <ListItemIcon>
             <Launch fontSize='small' />
           </ListItemIcon>
-          {t('auth.admin.login_as_admin')}
+          {t('auth.admin.loginAsAdmin')}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -522,8 +522,8 @@ export default function OrganizationListDashboard() {
             )}
           </ListItemIcon>
           {selectedOrg?.status === 'SUSPENDED'
-            ? t('auth.admin.activate_tenant')
-            : t('auth.admin.suspend_tenant')}
+            ? t('auth.admin.activateTenant')
+            : t('auth.admin.suspendTenant')}
         </MenuItem>
         <Divider />
         <MenuItem
@@ -536,7 +536,7 @@ export default function OrganizationListDashboard() {
           <ListItemIcon>
             <Delete fontSize='small' color='error' />
           </ListItemIcon>
-          {t('auth.admin.delete_organization')}
+          {t('auth.admin.deleteOrganization')}
         </MenuItem>
       </Menu>
 
@@ -549,14 +549,14 @@ export default function OrganizationListDashboard() {
       >
         <DialogTitle sx={{ fontWeight: 800 }}>
           {selectedOrg?.status === 'SUSPENDED'
-            ? t('auth.admin.activate_tenant')
-            : t('auth.admin.suspend_tenant')}
+            ? t('auth.admin.activateTenant')
+            : t('auth.admin.suspendTenant')}
         </DialogTitle>
         <DialogContent>
           <Typography variant='body1' sx={{ mt: 1 }}>
             {selectedOrg?.status === 'SUSPENDED'
-              ? t('auth.admin.activate_confirm_msg', { name: selectedOrg?.name })
-              : t('auth.admin.suspend_confirm_msg', { name: selectedOrg?.name })}
+              ? t('auth.admin.activateConfirmMsg', { name: selectedOrg?.name })
+              : t('auth.admin.suspendConfirmMsg', { name: selectedOrg?.name })}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
@@ -585,13 +585,13 @@ export default function OrganizationListDashboard() {
           setSelectedOrg(null)
         }}
       >
-        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.delete_organization')}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.deleteOrganization')}</DialogTitle>
         <DialogContent>
           <Typography variant='body1' sx={{ mt: 1 }}>
-            {t('auth.admin.delete_confirm_msg', { name: selectedOrg?.name })}
+            {t('auth.admin.deleteConfirmMsg', { name: selectedOrg?.name })}
           </Typography>
           <Alert severity='warning' sx={{ mt: 2 }}>
-            {t('auth.admin.delete_warning_msg')}
+            {t('auth.admin.deleteWarningMsg')}
           </Alert>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>

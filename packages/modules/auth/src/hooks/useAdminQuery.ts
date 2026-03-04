@@ -45,8 +45,13 @@ export const adminKeys = {
     all: ['admin', 'rbac'] as const,
     permissions: () => [...adminKeys.rbac.all, 'permissions'] as const,
     policies: () => [...adminKeys.rbac.all, 'policies'] as const,
-    rolePermissions: (role: string) =>
-      [...adminKeys.rbac.all, 'roles', role, 'permissions'] as const,
+    roles: {
+      all: () => [...adminKeys.rbac.all, 'roles'] as const,
+      list: (params?: any) => [...adminKeys.rbac.roles.all(), params] as const,
+      stats: () => [...adminKeys.rbac.roles.all(), 'stats'] as const,
+      detail: (id: string | number) => [...adminKeys.rbac.roles.all(), String(id)] as const,
+      permissions: (role: string) => [...adminKeys.rbac.roles.detail(role), 'permissions'] as const,
+    },
   },
   organizations: {
     all: ['admin', 'organizations'] as const,
@@ -389,6 +394,25 @@ export function useUpdateUser(
 /**
  * Delete a user
  */
+export function useUpdateUserStatus(
+  options?: UseMutationOptions<
+    FetchResponse<AdminUser>,
+    HttpError,
+    { id: number | string; status: string; reason?: string },
+    unknown
+  >,
+) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, status, reason }) => adminService.updateUserStatus(id, status, reason),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.users.all })
+      options?.onSuccess?.(...args)
+    },
+    ...options,
+  })
+}
+
 export function useDeleteUser(
   options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, string | number, unknown>,
 ) {
@@ -1001,12 +1025,34 @@ export function useTestWebhook(
 // ── ROLES ────────────────────────────────────────────────────────────────
 
 export function useRoles(
-  options?: Omit<UseQueryOptions<FetchResponse<Role[]>, HttpError>, 'queryKey' | 'queryFn'>,
+  params?: { page?: number; limit?: number; search?: string },
+  options?: Omit<
+    UseQueryOptions<FetchResponse<PaginatedResponse<Role>>, HttpError>,
+    'queryKey' | 'queryFn'
+  >,
 ) {
   return useQuery({
-    queryKey: adminKeys.rbac.all,
-    queryFn: () => adminService.listRoles(),
+    queryKey: adminKeys.rbac.roles.list(params),
+    queryFn: () => adminService.listRoles(params),
     staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}
+
+/** Fetch RBAC statistics */
+export function useRoleStats(
+  options?: Omit<
+    UseQueryOptions<
+      FetchResponse<{ totalRoles: number; totalPermissions: number; totalMemberships: number }>,
+      HttpError
+    >,
+    'queryKey' | 'queryFn'
+  >,
+) {
+  return useQuery({
+    queryKey: adminKeys.rbac.roles.stats(),
+    queryFn: () => adminService.getRoleStats(),
+    staleTime: 1000 * 60 * 10,
     ...options,
   })
 }
@@ -1016,7 +1062,7 @@ export function useRolePermissions(
   options?: Omit<UseQueryOptions<FetchResponse<Permission[]>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
-    queryKey: adminKeys.rbac.rolePermissions(role),
+    queryKey: adminKeys.rbac.roles.permissions(role),
     queryFn: () => adminService.getRolePermissions(role),
     enabled: !!role,
     staleTime: 1000 * 60 * 5,
@@ -1024,20 +1070,211 @@ export function useRolePermissions(
   })
 }
 
-export function useSyncRolePermissions(
+export function useRole(
+  id: number | null | undefined,
+  options?: Omit<UseQueryOptions<FetchResponse<Role>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: adminKeys.rbac.roles.detail(id!),
+    queryFn: () => adminService.getRole(id as number),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}
+
+export function useUpdateRole(
   options?: UseMutationOptions<
     FetchResponse<Role>,
     HttpError,
-    { roleId: number; permissionIds: number[] },
+    { id: number; data: { name?: string; description?: string } },
     unknown
   >,
 ) {
   const queryClient = useQueryClient()
   return useMutation({
+    mutationFn: ({ id, data }) => adminService.updateRole(id, data),
+    onSuccess: (...args) => {
+      const [, variables] = args
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.detail(variables.id) })
+      options?.onSuccess?.(...args)
+    },
+    ...options,
+  })
+}
+
+export function useSyncRolePermissions(options?: any) {
+  const queryClient = useQueryClient()
+  const { onMutate, onError, onSuccess, onSettled, ...restOptions } = options || {}
+
+  return useMutation<
+    FetchResponse<Role>,
+    HttpError,
+    { roleId: number; permissionIds: number[] },
+    any
+  >({
     mutationFn: ({ roleId, permissionIds }) =>
       adminService.syncRolePermissions(roleId, permissionIds),
+    onMutate: async (variables) => {
+      const { roleId, permissionIds } = variables
+      await queryClient.cancelQueries({ queryKey: adminKeys.rbac.roles.detail(roleId) })
+
+      const previousRole = queryClient.getQueryData<FetchResponse<Role>>(
+        adminKeys.rbac.roles.detail(roleId),
+      )
+
+      if (previousRole?.data) {
+        const allPermissions = queryClient.getQueryData<FetchResponse<Permission[]>>(
+          adminKeys.rbac.permissions(),
+        )
+        const newPermissions = (allPermissions?.data || []).filter((p) =>
+          permissionIds.includes(p.id),
+        )
+        queryClient.setQueryData<FetchResponse<Role>>(adminKeys.rbac.roles.detail(roleId), {
+          ...previousRole,
+          data: {
+            ...previousRole.data,
+            permissions: newPermissions,
+          },
+        })
+      }
+
+      const customContext = await onMutate?.(variables)
+      return { previousRole, ...customContext }
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousRole) {
+        queryClient.setQueryData(
+          adminKeys.rbac.roles.detail(variables.roleId),
+          context.previousRole,
+        )
+      }
+      onError?.(err, variables, context)
+    },
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
+      onSuccess?.(data, variables, context)
+    },
+    onSettled: (data, error, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.detail(variables.roleId) })
+      onSettled?.(data, error, variables, context)
+    },
+    ...restOptions,
+  })
+}
+
+export function useSyncRoleParents(options?: any) {
+  const queryClient = useQueryClient()
+  const { onMutate, onError, onSuccess, onSettled, ...restOptions } = options || {}
+
+  return useMutation<FetchResponse<Role>, HttpError, { roleId: number; parentIds: number[] }, any>({
+    mutationFn: ({ roleId, parentIds }) => adminService.syncRoleParents(roleId, parentIds),
+    onMutate: async (variables: any) => {
+      const { roleId } = variables
+      await queryClient.cancelQueries({ queryKey: adminKeys.rbac.roles.detail(roleId) })
+      const previousRole = queryClient.getQueryData<FetchResponse<Role>>(
+        adminKeys.rbac.roles.detail(roleId),
+      )
+      const customContext = await onMutate?.(variables)
+      return { previousRole, ...customContext }
+    },
+    onError: (...args: any[]) => {
+      const [, variables, context] = args
+      if (context?.previousRole) {
+        queryClient.setQueryData(
+          adminKeys.rbac.roles.detail(variables.roleId),
+          context.previousRole,
+        )
+      }
+      return onError?.(...args)
+    },
+    onSuccess: (...args: any[]) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
+      return onSuccess?.(...args)
+    },
+    onSettled: (...args: any[]) => {
+      const [, , variables] = args
+      if (variables?.roleId) {
+        queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.detail(variables.roleId) })
+      }
+      return onSettled?.(...args)
+    },
+    ...restOptions,
+  })
+}
+
+export function useCreateRole(
+  options?: UseMutationOptions<
+    FetchResponse<Role>,
+    HttpError,
+    { name: string; description?: string; guard_name?: string },
+    unknown
+  >,
+) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (data) => adminService.createRole(data),
     onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.all })
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
+      options?.onSuccess?.(...args)
+    },
+    ...options,
+  })
+}
+
+/**
+ * Duplicate an existing role including its permissions
+ */
+export function useDuplicateRole(
+  options?: UseMutationOptions<
+    FetchResponse<Role>,
+    HttpError,
+    { role: Role; newName: string },
+    unknown
+  >,
+) {
+  const queryClient = useQueryClient()
+  const createRole = useCreateRole()
+  const syncPermissions = useSyncRolePermissions()
+
+  return useMutation({
+    mutationFn: async ({ role, newName }) => {
+      // 1. Create the new role
+      const createResponse = await createRole.mutateAsync({
+        name: newName,
+        description: role.description || undefined,
+        guard_name: role.guard_name,
+      })
+
+      const newRole = createResponse.data
+
+      // 2. Sync permissions from the source role
+      if (role.permissions && role.permissions.length > 0) {
+        await syncPermissions.mutateAsync({
+          roleId: newRole.id,
+          permissionIds: role.permissions.map((p) => p.id),
+        })
+      }
+
+      return createResponse
+    },
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
+      options?.onSuccess?.(...args)
+    },
+    ...options,
+  })
+}
+
+export function useDeleteRole(
+  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, number, unknown>,
+) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id) => adminService.deleteRole(id),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
       options?.onSuccess?.(...args)
     },
     ...options,
@@ -1069,7 +1306,7 @@ export function useGrantPermission(
   return useMutation({
     mutationFn: (data) => adminService.grantPermission(data),
     onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.all })
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
       options?.onSuccess?.(...args)
     },
     ...options,
@@ -1088,7 +1325,7 @@ export function useRevokePermission(
   return useMutation({
     mutationFn: (data) => adminService.revokePermission(data),
     onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.all })
+      queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
       options?.onSuccess?.(...args)
     },
     ...options,
@@ -1244,16 +1481,97 @@ export function useRemoveOrganizationMember(
   >,
 ) {
   const queryClient = useQueryClient()
-  const { onSuccess, ...restOptions } = options || {}
 
   return useMutation({
     mutationFn: ({ orgId, userId }) => adminService.removeOrganizationMember(orgId, userId),
     onSuccess: (...args) => {
       const [, variables] = args
       queryClient.invalidateQueries({ queryKey: adminKeys.organizations.detail(variables.orgId) })
-      onSuccess?.(...args)
+      options?.onSuccess?.(...args)
     },
-    ...restOptions,
+    ...options,
+  })
+}
+
+export function useOrganizationInvitations(
+  orgId: number | null | undefined,
+  options?: Omit<UseQueryOptions<FetchResponse<any[]>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: [...adminKeys.organizations.detail(orgId!), 'invitations'],
+    queryFn: () => adminService.getOrganizationInvitations(orgId!),
+    enabled: !!orgId,
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}
+
+export function useInviteOrganizationMember(
+  options?: UseMutationOptions<
+    FetchResponse<any>,
+    HttpError,
+    { orgId: number; data: { email: string; role: string } },
+    unknown
+  >,
+) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ orgId, data }) => adminService.inviteToOrganization(orgId, data as any),
+    onSuccess: (...args) => {
+      const [, variables] = args
+      queryClient.invalidateQueries({
+        queryKey: [...adminKeys.organizations.detail(variables.orgId), 'invitations'],
+      })
+      options?.onSuccess?.(...args)
+    },
+    ...options,
+  })
+}
+
+export function useRevokeOrganizationInvitation(
+  options?: UseMutationOptions<
+    FetchResponse<any>,
+    HttpError,
+    { orgId: number; invitationId: number | string },
+    unknown
+  >,
+) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ orgId, invitationId }) =>
+      adminService.revokeOrganizationInvitation(orgId, invitationId),
+    onSuccess: (...args) => {
+      const [, variables] = args
+      queryClient.invalidateQueries({
+        queryKey: [...adminKeys.organizations.detail(variables.orgId), 'invitations'],
+      })
+      options?.onSuccess?.(...args)
+    },
+    ...options,
+  })
+}
+
+export function useUploadOrganizationLogo(
+  options?: UseMutationOptions<
+    FetchResponse<{ logo_url: string }>,
+    HttpError,
+    { id: number; file: File },
+    unknown
+  >,
+) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, file }) => adminService.uploadOrganizationLogo(id, file),
+    onSuccess: (...args) => {
+      const [, variables] = args
+      queryClient.invalidateQueries({ queryKey: adminKeys.organizations.all })
+      queryClient.invalidateQueries({ queryKey: adminKeys.organizations.detail(variables.id) })
+      options?.onSuccess?.(...args)
+    },
+    ...options,
   })
 }
 
@@ -1505,5 +1823,12 @@ export function useExportAuditLogs(
   return useMutation({
     mutationFn: (params) => adminService.exportAuditLogs(params),
     ...options,
+  })
+}
+
+export const useSecurityHealth = () => {
+  return useQuery({
+    queryKey: ['admin', 'security', 'health'],
+    queryFn: () => adminService.getSecurityHealth(),
   })
 }

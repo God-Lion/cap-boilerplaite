@@ -107,7 +107,7 @@ export default function InitiateEmailChange() {
                 mb: 3,
               }}
             >
-              {t('auth.common.back_to_dashboard', 'Back to Dashboard')}
+              {t('auth.common.backToDashboard', 'Back to Dashboard')}
             </Button>
 
             <Button
@@ -128,3 +128,4 @@ export default function InitiateEmailChange() {
     </>
   )
 }
+

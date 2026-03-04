@@ -76,7 +76,7 @@ export default function ResetPasswordForm({
               rules={{
                 required: {
                   value: true,
-                  message: t('auth.common.password_required'),
+                  message: t('auth.common.passwordRequired'),
                 },
                 minLength: {
                   value: 8,
@@ -139,3 +139,4 @@ export default function ResetPasswordForm({
     </Container>
   )
 }
+

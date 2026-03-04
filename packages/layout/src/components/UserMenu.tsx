@@ -47,8 +47,8 @@ export const UserMenu: React.FC = () => {
 
   // Get user initials for avatar
   const getUserInitials = () => {
-    if (!user?.full_name) return 'U'
-    const names = user.full_name.split(' ')
+    if (!user?.fullName) return 'U'
+    const names = user.fullName.split(' ')
     return names.length > 1
       ? `${names[0][0]}${names[1][0]}`.toUpperCase()
       : names[0][0].toUpperCase()
@@ -99,7 +99,7 @@ export const UserMenu: React.FC = () => {
         {/* User Info Header */}
         <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
           <Typography variant='subtitle2' fontWeight={600}>
-            {user?.full_name || 'User'}
+            {user?.fullName || 'User'}
           </Typography>
           <Typography variant='caption' color='text.secondary'>
             {user?.email || ''}

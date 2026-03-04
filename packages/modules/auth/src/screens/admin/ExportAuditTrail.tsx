@@ -20,10 +20,12 @@ import {
 } from '@mui/material'
 import { History, FileDownload, CloudDownload, Analytics } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import { useExportAuditLogs } from '../../hooks/useAdminQuery'
+import { useSnackbar } from 'notistack'
 
 export default function ExportAuditTrail() {
   const { t } = useTranslation('common')
-  const [isExporting, setIsExporting] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
   const [progress, setProgress] = useState(0)
 
   const [reportType, setReportType] = useState('security')
@@ -31,20 +33,12 @@ export default function ExportAuditTrail() {
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
 
-  const handleExport = async () => {
-    setIsExporting(true)
-    setProgress(25)
-
-    try {
-      const { adminService } = await import('../../services/adminService')
-      const response = await adminService.exportAuditLogs({
-        format: format as 'json' | 'csv',
-        start_date: startDate,
-        end_date: endDate,
-      })
-
+  const exportMutation = useExportAuditLogs({
+    onMutate: () => {
+      setProgress(25)
+    },
+    onSuccess: (response) => {
       setProgress(75)
-
       // Create a download link for the blob
       const url = window.URL.createObjectURL(response.data)
       const link = document.createElement('a')
@@ -56,17 +50,23 @@ export default function ExportAuditTrail() {
       document.body.appendChild(link)
       link.click()
       link.parentNode?.removeChild(link)
-
       setProgress(100)
-    } catch (error) {
-      console.error('Export failed:', error)
+      enqueueSnackbar('Export completed successfully', { variant: 'success' })
+
+      setTimeout(() => setProgress(0), 1000)
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message || 'Export failed', { variant: 'error' })
       setProgress(0)
-    } finally {
-      setTimeout(() => {
-        setIsExporting(false)
-        setProgress(0)
-      }, 1000)
-    }
+    },
+  })
+
+  const handleExport = async () => {
+    exportMutation.mutate({
+      format: format as 'json' | 'csv',
+      start_date: startDate,
+      end_date: endDate,
+    })
   }
 
   const exportHistory = [
@@ -84,10 +84,10 @@ export default function ExportAuditTrail() {
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1000, mx: 'auto' }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant='h4' sx={{ fontWeight: 900, mb: 1 }}>
-          {t('auth.admin.export_audit')}
+          {t('auth.admin.exportAudit')}
         </Typography>
         <Typography variant='body1' color='text.secondary'>
-          {t('auth.admin.export_audit_subtitle')}
+          {t('auth.admin.exportAudit_subtitle')}
         </Typography>
       </Box>
 
@@ -96,14 +96,14 @@ export default function ExportAuditTrail() {
           <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
             <CardContent sx={{ p: 4 }}>
               <Typography variant='h6' sx={{ fontWeight: 800, mb: 3 }}>
-                {t('auth.admin.export_parameters')}
+                {t('auth.admin.exportParameters')}
               </Typography>
 
               <Stack spacing={3}>
                 <FormControl fullWidth>
-                  <InputLabel>{t('auth.admin.report_type')}</InputLabel>
+                  <InputLabel>{t('auth.admin.reportType')}</InputLabel>
                   <Select
-                    label={t('auth.admin.report_type')}
+                    label={t('auth.admin.reportType')}
                     value={reportType}
                     onChange={(e) => setReportType(e.target.value)}
                   >
@@ -137,9 +137,9 @@ export default function ExportAuditTrail() {
                 </Grid>
 
                 <FormControl fullWidth>
-                  <InputLabel>{t('auth.admin.output_format')}</InputLabel>
+                  <InputLabel>{t('auth.admin.outputFormat')}</InputLabel>
                   <Select
-                    label={t('auth.admin.output_format')}
+                    label={t('auth.admin.outputFormat')}
                     value={format}
                     onChange={(e) => setFormat(e.target.value)}
                   >
@@ -154,8 +154,8 @@ export default function ExportAuditTrail() {
                     fullWidth
                     variant='contained'
                     size='large'
-                    startIcon={isExporting ? undefined : <CloudDownload />}
-                    disabled={isExporting}
+                    startIcon={exportMutation.isPending ? undefined : <CloudDownload />}
+                    disabled={exportMutation.isPending}
                     onClick={handleExport}
                     sx={{
                       height: 56,
@@ -166,13 +166,13 @@ export default function ExportAuditTrail() {
                       boxShadow: 'none',
                     }}
                   >
-                    {isExporting
+                    {exportMutation.isPending
                       ? `${t('auth.admin.generating')} ${progress}%`
-                      : t('auth.admin.start_export')}
+                      : t('auth.admin.startExport')}
                   </Button>
                 </Box>
 
-                {isExporting && (
+                {exportMutation.isPending && (
                   <LinearProgress
                     variant='determinate'
                     value={progress}
@@ -187,8 +187,8 @@ export default function ExportAuditTrail() {
         <Grid size={{ xs: 12, md: 5 }}>
           <Stack spacing={3}>
             <Alert severity='info' icon={<Analytics />} sx={{ borderRadius: 2 }}>
-              <AlertTitle sx={{ fontWeight: 700 }}>{t('auth.admin.compliance_title')}</AlertTitle>
-              {t('auth.admin.compliance_desc')}
+              <AlertTitle sx={{ fontWeight: 700 }}>{t('auth.admin.complianceTitle')}</AlertTitle>
+              {t('auth.admin.complianceDesc')}
             </Alert>
 
             <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
@@ -197,7 +197,7 @@ export default function ExportAuditTrail() {
                   variant='subtitle1'
                   sx={{ fontWeight: 800, mb: 2, display: 'flex', alignItems: 'center' }}
                 >
-                  <History sx={{ mr: 1, fontSize: 20 }} /> {t('auth.admin.recent_exports')}
+                  <History sx={{ mr: 1, fontSize: 20 }} /> {t('auth.admin.recentExports')}
                 </Typography>
                 <Stack spacing={2}>
                   {exportHistory.map((item) => (
@@ -240,7 +240,7 @@ export default function ExportAuditTrail() {
                             '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' },
                           }}
                         >
-                          {t('auth.admin.download_format', { format: item.format })}
+                          {t('auth.admin.downloadFormat', { format: item.format })}
                         </Button>
                       </Box>
                       <Divider sx={{ mt: 1 }} />

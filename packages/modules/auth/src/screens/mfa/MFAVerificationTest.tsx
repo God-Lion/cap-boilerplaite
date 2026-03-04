@@ -219,7 +219,7 @@ export default function MFAVerificationTest() {
 
             {/* Body Text */}
             <Typography variant='body1' color='text.secondary' sx={{ mb: 4 }}>
-              {t('auth.mfa.test_desc', { appName: t('auth.common.app_name') })}
+              {t('auth.mfa.test_desc', { appName: t('auth.common.appName') })}
             </Typography>
 
             {/* Code Input Fields */}
@@ -354,7 +354,7 @@ export default function MFAVerificationTest() {
             <LockIcon sx={{ fontSize: 14 }} />
             <Typography sx={{ fontSize: '0.75rem', fontFamily: 'inherit' }}>
               {t('auth.mfa.secured_by', {
-                appName: t('auth.common.app_name'),
+                appName: t('auth.common.appName'),
               })}
             </Typography>
           </Box>
@@ -363,3 +363,4 @@ export default function MFAVerificationTest() {
     </>
   )
 }
+

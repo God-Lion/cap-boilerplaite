@@ -482,7 +482,7 @@ export default function RegistrationScreen() {
               '&:hover': { color: 'text.primary' },
             }}
           >
-            {t('auth.common.help_center')}
+            {t('auth.common.helpCenter')}
           </MuiLink>
           <MuiLink
             href='#'
@@ -493,10 +493,12 @@ export default function RegistrationScreen() {
               '&:hover': { color: 'text.primary' },
             }}
           >
-            {t('auth.common.terms_of_service')}
+            {t('auth.common.termsOfService')}
           </MuiLink>
         </Box>
       </Container>
     </>
   )
 }
+
+

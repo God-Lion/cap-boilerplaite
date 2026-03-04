@@ -91,7 +91,7 @@ export default function EmailChangeSuccess() {
                   onClick={() => navigate(Path.team)}
                   sx={{ height: 52, borderRadius: '12px', fontWeight: 700, textTransform: 'none' }}
                 >
-                  {t('auth.common.back_to_dashboard', 'Back to Dashboard')}
+                  {t('auth.common.backToDashboard', 'Back to Dashboard')}
                 </Button>
 
                 <Button
@@ -108,7 +108,7 @@ export default function EmailChangeSuccess() {
                     borderColor: 'divider',
                   }}
                 >
-                  {t('auth.common.logout_relogin', 'Sign out and Re-login')}
+                  {t('auth.common.logoutRelogin', 'Sign out and Re-login')}
                 </Button>
               </Box>
             </CardContent>
@@ -118,3 +118,4 @@ export default function EmailChangeSuccess() {
     </>
   )
 }
+

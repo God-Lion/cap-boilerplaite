@@ -63,6 +63,10 @@ const authService = {
     return apiClient.get(ENDPOINTS.auth.verifyEmailToken(email, signature))
   },
 
+  verifyEmailChange: (token: string): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.user.verifyEmailChange, { token })
+  },
+
   validateUser: (id: string | number, token: string): Promise<FetchResponse> => {
     return apiClient.get(ENDPOINTS.auth.validateUser(id, token))
   },

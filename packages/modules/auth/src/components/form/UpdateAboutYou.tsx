@@ -26,17 +26,17 @@ export default function UpdateAboutYou() {
   const { t } = useTranslation()
 
   const schema = z.object({
-    lastname: z.string().min(1, t('auth.common.field_required')),
-    firstname: z.string().min(1, t('auth.common.field_required')),
-    sexe: z.string().min(1, t('auth.common.field_required')),
-    address: z.string().min(1, t('auth.common.field_required')),
+    lastName: z.string().min(1, t('auth.common.fieldRequired')),
+    firstName: z.string().min(1, t('auth.common.fieldRequired')),
+    sexe: z.string().min(1, t('auth.common.fieldRequired')),
+    address: z.string().min(1, t('auth.common.fieldRequired')),
   })
 
   const controlForm = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      lastname: '',
-      firstname: '',
+      lastName: '',
+      firstName: '',
       sexe: '',
       address: '',
     },
@@ -134,7 +134,7 @@ export default function UpdateAboutYou() {
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, sm: 12 }}>
             <Controller
-              name='lastname'
+              name='lastName'
               control={controlForm.control}
               render={({ field, formState }) => (
                 <TextField
@@ -144,8 +144,8 @@ export default function UpdateAboutYou() {
                   // disabled={disabled}
                   type='text'
                   label={t('auth.account.last_name')}
-                  error={formState?.errors?.lastname !== undefined}
-                  helperText={formState?.errors?.lastname?.message}
+                  error={formState?.errors?.lastName !== undefined}
+                  helperText={formState?.errors?.lastName?.message}
                   margin='normal'
                 />
               )}
@@ -153,7 +153,7 @@ export default function UpdateAboutYou() {
           </Grid>
           <Grid size={{ xs: 12, sm: 12 }}>
             <Controller
-              name='firstname'
+              name='firstName'
               control={controlForm.control}
               render={({ field, formState }) => (
                 <TextField
@@ -163,8 +163,8 @@ export default function UpdateAboutYou() {
                   type='text'
                   label={t('auth.account.first_name')}
                   // disabled={disabled}
-                  error={formState?.errors?.firstname !== undefined}
-                  helperText={formState?.errors?.firstname?.message}
+                  error={formState?.errors?.firstName !== undefined}
+                  helperText={formState?.errors?.firstName?.message}
                   margin='normal'
                 />
               )}
@@ -220,7 +220,7 @@ export default function UpdateAboutYou() {
           <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
             <Stack direction='row' spacing={2} justifyContent='start'>
               <Button type='submit' variant='contained' color='primary'>
-                {t('auth.common.save_changes')}
+                {t('auth.common.saveChanges')}
               </Button>
               <Button
                 type='reset'

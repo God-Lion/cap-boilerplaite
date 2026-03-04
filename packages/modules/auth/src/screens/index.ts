@@ -31,6 +31,9 @@ export { default as MaintenanceScreen } from './auth/system/MaintenanceScreen'
 export { default as Page429TooManyRequests } from './auth/system/Page429TooManyRequests'
 export { default as CsrfErrorScreen } from './auth/system/CsrfErrorScreen'
 
+// Organization Invitation
+export { default as JoinOrganization } from './auth/organization/JoinOrganization'
+
 // Email & Verification Flow
 export { default as RequestEmailChange } from './auth/email/RequestEmailChange'
 export { default as InitiateEmailChange } from './auth/email/InitiateEmailChange'

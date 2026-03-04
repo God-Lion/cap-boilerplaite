@@ -342,7 +342,7 @@ export default function DeactivateAccount() {
               display: { xs: 'none', sm: 'block' },
             }}
           >
-            {t('auth.common.app_name')}
+            {t('auth.common.appName')}
           </Typography>
         </Box>
 
@@ -515,7 +515,7 @@ export default function DeactivateAccount() {
               {deactivateAccountMutation.isError && (
                 <Alert severity='error' sx={{ mb: 3 }}>
                   {(deactivateAccountMutation.error as any)?.message ||
-                    t('auth.common.error_occurred')}
+                    t('auth.common.errorOccurred')}
                 </Alert>
               )}
 
@@ -665,3 +665,5 @@ export default function DeactivateAccount() {
     </Box>
   )
 }
+
+

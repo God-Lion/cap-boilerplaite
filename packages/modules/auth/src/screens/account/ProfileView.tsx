@@ -230,10 +230,7 @@ export default function ProfileView() {
                         mb: 1,
                       }}
                     >
-                      <Typography variant='h4' fontWeight={700} sx={{ mb: { xs: 1, sm: 0 } }}>
-                        {user?.firstName} {user?.lastName}
-                      </Typography>
-
+                      {user?.firstName} {user?.lastName}
                       <Button
                         onClick={() => navigate(Path.edit)}
                         size='small'
@@ -258,38 +255,24 @@ export default function ProfileView() {
                     >
                       <Typography color='text.secondary'>{user?.email || ''}</Typography>
 
-                      {user?.isEmailVerified && (
-                        <Chip
-                          icon={<Verified sx={{ fontSize: 14 }} />}
-                          label={t('auth.account.verified')}
-                          size='small'
-                          color='success'
-                          variant='outlined'
-                          sx={{
-                            height: 24,
-                            fontSize: '0.75rem',
-                            '& .MuiChip-icon': {
-                              ml: 0.5,
-                            },
-                          }}
-                        />
-                      )}
-                      {!user?.isEmailVerified && (
-                        <Chip
-                          icon={<Verified sx={{ fontSize: 14 }} />}
-                          label={t('auth.account.unverified')}
-                          size='small'
-                          color='error'
-                          variant='outlined'
-                          sx={{
-                            height: 24,
-                            fontSize: '0.75rem',
-                            '& .MuiChip-icon': {
-                              ml: 0.5,
-                            },
-                          }}
-                        />
-                      )}
+                      <Chip
+                        icon={<Verified sx={{ fontSize: 14 }} />}
+                        label={
+                          user?.emailVerified
+                            ? t('auth.account.verified')
+                            : t('auth.account.unverified')
+                        }
+                        size='small'
+                        color={user?.emailVerified ? 'success' : 'error'}
+                        variant='outlined'
+                        sx={{
+                          height: 24,
+                          fontSize: '0.75rem',
+                          '& .MuiChip-icon': {
+                            ml: 0.5,
+                          },
+                        }}
+                      />
                     </Box>
 
                     <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2, mb: 2 }} />
@@ -332,12 +315,12 @@ export default function ProfileView() {
                                 width: 8,
                                 height: 8,
                                 borderRadius: '50%',
-                                bgcolor: user?.isActif ? 'success.main' : 'error.main',
+                                bgcolor: user?.status === 'active' ? 'success.main' : 'error.main',
                               }}
                             />
 
                             <Typography variant='body2' fontWeight={500}>
-                              {user?.isActif
+                              {user?.status === 'active'
                                 ? t('auth.account.active')
                                 : t('auth.account.inactive')}
                             </Typography>
@@ -422,7 +405,7 @@ export default function ProfileView() {
 
                 <CardContent sx={{ p: 3 }}>
                   <Grid container spacing={3}>
-                    {user?.firstName && user?.lastName && (
+                    {(user?.firstName || user?.lastName) && (
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <Box>
                           <Typography
@@ -434,17 +417,19 @@ export default function ProfileView() {
                             {t('auth.account.full_name')}
                           </Typography>
 
-                          <Box
+                          <Typography
+                            variant='h4'
+                            fontWeight={800}
                             sx={{
-                              px: 1.5,
-                              py: 1,
-                              borderRadius: 1,
+                              mb: 0.5,
+                              letterSpacing: '-0.02em',
+                              textTransform: 'capitalize',
                             }}
                           >
-                            <Typography variant='body1'>
-                              {user?.firstName} {user?.lastName}
-                            </Typography>
-                          </Box>
+                            {user?.firstName && user?.lastName
+                              ? `${user.firstName} ${user.lastName}`
+                              : user?.email.split('@')[0]}
+                          </Typography>
                         </Box>
                       </Grid>
                     )}

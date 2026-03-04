@@ -434,6 +434,21 @@ export class HttpError extends Error {
   }
 }
 
+// --- Terminal Error Registry ---
+
+export type TerminalErrorHandler = () => void
+const terminalErrorHandlers: Set<TerminalErrorHandler> = new Set()
+
+export const onTerminalError = (handler: TerminalErrorHandler) => {
+  terminalErrorHandlers.add(handler)
+  return () => terminalErrorHandlers.delete(handler)
+}
+
+const notifyTerminalError = () => {
+  console.error('[FetchClient] Terminal authentication failure, notifying subscribers')
+  terminalErrorHandlers.forEach((handler) => handler())
+}
+
 // --- Token Refresh Manager ---
 
 class TokenRefreshManager {
@@ -460,12 +475,14 @@ class TokenRefreshManager {
     // The backend will check the cookie.
 
     try {
-      // Send request without Authorization header - cookies are sent automatically
+      // Send request WITHOUT Authorization header - cookies are sent automatically
+      // CRITICAL: Must use credentials: 'include' to send refresh HttpOnly cookie cross-origin
       const response = await fetch(`${API_CONFIG.baseURL}${ENDPOINTS.auth.refresh}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -514,6 +531,9 @@ class TokenRefreshManager {
     console.warn(
       '[TokenRefreshManager] Token refresh failed, tokens cleared. Application should redirect to login.',
     )
+
+    // Notify listeners so store can be updated
+    notifyTerminalError()
   }
 
   async attemptRefresh(): Promise<string> {

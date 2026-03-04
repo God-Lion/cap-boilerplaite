@@ -12,6 +12,8 @@ import {
   ListItemIcon,
   ListItemText,
   alpha,
+  CircularProgress,
+  Alert,
 } from '@mui/material'
 import {
   Shield,
@@ -21,79 +23,77 @@ import {
   ArrowForward,
   Security,
   VpnKey,
-  Password,
   PersonOff,
   Settings,
   Schedule,
+  Password,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import { useSecurityHealth } from '../../hooks/useAdminQuery'
 
-interface Recommendation {
-  id: string
-  title: string
-  description: string
-  severity: 'critical' | 'warning' | 'info'
-  icon: React.ReactNode
-}
+type Severity = 'critical' | 'warning' | 'info'
 
-const MOCK_RECOMMENDATIONS: Recommendation[] = [
-  {
-    id: '1',
-    title: 'Missing MFA on Admin Accounts',
-    description:
-      '3 administrators do not have Multi-Factor Authentication enabled. This is a critical vulnerability.',
-    severity: 'critical',
-    icon: <Security />,
-  },
-  {
-    id: '2',
-    title: 'Weak Passwords Detected',
-    description: '12 users are using passwords that have appeared in known data breaches.',
-    severity: 'critical',
-    icon: <Password />,
-  },
-  {
-    id: '3',
-    title: 'Old API Token Rotation',
-    description: '5 API tokens have not been rotated in over 90 days.',
-    severity: 'warning',
-    icon: <VpnKey />,
-  },
-  {
-    id: '4',
-    title: 'Unused Account Cleanup',
-    description: '8 user accounts have been inactive for more than 6 months.',
-    severity: 'info',
-    icon: <PersonOff />,
-  },
-]
-
-const SEVERITY_CONFIG = (t: any) => ({
+const SEVERITY_CONFIG = (
+  t: any,
+): Record<
+  Severity,
+  { color: 'error' | 'warning' | 'info'; label: string; icon: React.ReactNode }
+> => ({
   critical: {
-    color: 'error' as const,
-    label: t('monitoring.security.severity_critical'),
+    color: 'error',
+    label: t('monitoring.security.severity_critical', 'Critical'),
     icon: <ErrorIcon />,
   },
   warning: {
-    color: 'warning' as const,
-    label: t('monitoring.security.severity_warning'),
+    color: 'warning',
+    label: t('monitoring.security.severity_warning', 'Warning'),
     icon: <Warning />,
   },
   info: {
-    color: 'info' as const,
-    label: t('monitoring.security.severity_info'),
+    color: 'info',
+    label: t('monitoring.security.severity_info', 'Info'),
     icon: <CheckCircle />,
   },
 })
 
+const REC_ICON_MAP: Record<string, React.ReactNode> = {
+  'mfa-adoption': <Security />,
+  'inactive-accounts': <PersonOff />,
+  'token-rotation': <VpnKey />,
+  'weak-passwords': <Password />,
+}
+
 export default function SecurityHealthCheck() {
   const { t } = useTranslation()
-  const securityScore = 72
+  const { data: healthRes, isLoading, error } = useSecurityHealth()
+
+  const healthData = healthRes?.data
+  const securityScore = healthData?.score ?? 0
+  const recommendations = healthData?.recommendations ?? []
+  const stats = healthData?.stats
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'success.main'
     if (score >= 60) return 'warning.main'
     return 'error.main'
+  }
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth='lg' sx={{ py: 4 }}>
+        <Alert severity='error'>
+          {t('monitoring.security.error_loading', 'Failed to load security health data')}
+        </Alert>
+      </Container>
+    )
   }
 
   return (
@@ -116,10 +116,13 @@ export default function SecurityHealthCheck() {
           </Box>
           <Box>
             <Typography variant='h5' fontWeight={700} letterSpacing='-0.02em'>
-              {t('monitoring.security.health_check_title')}
+              {t('monitoring.security.health_check_title', 'Security Health Check')}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              {t('monitoring.security.health_check_subtitle')}
+              {t(
+                'monitoring.security.health_check_subtitle',
+                'Overview of your platform security posture',
+              )}
             </Typography>
           </Box>
         </Box>
@@ -135,6 +138,7 @@ export default function SecurityHealthCheck() {
               border: 1,
               borderColor: 'divider',
               height: '100%',
+              boxShadow: 'none',
             }}
           >
             <CardContent sx={{ textAlign: 'center', py: 4 }}>
@@ -144,7 +148,7 @@ export default function SecurityHealthCheck() {
                 color='text.secondary'
                 sx={{ mb: 2 }}
               >
-                {t('monitoring.security.overall_score')}
+                {t('monitoring.security.overall_score', 'Overall Security Score')}
               </Typography>
               {/* Circular Score */}
               <Box sx={{ position: 'relative', display: 'inline-flex', mb: 2 }}>
@@ -183,7 +187,10 @@ export default function SecurityHealthCheck() {
                 </Box>
               </Box>
               <Typography variant='body2' color='text.secondary'>
-                {t('monitoring.security.score_comparison')}
+                {t(
+                  'monitoring.security.score_comparison',
+                  'Based on best practices and account activity',
+                )}
               </Typography>
             </CardContent>
           </Card>
@@ -194,22 +201,23 @@ export default function SecurityHealthCheck() {
           <Grid container spacing={2} sx={{ height: '100%' }}>
             {[
               {
-                label: t('monitoring.security.stat_critical'),
-                value: 3,
-                color: 'error',
-                icon: <ErrorIcon />,
+                label: t('monitoring.security.stat_mfa', 'MFA Adoption'),
+                value: `${stats?.mfaEnabled ?? 0} / ${stats?.totalUsers ?? 0}`,
+                color:
+                  (stats?.mfaEnabled ?? 0) === (stats?.totalUsers ?? 0) ? 'success' : 'warning',
+                icon: <Security />,
               },
               {
-                label: t('monitoring.security.stat_warnings'),
-                value: 12,
-                color: 'warning',
-                icon: <Warning />,
+                label: t('monitoring.security.stat_inactive', 'Inactive Accounts'),
+                value: stats?.inactiveUsers ?? 0,
+                color: (stats?.inactiveUsers ?? 0) > 0 ? 'error' : 'success',
+                icon: <PersonOff />,
               },
               {
-                label: t('monitoring.security.stat_passed'),
-                value: 45,
-                color: 'success',
-                icon: <CheckCircle />,
+                label: t('monitoring.security.stat_tokens', 'Active Tokens'),
+                value: stats?.oldTokens ?? 0,
+                color: (stats?.oldTokens ?? 0) > 5 ? 'warning' : 'info',
+                icon: <VpnKey />,
               },
             ].map((stat) => (
               <Grid key={stat.label} size={{ xs: 12 }}>
@@ -218,6 +226,7 @@ export default function SecurityHealthCheck() {
                     borderRadius: 3,
                     border: 1,
                     borderColor: 'divider',
+                    boxShadow: 'none',
                   }}
                 >
                   <CardContent
@@ -225,8 +234,8 @@ export default function SecurityHealthCheck() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 2,
-                      py: 2,
-                      '&:last-child': { pb: 2 },
+                      py: 1.5,
+                      '&:last-child': { pb: 1.5 },
                     }}
                   >
                     <Box
@@ -234,7 +243,12 @@ export default function SecurityHealthCheck() {
                         width: 40,
                         height: 40,
                         borderRadius: 2,
-                        bgcolor: (theme) => alpha((theme.palette as any)[stat.color].main, 0.1),
+                        bgcolor: (theme) =>
+                          alpha(
+                            (theme.palette as any)[stat.color as any]?.main ??
+                              theme.palette.primary.main,
+                            0.1,
+                          ),
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -250,7 +264,7 @@ export default function SecurityHealthCheck() {
                       <Typography variant='caption' color='text.secondary' fontWeight={500}>
                         {stat.label}
                       </Typography>
-                      <Typography variant='h5' fontWeight={700}>
+                      <Typography variant='h6' fontWeight={700}>
                         {stat.value}
                       </Typography>
                     </Box>
@@ -263,62 +277,72 @@ export default function SecurityHealthCheck() {
       </Grid>
 
       {/* Prioritized Recommendations */}
-      <Card sx={{ borderRadius: 3, border: 1, borderColor: 'divider', mb: 3 }}>
+      <Card sx={{ borderRadius: 3, border: 1, borderColor: 'divider', mb: 3, boxShadow: 'none' }}>
         <CardContent sx={{ p: 0 }}>
           <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider' }}>
             <Typography variant='subtitle1' fontWeight={600}>
-              {t('monitoring.security.recommendations_title')}
+              {t('monitoring.security.recommendations_title', 'Prioritized Recommendations')}
             </Typography>
           </Box>
-          <List disablePadding>
-            {MOCK_RECOMMENDATIONS.map((rec, index) => {
-              const config = SEVERITY_CONFIG(t)[rec.severity]
-              return (
-                <ListItem
-                  key={rec.id}
-                  sx={{
-                    px: 3,
-                    py: 2,
-                    borderBottom: index < MOCK_RECOMMENDATIONS.length - 1 ? 1 : 0,
-                    borderColor: 'divider',
-                    cursor: 'pointer',
-                    '&:hover': { bgcolor: 'action.hover' },
-                    transition: 'background-color 0.15s',
-                  }}
-                >
-                  <ListItemIcon
+          {recommendations.length > 0 ? (
+            <List disablePadding>
+              {recommendations.map((rec: any, index: number) => {
+                const config = (SEVERITY_CONFIG(t) as any)[rec.severity]
+                return (
+                  <ListItem
+                    key={rec.id}
                     sx={{
-                      minWidth: 44,
-                      '& .MuiSvgIcon-root': {
-                        color: `${config.color}.main`,
-                        fontSize: 22,
-                      },
+                      px: 3,
+                      py: 2,
+                      borderBottom: index < recommendations.length - 1 ? 1 : 0,
+                      borderColor: 'divider',
+                      transition: 'background-color 0.15s',
                     }}
                   >
-                    {rec.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <Typography variant='subtitle2' fontWeight={600}>
-                          {rec.title}
-                        </Typography>
-                        <Chip
-                          label={config.label}
-                          size='small'
-                          color={config.color}
-                          variant='outlined'
-                          sx={{ height: 20, fontSize: '0.65rem' }}
-                        />
-                      </Box>
-                    }
-                    secondary={rec.description}
-                  />
-                  <ArrowForward sx={{ color: 'text.disabled', fontSize: 18 }} />
-                </ListItem>
-              )
-            })}
-          </List>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 44,
+                        '& .MuiSvgIcon-root': {
+                          color: `${config.color}.main`,
+                          fontSize: 22,
+                        },
+                      }}
+                    >
+                      {REC_ICON_MAP[rec.id] || config.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                          <Typography variant='subtitle2' fontWeight={600}>
+                            {rec.title}
+                          </Typography>
+                          <Chip
+                            label={config.label}
+                            size='small'
+                            color={config.color}
+                            variant='outlined'
+                            sx={{ height: 20, fontSize: '0.65rem' }}
+                          />
+                        </Box>
+                      }
+                      secondary={rec.description}
+                    />
+                    <ArrowForward sx={{ color: 'text.disabled', fontSize: 18 }} />
+                  </ListItem>
+                )
+              })}
+            </List>
+          ) : (
+            <Box sx={{ p: 4, textAlign: 'center' }}>
+              <CheckCircle sx={{ fontSize: 48, color: 'success.main', mb: 1, opacity: 0.5 }} />
+              <Typography variant='body2' color='text.secondary'>
+                {t(
+                  'monitoring.security.no_recommendations',
+                  'Your security posture looks great! No immediate actions required.',
+                )}
+              </Typography>
+            </Box>
+          )}
         </CardContent>
       </Card>
 
@@ -337,7 +361,7 @@ export default function SecurityHealthCheck() {
           <Schedule sx={{ fontSize: 14 }} />
           {t(
             'auth.security.scan_info',
-            'Security scans are performed automatically every 24 hours. Last scan: 2 hours ago.',
+            'Security scans are performed automatically. Last scan: just now.',
           )}
         </Typography>
         <Button

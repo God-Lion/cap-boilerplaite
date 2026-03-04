@@ -12,6 +12,7 @@ export interface Role {
   guard_name: string
   description: string | null
   permissions: Permission[]
+  parents?: Role[]
   users_count?: number
   created_at: string
   updated_at: string
@@ -52,15 +53,32 @@ export interface Organization {
   slug: string
   status?: string
   domain: string | null
+  support_email?: string | null
   logo_url: string | null
   members_count: number
+
+  domainVerifications?: {
+    id: number
+    domain: string
+    status: string
+    verified_at: string
+    verification_token: string
+  }[]
   created_at: string
   updated_at: string
-  primaryColor?: string
-  secondaryColor?: string
-  enforceMfa?: boolean
-  ssoOnly?: boolean
-  allowPublicSignup?: boolean
+  brandingConfig?: {
+    primaryColor?: string
+    secondaryColor?: string
+    logo_url?: string
+    [key: string]: any
+  }
+  securityPolicies?: {
+    enforceMfa?: boolean
+    ssoOnly?: boolean
+    allowPublicSignup?: boolean
+    [key: string]: any
+  }
+  members?: OrganizationMember[]
 }
 
 export interface OrganizationMember {
@@ -286,7 +304,7 @@ export interface MessageResponse {
 // Admin Service Class
 // ============================================================================
 
-class AdminService {
+export class AdminService {
   // ==========================================================================
   // OIDC Client Management
   // ==========================================================================
@@ -402,14 +420,14 @@ class AdminService {
    * Ban a user
    */
   async banUser(id: string | number, reason?: string): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>(ENDPOINTS.admin.users.suspend(id as number), { reason })
+    return apiClient.patch<MessageResponse>(ENDPOINTS.admin.users.ban(id as number), { reason })
   }
 
   /**
    * Unban a user
    */
   async unbanUser(id: string | number, _reason?: string): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.patch<MessageResponse>(ENDPOINTS.admin.users.unsuspend(id as number))
+    return apiClient.post<MessageResponse>(ENDPOINTS.admin.users.unsuspend(id as number))
   }
 
   /**
@@ -466,6 +484,22 @@ class AdminService {
    */
   async getUserSessions(id: number | string): Promise<FetchResponse<any[]>> {
     return apiClient.get<any[]>(ENDPOINTS.admin.users.sessions(id as number))
+  }
+
+  /**
+   * Upload an organization logo
+   */
+  async uploadOrganizationLogo(
+    id: number,
+    file: File,
+  ): Promise<FetchResponse<{ logo_url: string }>> {
+    const form = new FormData()
+    form.append('logo', file)
+    return apiClient.uploadFormData<{ logo_url: string }>(
+      ENDPOINTS.admin.organizations.logo(id),
+      { logo: file },
+      'post',
+    )
   }
 
   // ==========================================================================
@@ -692,9 +726,29 @@ class AdminService {
   // RBAC — Roles
   // ==========================================================================
 
-  /** List all roles */
-  async listRoles(): Promise<FetchResponse<Role[]>> {
-    return apiClient.get<Role[]>(ENDPOINTS.rbac.roles.list)
+  /** List all roles with pagination and search */
+  async listRoles(params?: {
+    page?: number
+    limit?: number
+    search?: string
+  }): Promise<FetchResponse<PaginatedResponse<Role>>> {
+    return apiClient.get<PaginatedResponse<Role>>(ENDPOINTS.rbac.roles.list, { params })
+  }
+
+  /** Get RBAC statistics */
+  async getRoleStats(): Promise<
+    FetchResponse<{
+      totalRoles: number
+      totalPermissions: number
+      totalMemberships: number
+    }>
+  > {
+    return apiClient.get(ENDPOINTS.rbac.roles.stats)
+  }
+
+  /** Get a specific role by ID */
+  async getRole(id: number): Promise<FetchResponse<Role>> {
+    return apiClient.get<Role>(ENDPOINTS.rbac.roles.byId(id))
   }
 
   /** Create a new role */
@@ -735,7 +789,14 @@ class AdminService {
   /** Replace all permissions on a role atomically */
   async syncRolePermissions(roleId: number, permissionIds: number[]): Promise<FetchResponse<Role>> {
     return apiClient.put<Role>(ENDPOINTS.rbac.roles.syncPermissions(roleId), {
-      permission_ids: permissionIds,
+      permissionIds,
+    })
+  }
+
+  /** Sync parent roles for a specific role */
+  async syncRoleParents(roleId: number, parentIds: number[]): Promise<FetchResponse<Role>> {
+    return apiClient.put<Role>(ENDPOINTS.rbac.roles.syncParents(roleId), {
+      parentIds,
     })
   }
 
@@ -865,13 +926,14 @@ class AdminService {
     return apiClient.post<OrganizationMember>(ENDPOINTS.admin.organizations.addMember(orgId), data)
   }
 
+  /**
+   * Remove a member from an organization
+   */
   async removeOrganizationMember(
-    orgId: number,
+    id: number,
     userId: number,
   ): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.delete<MessageResponse>(
-      ENDPOINTS.admin.organizations.removeMember(orgId, userId),
-    )
+    return apiClient.delete<MessageResponse>(ENDPOINTS.admin.organizations.removeMember(id, userId))
   }
 
   async inviteToOrganization(
@@ -885,6 +947,27 @@ class AdminService {
     orgId: number,
   ): Promise<FetchResponse<OrganizationInvitation[]>> {
     return apiClient.get<OrganizationInvitation[]>(ENDPOINTS.admin.organizations.invitations(orgId))
+  }
+
+  async revokeOrganizationInvitation(
+    orgId: number,
+    invitationId: number | string,
+  ): Promise<FetchResponse<any>> {
+    return apiClient.post(ENDPOINTS.admin.organizations.revokeInvitation(orgId, invitationId))
+  }
+
+  async getInvitationDetails(token: string, email: string): Promise<FetchResponse<any>> {
+    return apiClient.get(ENDPOINTS.auth.invitationDetails, {
+      params: { token, email },
+    })
+  }
+
+  async acceptInvitation(token: string, email: string): Promise<FetchResponse<any>> {
+    return apiClient.post(ENDPOINTS.auth.acceptInvitation, { token, email })
+  }
+
+  async declineInvitation(token: string, email: string): Promise<FetchResponse<any>> {
+    return apiClient.post(ENDPOINTS.auth.declineInvitation, { token, email })
   }
 
   // ==========================================================================
@@ -992,6 +1075,42 @@ class AdminService {
   async sendTestEmail(data: EmailTestRequest): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.admin.email.test, data)
   }
+
+  // ==========================================================================
+  // Security Health Check
+  // ==========================================================================
+
+  async updateUserStatus(
+    id: number | string,
+    status: string,
+    reason?: string,
+  ): Promise<FetchResponse<AdminUser>> {
+    const response = await apiClient.patch(ENDPOINTS.admin.users.byId(id as number) + '/status', {
+      status,
+      reason,
+    })
+    return response as FetchResponse<AdminUser>
+  }
+
+  async getSecurityHealth(): Promise<FetchResponse<SecurityHealthResponse>> {
+    return apiClient.get<SecurityHealthResponse>(ENDPOINTS.admin.security.health)
+  }
+}
+
+export interface SecurityHealthResponse {
+  score: number
+  stats: {
+    totalUsers: number
+    mfaEnabled: number
+    inactiveUsers: number
+    oldTokens: number
+  }
+  recommendations: Array<{
+    id: string
+    title: string
+    description: string
+    severity: 'critical' | 'warning' | 'info'
+  }>
 }
 
 export const adminService = new AdminService()

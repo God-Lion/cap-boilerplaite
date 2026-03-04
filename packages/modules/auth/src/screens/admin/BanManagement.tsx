@@ -73,13 +73,13 @@ export default function BanManagement() {
 
   const unbanMutation = useUnbanUser({
     onSuccess: () => {
-      enqueueSnackbar(t('auth.admin.user_unbanned_success'), {
+      enqueueSnackbar(t('auth.admin.userUnbannedSuccess'), {
         variant: 'success',
       })
       refetch()
     },
     onError: (error) => {
-      enqueueSnackbar(error.message || t('auth.common.error_occurred'), {
+      enqueueSnackbar(error.message || t('auth.common.errorOccurred'), {
         variant: 'error',
       })
     },
@@ -98,36 +98,36 @@ export default function BanManagement() {
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant='h4' sx={{ fontWeight: 900, letterSpacing: '-0.027em', mb: 1 }}>
-          {t('auth.admin.ban_management_title')}
+          {t('auth.admin.banManagementTitle')}
         </Typography>
         <Typography variant='body1' color='text.secondary'>
-          {t('auth.admin.ban_management_subtitle')}
+          {t('auth.admin.banManagementSubtitle')}
         </Typography>
       </Box>
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {[
           {
-            label: t('auth.admin.stat_total_active_bans'),
+            label: t('auth.admin.statTotalActiveBans'),
             value: dashboardData?.data?.totalBanned ?? '...',
             icon: <Block />,
             color: 'error',
           },
           {
-            label: t('auth.admin.stat_new_bans_today'),
+            label: t('auth.admin.statNewBansToday'),
             value: dashboardData?.data?.newBans ?? '...',
             icon: <Gavel />,
             color: 'warning',
           },
           {
-            label: t('auth.admin.stat_appeals_pending'),
+            label: t('auth.admin.statAppealsPending'),
             value:
               dashboardData?.data?.pendingAppeals === 0
                 ? '—'
                 : (dashboardData?.data?.pendingAppeals ?? '...'),
             tooltip:
               dashboardData?.data?.pendingAppeals === 0
-                ? 'Appeal tracking not yet implemented'
+                ? t('auth.admin.appealTrackingNotImplemented')
                 : undefined,
             icon: <History />,
             color: 'info',
@@ -177,9 +177,9 @@ export default function BanManagement() {
           onChange={handleTabChange}
           sx={{ '& .MuiTab-root': { textTransform: 'none', fontWeight: 600 } }}
         >
-          <Tab label={t('auth.admin.active_bans')} />
-          <Tab label={t('auth.admin.appeals_queue')} />
-          <Tab label={t('auth.admin.ban_history')} />
+          <Tab label={t('auth.admin.activeBans')} />
+          <Tab label={t('auth.admin.appealsQueue')} />
+          <Tab label={t('auth.admin.banHistory')} />
         </Tabs>
       </Box>
 
@@ -188,7 +188,7 @@ export default function BanManagement() {
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
             <TextField
-              placeholder={t('auth.common.search_users')}
+              placeholder={t('auth.common.searchUsers')}
               size='small'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -208,7 +208,7 @@ export default function BanManagement() {
               onClick={() => setIsBanModalOpen(true)}
               sx={{ textTransform: 'none', fontWeight: 600 }}
             >
-              {t('auth.admin.issue_ban')}
+              {t('auth.admin.issueBan')}
             </Button>
           </Box>
 
@@ -217,7 +217,7 @@ export default function BanManagement() {
               <Typography>{t('auth.common.loading')}</Typography>
             </Box>
           ) : !bannedUsersData?.data?.data?.length ? (
-            <Alert severity='info'>{t('auth.admin.no_banned_users')}</Alert>
+            <Alert severity='info'>{t('auth.admin.noBannedUsers')}</Alert>
           ) : (
             bannedUsersData.data.data.map((user) => (
               <Card
@@ -283,14 +283,14 @@ export default function BanManagement() {
                             sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}
                           >
                             <Security fontSize='small' color='error' />
-                            {t('auth.admin.ban_status')}
+                            {t('auth.admin.banStatus')}
                           </Typography>
                           <Typography
                             variant='body2'
                             color='text.secondary'
                             sx={{ mt: 1, fontStyle: 'italic' }}
                           >
-                            {t('auth.admin.user_is_suspended')}
+                            {t('auth.admin.userIsSuspended')}
                           </Typography>
                         </Box>
                         <Chip
@@ -306,15 +306,15 @@ export default function BanManagement() {
                           color='error.main'
                           sx={{ display: 'block', mb: 1, mt: -1 }}
                         >
-                          {/* i18n: auth.admin.ban_reason */}
-                          {t('auth.admin.ban_reason', 'Ban Reason')}: {user.suspendedReason}
+                          {/* i18n: auth.admin.banReason */}
+                          {t('auth.admin.banReason')}: {user.suspendedReason}
                         </Typography>
                       )}
 
                       <Box sx={{ display: 'flex', gap: 4, mb: 2 }}>
                         <Box>
                           <Typography variant='caption' color='text.secondary' display='block'>
-                            {t('auth.common.created_at')}
+                            {t('auth.common.createdAt')}
                           </Typography>
                           <Typography variant='body2' sx={{ fontWeight: 600 }}>
                             {new Date(user.createdAt).toLocaleDateString()}
@@ -340,7 +340,7 @@ export default function BanManagement() {
                         disabled={unbanMutation.isPending}
                         sx={{ textTransform: 'none', fontWeight: 600 }}
                       >
-                        {t('auth.admin.revoke_ban')}
+                        {t('auth.admin.revokeBan')}
                       </Button>
                       <Button
                         variant='text'
@@ -388,14 +388,12 @@ export default function BanManagement() {
       />
       {/* TODO: Implement real EditBanDialog component in a separate file later */}
       <Dialog open={!!editingUser} onClose={() => setEditingUser(null)}>
-        <DialogTitle>{t('auth.admin.edit_ban', 'Edit Ban')}</DialogTitle>
+        <DialogTitle>{t('auth.admin.editBan')}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {t('auth.admin.edit_ban_stub', 'Edit ban functionality goes here.')}
-          </DialogContentText>
+          <DialogContentText>{t('auth.admin.editBan_stub')}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditingUser(null)}>{t('auth.common.cancel', 'Cancel')}</Button>
+          <Button onClick={() => setEditingUser(null)}>{t('auth.common.cancel')}</Button>
         </DialogActions>
       </Dialog>
     </Box>
@@ -417,14 +415,14 @@ function AppealsQueue() {
     onSuccess: (_, variables) => {
       enqueueSnackbar(
         variables.data.status === 'APPROVED'
-          ? t('auth.admin.appeal_approved', 'Appeal Approved & User Unbanned')
-          : t('auth.admin.appeal_denied', 'Appeal Denied'),
+          ? t('auth.admin.appealApproved')
+          : t('auth.admin.appealDenied'),
         { variant: 'success' },
       )
       refetch()
     },
     onError: (err) => {
-      enqueueSnackbar(err.message || t('auth.common.error_occurred'), {
+      enqueueSnackbar(err.message || t('auth.common.errorOccurred'), {
         variant: 'error',
       })
     },
@@ -434,13 +432,13 @@ function AppealsQueue() {
 
   return (
     <Stack spacing={3}>
-      <Alert severity='info'>{t('auth.admin.appeals_info')}</Alert>
+      <Alert severity='info'>{t('auth.admin.appealsInfo')}</Alert>
       {isLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
           <Typography>{t('auth.common.loading')}</Typography>
         </Box>
       ) : appeals.length === 0 ? (
-        <Alert severity='success'>{t('auth.admin.no_appeals')}</Alert>
+        <Alert severity='success'>{t('auth.admin.noAppeals')}</Alert>
       ) : (
         <Stack spacing={2}>
           {appeals.map((appeal: any) => (
@@ -500,7 +498,7 @@ function AppealsQueue() {
                       disabled={resolveMutation.isPending}
                       sx={{ textTransform: 'none', fontWeight: 600 }}
                     >
-                      {t('auth.admin.approve_appeal', 'Approve & Unban')}
+                      {t('auth.admin.approveAppeal')}
                     </Button>
                     <Button
                       variant='outlined'
@@ -511,7 +509,7 @@ function AppealsQueue() {
                       disabled={resolveMutation.isPending}
                       sx={{ textTransform: 'none', fontWeight: 600 }}
                     >
-                      {t('auth.admin.deny_appeal', 'Deny Appeal')}
+                      {t('auth.admin.denyAppeal')}
                     </Button>
                   </Box>
                 </Box>
@@ -532,19 +530,12 @@ function AppealsQueue() {
       )}
 
       <Dialog open={!!resolvingAppealId} onClose={() => setResolvingAppealId(null)}>
-        <DialogTitle>{t('auth.admin.deny_appeal_confirm_title', 'Confirm Denial')}</DialogTitle>
+        <DialogTitle>{t('auth.admin.denyAppeal_confirm_title')}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {t(
-              'auth.admin.deny_appeal_confirm_msg',
-              'Are you sure you want to deny this appeal? The user will remain banned.',
-            )}
-          </DialogContentText>
+          <DialogContentText>{t('auth.admin.denyAppeal_confirm_msg')}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setResolvingAppealId(null)}>
-            {t('auth.common.cancel', 'Cancel')}
-          </Button>
+          <Button onClick={() => setResolvingAppealId(null)}>{t('auth.common.cancel')}</Button>
           <Button
             color='error'
             disabled={resolveMutation.isPending}
@@ -559,7 +550,7 @@ function AppealsQueue() {
               }
             }}
           >
-            {t('auth.admin.deny', 'Deny')}
+            {t('auth.admin.deny')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -617,7 +608,7 @@ function BanFullHistory() {
     <Stack spacing={2}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
         <TextField
-          placeholder={t('auth.admin.search_history')}
+          placeholder={t('auth.admin.searchHistory')}
           size='small'
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -647,7 +638,7 @@ function BanFullHistory() {
           <Typography>{t('auth.common.loading')}</Typography>
         </Box>
       ) : logs.length === 0 ? (
-        <Alert severity='info'>{t('auth.admin.no_ban_history')}</Alert>
+        <Alert severity='info'>{t('auth.admin.noBanHistory')}</Alert>
       ) : (
         logs.map((log: any) => (
           <Card
@@ -690,3 +681,5 @@ function BanFullHistory() {
     </Stack>
   )
 }
+
+

@@ -211,7 +211,7 @@ export default function PasswordResetSuccess() {
                         },
                       }}
                     >
-                      {t('auth.common.contact_support')}
+                      {t('auth.common.contactSupport')}
                     </HLink>
                   </Typography>
                 </Box>
@@ -232,7 +232,7 @@ export default function PasswordResetSuccess() {
           >
             <Lock sx={{ fontSize: 14 }} />
             <Typography variant='caption' sx={{ fontSize: '0.75rem' }}>
-              {t('auth.common.secure_connection')}
+              {t('auth.common.secureConnection')}
             </Typography>
           </Box>
         </Box>
@@ -246,11 +246,13 @@ export default function PasswordResetSuccess() {
               fontFamily: 'inherit',
             }}
           >
-            © {new Date().getFullYear()} {t('auth.common.app_name')}.{' '}
-            {t('auth.common.all_rights_reserved')}
+            © {new Date().getFullYear()} {t('auth.common.appName')}.{' '}
+            {t('auth.common.allRightsReserved')}
           </Typography>
         </Box>
       </Container>
     </>
   )
 }
+
+

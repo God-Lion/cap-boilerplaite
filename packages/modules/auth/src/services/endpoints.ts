@@ -46,6 +46,9 @@ export const ENDPOINTS = {
     revokeSession: (sessionId: string) => `/api/auth/sessions/${sessionId}`,
     revokeAllSessions: '/api/auth/sessions/revoke-all',
     trackFailedLogin: '/api/auth/track-failed-login',
+    invitationDetails: '/api/auth/invitation-details',
+    acceptInvitation: '/api/auth/accept-invitation',
+    declineInvitation: '/api/auth/decline-invitation',
     mfa: {
       setup: '/api/auth/mfa/setup',
       verify: '/api/auth/mfa/verify',
@@ -154,10 +157,10 @@ export const ENDPOINTS = {
 
   // Guest/Anonymous Routes
   guest: {
-    analyzeAnonymous: '/api/guest/analyze-anonymous',
-    matchAnonymous: '/api/guest/match-anonymous',
-    getSession: (sessionId: string) => `/api/guest/session/${sessionId}`,
-    deleteSession: (sessionId: string) => `/api/guest/session/${sessionId}`,
+    analyzeAnonymous: '/api/admin/guest/analyze-anonymous',
+    matchAnonymous: '/api/admin/guest/match-anonymous',
+    getSession: (sessionId: string) => `/api/admin/guest/session/${sessionId}`,
+    deleteSession: (sessionId: string) => `/api/admin/guest/session/${sessionId}`,
   },
 
   // SCIM Provisioning
@@ -224,10 +227,10 @@ export const ENDPOINTS = {
       index: '/api/admin/users',
       store: '/api/admin/users',
       byId: (id: number) => `/api/admin/users/${id}`,
-      activate: (id: number) => `/api/admin/users/activate/${id}`,
-      deactivate: (id: number) => `/api/admin/users/deactivate/${id}`,
-      suspend: (id: number) => `/api/admin/users/suspend/${id}`,
-      unsuspend: (id: number) => `/api/admin/users/unsuspend/${id}`,
+      activate: (id: number) => `/api/admin/users/${id}/activate`,
+      deactivate: (id: number) => `/api/admin/users/${id}/deactivate`,
+      suspend: (id: number) => `/api/admin/users/${id}/ban`,
+      unsuspend: (id: number) => `/api/admin/users/${id}/unsuspend`,
       resetPassword: (id: number) => `/api/admin/users/${id}/reset-password`,
       resetMfa: (id: number) => `/api/admin/users/${id}/mfa-reset`,
       bulkAction: '/api/admin/users/bulk',
@@ -235,7 +238,7 @@ export const ENDPOINTS = {
       impersonate: (id: number) => `/api/admin/users/${id}/impersonate`,
       unlock: (id: number) => `/api/admin/users/${id}/unlock`,
       sessions: (id: number) => `/api/admin/users/${id}/sessions`,
-      ban: (id: number) => `/api/admin/users/${id}/suspend`,
+      ban: (id: number) => `/api/admin/users/${id}/ban`,
       unban: (id: number) => `/api/admin/users/${id}/unsuspend`,
     },
     appeals: {
@@ -294,8 +297,11 @@ export const ENDPOINTS = {
       addMember: (id: number) => `/api/admin/organizations/${id}/members`,
       removeMember: (id: number, userId: number) =>
         `/api/admin/organizations/${id}/members/${userId}`,
+      logo: (id: number) => `/api/admin/organizations/${id}/logo`,
       invite: (id: number) => `/api/admin/organizations/${id}/invite`,
       invitations: (id: number) => `/api/admin/organizations/${id}/invitations`,
+      revokeInvitation: (orgId: number, invitationId: number | string) =>
+        `/api/admin/organizations/${orgId}/invitations/${invitationId}/revoke`,
       policies: (id: number) => `/api/admin/organizations/${id}/policies`,
       impersonate: (id: number) => `/api/admin/organizations/${id}/impersonate`,
     },
@@ -310,10 +316,10 @@ export const ENDPOINTS = {
     },
     auditLogs: {
       index: '/api/admin/audit-logs',
-      export: '/api/admin/audit-logs/export',
-      security: '/api/admin/audit-logs/security-logs',
+      export: '/api/audit/logs/export',
+      security: '/api/admin/security-logs',
       impersonation: '/api/admin/impersonation-logs',
-      statistics: '/api/admin/audit-logs/statistics',
+      statistics: '/api/audit/statistics',
     },
     email: {
       templates: '/api/admin/email/templates',
@@ -329,7 +335,9 @@ export const ENDPOINTS = {
       trends: '/api/admin/statistics/trends',
     },
     impersonationLogs: '/api/admin/impersonation-logs',
-    securityLogs: '/api/admin/audit-logs/security-logs',
+    security: {
+      health: '/api/admin/security/health',
+    },
     docs: '/api/admin/docs',
   },
 
@@ -337,12 +345,15 @@ export const ENDPOINTS = {
   rbac: {
     roles: {
       list: '/api/admin/rbac/roles',
+      stats: '/api/admin/rbac/roles/stats',
       store: '/api/admin/rbac/roles',
+      byId: (id: number) => `/api/admin/rbac/roles/${id}`,
       update: (id: number) => `/api/admin/rbac/roles/${id}`,
       destroy: (id: number) => `/api/admin/rbac/roles/${id}`,
       permissions: (role: string) => `/api/admin/rbac/roles/${role}/permissions`,
       assignPermission: '/api/admin/rbac/roles/assign-permission',
       syncPermissions: (id: number) => `/api/admin/rbac/roles/${id}/permissions`,
+      syncParents: (id: number) => `/api/admin/rbac/roles/${id}/parents`,
     },
     permissions: {
       list: '/api/admin/rbac/permissions',

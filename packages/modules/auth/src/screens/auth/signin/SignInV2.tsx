@@ -27,7 +27,7 @@ import {
 } from '@mui/icons-material'
 import { useForm, Controller, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Alert as MAlert, themeConfig, IStatus } from '@cap/platform-core'
+import { Alert as MAlert, themeConfig, IStatus, Roles, useAppStore } from '@cap/platform-core'
 import { startAuthentication } from '@simplewebauthn/browser'
 import {
   useSignin,
@@ -40,7 +40,7 @@ import { useInterval } from '../../../hooks/useInterval'
 import { usePasskeyAutofill } from '../../../hooks/usePasskeyAutofill'
 import { LoginRequest } from '../../../types/api.types'
 import authService from '../../../services/auth.service'
-import Path from '../path'
+import Path from '../../path'
 
 const DEFAULT_FORM_VALUES: LoginRequest = {
   email: 'admin@example.com',
@@ -106,7 +106,7 @@ export default function SignInV2() {
 
   const loginMutation = useSignin({
     onSuccess: (response) => {
-      if (response.data.mfa_required) {
+      if (response?.data?.mfa_required) {
         setPendingMfaUser({ userId: response.data.userId, email: getValues('email') })
         setMode('mfa')
         setMfaCode('')
@@ -126,7 +126,21 @@ export default function SignInV2() {
         state: 'success',
         msg: t('auth.login.login_successful'),
       })
-      setTimeout(() => navigate('/auth/account'), 1500)
+
+      // Determine redirect path based on role
+      const userData = response?.data?.user || response?.data
+      const userRole = userData?.role as Roles
+
+      let redirectPath = '/auth/account'
+      const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+
+      if (userRole && ADMIN_ROLES.includes(userRole)) {
+        redirectPath = Path.admin.users
+      } else if (userRole === Roles.PARTICIPANT) {
+        redirectPath = '/provider'
+      }
+
+      setTimeout(() => navigate(redirectPath), 1500)
     },
     onError: async (error: any) => {
       if (error.response?.status === 423) {
@@ -179,7 +193,21 @@ export default function SignInV2() {
       setMode('login')
       setMfaCode('')
       setPendingMfaUser(null)
-      setTimeout(() => navigate('/auth/account'), 1200)
+      setTimeout(() => {
+        const userData = useAppStore.getState().user as any
+        const userRole = userData?.role || userData?.user?.role
+
+        let redirectPath = '/auth/account'
+        const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+
+        if (ADMIN_ROLES.includes(userRole as any)) {
+          redirectPath = Path.admin.users
+        } else if (userRole === Roles.PARTICIPANT) {
+          redirectPath = '/provider'
+        }
+
+        navigate(redirectPath)
+      }, 1200)
     },
     onError: (error: any) => {
       setStatus({
@@ -202,7 +230,21 @@ export default function SignInV2() {
         state: 'success',
         msg: t('auth.login.passkey_login_successful'),
       })
-      setTimeout(() => navigate('/auth/account'), 1500)
+      setTimeout(() => {
+        const userData = useAppStore.getState().user as any
+        const userRole = (userData?.role || userData?.user?.role) as Roles
+
+        let redirectPath = '/auth/account'
+        const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+
+        if (userRole && ADMIN_ROLES.includes(userRole)) {
+          redirectPath = Path.admin.users
+        } else if (userRole === Roles.PARTICIPANT) {
+          redirectPath = '/provider'
+        }
+
+        navigate(redirectPath)
+      }, 1500)
     },
     onError: (error: any) => {
       setStatus({
@@ -224,7 +266,21 @@ export default function SignInV2() {
       state: 'success',
       msg: t('auth.login.passkey_login_successful'),
     })
-    setTimeout(() => navigate('/auth/account'), 1000)
+    setTimeout(() => {
+      const userData = useAppStore.getState().user as any
+      const userRole = (userData?.role || userData?.user?.role) as Roles
+
+      let redirectPath = '/auth/account'
+      const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+
+      if (userRole && ADMIN_ROLES.includes(userRole)) {
+        redirectPath = Path.admin.users
+      } else if (userRole === Roles.PARTICIPANT) {
+        redirectPath = '/provider'
+      }
+
+      navigate(redirectPath)
+    }, 1000)
   }, [navigate, t])
 
   const { isAvailable: isPasskeyAutofillAvailable } = usePasskeyAutofill(
@@ -773,7 +829,7 @@ export default function SignInV2() {
                               type={showPassword ? 'text' : 'password'}
                               fullWidth
                               autoComplete='current-password'
-                              placeholder={t('auth.common.password_placeholder')}
+                              placeholder={t('auth.common.passwordPlaceholder')}
                               error={!!fieldState.error}
                               helperText={fieldState.error?.message}
                               InputProps={{
@@ -829,7 +885,7 @@ export default function SignInV2() {
                       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <MuiLink
                           component={Link}
-                          to={Path.forgotPassword}
+                          to={Path.auth.forgotPassword}
                           sx={{
                             fontSize: '0.875rem',
                             fontWeight: 500,
@@ -1052,7 +1108,7 @@ export default function SignInV2() {
                     </Typography>
                     <MuiLink
                       component={Link}
-                      to={Path.signup}
+                      to={Path.auth.signup}
                       sx={{
                         fontSize: '0.875rem',
                         fontWeight: 700,

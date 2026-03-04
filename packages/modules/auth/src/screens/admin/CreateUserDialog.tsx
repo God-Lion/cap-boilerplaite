@@ -44,10 +44,10 @@ export default function CreateUserDialog({ open, onClose }: CreateUserDialogProp
         lastname: '',
         role_id: 1,
       })
-      enqueueSnackbar(t('auth.admin.success_create'), { variant: 'success' })
+      enqueueSnackbar(t('auth.admin.successCreate'), { variant: 'success' })
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.message || t('auth.admin.error_create'), { variant: 'error' })
+      enqueueSnackbar(error.message || t('auth.admin.errorCreate'), { variant: 'error' })
     },
   })
 
@@ -64,13 +64,13 @@ export default function CreateUserDialog({ open, onClose }: CreateUserDialogProp
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
       <form onSubmit={handleSubmit}>
-        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.add_user_title')}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.addUser_title')}</DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={3} sx={{ mt: 0 }}>
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
-                label={t('auth.common.first_name')}
+                label={t('auth.common.firstName')}
                 name='firstname'
                 value={formData.firstname}
                 onChange={handleChange}
@@ -80,7 +80,7 @@ export default function CreateUserDialog({ open, onClose }: CreateUserDialogProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
-                label={t('auth.common.last_name')}
+                label={t('auth.common.lastName')}
                 name='lastname'
                 value={formData.lastname}
                 onChange={handleChange}
@@ -111,11 +111,11 @@ export default function CreateUserDialog({ open, onClose }: CreateUserDialogProp
             </Grid>
             <Grid size={{ xs: 12 }}>
               <FormControl fullWidth>
-                <InputLabel>{t('auth.common.role_label')}</InputLabel>
+                <InputLabel>{t('auth.common.roleLabel')}</InputLabel>
                 <Select
                   name='role_id'
                   value={formData.role_id}
-                  label={t('auth.common.role_label')}
+                  label={t('auth.common.roleLabel')}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, role_id: e.target.value as number }))
                   }
@@ -140,7 +140,7 @@ export default function CreateUserDialog({ open, onClose }: CreateUserDialogProp
             {createUserMutation.isPending ? (
               <CircularProgress size={24} />
             ) : (
-              t('auth.admin.add_user')
+              t('auth.admin.addUser')
             )}
           </Button>
         </DialogActions>
@@ -148,3 +148,4 @@ export default function CreateUserDialog({ open, onClose }: CreateUserDialogProp
     </Dialog>
   )
 }
+

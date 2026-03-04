@@ -299,7 +299,7 @@ const PasswordlessVerification = () => {
                     // },
                   }}
                 >
-                  {t('auth.common.back_to_login')}
+                  {t('auth.common.backToLogin')}
                 </Button>
               </Box>
             </CardContent>
@@ -311,3 +311,4 @@ const PasswordlessVerification = () => {
 }
 
 export default PasswordlessVerification
+

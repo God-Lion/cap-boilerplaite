@@ -36,7 +36,7 @@ export default function IssueBanDialog({ open, onClose }: IssueBanDialogProps) {
 
   const banMutation = useBanUser({
     onSuccess: () => {
-      enqueueSnackbar(t('auth.admin.ban_success'), {
+      enqueueSnackbar(t('auth.admin.banSuccess'), {
         variant: 'success',
       })
       onClose()
@@ -44,7 +44,7 @@ export default function IssueBanDialog({ open, onClose }: IssueBanDialogProps) {
       setReason('')
     },
     onError: (error) => {
-      enqueueSnackbar(error.message || t('auth.common.error_occurred'), {
+      enqueueSnackbar(error.message || t('auth.common.errorOccurred'), {
         variant: 'error',
       })
     },
@@ -58,7 +58,7 @@ export default function IssueBanDialog({ open, onClose }: IssueBanDialogProps) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
-      <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.issue_new_ban')}</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.issueNewBan')}</DialogTitle>
       <DialogContent dividers>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1 }}>
           <Autocomplete
@@ -70,8 +70,8 @@ export default function IssueBanDialog({ open, onClose }: IssueBanDialogProps) {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label={t('auth.admin.select_user')}
-                placeholder={t('auth.admin.search_user_to_ban')}
+                label={t('auth.admin.selectUser')}
+                placeholder={t('auth.admin.searchUserToBan')}
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
@@ -86,15 +86,15 @@ export default function IssueBanDialog({ open, onClose }: IssueBanDialogProps) {
           />
 
           {selectedUser && selectedUser.status === 'SUSPENDED' && (
-            <Alert severity='warning'>{t('auth.admin.user_already_banned')}</Alert>
+            <Alert severity='warning'>{t('auth.admin.userAlreadyBanned')}</Alert>
           )}
 
           <TextField
             fullWidth
             multiline
             rows={3}
-            label={t('auth.admin.ban_reason')}
-            placeholder={t('auth.admin.ban_reason_placeholder')}
+            label={t('auth.admin.banReason')}
+            placeholder={t('auth.admin.banReason_placeholder')}
             value={reason}
             onChange={(e) => setReason(e.target.value)}
           />
@@ -111,9 +111,11 @@ export default function IssueBanDialog({ open, onClose }: IssueBanDialogProps) {
           disabled={!selectedUser || banMutation.isPending || selectedUser.status === 'SUSPENDED'}
           sx={{ textTransform: 'none', fontWeight: 600 }}
         >
-          {banMutation.isPending ? <CircularProgress size={24} /> : t('auth.admin.issue_ban')}
+          {banMutation.isPending ? <CircularProgress size={24} /> : t('auth.admin.issueBan')}
         </Button>
       </DialogActions>
     </Dialog>
   )
 }
+
+

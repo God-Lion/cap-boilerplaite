@@ -46,12 +46,12 @@ const NoLogsState = ({ title, description, onAction, actionLabel }: NoLogsStateP
 
         <Box>
           <Typography variant='h6' sx={{ color: 'white', fontWeight: 600 }}>
-            {title || t('auth.common.no_logs_title', 'No activity logs found')}
+            {title || t('auth.common.noLogsTitle', 'No activity logs found')}
           </Typography>
           <Typography variant='body2' sx={{ color: 'rgba(255, 255, 255, 0.5)', maxWidth: 300 }}>
             {description ||
               t(
-                'auth.common.no_logs_desc',
+                'auth.common.noLogsDesc',
                 "We couldn't find any security events for the selected period.",
               )}
           </Typography>
@@ -82,3 +82,4 @@ const NoLogsState = ({ title, description, onAction, actionLabel }: NoLogsStateP
 }
 
 export default NoLogsState
+

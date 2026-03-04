@@ -62,10 +62,10 @@ export default function ImpersonationLogs() {
       >
         <Box>
           <Typography variant='h4' sx={{ fontWeight: 900, letterSpacing: '-0.027em', mb: 1 }}>
-            {t('auth.admin.impersonation_logs_title')}
+            {t('auth.admin.impersonationLogsTitle')}
           </Typography>
           <Typography variant='body1' color='text.secondary'>
-            {t('auth.admin.impersonation_logs_subtitle')}
+            {t('auth.admin.impersonationLogsSubtitle')}
           </Typography>
         </Box>
         <Button
@@ -105,20 +105,20 @@ export default function ImpersonationLogs() {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {[
           {
-            label: t('auth.admin.stat_total_sessions'),
+            label: t('auth.admin.statTotalSessions'),
             value: rawLogs.length || '…',
             icon: <History />,
             color: 'primary',
           },
           {
-            label: t('auth.admin.stat_active_sessions'),
+            label: t('auth.admin.statActiveSessions'),
             value:
               rawLogs.filter((l) => !l.createdAt || new Date(l.createdAt).getTime() > oneHourAgo)
                 .length || 0,
             icon: <Security />,
             color: 'success',
           },
-          { label: t('auth.admin.stat_flags_raised'), value: 0, icon: <Info />, color: 'info' },
+          { label: t('auth.admin.statFlagsRaised'), value: 0, icon: <Info />, color: 'info' },
         ].map((stat, idx) => (
           <Grid key={idx} size={{ xs: 12, sm: 4 }}>
             <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
@@ -154,7 +154,7 @@ export default function ImpersonationLogs() {
         <CardContent sx={{ p: '12px !important' }}>
           <Stack direction='row' spacing={2}>
             <TextField
-              placeholder={t('auth.admin.search_logs')}
+              placeholder={t('auth.admin.searchLogs')}
               size='small'
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -187,7 +187,7 @@ export default function ImpersonationLogs() {
         <Table>
           <TableHead sx={{ bgcolor: alpha(theme.palette.action.hover, 0.5) }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.id_ref')}</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.idRef')}</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.administrator')}</TableCell>
               <TableCell sx={{ fontWeight: 700 }} align='center'>
                 <ArrowForward fontSize='small' color='action' />
@@ -208,13 +208,13 @@ export default function ImpersonationLogs() {
             ) : isError ? (
               <TableRow>
                 <TableCell colSpan={7} align='center' sx={{ py: 6 }}>
-                  <Alert severity='error'>Failed to load impersonation logs.</Alert>
+                  <Alert severity='error'>{t('auth.admin.loadImpersonationFailed')}</Alert>
                 </TableCell>
               </TableRow>
             ) : logs.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} align='center' sx={{ py: 6, color: 'text.secondary' }}>
-                  {t('auth.admin.no_impersonation_logs')}
+                  {t('auth.admin.noImpersonationLogs')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -289,7 +289,7 @@ export default function ImpersonationLogs() {
                     </Typography>
                   </TableCell>
                   <TableCell align='right'>
-                    <Tooltip title={t('auth.admin.view_details')}>
+                    <Tooltip title={t('auth.admin.viewDetails')}>
                       <IconButton size='small'>
                         <MoreVert />
                       </IconButton>
@@ -317,13 +317,15 @@ export default function ImpersonationLogs() {
         <Security color='disabled' />
         <Box>
           <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 0.5 }}>
-            {t('auth.admin.immutable_trail')}
+            {t('auth.admin.immutableTrail')}
           </Typography>
           <Typography variant='caption' color='text.secondary' display='block'>
-            {t('auth.admin.audit_trail_desc')}
+            {t('auth.admin.auditTrailDesc')}
           </Typography>
         </Box>
       </Box>
     </Box>
   )
 }
+
+

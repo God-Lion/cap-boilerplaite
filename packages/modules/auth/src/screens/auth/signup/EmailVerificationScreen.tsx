@@ -235,7 +235,7 @@ export default function EmailVerificationScreen() {
                       mt: 1,
                     }}
                   >
-                    {t('auth.common.back_to_login', 'Back to log in')}
+                    {t('auth.common.backToLogin', 'Back to log in')}
                   </MuiLink>
                 </Box>
               </>
@@ -252,7 +252,7 @@ export default function EmailVerificationScreen() {
               href='#'
               sx={{ color: 'text.primary', fontWeight: 700, textDecoration: 'none' }}
             >
-              {t('auth.common.contact_support', 'Contact Support')}
+              {t('auth.common.contactSupport', 'Contact Support')}
             </MuiLink>
           </Typography>
         </Box>
@@ -260,3 +260,4 @@ export default function EmailVerificationScreen() {
     </>
   )
 }
+

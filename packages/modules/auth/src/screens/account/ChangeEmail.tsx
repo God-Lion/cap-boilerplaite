@@ -402,8 +402,8 @@ function ChangeEmail() {
         {/* Footer */}
         <Box sx={{ mt: 4, textAlign: 'center' }}>
           <Typography sx={{ fontSize: '0.75rem', color: 'text.disabled' }}>
-            © {new Date().getFullYear()} {t('auth.common.app_name')}.{' '}
-            {t('auth.common.all_rights_reserved')}
+            © {new Date().getFullYear()} {t('auth.common.appName')}.{' '}
+            {t('auth.common.allRightsReserved')}
           </Typography>
         </Box>
       </Container>
@@ -412,3 +412,4 @@ function ChangeEmail() {
 }
 
 export default ChangeEmail
+

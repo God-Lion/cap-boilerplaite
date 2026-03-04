@@ -19,6 +19,7 @@ import {
 } from '@cap/layout'
 import { ChevronRight } from '@mui/icons-material'
 import { Path } from '@cap/module-auth'
+import { PermissionGuard, RoleGuard, Roles } from '@cap/platform-core'
 
 type RenderExpandIconProps = {
   level?: number
@@ -129,20 +130,24 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Dictionary }) => {
           icon={<i className='tabler-shield-half' />}
         >
           {/* Identity Management Dropdown */}
-          <SubMenu
-            label={dictionary['navigation']?.userManagement || 'Management'}
-            icon={<i className='tabler-users' />}
-          >
-            <MenuItem component={Link} to={Path.admin.users}>
-              {dictionary['navigation']?.list || 'User Directory'}
-            </MenuItem>
-            <MenuItem component={Link} to={Path.admin.organizations}>
-              {dictionary['navigation']?.list || 'Organizations'}
-            </MenuItem>
-            <MenuItem component={Link} to={Path.admin.roles}>
-              {dictionary['navigation']?.roles || 'Access Roles'}
-            </MenuItem>
-          </SubMenu>
+          <RoleGuard require={[Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE, Roles.PROVIDERADMIN]}>
+            <SubMenu
+              label={dictionary['navigation']?.userManagement || 'Management'}
+              icon={<i className='tabler-users' />}
+            >
+              <MenuItem component={Link} to={Path.admin.users}>
+                {dictionary['navigation']?.list || 'User Directory'}
+              </MenuItem>
+              <MenuItem component={Link} to={Path.admin.organizations}>
+                {dictionary['navigation']?.list || 'Organizations'}
+              </MenuItem>
+              <PermissionGuard require={['admin.access']} logic='OR'>
+                <MenuItem component={Link} to={Path.admin.roles}>
+                  {dictionary['navigation']?.roles || 'Access Roles'}
+                </MenuItem>
+              </PermissionGuard>
+            </SubMenu>
+          </RoleGuard>
 
           {/* Flows Dropdown */}
           <SubMenu
@@ -171,23 +176,27 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Dictionary }) => {
             <MenuItem component={Link} to={Path.passkey.management}>
               {dictionary['navigation']?.passkeys || 'Passkeys'}
             </MenuItem>
-            <MenuItem component={Link} to={Path.auth.oidcConfigBrowser}>
-              {dictionary['navigation']?.oidcProtocols || 'SSO Protocols'}
-            </MenuItem>
+            <PermissionGuard require={['admin.access']} logic='OR'>
+              <MenuItem component={Link} to={Path.auth.oidcConfigBrowser}>
+                {dictionary['navigation']?.oidcProtocols || 'SSO Protocols'}
+              </MenuItem>
+            </PermissionGuard>
           </SubMenu>
 
           {/* Insights Dropdown */}
-          <SubMenu
-            label={dictionary['navigation']?.monitoring || 'Insights'}
-            icon={<i className='tabler-activity' />}
-          >
-            <MenuItem component={Link} to={Path.admin.events}>
-              {dictionary['navigation']?.authEvents || 'Audit Logs'}
-            </MenuItem>
-            <MenuItem component={Link} to={Path.admin.health}>
-              {dictionary['navigation']?.systemHealth || 'System Health'}
-            </MenuItem>
-          </SubMenu>
+          <RoleGuard require={[Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE]}>
+            <SubMenu
+              label={dictionary['navigation']?.monitoring || 'Insights'}
+              icon={<i className='tabler-activity' />}
+            >
+              <MenuItem component={Link} to={Path.admin.events}>
+                {dictionary['navigation']?.authEvents || 'Audit Logs'}
+              </MenuItem>
+              <MenuItem component={Link} to={Path.admin.health}>
+                {dictionary['navigation']?.systemHealth || 'System Health'}
+              </MenuItem>
+            </SubMenu>
+          </RoleGuard>
         </SubMenu>
 
         <SubMenu

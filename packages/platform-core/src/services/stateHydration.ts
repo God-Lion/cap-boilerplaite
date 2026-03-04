@@ -1,6 +1,6 @@
 /* cspell:ignore notif */
 import { useEffect, useState } from 'react'
-import { useAppStore } from './../store'
+import { useAppStore, useHasHydrated } from './../store'
 import { localStorageManager, sessionStorageManager, STORAGE_KEYS } from './storage'
 
 export interface HydrationStatus {
@@ -19,20 +19,24 @@ export const useStateHydration = (): HydrationStatus => {
     error: null,
   })
 
-  const { refreshAuth, guestSession, createGuestSession } = useAppStore()
+  const { refreshAuth, guestSession, createGuestSession, isAuthenticated } = useAppStore()
+  const hasZustandHydrated = useHasHydrated()
 
   useEffect(() => {
+    if (!hasZustandHydrated) {
+      return // Wait for Zustand to hydrate its persisted state before acting
+    }
+
     const hydrateState = async () => {
       try {
         setStatus((prev) => ({ ...prev, isHydrating: true }))
 
-        // 1. Check for authentication
-        const hasAuthToken = localStorageManager.has(STORAGE_KEYS.AUTH_TOKEN)
-        console.log('[useStateHydration] Checking for auth token:', hasAuthToken)
+        // 1. Check for authentication using the persisted Zustand state
+        console.log('[useStateHydration] Checking auth state:', isAuthenticated)
 
-        if (hasAuthToken) {
-          // Refresh authentication if token exists
-          console.log('[useStateHydration] Token found, refreshing auth...')
+        if (isAuthenticated) {
+          // If Zustand thinks we are authenticated, attempt to refresh tokens
+          console.log('[useStateHydration] Auth state found, refreshing auth...')
           await refreshAuth()
         } else {
           // Create guest session if no auth
@@ -60,7 +64,7 @@ export const useStateHydration = (): HydrationStatus => {
     }
 
     hydrateState()
-  }, [refreshAuth, guestSession, createGuestSession])
+  }, [refreshAuth, guestSession, createGuestSession, hasZustandHydrated])
 
   return status
 }

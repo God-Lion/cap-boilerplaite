@@ -670,7 +670,7 @@ export default function LoginScreen() {
               '&:hover': { color: 'text.primary' },
             }}
           >
-            {t('auth.common.help_center')}
+            {t('auth.common.helpCenter')}
           </MuiLink>
           <MuiLink
             href='#'
@@ -681,10 +681,12 @@ export default function LoginScreen() {
               '&:hover': { color: 'text.primary' },
             }}
           >
-            {t('auth.common.privacy_policy')}
+            {t('auth.common.privacyPolicy')}
           </MuiLink>
         </Box>
       </Container>
     </>
   )
 }
+
+

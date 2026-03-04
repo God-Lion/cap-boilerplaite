@@ -133,7 +133,7 @@ export default function Page401Unauthorized() {
                 onClick={() => navigate(Path.signin)}
                 sx={{ height: 52, borderRadius: '12px', fontWeight: 700, textTransform: 'none' }}
               >
-                {t('auth.common.login_button', 'Log In')}
+                {t('auth.common.loginButton', 'Log In')}
               </Button>
             </Box>
           </CardContent>
@@ -149,3 +149,4 @@ export default function Page401Unauthorized() {
     </>
   )
 }
+

@@ -181,7 +181,7 @@ export default function CheckEmailConfirmation() {
                 }}
               >
                 <ArrowBack sx={{ fontSize: 18 }} />
-                {t('auth.common.back_to_login', 'Back to log in')}
+                {t('auth.common.backToLogin', 'Back to log in')}
               </MuiLink>
             </Box>
           </CardContent>
@@ -195,7 +195,7 @@ export default function CheckEmailConfirmation() {
               href='#'
               sx={{ color: 'text.secondary', fontWeight: 600, textDecoration: 'none' }}
             >
-              {t('auth.common.contact_support', 'Contact Support')}
+              {t('auth.common.contactSupport', 'Contact Support')}
             </MuiLink>
           </Typography>
         </Box>
@@ -203,3 +203,4 @@ export default function CheckEmailConfirmation() {
     </>
   )
 }
+

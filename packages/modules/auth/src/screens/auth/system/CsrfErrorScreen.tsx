@@ -144,7 +144,7 @@ export default function CsrfErrorScreen() {
               href='#'
               sx={{ color: 'primary.main', fontWeight: 700, textDecoration: 'none' }}
             >
-              {t('auth.common.learn_more', 'Learn more')}
+              {t('auth.common.learnMore', 'Learn more')}
             </MuiLink>
           </Typography>
         </Box>
@@ -152,3 +152,4 @@ export default function CsrfErrorScreen() {
     </>
   )
 }
+

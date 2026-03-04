@@ -63,10 +63,10 @@ const AdminLoginScreen = () => {
               component='h1'
               sx={{ fontWeight: 800, letterSpacing: '-0.02em', mb: 1 }}
             >
-              {t('auth.admin.login_title', 'Admin Console')}
+              {t('auth.admin.loginTitle', 'Admin Console')}
             </Typography>
             <Typography variant='body2' sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
-              {t('auth.admin.login_desc', 'Authorized personnel access only')}
+              {t('auth.admin.loginDesc', 'Authorized personnel access only')}
             </Typography>
           </Box>
 
@@ -159,7 +159,7 @@ const AdminLoginScreen = () => {
                 onClick={() => navigate(Path.signin)}
                 sx={{ color: 'rgba(255, 255, 255, 0.4)', '&:hover': { color: 'white' } }}
               >
-                {t('auth.admin.back_to_user', 'Standard User Login?')}
+                {t('auth.admin.backToUser', 'Standard User Login?')}
               </Button>
             </Box>
           </Paper>
@@ -167,7 +167,7 @@ const AdminLoginScreen = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, opacity: 0.4 }}>
             <Security sx={{ fontSize: 16 }} />
             <Typography variant='caption'>
-              {t('auth.admin.secure_session', 'Identity encrypted session active')}
+              {t('auth.admin.secureSession', 'Identity encrypted session active')}
             </Typography>
           </Box>
         </Stack>
@@ -177,3 +177,4 @@ const AdminLoginScreen = () => {
 }
 
 export default AdminLoginScreen
+

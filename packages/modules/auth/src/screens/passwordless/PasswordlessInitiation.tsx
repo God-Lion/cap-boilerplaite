@@ -460,7 +460,7 @@ export default function PasswordlessInitiation() {
                 }}
               >
                 {t('auth.passwordless.secured_by', {
-                  appName: t('auth.common.app_name'),
+                  appName: t('auth.common.appName'),
                 })}
               </Typography>
             </Box>
@@ -484,7 +484,7 @@ export default function PasswordlessInitiation() {
                   },
                 }}
               >
-                {t('auth.common.terms_of_service')}
+                {t('auth.common.termsOfService')}
               </HLink>{' '}
               {t('auth.common.and')}{' '}
               <HLink
@@ -501,7 +501,7 @@ export default function PasswordlessInitiation() {
                   },
                 }}
               >
-                {t('auth.common.privacy_policy')}
+                {t('auth.common.privacyPolicy')}
               </HLink>
               .
             </Typography>
@@ -511,3 +511,4 @@ export default function PasswordlessInitiation() {
     </>
   )
 }
+

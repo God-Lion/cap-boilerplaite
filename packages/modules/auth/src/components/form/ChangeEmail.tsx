@@ -42,7 +42,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
         password: string
       }
       */
-      const hasChangedEmail = user.firstName.toLowerCase() !== data.email?.toLowerCase()
+      const hasChangedEmail = user.email?.toLowerCase() !== data.email?.toLowerCase()
       const hasChangedEmailCase = !hasChangedEmail && user.email !== data.email
 
       // if (hasChangedEmail) _body = { ..._body, email: data.email }
@@ -112,7 +112,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
                 rules={{
                   required: {
                     value: true,
-                    message: t('auth.common.field_required'),
+                    message: t('auth.common.fieldRequired'),
                   },
                   pattern: {
                     value: /\S+@\S+\.\S+/,
@@ -120,7 +120,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
                   },
                   onBlur: (e) => {
                     const email = e.target.value
-                    const hasChangedEmail = user.firstName.toLowerCase() !== email?.toLowerCase()
+                    const hasChangedEmail = user.email?.toLowerCase() !== email?.toLowerCase()
                     const hasChangedEmailCase = !hasChangedEmail && user.email !== email
                     if (!email)
                       controlForm.setError(
@@ -198,7 +198,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
             <Grid sx={{ mt: '30px' }} size={{ xs: 12 }}>
               <Stack direction='row' spacing={2} justifyContent='start'>
                 <Button type='submit' variant='contained' color='primary'>
-                  {t('auth.common.save_changes')}
+                  {t('auth.common.saveChanges')}
                 </Button>
                 {/* <Button type='reset' variant='outlined' color='error'>
                 Annuler

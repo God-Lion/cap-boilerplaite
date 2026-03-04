@@ -56,7 +56,7 @@ export const profileService = {
     return apiClient.delete(ENDPOINTS.profiles.delete(id))
   },
 
-  getActiveStatus: (id: number): Promise<FetchResponse> => {
+  getActiveStatus: (id: number): Promise<FetchResponse<any>> => {
     return apiClient.get(ENDPOINTS.profiles.activeStatus(id))
   },
 }

@@ -64,15 +64,18 @@ const AuthRoute = ({
     return <Navigate to='/auth/sign-in' replace state={{ from: location }} />
   }
 
-  interface UserWithRole {
-    role: string
-    isVerified?: boolean
-    emailVerified?: boolean
-  }
+  // Securely resolve user data and role
+  // Handle cases where user might be the auth object itself or wrapped in a tuple like [userData, isLoading]
+  const rawUser = user as any
+  const userData: any = Array.isArray(rawUser)
+    ? rawUser[0]?.user || rawUser[0]
+    : rawUser?.user || rawUser
 
+  const userRole = (userData?.role as Roles) || Roles.USER
+
+  // Check role access
   if (allowedRoles && allowedRoles.length > 0) {
-    const userRole = (user as unknown as UserWithRole).role
-    const hasAccess = allowedRoles.includes(userRole as unknown as Roles)
+    const hasAccess = allowedRoles.includes(userRole)
 
     if (!hasAccess) {
       return (
@@ -98,32 +101,39 @@ const AuthRoute = ({
     }
   }
 
+  // Handle email verification check
   if (requiresVerification) {
-    const u = user as unknown as UserWithRole
-    const isVerified = u.isVerified || u.emailVerified
+    const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+    const isAdmin = ADMIN_ROLES.includes(userRole)
 
-    if (!isVerified) {
-      return (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100vh',
-            gap: 2,
-            p: 3,
-          }}
-        >
-          <Alert severity='warning' sx={{ maxWidth: 500 }}>
-            Please verify your email address to access this feature. Check your inbox for a
-            verification email.
-          </Alert>
-          <Button variant='contained' onClick={() => navigate('/auth/verification/email')}>
-            Resend Verification Email
-          </Button>
-        </Box>
-      )
+    // Admins bypass verification check
+    if (!isAdmin) {
+      // Logic for verification: check isVerified (newly added) or emailVerified
+      const isVerified = userData?.isVerified === true || userData?.emailVerified === true
+
+      if (!isVerified) {
+        return (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '100vh',
+              gap: 2,
+              p: 3,
+            }}
+          >
+            <Alert severity='warning' sx={{ maxWidth: 500 }}>
+              Please verify your email address to access this feature. Check your inbox for a
+              verification email.
+            </Alert>
+            <Button variant='contained' onClick={() => navigate('/auth/verification/email')}>
+              Resend Verification Email
+            </Button>
+          </Box>
+        )
+      }
     }
   }
 

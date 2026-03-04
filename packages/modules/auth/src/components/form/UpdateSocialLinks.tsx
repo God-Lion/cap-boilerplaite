@@ -10,10 +10,10 @@ export default function UpdateSocialLinks() {
   const { t } = useTranslation()
 
   const schema = z.object({
-    facebookUrl: z.string().url(t('auth.common.field_required')),
-    instagramUrl: z.string().url(t('auth.common.field_required')),
-    threadUrl: z.string().url(t('auth.common.field_required')),
-    twitterUrl: z.string().url(t('auth.common.field_required')),
+    facebookUrl: z.string().url(t('auth.common.fieldRequired')),
+    instagramUrl: z.string().url(t('auth.common.fieldRequired')),
+    threadUrl: z.string().url(t('auth.common.fieldRequired')),
+    twitterUrl: z.string().url(t('auth.common.fieldRequired')),
   })
 
   const controlForm = useForm({
@@ -122,3 +122,4 @@ export default function UpdateSocialLinks() {
     </FormLayout>
   )
 }
+

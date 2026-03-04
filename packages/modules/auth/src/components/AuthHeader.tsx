@@ -51,7 +51,7 @@ const AuthHeader = () => {
             fontFamily: "'Manrope', sans-serif",
           }}
         >
-          {t('auth.common.app_name')}
+          {t('auth.common.appName')}
         </Typography>
       </Box>
 
@@ -69,7 +69,7 @@ const AuthHeader = () => {
             },
           }}
         >
-          {t('auth.common.help_center')}
+          {t('auth.common.helpCenter')}
         </Button>
       </Box>
     </Box>
@@ -77,3 +77,5 @@ const AuthHeader = () => {
 }
 
 export default AuthHeader
+
+

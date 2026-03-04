@@ -15,3 +15,4 @@ export * from './components'
 
 export * from './utils'
 export * from './assembly'
+export * from './hooks/usePermissions'

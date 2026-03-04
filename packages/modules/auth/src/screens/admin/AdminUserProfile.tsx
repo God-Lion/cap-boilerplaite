@@ -125,10 +125,10 @@ export default function AdminUserProfile() {
       {
         onSuccess: () => {
           setConfirmBanOpen(false)
-          enqueueSnackbar(t('auth.admin.success_ban'), { variant: 'success' })
+          enqueueSnackbar(t('auth.admin.successBan'), { variant: 'success' })
         },
         onError: (error: any) => {
-          enqueueSnackbar(error.message || t('auth.admin.error_ban'), { variant: 'error' })
+          enqueueSnackbar(error.message || t('auth.admin.errorBan'), { variant: 'error' })
         },
         onSettled: () => {
           banLockRef.current = false
@@ -143,13 +143,13 @@ export default function AdminUserProfile() {
         onSuccess: (res) => {
           const token = (res.data as any).token || (res as any).token
           if (token) {
-            enqueueSnackbar(t('auth.admin.success_impersonate'), { variant: 'success' })
+            enqueueSnackbar(t('auth.admin.successImpersonate'), { variant: 'success' })
             const impersonateUrl = `/impersonate?token=${encodeURIComponent(token)}`
             window.open(impersonateUrl, '_blank')
           }
         },
         onError: (error: any) => {
-          enqueueSnackbar(error.message || t('auth.admin.error_impersonate'), { variant: 'error' })
+          enqueueSnackbar(error.message || t('auth.admin.errorImpersonate'), { variant: 'error' })
         },
       })
     }
@@ -184,10 +184,10 @@ export default function AdminUserProfile() {
       resetMfaMutation.mutate(userData.id, {
         onSuccess: () => {
           setConfirmResetMfaOpen(false)
-          enqueueSnackbar(t('auth.admin.success_mfa_reset'), { variant: 'success' })
+          enqueueSnackbar(t('auth.admin.successMfaReset'), { variant: 'success' })
         },
         onError: (error: any) => {
-          enqueueSnackbar(error.message || t('auth.admin.error_mfa_reset'), { variant: 'error' })
+          enqueueSnackbar(error.message || t('auth.admin.errorMfaReset'), { variant: 'error' })
         },
       })
     }
@@ -202,10 +202,10 @@ export default function AdminUserProfile() {
         },
         {
           onSuccess: () => {
-            enqueueSnackbar(t('auth.admin.success_ban'), { variant: 'success' })
+            enqueueSnackbar(t('auth.admin.successBan'), { variant: 'success' })
           },
           onError: (error: any) => {
-            enqueueSnackbar(error.message || t('auth.admin.error_ban'), { variant: 'error' })
+            enqueueSnackbar(error.message || t('auth.admin.errorBan'), { variant: 'error' })
           },
         },
       )
@@ -221,10 +221,10 @@ export default function AdminUserProfile() {
         },
         {
           onSuccess: () => {
-            enqueueSnackbar(t('auth.admin.success_ban'), { variant: 'success' })
+            enqueueSnackbar(t('auth.admin.successBan'), { variant: 'success' })
           },
           onError: (error: any) => {
-            enqueueSnackbar(error.message || t('auth.admin.error_ban'), { variant: 'error' })
+            enqueueSnackbar(error.message || t('auth.admin.errorBan'), { variant: 'error' })
           },
         },
       )
@@ -325,7 +325,7 @@ export default function AdminUserProfile() {
             onClick={handleBanAction}
             sx={{ textTransform: 'none', fontWeight: 700, flex: { xs: 1, sm: 'none' } }}
           >
-            {isSuspended ? t('auth.admin.unban_user') : t('auth.admin.ban_user')}
+            {isSuspended ? t('auth.admin.unbanUser') : t('auth.admin.banUser')}
           </Button>
         </Stack>
       </Box>
@@ -349,7 +349,7 @@ export default function AdminUserProfile() {
             sx={{ fontWeight: 700 }}
           />
           <Tab
-            label={t('auth.admin.security_mfa').toUpperCase()}
+            label={t('auth.admin.securityMfa').toUpperCase()}
             icon={<Security />}
             iconPosition='start'
             sx={{ fontWeight: 700 }}
@@ -404,7 +404,7 @@ export default function AdminUserProfile() {
                       variant='h6'
                       sx={{ fontWeight: 800, mb: 3, textTransform: 'uppercase' }}
                     >
-                      {t('auth.admin.basic_info').toUpperCase()}
+                      {t('auth.admin.basicInfo').toUpperCase()}
                     </Typography>
                     <Grid container spacing={2} columns={12} wrap='wrap' sx={{ width: '100%' }}>
                       <Grid size={{ xs: 12, sm: 4 }} sx={{ minWidth: 0 }}>
@@ -417,7 +417,7 @@ export default function AdminUserProfile() {
                             letterSpacing: '0.05em',
                           }}
                         >
-                          {t('auth.admin.status_verification')}
+                          {t('auth.admin.statusVerification')}
                         </Typography>
                         <Box
                           sx={{
@@ -446,7 +446,7 @@ export default function AdminUserProfile() {
                           {userData.emailVerified && (
                             <Chip
                               icon={<Verified sx={{ fontSize: '0.9rem !important' }} />}
-                              label={t('auth.common.email_verified')}
+                              label={t('auth.common.emailVerified')}
                               size='small'
                               color='success'
                               variant='filled'
@@ -465,7 +465,7 @@ export default function AdminUserProfile() {
                             letterSpacing: '0.05em',
                           }}
                         >
-                          {t('auth.admin.reg_date')}
+                          {t('auth.admin.regDate')}
                         </Typography>
                         <Typography variant='body2' sx={{ mt: 1, fontWeight: 800 }}>
                           {new Date(userData.createdAt).toLocaleDateString()}
@@ -481,7 +481,7 @@ export default function AdminUserProfile() {
                             letterSpacing: '0.05em',
                           }}
                         >
-                          {t('auth.admin.last_seen')}
+                          {t('auth.admin.lastSeen')}
                         </Typography>
                         <Typography variant='body2' sx={{ mt: 1, fontWeight: 800 }}>
                           {new Date(userData.updatedAt).toLocaleDateString()}
@@ -544,7 +544,7 @@ export default function AdminUserProfile() {
                         variant='h6'
                         sx={{ fontWeight: 800, mb: 2, textTransform: 'uppercase' }}
                       >
-                        {t('auth.admin.internal_debug')}
+                        {t('auth.admin.internalDebug')}
                       </Typography>
                       <Divider sx={{ my: 1, opacity: 0.5 }} />
                       <Box
@@ -562,7 +562,7 @@ export default function AdminUserProfile() {
                           overflowX: 'auto',
                         }}
                       >
-                        <strong>{t('auth.admin.raw_data')}:</strong>
+                        <strong>{t('auth.admin.rawData')}:</strong>
                         <pre style={{ margin: 0, marginTop: '8px' }}>
                           {JSON.stringify(userData, null, 2)}
                         </pre>
@@ -595,7 +595,7 @@ export default function AdminUserProfile() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                   <AdminPanelSettings sx={{ color: '#EAB308' }} />
                   <Typography variant='subtitle1' sx={{ fontWeight: 800 }}>
-                    {t('auth.admin.moderator_actions').toUpperCase()}
+                    {t('auth.admin.moderatorActions').toUpperCase()}
                   </Typography>
                 </Box>
                 <Stack spacing={2}>
@@ -606,7 +606,7 @@ export default function AdminUserProfile() {
                     onClick={handleEditRoles}
                     sx={{ justifyContent: 'flex-start', textTransform: 'none', fontWeight: 700 }}
                   >
-                    {t('auth.admin.edit_roles')}
+                    {t('auth.admin.editRoles')}
                   </Button>
                   <Button
                     fullWidth
@@ -615,7 +615,7 @@ export default function AdminUserProfile() {
                     onClick={handleResetPassword}
                     sx={{ justifyContent: 'flex-start', textTransform: 'none', fontWeight: 700 }}
                   >
-                    {t('auth.admin.force_password_reset')}
+                    {t('auth.admin.forcePasswordReset')}
                   </Button>
                   <Button
                     fullWidth
@@ -624,11 +624,11 @@ export default function AdminUserProfile() {
                     onClick={handleViewViolationReports}
                     sx={{ justifyContent: 'flex-start', textTransform: 'none', fontWeight: 700 }}
                   >
-                    {t('auth.admin.view_violation_reports')}
+                    {t('auth.admin.viewViolationReports')}
                   </Button>
                   <Divider />
                   <Typography variant='caption' sx={{ fontWeight: 700, color: 'text.secondary' }}>
-                    {t('auth.admin.quick_override').toUpperCase()}
+                    {t('auth.admin.quickOverride').toUpperCase()}
                   </Typography>
                   <FormControlLabel
                     control={
@@ -638,7 +638,7 @@ export default function AdminUserProfile() {
                         disabled={updateUserMutation.isPending}
                       />
                     }
-                    label={t('auth.admin.api_access_enabled')}
+                    label={t('auth.admin.apiAccessEnabled')}
                     sx={{ '& .MuiFormControlLabel-label': { fontWeight: 600 } }}
                   />
                   <FormControlLabel
@@ -649,7 +649,7 @@ export default function AdminUserProfile() {
                         disabled={updateUserMutation.isPending}
                       />
                     }
-                    label={t('auth.admin.maintenance_mode_bypass')}
+                    label={t('auth.admin.maintenanceModeBypass')}
                     sx={{ '& .MuiFormControlLabel-label': { fontWeight: 600 } }}
                   />
                 </Stack>
@@ -663,7 +663,7 @@ export default function AdminUserProfile() {
         <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
           <CardContent>
             <Typography variant='h6' sx={{ fontWeight: 800, mb: 3, textTransform: 'uppercase' }}>
-              {t('auth.admin.security_posture').toUpperCase()}
+              {t('auth.admin.securityPosture').toUpperCase()}
             </Typography>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, md: 6 }}>
@@ -694,7 +694,7 @@ export default function AdminUserProfile() {
                     disabled={!userData.mfaEnabled || resetMfaMutation.isPending}
                     sx={{ mt: 1, textTransform: 'none' }}
                   >
-                    {t('auth.admin.reset_mfa')}
+                    {t('auth.admin.resetMfa')}
                   </Button>
                 </Box>
               </Grid>
@@ -711,9 +711,9 @@ export default function AdminUserProfile() {
         open={confirmBanOpen}
         onClose={() => setConfirmBanOpen(false)}
         onConfirm={handleBanConfirm}
-        title={t('auth.admin.confirm_ban')}
-        message={t('auth.admin.confirm_ban_message')}
-        confirmLabel={t('auth.admin.ban_user')}
+        title={t('auth.admin.confirmBan')}
+        message={t('auth.admin.confirmBan_message')}
+        confirmLabel={t('auth.admin.banUser')}
         severity='error'
         isSubmitting={banUserMutation.isPending}
       />
@@ -722,9 +722,9 @@ export default function AdminUserProfile() {
         open={confirmUnbanOpen}
         onClose={() => setConfirmUnbanOpen(false)}
         onConfirm={handleUnbanConfirm}
-        title={t('auth.admin.confirm_unban')}
-        message={t('auth.admin.confirm_unban_message')}
-        confirmLabel={t('auth.admin.unban_user')}
+        title={t('auth.admin.confirmUnban')}
+        message={t('auth.admin.confirmUnban_message')}
+        confirmLabel={t('auth.admin.unbanUser')}
         severity='info'
         isSubmitting={unbanUserMutation.isPending}
       />
@@ -733,9 +733,9 @@ export default function AdminUserProfile() {
         open={confirmResetMfaOpen}
         onClose={() => setConfirmResetMfaOpen(false)}
         onConfirm={handleResetMfaConfirm}
-        title={t('auth.admin.confirm_reset_mfa')}
-        message={t('auth.admin.confirm_reset_mfa_message')}
-        confirmLabel={t('auth.admin.reset_mfa')}
+        title={t('auth.admin.confirmResetMfa')}
+        message={t('auth.admin.confirmResetMfa_message')}
+        confirmLabel={t('auth.admin.resetMfa')}
         severity='warning'
         isSubmitting={resetMfaMutation.isPending}
       />
@@ -765,7 +765,7 @@ function AuditHistoryTab({ userId }: { userId: number }) {
             <CircularProgress />
           </Box>
         ) : logs.length === 0 ? (
-          <Alert severity='info'>{t('auth.admin.no_audit_logs')}</Alert>
+          <Alert severity='info'>{t('auth.admin.noAuditLogs')}</Alert>
         ) : (
           <List disablePadding>
             {logs.map((log: any, idx: number) => (
@@ -800,3 +800,5 @@ function AuditHistoryTab({ userId }: { userId: number }) {
     </Card>
   )
 }
+
+

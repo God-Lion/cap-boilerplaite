@@ -1,7 +1,6 @@
 import { StateCreator } from 'zustand'
 import { fetchClient, ENDPOINTS } from '../../services/api/api.client'
 import { IAuth, ILogin } from '../../types'
-import { IResponse } from '../../types'
 import { secureTokenManager, TokenData as AuthTokens } from '../../services/secureTokenManager'
 import { AppStore } from '..'
 
@@ -14,7 +13,7 @@ export interface AuthSlice {
   error: string | null
   tokens: AuthTokens | null
 
-  signIn: (credentials: ILogin) => Promise<void>
+  signIn: (credentials: ILogin) => Promise<any>
   signOut: (callback?: (status: number) => void) => Promise<void>
   refreshAuth: () => Promise<void>
   refreshToken: () => Promise<string>
@@ -33,7 +32,7 @@ export const createAuthSlice: StateCreator<
   [['zustand/immer', never], ['zustand/persist', unknown]],
   [],
   AuthSlice
-> = (set, get) => ({
+> = (set, _get) => ({
   // Initial State
   user: null,
   isAuthenticated: false,
@@ -49,17 +48,50 @@ export const createAuthSlice: StateCreator<
     })
 
     try {
-      const response = await fetchClient.post<IResponse>(ENDPOINTS.auth.login, credentials)
+      const response = await fetchClient.post<any>(ENDPOINTS.auth.login, credentials)
 
       if (response.status === 200 && response.data) {
-        // Fetch user data after successful login
-        await get().refreshAuth()
+        // Extract user and token from response
+        const userData = response.data.user || response.data
+        const token = response.data.token || response.data.access_token
+
+        // Update user object with token if present but missing in user data
+        if (token && userData && !userData.token) {
+          userData.token = token
+        }
+
+        // Add rememberMe preference for secureTokenManager persistence
+        if (userData) {
+          userData.rememberMe = credentials.rememberMe
+        }
+
+        console.log('[signIn] Login successful, updating user state atomically')
+
+        // CRITICAL: Update state atomically to prevent refreshAuth race condition
+        set((state: AuthSlice) => {
+          state.user = userData
+          state.isAuthenticated = true
+          state.tokens = token ? { accessToken: token, expiresAt: Date.now() + 3600 * 1000 } : null
+          state.isLoading = false
+          state.error = null
+        })
+
+        // Persist tokens in secureTokenManager
+        if (token) {
+          secureTokenManager.setTokens({
+            accessToken: token,
+            expiresAt: Date.now() + 3600 * 1000,
+          })
+        }
+
+        return response
       }
     } catch (error: any) {
+      console.error('[signIn] Error:', error.response?.status, error.message)
       set((state: AuthSlice) => {
-        state.isLoading = false
         state.error = error.response?.data?.message || 'Sign in failed'
         state.isAuthenticated = false
+        state.isLoading = false
       })
       throw error
     }
@@ -113,17 +145,9 @@ export const createAuthSlice: StateCreator<
       const tokens = secureTokenManager.getTokens()
       console.log('[refreshAuth] Tokens found:', !!tokens)
 
-      // Only require accessToken — refreshToken is stored as HttpOnly cookie
-      if (!tokens || !tokens.accessToken) {
-        console.log('[refreshAuth] No access token found. clearing state.')
-        set((state: AuthSlice) => {
-          state.user = null
-          state.isAuthenticated = false
-          state.isLoading = false
-          state.error = 'No valid session'
-        })
-        return
-      }
+      // Removed premature token check. `secureTokenManager` is in-memory only, so tokens will always be null on a hard reload.
+      // We must let `fetchClient` execute the `/api/auth/session` call so it triggers a 401, which then triggers the interceptor's `/api/auth/refresh` call using the HttpOnly cookie.
+
 
       set((state: AuthSlice) => {
         state.isLoading = true
@@ -140,7 +164,7 @@ export const createAuthSlice: StateCreator<
           if (response.data.access_token || response.data.token) {
             const newTokens: AuthTokens = {
               accessToken: response.data.access_token || response.data.token,
-              refreshToken: response.data.refresh_token || tokens.refreshToken,
+              refreshToken: response.data.refresh_token || tokens?.refreshToken,
               expiresAt: Date.now() + (response.data.expires_in || 3600) * 1000,
             }
             secureTokenManager.setTokens(newTokens)
@@ -259,10 +283,10 @@ export const createAuthSlice: StateCreator<
       state.error = null
 
       // Check if user object contains tokens and persist them
-      if (user && (user.token || user.refreshToken)) {
+      if (user && ((user as any).token || (user as any).refreshToken)) {
         const tokens: AuthTokens = {
-          accessToken: user.token || '',
-          refreshToken: user.refreshToken || '',
+          accessToken: (user as any).token || '',
+          refreshToken: (user as any).refreshToken || '',
           expiresAt: Date.now() + 3600 * 1000, // Default 1h
         }
         state.tokens = tokens

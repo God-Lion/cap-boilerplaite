@@ -204,7 +204,7 @@ export default function SetNewPasswordScreen() {
               to={Path.signin}
               sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
             >
-              {t('auth.common.back_to_login', 'Back to log in')}
+              {t('auth.common.backToLogin', 'Back to log in')}
             </MuiLink>
           </Box>
         </Card>
@@ -463,10 +463,11 @@ export default function SetNewPasswordScreen() {
             }}
           >
             <ArrowBack sx={{ fontSize: 16 }} />
-            {t('auth.common.back_to_login', 'Back to log in')}
+            {t('auth.common.backToLogin', 'Back to log in')}
           </MuiLink>
         </Box>
       </Container>
     </>
   )
 }
+

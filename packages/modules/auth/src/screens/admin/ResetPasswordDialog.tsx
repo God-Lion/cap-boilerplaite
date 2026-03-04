@@ -31,10 +31,10 @@ export default function ResetPasswordDialog({ open, onClose, userId }: ResetPass
     onSuccess: () => {
       onClose()
       setNewPassword('')
-      enqueueSnackbar(t('auth.admin.success_password_reset'), { variant: 'success' })
+      enqueueSnackbar(t('auth.admin.successPasswordReset'), { variant: 'success' })
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.message || t('auth.admin.error_password_reset'), { variant: 'error' })
+      enqueueSnackbar(error.message || t('auth.admin.errorPasswordReset'), { variant: 'error' })
     },
   })
 
@@ -48,11 +48,11 @@ export default function ResetPasswordDialog({ open, onClose, userId }: ResetPass
   return (
     <Dialog open={open} onClose={onClose} maxWidth='xs' fullWidth>
       <form onSubmit={handleSubmit}>
-        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.reset_password_title')}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.resetPasswordTitle')}</DialogTitle>
         <DialogContent dividers>
           <TextField
             fullWidth
-            label={t('auth.admin.enter_new_password')}
+            label={t('auth.admin.enterNewPassword')}
             type={showPassword ? 'text' : 'password'}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -93,3 +93,4 @@ export default function ResetPasswordDialog({ open, onClose, userId }: ResetPass
     </Dialog>
   )
 }
+
