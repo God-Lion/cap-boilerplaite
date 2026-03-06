@@ -114,7 +114,9 @@ import {
   DirectorySyncDashboard,
   SCIMConfiguration,
   SyncLogsView,
+  ConnectorDetailView,
   JoinOrganization,
+  WebhookManagement,
 } from '../screens'
 
 import SignUp from '../screens/auth/signup/SignUp'
@@ -211,6 +213,12 @@ const adminRouteConfig: Array<AuthRouteConfig> = [
     ),
   },
   {
+    path: Path.admin.webhooks,
+    element: (
+      <AdminRoute element={<WebhookManagement />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
+  },
+  {
     path: Path.admin.provisioning,
     element: (
       <AdminRoute element={<DirectorySyncDashboard />} minimumRole={Roles.ADMIN} layout='admin' />
@@ -225,6 +233,12 @@ const adminRouteConfig: Array<AuthRouteConfig> = [
   {
     path: Path.admin.syncLogs,
     element: <AdminRoute element={<SyncLogsView />} minimumRole={Roles.ADMIN} layout='admin' />,
+  },
+  {
+    path: Path.admin.connectorDetail,
+    element: (
+      <AdminRoute element={<ConnectorDetailView />} minimumRole={Roles.ADMIN} layout='admin' />
+    ),
   },
 ]
 
@@ -268,7 +282,7 @@ const apiTokenRouteConfig: Array<AuthRouteConfig> = [
 const accountRouteConfig: Array<AuthRouteConfig> = [
   {
     path: Path.account.overview,
-    element: <AuthRoute element={<AccountOverview />} requiresVerification layout='admin' />, //TO FIX
+    element: <AuthRoute element={<AccountOverview />} requiresVerification layout='admin' />,
   },
   {
     path: Path.account.view,
@@ -276,11 +290,11 @@ const accountRouteConfig: Array<AuthRouteConfig> = [
   },
   {
     path: Path.account.edit,
-    element: <AuthRoute element={<EditProfile />} requiresVerification layout='admin' />, //TO FIX
+    element: <AuthRoute element={<EditProfile />} requiresVerification layout='admin' />,
   },
   {
     path: Path.account.changeEmail,
-    element: <AuthRoute element={<ChangeEmail />} requiresVerification layout='admin' />, //TO FIX
+    element: <AuthRoute element={<ChangeEmail />} requiresVerification layout='admin' />,
   },
   {
     path: Path.account.changePassword,
@@ -288,11 +302,11 @@ const accountRouteConfig: Array<AuthRouteConfig> = [
   },
   {
     path: Path.account.delete,
-    element: <AuthRoute element={<DeleteAccount />} requiresVerification />, //TO FIX
+    element: <AuthRoute element={<DeleteAccount />} requiresVerification />,
   },
   {
     path: Path.account.deactivate,
-    element: <AuthRoute element={<DeactivateAccount />} requiresVerification />, //TO FIX
+    element: <AuthRoute element={<DeactivateAccount />} requiresVerification />,
   },
   {
     path: Path.account.linkedAccounts,

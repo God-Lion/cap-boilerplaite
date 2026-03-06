@@ -364,26 +364,9 @@ export default function AdminUserProfile() {
       </Box>
 
       <TabPanel value={tab} index={0}>
-        <Grid
-          container
-          spacing={3}
-          direction='row'
-          sx={{
-            flexWrap: { xs: 'wrap', md: 'nowrap' },
-            marginLeft: '0 !important',
-            marginRight: '0 !important',
-            width: '100% !important',
-          }}
-        >
+        <Grid container spacing={3}>
           {/* Main Column */}
-          <Grid
-            size={{ xs: 12, md: 8 }}
-            sx={{
-              flexGrow: 1,
-              flexShrink: 1,
-              flexBasis: { xs: '100%', md: '0%' },
-            }}
-          >
+          <Grid size={{ xs: 12, md: 8 }}>
             <Box
               sx={{
                 width: '100%',
@@ -575,14 +558,7 @@ export default function AdminUserProfile() {
           </Grid>
 
           {/* Side Panel */}
-          <Grid
-            size={{ xs: 12, md: 4 }}
-            sx={{
-              flexGrow: 1,
-              flexShrink: 1,
-              flexBasis: { xs: '100%', md: '0%' },
-            }}
-          >
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card
               sx={{
                 border: '1px solid',
@@ -800,5 +776,3 @@ function AuditHistoryTab({ userId }: { userId: number }) {
     </Card>
   )
 }
-
-

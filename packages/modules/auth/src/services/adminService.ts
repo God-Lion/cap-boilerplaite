@@ -1,9 +1,46 @@
 import { apiClient, FetchResponse, PaginatedResponse } from '@cap/platform-core'
+import { type AccessPolicy } from '../types/governance.types'
+import type { SCIMConfig } from '../types/provisioning.types'
+export type { AccessPolicy, SCIMConfig }
 import { ENDPOINTS } from './endpoints'
 
 // ============================================================================
 // Type Definitions
 // ============================================================================
+
+// ── System Health ────────────────────────────────────────────────────────
+export interface DependencyStatus {
+  id: string
+  name: string
+  description: string
+  status: 'healthy' | 'degraded' | 'outage'
+  responseTime: string | number
+  version: string
+}
+
+export interface DetailedHealthReport {
+  status: 'healthy' | 'degraded' | 'unhealthy'
+  healthScore: number
+  lastCheck: string
+  timestamp: string
+  environment: string
+  appVersion: string
+  uptime: string
+  server: string
+  dependencies: Array<DependencyStatus>
+}
+
+export interface BasicMetrics {
+  uptime: number
+  memoryUsage: {
+    rss: number
+    heapTotal: number
+    heapUsed: number
+    external: number
+    arrayBuffers: number
+  }
+  timestamp: string
+}
 
 // ── RBAC ──────────────────────────────────────────────────────────────────
 export interface Role {
@@ -35,15 +72,6 @@ export interface RolePermissionSyncRequest {
 export interface MemberOverride {
   permission_id: number
   effect: 'allow' | 'deny'
-}
-
-export interface AccessPolicy {
-  id?: number
-  resource: string
-  actions: string[]
-  effect: 'allow' | 'deny'
-  priority?: number
-  conditions?: Record<string, unknown>
 }
 
 // ── Organizations ──────────────────────────────────────────────────────────
@@ -217,23 +245,47 @@ export interface OIDCClient {
 }
 
 export interface CreateOIDCClientRequest {
-  client_name: string
-  redirect_uris: string[]
-  grant_types?: string[]
-  response_types?: string[]
+  name: string
+  redirectUris: string[]
+  grantTypes?: string[]
+  responseTypes?: string[]
   scope?: string
   token_endpoint_auth_method?: string
   is_fapi_compliant?: boolean
 }
 
 export interface UpdateOIDCClientRequest {
-  client_name?: string
-  redirect_uris?: string[]
-  grant_types?: string[]
-  response_types?: string[]
+  name?: string
+  redirectUris?: string[]
+  grantTypes?: string[]
+  responseTypes?: string[]
   scope?: string
   token_endpoint_auth_method?: string
   is_fapi_compliant?: boolean
+  description?: string
+}
+
+export interface AuthScope {
+  id: number
+  name: string
+  displayName?: string
+  description?: string
+  isSystem?: boolean
+  permissionsMapping?: string[]
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface CreateScopeRequest {
+  name: string
+  displayName?: string
+  description?: string
+}
+
+export interface UpdateScopeRequest {
+  name?: string
+  displayName?: string
+  description?: string
 }
 
 export interface AdminUser {
@@ -723,6 +775,45 @@ export class AdminService {
   }
 
   // ==========================================================================
+  // Developer Platform — Scopes
+  // ==========================================================================
+
+  /**
+   * List all Scopes
+   */
+  async listScopes(): Promise<FetchResponse<AuthScope[]>> {
+    return apiClient.get<AuthScope[]>(ENDPOINTS.admin.scopes.list)
+  }
+
+  /**
+   * Get Scope by ID
+   */
+  async getScope(id: number): Promise<FetchResponse<AuthScope>> {
+    return apiClient.get<AuthScope>(ENDPOINTS.admin.scopes.byId(id))
+  }
+
+  /**
+   * Create a new Scope
+   */
+  async createScope(data: CreateScopeRequest): Promise<FetchResponse<AuthScope>> {
+    return apiClient.post<AuthScope>(ENDPOINTS.admin.scopes.store, data)
+  }
+
+  /**
+   * Update an existing Scope
+   */
+  async updateScope(id: number, data: UpdateScopeRequest): Promise<FetchResponse<AuthScope>> {
+    return apiClient.patch<AuthScope>(ENDPOINTS.admin.scopes.update(id), data)
+  }
+
+  /**
+   * Delete a Scope
+   */
+  async deleteScope(id: number): Promise<FetchResponse<MessageResponse>> {
+    return apiClient.delete<MessageResponse>(ENDPOINTS.admin.scopes.destroy(id))
+  }
+
+  // ==========================================================================
   // RBAC — Roles
   // ==========================================================================
 
@@ -815,9 +906,26 @@ export class AdminService {
   async createPermission(data: {
     name: string
     guard_name?: string
+    resource?: string
     description?: string
   }): Promise<FetchResponse<Permission>> {
     return apiClient.post<Permission>(ENDPOINTS.rbac.permissions.store, data)
+  }
+
+  async updatePermission(
+    id: number,
+    data: {
+      name?: string
+      guard_name?: string
+      resource?: string
+      description?: string
+    },
+  ): Promise<FetchResponse<Permission>> {
+    return apiClient.patch<Permission>(ENDPOINTS.rbac.permissions.byId(id), data)
+  }
+
+  async deletePermission(id: number): Promise<FetchResponse<MessageResponse>> {
+    return apiClient.delete<MessageResponse>(ENDPOINTS.rbac.permissions.byId(id))
   }
 
   async grantPermission(data: {
@@ -841,15 +949,24 @@ export class AdminService {
   /**
    * Get access policies
    */
-  async getAccessPolicies(): Promise<FetchResponse<AccessPolicy[]>> {
-    return apiClient.get<AccessPolicy[]>(ENDPOINTS.rbac.accessPolicies)
+  async getAccessPolicies(orgId: number): Promise<FetchResponse<AccessPolicy[]>> {
+    return apiClient.get<AccessPolicy[]>(ENDPOINTS.rbac.accessPolicies, {
+      headers: { 'x-organization-id': String(orgId) },
+    })
   }
 
   /**
    * Save access policies
    */
-  async saveAccessPolicies(policies: AccessPolicy[]): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>(ENDPOINTS.rbac.accessPolicies, { policies })
+  async saveAccessPolicies(
+    orgId: number,
+    policies: AccessPolicy[],
+  ): Promise<FetchResponse<MessageResponse>> {
+    return apiClient.post<MessageResponse>(
+      ENDPOINTS.rbac.accessPolicies,
+      { policies },
+      { headers: { 'x-organization-id': String(orgId) } },
+    )
   }
 
   async addMemberOverride(
@@ -909,6 +1026,22 @@ export class AdminService {
     return apiClient.post<{ token: string; user: any }>(
       `/api/admin/organizations/${id}/impersonate`,
     )
+  }
+
+  /**
+   * Get organization SCIM Configuration
+   */
+  async getOrganizationScimConfig(): Promise<FetchResponse<SCIMConfig>> {
+    return apiClient.get(ENDPOINTS.admin.scim.config)
+  }
+
+  /**
+   * Update organization SCIM configuration
+   */
+  async updateOrganizationScimConfig(
+    data: Partial<SCIMConfig>,
+  ): Promise<FetchResponse<{ message: string; scimConfig: SCIMConfig }>> {
+    return apiClient.patch(ENDPOINTS.admin.scim.config, data)
   }
 
   async getOrganization(id: number): Promise<FetchResponse<Organization>> {
@@ -986,6 +1119,18 @@ export class AdminService {
     return apiClient.post<Connector>(ENDPOINTS.admin.provisioning.store, data)
   }
 
+  async getConnector(id: number): Promise<FetchResponse<Connector>> {
+    return apiClient.get<Connector>(ENDPOINTS.admin.provisioning.byId(id))
+  }
+
+  async updateConnector(id: number, data: Partial<Connector>): Promise<FetchResponse<Connector>> {
+    return apiClient.patch<Connector>(ENDPOINTS.admin.provisioning.update(id), data)
+  }
+
+  async deleteConnector(id: number): Promise<FetchResponse<MessageResponse>> {
+    return apiClient.delete<MessageResponse>(ENDPOINTS.admin.provisioning.destroy(id))
+  }
+
   async syncConnector(id: number): Promise<FetchResponse<MessageResponse>> {
     return apiClient.post<MessageResponse>(ENDPOINTS.admin.provisioning.syncConnector(id))
   }
@@ -1001,28 +1146,29 @@ export class AdminService {
   // SCIM Token Management
   // ==========================================================================
 
-  /**
-   * List all SCIM provisioning tokens
-   */
+  // SCIM Token Management
   async listSCIMTokens(): Promise<FetchResponse<SCIMToken[]>> {
-    return apiClient.get<SCIMToken[]>(ENDPOINTS.admin.scimTokens.index)
+    return apiClient.get(ENDPOINTS.admin.scim.tokens.index)
   }
 
-  /**
-   * Create a new SCIM token
-   */
   async createSCIMToken(data: {
-    name: string
-    description?: string
+    label: string
+    expiresAt?: string
   }): Promise<FetchResponse<SCIMToken>> {
-    return apiClient.post<SCIMToken>(ENDPOINTS.admin.scimTokens.store, data)
+    return apiClient.post(ENDPOINTS.admin.scim.tokens.store, data)
+  }
+
+  async revokeSCIMToken(id: string | number): Promise<FetchResponse<MessageResponse>> {
+    return apiClient.delete(ENDPOINTS.admin.scim.tokens.destroy(id))
   }
 
   /**
-   * Revoke a SCIM token
+   * Test SCIM connection
    */
-  async revokeSCIMToken(id: number): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.delete<MessageResponse>(ENDPOINTS.admin.scimTokens.destroy(id))
+  async testSCIMConnection(): Promise<
+    FetchResponse<{ status: string; message: string; diagnostics: any }>
+  > {
+    return apiClient.post('/api/admin/scim/test')
   }
 
   // ==========================================================================
@@ -1030,9 +1176,10 @@ export class AdminService {
   // ==========================================================================
 
   async exportAuditLogs(params?: {
-    start_date?: string
-    end_date?: string
+    startDate?: string
+    endDate?: string
     format?: 'csv' | 'json'
+    type?: string
     user_id?: number
   }): Promise<FetchResponse<Blob>> {
     return apiClient.get(ENDPOINTS.audit.export, {
@@ -1094,6 +1241,18 @@ export class AdminService {
 
   async getSecurityHealth(): Promise<FetchResponse<SecurityHealthResponse>> {
     return apiClient.get<SecurityHealthResponse>(ENDPOINTS.admin.security.health)
+  }
+
+  // ==========================================================================
+  // System Health
+  // ==========================================================================
+
+  async getSystemHealth(): Promise<FetchResponse<DetailedHealthReport>> {
+    return apiClient.get<DetailedHealthReport>(ENDPOINTS.health.detailed)
+  }
+
+  async getSystemMetrics(): Promise<FetchResponse<BasicMetrics>> {
+    return apiClient.get<BasicMetrics>(ENDPOINTS.metrics.basic)
   }
 }
 

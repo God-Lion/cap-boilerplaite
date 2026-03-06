@@ -13,6 +13,7 @@ import {
   alpha,
   Stack,
   Button,
+  CircularProgress,
 } from '@mui/material'
 import {
   TrendingUp,
@@ -24,18 +25,57 @@ import {
   Storage as StorageIcon,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import { useSystemHealth, useSystemMetrics } from '../../hooks'
 
 export default function SystemHealthDashboard() {
   const { t } = useTranslation('common')
   const theme = useTheme()
 
-  const services = [
-    { name: 'Core Auth API', status: 'operational', pulse: 98.4, latency: '45ms', load: 32 },
-    { name: 'Redis Session Store', status: 'operational', pulse: 100, latency: '2ms', load: 12 },
-    { name: 'Database (PG)', status: 'operational', pulse: 99.9, latency: '12ms', load: 45 },
-    { name: 'MFA SMS Provider', status: 'operational', pulse: 95.2, latency: '450ms', load: 3 },
-    { name: 'Email Gateway', status: 'degraded', pulse: 88.0, latency: '2.4s', load: 88 },
-  ]
+  const {
+    data: healthRes,
+    isLoading: isHealthLoading,
+    error: healthError,
+    refetch: refetchHealth,
+    isRefetching: isHealthRefetching,
+  } = useSystemHealth({ refetchInterval: 15000 })
+
+  const {
+    data: metricsRes,
+    isLoading: isMetricsLoading,
+    error: metricsError,
+    refetch: refetchMetrics,
+    isRefetching: isMetricsRefetching,
+  } = useSystemMetrics({ refetchInterval: 15000 })
+
+  const health = healthRes?.data
+  const basicMetrics = metricsRes?.data
+
+  const isLoading = isHealthLoading || isMetricsLoading
+  const isRefetching = isHealthRefetching || isMetricsRefetching
+  const isError = !!healthError || !!metricsError
+
+  const handleRefresh = () => {
+    refetchHealth()
+    refetchMetrics()
+  }
+
+  const rawServices = health?.dependencies || []
+
+  // Create an array mapping from the API DependencyStatus
+  const services = rawServices.map((service) => {
+    return {
+      name: service.name,
+      status: service.status === 'healthy' ? 'operational' : service.status,
+      latency: service.responseTime,
+      load: service.status === 'healthy' ? 10 : 90, // mock load for now
+      pulse: service.status === 'healthy' ? 100 : 0, // mock pulse for now
+    }
+  })
+
+  // Format memory usage to MB
+  const memoryMB = basicMetrics?.memoryUsage?.rss
+    ? Math.round(basicMetrics.memoryUsage.rss / 1024 / 1024) + ' MB'
+    : '--'
 
   const metrics = [
     {
@@ -60,13 +100,36 @@ export default function SystemHealthDashboard() {
       color: 'error',
     },
     {
-      label: t('auth.monitoring.cpu_usage'),
-      value: '42%',
+      label: 'MEMORY USAGE', // replacing cpu_usage translation
+      value: memoryMB,
       trend: 'stable',
       icon: <StorageIcon />,
       color: 'info',
     },
   ]
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 8 }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (isError) {
+    return (
+      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto', textAlign: 'center' }}>
+        <Typography color='error' variant='h6' sx={{ mb: 2 }}>
+          {t('auth.admin.errorLoadingEvents', 'Failed to load system health. Please try again.')}
+        </Typography>
+        <Button variant='contained' onClick={handleRefresh} startIcon={<Refresh />}>
+          {t('auth.common.retry', 'Retry')}
+        </Button>
+      </Box>
+    )
+  }
+
+  const overallStatus = health?.status || 'unhealthy'
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
@@ -82,15 +145,24 @@ export default function SystemHealthDashboard() {
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
-                bgcolor: 'success.main',
+                bgcolor:
+                  overallStatus === 'unhealthy'
+                    ? 'error.main'
+                    : overallStatus === 'degraded'
+                      ? 'warning.main'
+                      : 'success.main',
                 animation: 'pulse 2s infinite',
               }}
             />
-            {t('auth.monitoring.live_status_operational')}
+            {overallStatus === 'unhealthy'
+              ? 'Unhealthy'
+              : overallStatus === 'degraded'
+                ? 'Degraded'
+                : t('auth.monitoring.live_status_operational')}
           </Stack>
         </Box>
-        <IconButton>
-          <Refresh />
+        <IconButton onClick={handleRefresh} disabled={isRefetching}>
+          <Refresh sx={{ animation: isRefetching ? 'spin 1s linear infinite' : 'none' }} />
         </IconButton>
       </Box>
 
@@ -165,15 +237,17 @@ export default function SystemHealthDashboard() {
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         {service.status === 'operational' ? (
                           <CheckCircle color='success' fontSize='small' />
-                        ) : (
+                        ) : service.status === 'degraded' ? (
                           <Warning color='warning' fontSize='small' />
+                        ) : (
+                          <ErrorIcon color='error' fontSize='small' />
                         )}
                         <Typography variant='body1' sx={{ fontWeight: 700 }}>
                           {service.name}
                         </Typography>
                       </Box>
                       <Stack direction='row' spacing={2}>
-                        {t('auth.monitoring.latency_label', { latency: service.latency })}
+                        {t('auth.monitoring.latency_label', { latency: service.latency || 'N/A' })}
                         <Chip
                           label={service.status}
                           size='small'
@@ -184,7 +258,13 @@ export default function SystemHealthDashboard() {
                             fontSize: '0.6rem',
                             height: 18,
                           }}
-                          color={service.status === 'operational' ? 'success' : 'warning'}
+                          color={
+                            service.status === 'operational'
+                              ? 'success'
+                              : service.status === 'degraded'
+                                ? 'warning'
+                                : 'error'
+                          }
                         />
                       </Stack>
                     </Box>
@@ -208,6 +288,11 @@ export default function SystemHealthDashboard() {
                     </Box>
                   </Box>
                 ))}
+                {services.length === 0 && (
+                  <Typography variant='body2' color='text.secondary'>
+                    {t('auth.admin.noEventsFound', 'No services found.')}
+                  </Typography>
+                )}
               </Stack>
             </CardContent>
           </Card>
@@ -272,6 +357,9 @@ export default function SystemHealthDashboard() {
           0% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.5; transform: scale(1.2); }
           100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes spin {
+          100% { transform: rotate(360deg); }
         }
       `,
         }}

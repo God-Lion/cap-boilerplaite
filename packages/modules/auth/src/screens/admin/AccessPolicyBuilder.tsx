@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   Box,
   Typography,
@@ -16,6 +16,16 @@ import {
   Paper,
   Tooltip,
   Avatar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
 } from '@mui/material'
 import {
   Add,
@@ -28,35 +38,95 @@ import {
   Shield,
   History,
   Info,
+  Close,
+  PriorityHigh,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
 import { AccessPolicy, AccessPolicyRule } from '../../types/governance.types'
-
-const mockPolicies: AccessPolicy[] = [
-  {
-    id: 'POL_1',
-    name: 'Block External IPs',
-    description: 'Requires users to be on the corporate VPN for sensitive resource access.',
-    type: 'conditional_access',
-    status: 'active',
-    priority: 1,
-    rules: [{ id: 'R1', type: 'network_cidr', config: { range: '10.0.0.0/8' }, effect: 'allow' }],
-  },
-  {
-    id: 'POL_2',
-    name: 'MFA Enforcement',
-    description: 'Always require MFA for administrative roles regardless of location.',
-    type: 'login_policy',
-    status: 'active',
-    priority: 2,
-    rules: [{ id: 'R2', type: 'mfa_required', config: { roles: ['Admin'] }, effect: 'allow' }],
-  },
-]
+import { useAccessPolicies, useSaveAccessPolicies } from '../../hooks/useAdminQuery'
+import { useSnackbar } from 'notistack'
 
 export default function AccessPolicyBuilder() {
   const { t } = useTranslation('common')
   const theme = useTheme()
-  const [policies] = useState<AccessPolicy[]>(mockPolicies)
+  const { enqueueSnackbar } = useSnackbar()
+  const { id: orgIdParam } = useParams()
+  const orgId = orgIdParam ? Number(orgIdParam) : null
+
+  // ── Data Fetching ────────────────────────────────────────────────────────
+  const { data: policiesResponse, isLoading: isFetching } = useAccessPolicies(orgId as number)
+  const policies = useMemo(() => policiesResponse?.data || [], [policiesResponse])
+
+  const savePoliciesMutation = useSaveAccessPolicies(orgId as number, {
+    onSuccess: () => {
+      enqueueSnackbar(t('auth.admin.policiesSavedSuccess'), { variant: 'success' })
+      setDialogOpen(false)
+    },
+    onError: (err: any) => {
+      enqueueSnackbar(err.message || t('auth.admin.policiesSaveError'), { variant: 'error' })
+    },
+  })
+
+  // ── Dialog State ──────────────────────────────────────────────────────────
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingPolicy, setEditingPolicy] = useState<AccessPolicy | null>(null)
+  const [formData, setFormData] = useState<Partial<AccessPolicy>>({
+    name: '',
+    description: '',
+    type: 'conditional_access',
+    status: 'active',
+    priority: 1,
+    rules: [],
+  })
+
+  const handleOpenDialog = (policy: AccessPolicy | null = null) => {
+    if (policy) {
+      setEditingPolicy(policy)
+      setFormData({ ...policy })
+    } else {
+      setEditingPolicy(null)
+      setFormData({
+        name: '',
+        description: '',
+        type: 'conditional_access',
+        status: 'active',
+        priority: policies.length + 1,
+        rules: [],
+      })
+    }
+    setDialogOpen(true)
+  }
+
+  const handleSave = async () => {
+    const updatedPolicies = [...policies]
+    if (editingPolicy) {
+      const index = updatedPolicies.findIndex((p) => p.id === editingPolicy.id)
+      if (index !== -1) {
+        updatedPolicies[index] = { ...editingPolicy, ...formData } as AccessPolicy
+      }
+    } else {
+      const newPolicy = {
+        ...formData,
+        id: `POL_${Date.now()}`,
+      } as AccessPolicy
+      updatedPolicies.push(newPolicy)
+    }
+
+    savePoliciesMutation.mutate(updatedPolicies)
+  }
+
+  const handleDelete = (policyId: string) => {
+    const updatedPolicies = policies.filter((p) => p.id !== policyId)
+    savePoliciesMutation.mutate(updatedPolicies)
+  }
+
+  const handleToggleStatus = (policy: AccessPolicy) => {
+    const updatedPolicies = policies.map((p) =>
+      p.id === policy.id ? { ...p, status: p.status === 'active' ? 'inactive' : 'active' } : p,
+    ) as AccessPolicy[]
+    savePoliciesMutation.mutate(updatedPolicies)
+  }
 
   const getRuleIcon = (type: string) => {
     switch (type) {
@@ -77,20 +147,35 @@ export default function AccessPolicyBuilder() {
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
       {/* Header */}
       <Box
-        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 4 }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: 2,
+          mb: 4,
+        }}
       >
         <Box>
-          <Typography variant='h4' sx={{ fontWeight: 900, mb: 1 }}>
+          <Typography variant='h4' sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.02em' }}>
             {t('auth.admin.accessPolicies')}
           </Typography>
-          <Typography variant='body1' color='text.secondary'>
+          <Typography variant='body1' color='text.secondary' sx={{ fontWeight: 500 }}>
             {t('auth.admin.accessPolicies_subtitle')}
           </Typography>
         </Box>
         <Button
           variant='contained'
           startIcon={<Add />}
-          sx={{ px: 3, py: 1.2, borderRadius: 2, fontWeight: 700, textTransform: 'none' }}
+          onClick={() => handleOpenDialog()}
+          sx={{
+            px: 3,
+            py: 1.2,
+            borderRadius: 2.5,
+            fontWeight: 800,
+            textTransform: 'none',
+            boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+          }}
         >
           {t('auth.admin.createNewPolicy')}
         </Button>
@@ -112,211 +197,575 @@ export default function AccessPolicyBuilder() {
             py: 3,
             px: 4,
             display: 'flex',
-            alignItems: 'center',
+            flexDirection: { xs: 'column', md: 'row' },
+            alignItems: { xs: 'flex-start', md: 'center' },
             justifyContent: 'space-between',
+            gap: 3,
           }}
         >
-          <Stack direction='row' spacing={4}>
+          <Stack
+            direction='row'
+            spacing={4}
+            sx={{ overflowX: 'auto', width: '100%', pb: { xs: 1, md: 0 } }}
+          >
             <Box>
               <Typography
                 variant='caption'
                 color='text.secondary'
-                sx={{ fontWeight: 800, textTransform: 'uppercase' }}
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
               >
                 {t('auth.admin.activePolicies')}
               </Typography>
-              <Typography variant='h5' sx={{ fontWeight: 900 }}>
-                12
+              <Typography variant='h5' sx={{ fontWeight: 900, color: 'primary.main' }}>
+                {policies.filter((p) => p.status === 'active').length}
               </Typography>
             </Box>
             <Box>
               <Typography
                 variant='caption'
                 color='text.secondary'
-                sx={{ fontWeight: 800, textTransform: 'uppercase' }}
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
               >
                 {t('auth.admin.signalsTracked')}
               </Typography>
               <Typography variant='h5' sx={{ fontWeight: 900 }}>
-                IP, Device, MFA
+                IP, MFA, Device
               </Typography>
             </Box>
             <Box>
               <Typography
                 variant='caption'
                 color='text.secondary'
-                sx={{ fontWeight: 800, textTransform: 'uppercase' }}
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
               >
-                {t('auth.admin.lastLogicAudit')}
+                {t('auth.admin.executionMode')}
               </Typography>
               <Typography variant='h5' sx={{ fontWeight: 900 }}>
-                4 hours ago
+                First Match
               </Typography>
             </Box>
           </Stack>
-          <Button startIcon={<History />} sx={{ textTransform: 'none', fontWeight: 700 }}>
+          <Button
+            startIcon={<History />}
+            sx={{ textTransform: 'none', fontWeight: 700, whiteSpace: 'nowrap' }}
+          >
             {t('auth.admin.viewChangeLogs')}
           </Button>
         </CardContent>
       </Card>
 
-      <Grid container spacing={3}>
-        {policies.map((policy) => (
-          <Grid key={policy.id} size={{ xs: 12, md: 6 }}>
-            <Paper
+      {isFetching ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 8 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, 1fr)' },
+            gap: 4,
+          }}
+        >
+          {policies.map((policy) => (
+            <Box key={policy.id} sx={{ height: '100%' }}>
+              <Paper
+                sx={{
+                  p: 3,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  borderRadius: 4,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow: 'none',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    boxShadow: `0 12px 24px ${alpha(theme.palette.primary.main, 0.08)}`,
+                    transform: 'translateY(-4px)',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Stack direction='row' spacing={2} alignItems='center'>
+                    <Avatar
+                      sx={{
+                        bgcolor: alpha(
+                          policy.status === 'active'
+                            ? theme.palette.primary.main
+                            : theme.palette.text.disabled,
+                          0.1,
+                        ),
+                        color: policy.status === 'active' ? 'primary.main' : 'text.disabled',
+                        width: 52,
+                        height: 52,
+                        borderRadius: 2.5,
+                      }}
+                    >
+                      <Shield />
+                    </Avatar>
+                    <Box>
+                      <Typography variant='h6' sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+                        {policy.name}
+                      </Typography>
+                      <Chip
+                        label={policy.type.replace('_', ' ')}
+                        size='small'
+                        sx={{
+                          mt: 0.5,
+                          height: 20,
+                          fontSize: '0.625rem',
+                          fontWeight: 900,
+                          textTransform: 'uppercase',
+                        }}
+                        color={policy.status === 'active' ? 'primary' : 'default'}
+                        variant='outlined'
+                      />
+                    </Box>
+                  </Stack>
+                  <Switch
+                    checked={policy.status === 'active'}
+                    onChange={() => handleToggleStatus(policy)}
+                    color='primary'
+                  />
+                </Box>
+
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mb: 3, minHeight: 40, fontWeight: 500, lineHeight: 1.6 }}
+                >
+                  {policy.description}
+                </Typography>
+
+                <Divider sx={{ mb: 3, borderStyle: 'dashed' }} />
+
+                <Box sx={{ mb: 3, flexGrow: 1 }}>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      display: 'block',
+                      mb: 2,
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    Logic Fragments ({policy.rules.length})
+                  </Typography>
+                  <Stack spacing={1.5}>
+                    {policy.rules.map((rule: AccessPolicyRule) => (
+                      <Box
+                        key={rule.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 2,
+                          p: 1.5,
+                          borderRadius: 3,
+                          bgcolor: alpha(theme.palette.action.hover, 0.4),
+                          border: '1px solid',
+                          borderColor: alpha(theme.palette.divider, 0.5),
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            color: rule.effect === 'allow' ? 'success.main' : 'error.main',
+                            display: 'flex',
+                          }}
+                        >
+                          {getRuleIcon(rule.type)}
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant='body2' sx={{ fontWeight: 800 }}>
+                            {rule.type === 'network_cidr'
+                              ? `IP Range: ${rule.config.range}`
+                              : rule.type === 'mfa_required'
+                                ? 'MFA Enforcement'
+                                : rule.type.replace('_', ' ')}
+                          </Typography>
+                          <Typography
+                            variant='caption'
+                            sx={{
+                              fontWeight: 700,
+                              color: rule.effect === 'allow' ? 'success.main' : 'error.main',
+                            }}
+                          >
+                            Result: {rule.effect.toUpperCase()}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ))}
+                  </Stack>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mt: 'auto',
+                    pt: 2,
+                  }}
+                >
+                  <Stack direction='row' spacing={1} alignItems='center'>
+                    <PriorityHigh sx={{ fontSize: 16, color: 'text.disabled' }} />
+                    <Typography variant='caption' sx={{ fontWeight: 800, color: 'text.disabled' }}>
+                      PRIORITY: {policy.priority}
+                    </Typography>
+                  </Stack>
+                  <Stack direction='row' spacing={1}>
+                    <Tooltip title='Edit Policy'>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleOpenDialog(policy)}
+                        sx={{ bgcolor: alpha(theme.palette.primary.main, 0.05) }}
+                      >
+                        <Settings fontSize='small' color='primary' />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title='Delete Policy'>
+                      <IconButton
+                        size='small'
+                        color='error'
+                        onClick={() => handleDelete(policy.id)}
+                        sx={{ bgcolor: alpha(theme.palette.error.main, 0.05) }}
+                      >
+                        <Delete fontSize='small' />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                </Box>
+              </Paper>
+            </Box>
+          ))}
+
+          {/* Empty State / Add Card */}
+          <Box sx={{ height: '100%' }}>
+            <Box
+              onClick={() => handleOpenDialog()}
               sx={{
-                p: 3,
+                height: '100%',
+                minHeight: 320,
                 borderRadius: 4,
-                border: '1px solid',
+                border: '2px dashed',
                 borderColor: 'divider',
-                boxShadow: 'none',
-                transition: 'all 0.2s',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
                 '&:hover': {
                   borderColor: 'primary.main',
-                  bgcolor: alpha(theme.palette.primary.main, 0.01),
+                  bgcolor: alpha(theme.palette.primary.main, 0.02),
+                  '& .add-avatar': {
+                    bgcolor: 'primary.main',
+                    color: 'white',
+                    transform: 'scale(1.1)',
+                  },
                 },
               }}
             >
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Stack direction='row' spacing={2} alignItems='center'>
-                  <Avatar
-                    sx={{
-                      bgcolor: alpha(theme.palette.primary.main, 0.1),
-                      color: 'primary.main',
-                      width: 48,
-                      height: 48,
-                      borderRadius: 2,
-                    }}
-                  >
-                    <Shield />
-                  </Avatar>
-                  <Box>
-                    <Typography variant='h6' sx={{ fontWeight: 800 }}>
-                      {policy.name}
-                    </Typography>
-                    <Chip
-                      label={policy.type.replace('_', ' ')}
-                      size='small'
-                      sx={{
-                        height: 20,
-                        fontSize: '0.625rem',
-                        fontWeight: 900,
-                        textTransform: 'uppercase',
-                      }}
-                      color='primary'
-                      variant='outlined'
-                    />
-                  </Box>
-                </Stack>
-                <Switch checked={policy.status === 'active'} color='primary' />
-              </Box>
-
-              <Typography variant='body2' color='text.secondary' sx={{ mb: 3, minHeight: 40 }}>
-                {policy.description}
+              <Avatar
+                className='add-avatar'
+                sx={{
+                  bgcolor: alpha(theme.palette.action.hover, 0.8),
+                  color: 'text.secondary',
+                  mb: 2,
+                  width: 56,
+                  height: 56,
+                  transition: 'all 0.3s',
+                }}
+              >
+                <Add sx={{ fontSize: 32 }} />
+              </Avatar>
+              <Typography variant='subtitle1' sx={{ fontWeight: 900 }}>
+                {t('auth.admin.defineCustomLogic')}
               </Typography>
+              <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
+                {t('auth.admin.combineSignalsDesc')}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+      )}
 
-              <Divider sx={{ mb: 3 }} />
+      {/* ── Policy Form Dialog ────────────────────────────────────────────── */}
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth='sm'
+        fullWidth
+        PaperProps={{
+          sx: { borderRadius: 4, p: 1 },
+        }}
+      >
+        <DialogTitle
+          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}
+        >
+          <Typography variant='h5' component='span' sx={{ fontWeight: 900 }}>
+            {editingPolicy ? t('auth.admin.editPolicy') : t('auth.admin.createNewPolicy')}
+          </Typography>
+          <IconButton onClick={() => setDialogOpen(false)} size='small'>
+            <Close />
+          </IconButton>
+        </DialogTitle>
 
-              <Box sx={{ mb: 3 }}>
-                <Typography
-                  variant='caption'
-                  color='text.secondary'
-                  sx={{ fontWeight: 800, textTransform: 'uppercase', display: 'block', mb: 2 }}
-                >
-                  Logic Fragments
-                </Typography>
-                <Stack spacing={1.5}>
-                  {policy.rules.map((rule: AccessPolicyRule) => (
-                    <Box
-                      key={rule.id}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                        p: 1.5,
-                        borderRadius: 2,
-                        bgcolor: alpha(theme.palette.action.hover, 0.5),
-                        border: '1px solid',
-                        borderColor: 'divider',
-                      }}
-                    >
-                      <Box sx={{ color: 'primary.main' }}>{getRuleIcon(rule.type)}</Box>
-                      <Box sx={{ flex: 1 }}>
-                        <Typography variant='body2' sx={{ fontWeight: 700 }}>
-                          {rule.type === 'network_cidr'
-                            ? `IP Range: ${rule.config.range}`
-                            : 'MFA Requirement'}
-                        </Typography>
-                        <Typography variant='caption' color='text.secondary'>
-                          Condition: {rule.effect.toUpperCase()}
-                        </Typography>
-                      </Box>
-                      <Tooltip title='Rule Details'>
-                        <IconButton size='small'>
-                          <Info fontSize='inherit' />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  ))}
-                </Stack>
-              </Box>
+        <DialogContent dividers sx={{ borderStyle: 'dashed' }}>
+          <Stack spacing={3} sx={{ mt: 1 }}>
+            <TextField
+              label={t('auth.admin.policyName')}
+              fullWidth
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder='e.g., Block External IPs'
+              variant='outlined'
+              InputProps={{ sx: { borderRadius: 2 } }}
+            />
 
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant='caption' sx={{ fontWeight: 700, color: 'text.disabled' }}>
-                  PRIORITY: {policy.priority}
-                </Typography>
-                <Stack direction='row' spacing={1}>
-                  <IconButton size='small'>
-                    <Settings fontSize='small' />
-                  </IconButton>
-                  <IconButton size='small' color='error'>
-                    <Delete fontSize='small' />
-                  </IconButton>
-                </Stack>
-              </Box>
-            </Paper>
-          </Grid>
-        ))}
+            <TextField
+              label={t('auth.admin.description')}
+              fullWidth
+              multiline
+              rows={3}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder='Explain the purpose of this policy...'
+              variant='outlined'
+              InputProps={{ sx: { borderRadius: 2 } }}
+            />
 
-        {/* Empty State / Add Card */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Box
-            sx={{
-              height: '100%',
-              minHeight: 300,
-              borderRadius: 4,
-              border: '2px dashed',
-              borderColor: 'divider',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              '&:hover': {
-                borderColor: 'primary.main',
-                bgcolor: alpha(theme.palette.primary.main, 0.02),
-              },
-            }}
-          >
-            <Avatar
+            <Box
               sx={{
-                bgcolor: alpha(theme.palette.action.hover, 0.8),
-                color: 'text.secondary',
-                mb: 2,
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: 2,
               }}
             >
-              <Add />
-            </Avatar>
-            <Typography variant='subtitle2' sx={{ fontWeight: 800 }}>
-              {t('auth.admin.defineCustomLogic')}
-            </Typography>
-            <Typography variant='caption' color='text.secondary'>
-              {t('auth.admin.combineSignalsDesc')}
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
+              <FormControl fullWidth variant='outlined'>
+                <InputLabel>{t('auth.admin.policyType')}</InputLabel>
+                <Select
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                  label={t('auth.admin.policyType')}
+                  sx={{ borderRadius: 2 }}
+                >
+                  <MenuItem value='conditional_access'>Conditional Access</MenuItem>
+                  <MenuItem value='login_policy'>Login Policy</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label={t('auth.admin.priority')}
+                type='number'
+                fullWidth
+                value={formData.priority}
+                onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
+                variant='outlined'
+                InputProps={{ sx: { borderRadius: 2 } }}
+              />
+            </Box>
+
+            <Box>
+              <Typography
+                variant='subtitle2'
+                sx={{ fontWeight: 800, mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}
+              >
+                Rules / Signal Logic
+                <Chip label={formData.rules?.length || 0} size='small' sx={{ fontWeight: 800 }} />
+              </Typography>
+              <Paper
+                variant='outlined'
+                sx={{
+                  p: 2,
+                  borderRadius: 3,
+                  borderStyle: 'dashed',
+                  bgcolor: alpha(theme.palette.action.hover, 0.3),
+                }}
+              >
+                {formData.rules?.length === 0 ? (
+                  <Typography
+                    variant='body2'
+                    color='text.secondary'
+                    sx={{ textAlign: 'center', py: 2 }}
+                  >
+                    No rules defined yet. Policies without rules are ignored.
+                  </Typography>
+                ) : (
+                  <Stack spacing={2}>
+                    {formData.rules?.map((rule, idx) => (
+                      <Box
+                        key={rule.id || idx}
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          bgcolor: 'background.paper',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 1.5,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Typography
+                            variant='subtitle2'
+                            sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}
+                          >
+                            {getRuleIcon(rule.type)} Rule {idx + 1}
+                          </Typography>
+                          <IconButton
+                            size='small'
+                            color='error'
+                            onClick={() => {
+                              const newRules = formData.rules?.filter((_, i) => i !== idx)
+                              setFormData({ ...formData, rules: newRules })
+                            }}
+                          >
+                            <Delete fontSize='small' />
+                          </IconButton>
+                        </Box>
+
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                          <FormControl fullWidth size='small'>
+                            <InputLabel>Type</InputLabel>
+                            <Select
+                              value={rule.type}
+                              label='Type'
+                              onChange={(e) => {
+                                const newRules = [...(formData.rules || [])]
+                                newRules[idx] = {
+                                  ...rule,
+                                  type: e.target.value as any,
+                                  config:
+                                    e.target.value === 'network_cidr' ? { range: '0.0.0.0/0' } : {},
+                                }
+                                setFormData({ ...formData, rules: newRules })
+                              }}
+                            >
+                              <MenuItem value='network_cidr'>Network CIDR</MenuItem>
+                              <MenuItem value='mfa_required'>MFA Required</MenuItem>
+                              <MenuItem value='device_compliance'>Device Compliance</MenuItem>
+                              <MenuItem value='geo_location'>Geo Location</MenuItem>
+                              <MenuItem value='time_window'>Time Window</MenuItem>
+                            </Select>
+                          </FormControl>
+                          <FormControl fullWidth size='small'>
+                            <InputLabel>Effect</InputLabel>
+                            <Select
+                              value={rule.effect}
+                              label='Effect'
+                              onChange={(e) => {
+                                const newRules = [...(formData.rules || [])]
+                                newRules[idx] = {
+                                  ...rule,
+                                  effect: e.target.value as 'allow' | 'deny',
+                                }
+                                setFormData({ ...formData, rules: newRules })
+                              }}
+                            >
+                              <MenuItem value='allow'>Allow</MenuItem>
+                              <MenuItem value='deny'>Deny</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Stack>
+
+                        {rule.type === 'network_cidr' && (
+                          <TextField
+                            fullWidth
+                            size='small'
+                            label='IP Range (CIDR)'
+                            placeholder='e.g. 192.168.1.0/24'
+                            value={rule.config?.range || ''}
+                            onChange={(e) => {
+                              const newRules = [...(formData.rules || [])]
+                              newRules[idx] = {
+                                ...rule,
+                                config: { ...rule.config, range: e.target.value },
+                              }
+                              setFormData({ ...formData, rules: newRules })
+                            }}
+                          />
+                        )}
+                        {rule.type === 'geo_location' && (
+                          <TextField
+                            fullWidth
+                            size='small'
+                            label='Allowed Countries (Comma separated codes)'
+                            placeholder='e.g. US, CA, GB'
+                            value={rule.config?.countries?.join(', ') || ''}
+                            onChange={(e) => {
+                              const newRules = [...(formData.rules || [])]
+                              newRules[idx] = {
+                                ...rule,
+                                config: {
+                                  ...rule.config,
+                                  countries: e.target.value.split(',').map((c) => c.trim()),
+                                },
+                              }
+                              setFormData({ ...formData, rules: newRules })
+                            }}
+                          />
+                        )}
+                      </Box>
+                    ))}
+                  </Stack>
+                )}
+                <Button
+                  fullWidth
+                  startIcon={<Add />}
+                  sx={{ mt: 2, borderRadius: 2, textTransform: 'none', fontWeight: 700 }}
+                  onClick={() => {
+                    const newRule: AccessPolicyRule = {
+                      id: `RULE_${Date.now()}`,
+                      type: 'network_cidr',
+                      config: { range: '0.0.0.0/0' },
+                      effect: 'deny',
+                    }
+                    setFormData({ ...formData, rules: [...(formData.rules || []), newRule] })
+                  }}
+                >
+                  Add Signal Logic Fragment
+                </Button>
+              </Paper>
+            </Box>
+          </Stack>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 3 }}>
+          <Button
+            onClick={() => setDialogOpen(false)}
+            sx={{ fontWeight: 700, textTransform: 'none' }}
+          >
+            {t('auth.common.cancel')}
+          </Button>
+          <Button
+            variant='contained'
+            onClick={handleSave}
+            disabled={savePoliciesMutation.isPending || !formData.name}
+            sx={{
+              px: 4,
+              borderRadius: 2,
+              fontWeight: 800,
+              textTransform: 'none',
+              minWidth: 120,
+            }}
+          >
+            {savePoliciesMutation.isPending ? (
+              <CircularProgress size={24} color='inherit' />
+            ) : (
+              t('auth.common.save')
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

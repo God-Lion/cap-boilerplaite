@@ -55,6 +55,11 @@ export {
   // Dashboard & Health
   useAdminDashboard,
   useSecurityHealth,
+  useSystemHealth,
+  useSystemMetrics,
+
+  // Audit
+  useAuditLogs,
 
   // Statistics
   useMFAStats,

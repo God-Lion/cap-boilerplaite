@@ -22,6 +22,7 @@ import { History, FileDownload, CloudDownload, Analytics } from '@mui/icons-mate
 import { useTranslation } from 'react-i18next'
 import { useExportAuditLogs } from '../../hooks/useAdminQuery'
 import { useSnackbar } from 'notistack'
+import logger from '../../utils/logger'
 
 export default function ExportAuditTrail() {
   const { t } = useTranslation('common')
@@ -38,34 +39,45 @@ export default function ExportAuditTrail() {
       setProgress(25)
     },
     onSuccess: (response) => {
-      setProgress(75)
-      // Create a download link for the blob
-      const url = window.URL.createObjectURL(response.data)
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute(
-        'download',
-        `audit_logs_${new Date().toISOString().split('T')[0]}.${format}`,
-      )
-      document.body.appendChild(link)
-      link.click()
-      link.parentNode?.removeChild(link)
-      setProgress(100)
-      enqueueSnackbar('Export completed successfully', { variant: 'success' })
+      try {
+        setProgress(75)
+        // Create a download link for the blob
+        const url = window.URL.createObjectURL(response.data)
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute(
+          'download',
+          `audit_logs_${reportType}_${new Date().toISOString().split('T')[0]}.${format}`,
+        )
+        document.body.appendChild(link)
+        link.click()
+        link.parentNode?.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        setProgress(100)
+        enqueueSnackbar(t('auth.admin.exportSuccess', 'Export completed successfully'), {
+          variant: 'success',
+        })
+      } catch (err: unknown) {
+        logger.error('Failed to process export response', { error: err })
+      }
 
       setTimeout(() => setProgress(0), 1000)
     },
     onError: (error) => {
-      enqueueSnackbar(error.message || 'Export failed', { variant: 'error' })
+      logger.error('Audit log export failed', { error })
+      enqueueSnackbar(error.message || t('auth.admin.exportFailed', 'Export failed'), {
+        variant: 'error',
+      })
       setProgress(0)
     },
   })
 
-  const handleExport = async () => {
+  const handleExport = () => {
     exportMutation.mutate({
       format: format as 'json' | 'csv',
-      start_date: startDate,
-      end_date: endDate,
+      type: reportType,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
     })
   }
 
@@ -143,7 +155,6 @@ export default function ExportAuditTrail() {
                     value={format}
                     onChange={(e) => setFormat(e.target.value)}
                   >
-                    <MenuItem value='pdf'>PDF Document (.pdf)</MenuItem>
                     <MenuItem value='csv'>Spreadsheet (.csv)</MenuItem>
                     <MenuItem value='json'>JSON Data (.json)</MenuItem>
                   </Select>

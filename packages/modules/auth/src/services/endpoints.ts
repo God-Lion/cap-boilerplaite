@@ -245,10 +245,13 @@ export const ENDPOINTS = {
       index: '/api/admin/appeals',
       resolve: (id: number) => `/api/admin/appeals/${id}/resolve`,
     },
-    scimTokens: {
-      index: '/api/admin/scim/tokens',
-      store: '/api/admin/scim/tokens',
-      destroy: (id: string | number) => `/api/admin/scim/tokens/${id}`,
+    scim: {
+      tokens: {
+        index: '/api/admin/scim/tokens',
+        store: '/api/admin/scim/tokens',
+        destroy: (id: string | number) => `/api/admin/scim/tokens/${id}`,
+      },
+      config: '/api/admin/scim/config',
     },
     clients: {
       index: '/api/admin/clients',
@@ -309,6 +312,9 @@ export const ENDPOINTS = {
       index: '/api/admin/provisioning',
       store: '/api/admin/provisioning',
       connectors: '/api/admin/provisioning',
+      byId: (id: number) => `/api/admin/provisioning/${id}`,
+      update: (id: number) => `/api/admin/provisioning/${id}`,
+      destroy: (id: number) => `/api/admin/provisioning/${id}`,
       sync: (id: number) => `/api/admin/provisioning/${id}/sync`,
       logs: (id: number) => `/api/admin/provisioning/${id}/logs`,
       syncConnector: (id: number) => `/api/admin/provisioning/${id}/sync`,
@@ -339,6 +345,7 @@ export const ENDPOINTS = {
       health: '/api/admin/security/health',
     },
     docs: '/api/admin/docs',
+    sandboxExecute: '/api/admin/sandbox/execute',
   },
 
   // RBAC & Permissions

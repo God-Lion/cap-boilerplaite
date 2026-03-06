@@ -108,8 +108,8 @@ const AuthRoute = ({
 
     // Admins bypass verification check
     if (!isAdmin) {
-      // Logic for verification: check isVerified (newly added) or emailVerified
-      const isVerified = userData?.isVerified === true || userData?.emailVerified === true
+      // Logic for verification: check emailVerified (serialized from backend)
+      const isVerified = userData?.emailVerified === true
 
       if (!isVerified) {
         return (

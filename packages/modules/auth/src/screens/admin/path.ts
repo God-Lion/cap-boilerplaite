@@ -12,23 +12,25 @@ const Path = {
   roleDetail: '/admin/roles/:id',
 
   permissions: '/admin/permissions',
-  policies: '/admin/policies',
+  policies: '/admin/organizations/:id/policies',
 
   applications: '/admin/developer/applications',
   appDetail: '/admin/developer/applications/:id',
 
   scopes: '/admin/developer/scopes',
   apiExplorer: '/admin/developer/api-explorer',
+  webhooks: '/admin/developer/webhooks',
 
   exportAudit: '/admin/export-audit',
-
-  events: '/admin/events',
-  health: '/admin/health',
 
   // Provisioning
   provisioning: '/admin/provisioning',
   scim: '/admin/provisioning/scim',
   syncLogs: '/admin/provisioning/logs',
+  connectorDetail: '/admin/provisioning/connectors/:id',
+
+  events: '/admin/events',
+  health: '/admin/health',
 }
 
 export default Path

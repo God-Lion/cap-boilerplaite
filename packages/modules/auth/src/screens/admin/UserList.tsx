@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Chip,
   IconButton,
   Button,
@@ -28,22 +27,21 @@ import {
   Tooltip,
   Divider,
 } from '@mui/material'
-import {
-  Search,
-  FilterList,
-  GetApp,
-  MoreVert,
-  Edit,
-  Delete,
-  Block,
-  Group,
-  History as HistoryIcon,
-  Security,
-  CheckCircle,
-  Person,
-  ChevronRight,
-  Add,
-} from '@mui/icons-material'
+import SearchIcon from '@mui/icons-material/Search'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import GetAppIcon from '@mui/icons-material/GetApp'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import BlockIcon from '@mui/icons-material/Block'
+import GroupIcon from '@mui/icons-material/Group'
+import HistoryIcon from '@mui/icons-material/History'
+import SecurityIcon from '@mui/icons-material/Security'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import PersonIcon from '@mui/icons-material/Person'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import AddIcon from '@mui/icons-material/Add'
+
 import { CreateUserDialog } from '../admin'
 import { ConfirmationDialog } from '../../components/shared'
 import { useTranslation } from 'react-i18next'
@@ -224,43 +222,45 @@ export default function UserList() {
   const [roleAnchorEl, setRoleAnchorEl] = useState<null | HTMLElement>(null)
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
-      {/* ── Premium Banner Header ────────────────────────────────────────── */}
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+      {/* ── Page Header ─────────────────────────────────────────────────── */}
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: { xs: 'flex-start', sm: 'center' },
           flexDirection: { xs: 'column', sm: 'row' },
-          gap: 3,
-          mb: 5,
+          gap: 2,
+          mb: 4,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Avatar
             sx={{
-              width: 64,
-              height: 64,
+              width: { xs: 56, md: 64 },
+              height: { xs: 56, md: 64 },
               borderRadius: '20px',
               bgcolor: alpha(theme.palette.info.main, 0.1),
               color: 'info.main',
               boxShadow: `0 8px 24px ${alpha(theme.palette.info.main, 0.12)}`,
             }}
           >
-            <Person sx={{ fontSize: 32 }} />
+            <PersonIcon sx={{ fontSize: 28 }} />
           </Avatar>
           <Box>
             <Typography
               variant='h4'
-              sx={{ fontWeight: 900, letterSpacing: '-0.03em', mb: 0.5, lineHeight: 1.1 }}
+              sx={{
+                fontWeight: 900,
+                letterSpacing: '-0.027em',
+                fontSize: { xs: '1.5rem', md: '2.125rem' },
+                lineHeight: 1.1,
+                mb: 0.5,
+              }}
             >
               {t('auth.admin.userListTitle')}
             </Typography>
-            <Typography
-              variant='body1'
-              color='text.secondary'
-              sx={{ fontWeight: 500, opacity: 0.8 }}
-            >
+            <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
               {t('auth.admin.userListSubtitle')}
             </Typography>
           </Box>
@@ -269,16 +269,13 @@ export default function UserList() {
         <Stack direction='row' spacing={2} sx={{ width: { xs: '100%', sm: 'auto' } }}>
           <Button
             variant='outlined'
-            startIcon={<GetApp />}
+            startIcon={<GetAppIcon />}
             sx={{
               textTransform: 'none',
-              fontWeight: 800,
-              height: 48,
-              borderRadius: 3,
+              fontWeight: 700,
+              height: 44,
+              borderRadius: 2,
               px: 3,
-              borderColor: 'divider',
-              color: 'text.primary',
-              '&:hover': { bgcolor: 'action.hover', borderColor: 'text.primary' },
             }}
             onClick={handleExport}
           >
@@ -286,21 +283,21 @@ export default function UserList() {
           </Button>
           <Button
             variant='contained'
-            startIcon={<Add />}
+            startIcon={<AddIcon />}
             sx={{
-              bgcolor: 'primary.main',
+              bgcolor: 'info.main',
               color: 'white',
-              boxShadow: `0 4px 14px 0 ${alpha(theme.palette.primary.main, 0.4)}`,
+              boxShadow: `0 4px 14px 0 ${alpha(theme.palette.info.main, 0.39)}`,
               '&:hover': {
-                bgcolor: 'primary.dark',
-                boxShadow: `0 6px 20px 0 ${alpha(theme.palette.primary.main, 0.5)}`,
+                bgcolor: 'info.dark',
+                boxShadow: `0 6px 20px 0 ${alpha(theme.palette.info.main, 0.5)}`,
               },
               textTransform: 'none',
-              fontWeight: 800,
-              height: 48,
-              px: 3.5,
-              borderRadius: 3,
-              fontSize: '0.95rem',
+              fontWeight: 700,
+              height: 44,
+              px: 3,
+              borderRadius: 2,
+              flexShrink: 0,
             }}
             onClick={() => setIsCreateModalOpen(true)}
           >
@@ -309,21 +306,21 @@ export default function UserList() {
         </Stack>
       </Box>
 
-      {/* ── Refined Stat Cards ───────────────────────────────────────────── */}
+      {/* ── Stat Cards ──────────────────────────────────────────────────── */}
       <Box
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
           gap: 3,
-          mb: 5,
+          mb: 4,
         }}
       >
         {[
           {
             label: t('auth.admin.statTotalUsers'),
             value: dashboardData?.data?.totalUsers ?? data?.data?.meta.total ?? '...',
-            icon: <Group />,
-            color: 'primary',
+            icon: <GroupIcon />,
+            color: 'primary' as const,
             onClick: () => {
               setSearchParams((prev) => ({ ...prev, status: '', role: '', search: '' }))
               setPage(1)
@@ -332,8 +329,8 @@ export default function UserList() {
           {
             label: t('auth.admin.statActiveNow'),
             value: dashboardData?.data?.activeSessions ?? '...',
-            icon: <CheckCircle />,
-            color: 'success',
+            icon: <CheckCircleIcon />,
+            color: 'success' as const,
             onClick: () => {
               setSearchParams((prev) => ({ ...prev, status: 'ACTIVE', role: '' }))
               setPage(1)
@@ -342,8 +339,8 @@ export default function UserList() {
           {
             label: t('auth.admin.statOther'),
             value: dashboardData?.data?.failedLogins ?? '...',
-            icon: <Block />,
-            color: 'error',
+            icon: <BlockIcon />,
+            color: 'error' as const,
             onClick: () => {
               setSearchParams((prev) => ({ ...prev, status: 'SUSPENDED', role: '' }))
               setPage(1)
@@ -352,8 +349,8 @@ export default function UserList() {
           {
             label: t('auth.admin.statMfaAdoption'),
             value: dashboardData?.data?.mfaAdoption ?? '...',
-            icon: <Security />,
-            color: 'info',
+            icon: <SecurityIcon />,
+            color: 'info' as const,
             onClick: () => {
               setSearchParams((prev) => ({ ...prev, status: '', role: '' }))
               setPage(1)
@@ -368,10 +365,10 @@ export default function UserList() {
               boxShadow: 'none',
               borderRadius: 4,
               cursor: 'pointer',
-              transition: 'transform 0.2s, border-color 0.2s',
+              transition: 'transform 0.15s ease, border-color 0.15s ease',
               '&:hover': {
                 transform: 'translateY(-2px)',
-                borderColor: (theme.palette as any)[stat.color].main,
+                borderColor: theme.palette[stat.color].main,
               },
             }}
             onClick={stat.onClick}
@@ -382,11 +379,12 @@ export default function UserList() {
                   width: 48,
                   height: 48,
                   borderRadius: '14px',
-                  bgcolor: alpha((theme.palette as any)[stat.color].main, 0.1),
-                  color: (theme.palette as any)[stat.color].main,
+                  bgcolor: alpha(theme.palette[stat.color].main, 0.1),
+                  color: `${stat.color}.main`,
+                  boxShadow: `0 6px 12px ${alpha(theme.palette[stat.color].main, 0.1)}`,
                 }}
               >
-                {React.cloneElement(stat.icon as any, { fontSize: 'small' })}
+                {React.cloneElement(stat.icon, { fontSize: 'small' })}
               </Avatar>
               <Box>
                 <Typography
@@ -395,7 +393,7 @@ export default function UserList() {
                   sx={{
                     fontWeight: 700,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
+                    letterSpacing: '0.075em',
                     display: 'block',
                     mb: 0.25,
                     fontSize: '0.65rem',
@@ -412,323 +410,306 @@ export default function UserList() {
         ))}
       </Box>
 
-      {/* ── Toolbar ─────────────────────────────────────────────────────────── */}
-      <Paper
-        sx={{
-          p: 2,
-          mb: 0,
-          border: '1px solid',
-          borderColor: 'divider',
-          borderBottom: 'none',
-          borderRadius: '20px 20px 0 0',
-          boxShadow: 'none',
-          display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          gap: 2,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          bgcolor: alpha(theme.palette.background.paper, 0.8),
-          backdropFilter: 'blur(12px)',
-        }}
-      >
-        <TextField
-          placeholder={t('auth.common.searchUsers') || 'Search users…'}
-          size='small'
-          value={searchParams.search}
-          onChange={(e) => {
-            setSearchParams((prev) => ({ ...prev, search: e.target.value }))
-            setPage(1)
-          }}
-          sx={{
-            width: { xs: '100%', md: 360 },
-            '& .MuiOutlinedInput-root': { borderRadius: 2.5, bgcolor: 'background.default' },
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <Search sx={{ fontSize: 20, color: 'text.disabled' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Stack direction='row' spacing={1} alignItems='center'>
-          <Button
-            size='small'
-            startIcon={<FilterList />}
-            onClick={(e) => setStatusAnchorEl(e.currentTarget)}
-            sx={{
-              textTransform: 'none',
-              fontWeight: 800,
-              color: searchParams.status ? 'primary.main' : 'text.primary',
-              borderRadius: 2,
-              px: 2,
-            }}
-          >
-            {searchParams.status
-              ? `${t('auth.common.status')}: ${t(`auth.common.${searchParams.status.toLowerCase()}`)}`
-              : t('auth.common.statusFilter')}
-          </Button>
-
-          <Button
-            size='small'
-            startIcon={<FilterList />}
-            onClick={(e) => setRoleAnchorEl(e.currentTarget)}
-            sx={{
-              textTransform: 'none',
-              fontWeight: 800,
-              color: searchParams.role ? 'primary.main' : 'text.primary',
-              borderRadius: 2,
-              px: 2,
-            }}
-          >
-            {searchParams.role
-              ? `${t('auth.common.role')}: ${getRoleName(Number(searchParams.role))}`
-              : t('auth.common.roleFilter')}
-          </Button>
-
-          {(searchParams.status || searchParams.role) && (
-            <IconButton
-              size='small'
-              color='error'
-              onClick={() => {
-                setSearchParams((prev) => ({ ...prev, status: '', role: '' }))
-                setPage(1)
-              }}
-            >
-              <Delete fontSize='small' />
-            </IconButton>
-          )}
-
-          <Divider
-            orientation='vertical'
-            flexItem
-            sx={{ mx: 1, height: 24, alignSelf: 'center' }}
-          />
-          <Typography
-            variant='caption'
-            color='text.secondary'
-            sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-          >
-            {data?.data?.meta.total || 0} Records
-          </Typography>
-        </Stack>
-      </Paper>
-
-      {/* ── Table ───────────────────────────────────────────────────────────── */}
-      <TableContainer
-        component={Paper}
+      {/* ── Users Table Card ────────────────────────────────────────────── */}
+      <Card
         sx={{
           border: '1px solid',
           borderColor: 'divider',
-          borderRadius: '0 0 20px 20px',
           boxShadow: 'none',
+          borderRadius: 4,
           overflow: 'hidden',
         }}
       >
-        <Table sx={{ minWidth: 900 }}>
-          <TableHead sx={{ bgcolor: alpha(theme.palette.action.hover, 0.5) }}>
-            <TableRow>
-              <TableCell
-                sx={{
-                  py: 2,
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.common.user')}
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.common.status')}
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.common.role')}
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                Active Since
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                Identity
-              </TableCell>
-              <TableCell
-                align='right'
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.common.actions')}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={6} align='center' sx={{ py: 10 }}>
-                  <CircularProgress size={28} />
-                </TableCell>
-              </TableRow>
-            ) : isError ? (
-              <TableRow>
-                <TableCell colSpan={6} align='center' sx={{ py: 10, color: 'error.main' }}>
-                  {t('auth.admin.errorLoadUsers')}
-                </TableCell>
-              </TableRow>
-            ) : (
-              data?.data?.data.map((user) => (
-                <TableRow
-                  key={user.id}
-                  hover
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell
-                    onClick={() =>
-                      navigate((Path.admin as any).userProfile.replace(':id', user.id.toString()))
-                    }
-                    sx={{ cursor: 'pointer', py: 2 }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Avatar
-                        sx={{
-                          width: 42,
-                          height: 42,
-                          borderRadius: '12px',
-                          bgcolor: alpha(theme.palette.primary.main, 0.1),
-                          color: 'primary.main',
-                          fontWeight: 800,
-                          fontSize: '0.9rem',
-                        }}
-                      >
-                        {user.firstName[0]}
-                        {user.lastName[0]}
-                      </Avatar>
-                      <Box>
-                        <Typography variant='body2' sx={{ fontWeight: 700, color: 'text.primary' }}>
-                          {user.firstName} {user.lastName}
-                        </Typography>
-                        <Typography
-                          variant='caption'
-                          color='text.secondary'
-                          sx={{ fontWeight: 500 }}
-                        >
-                          {user.email}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={user.isActif ? 'Active' : 'Suspended'}
-                      size='small'
-                      sx={{
-                        fontWeight: 800,
-                        fontSize: '0.6rem',
-                        height: 20,
-                        borderRadius: 1.5,
-                        textTransform: 'uppercase',
-                        bgcolor: alpha(
-                          user.isActif ? theme.palette.success.main : theme.palette.error.main,
-                          0.08,
-                        ),
-                        color: user.isActif ? 'success.main' : 'error.main',
-                        border: '1px solid',
-                        borderColor: alpha(
-                          user.isActif ? theme.palette.success.main : theme.palette.error.main,
-                          0.2,
-                        ),
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant='body2' sx={{ fontWeight: 700, color: 'text.secondary' }}>
-                      {getRoleName(user.role)}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                      {new Date(user.createdAt).toLocaleDateString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={user.emailVerified ? 'Verified' : 'Unverified'}
-                      size='small'
-                      variant='outlined'
-                      sx={{
-                        fontWeight: 700,
-                        height: 20,
-                        borderRadius: 1.2,
-                        fontSize: '0.625rem',
-                        textTransform: 'uppercase',
-                        borderColor: 'divider',
-                        color: user.emailVerified ? 'success.main' : 'text.disabled',
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell align='right'>
-                    <Stack direction='row' spacing={0.5} justifyContent='flex-end'>
-                      <Tooltip title='View Profile'>
-                        <IconButton
-                          size='small'
-                          onClick={() =>
-                            navigate(
-                              (Path.admin as any).userProfile.replace(':id', user.id.toString()),
-                            )
-                          }
-                        >
-                          <ChevronRight fontSize='small' />
-                        </IconButton>
-                      </Tooltip>
-                      <IconButton size='small' onClick={(e) => handleMenuOpen(e, user)}>
-                        <MoreVert fontSize='small' />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-
-        {/* ── Pagination ──────────────────────────────────────────────────────── */}
+        {/* Toolbar */}
         <Box
           sx={{
-            p: 2.5,
+            px: 3,
+            py: 2,
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 2,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <TextField
+            placeholder={t('auth.common.searchUsers') || 'Search users…'}
+            size='small'
+            value={searchParams.search}
+            onChange={(e) => {
+              setSearchParams((prev) => ({ ...prev, search: e.target.value }))
+              setPage(1)
+            }}
+            sx={{
+              width: { xs: '100%', md: 340 },
+              '& .MuiOutlinedInput-root': { borderRadius: 2 },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <SearchIcon sx={{ fontSize: 20, color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Stack direction='row' spacing={1} alignItems='center' sx={{ flexShrink: 0 }}>
+            <Button
+              size='small'
+              startIcon={<FilterListIcon />}
+              onClick={(e) => setStatusAnchorEl(e.currentTarget)}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 700,
+                color: searchParams.status ? 'primary.main' : 'text.primary',
+                borderRadius: 2,
+                px: 2,
+              }}
+            >
+              {searchParams.status
+                ? `${t('auth.common.status')}: ${t(`auth.common.${searchParams.status.toLowerCase()}`)}`
+                : t('auth.common.statusFilter')}
+            </Button>
+
+            <Button
+              size='small'
+              startIcon={<FilterListIcon />}
+              onClick={(e) => setRoleAnchorEl(e.currentTarget)}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 700,
+                color: searchParams.role ? 'primary.main' : 'text.primary',
+                borderRadius: 2,
+                px: 2,
+              }}
+            >
+              {searchParams.role
+                ? `${t('auth.common.role')}: ${getRoleName(Number(searchParams.role))}`
+                : t('auth.common.roleFilter')}
+            </Button>
+
+            {(searchParams.status || searchParams.role) && (
+              <IconButton
+                size='small'
+                color='error'
+                onClick={() => {
+                  setSearchParams((prev) => ({ ...prev, status: '', role: '' }))
+                  setPage(1)
+                }}
+                aria-label='Clear filters'
+              >
+                <DeleteIcon fontSize='small' />
+              </IconButton>
+            )}
+
+            <Divider orientation='vertical' flexItem sx={{ mx: 1, height: 24, opacity: 0.5 }} />
+            <Typography
+              variant='caption'
+              color='text.secondary'
+              sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+            >
+              {data?.data?.meta.total || 0} Records
+            </Typography>
+          </Stack>
+        </Box>
+
+        <Divider sx={{ opacity: 0.5 }} />
+
+        {/* Table */}
+        <TableContainer>
+          <Table sx={{ minWidth: 900 }}>
+            <TableHead sx={{ bgcolor: 'action.hover' }}>
+              <TableRow>
+                {[
+                  t('auth.common.user'),
+                  t('auth.common.status'),
+                  t('auth.common.role'),
+                  'Active Since', // Consider i18n key if available
+                  'Identity', // Consider i18n key if available
+                ].map((col) => (
+                  <TableCell
+                    key={col}
+                    sx={{
+                      py: 2,
+                      fontWeight: 800,
+                      fontSize: '0.7rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.075em',
+                    }}
+                  >
+                    {col}
+                  </TableCell>
+                ))}
+                <TableCell
+                  align='right'
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: '0.7rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.075em',
+                  }}
+                >
+                  {t('auth.common.actions')}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} align='center' sx={{ py: 10 }}>
+                    <CircularProgress size={28} />
+                  </TableCell>
+                </TableRow>
+              ) : isError ? (
+                <TableRow>
+                  <TableCell colSpan={6} align='center' sx={{ py: 10, color: 'error.main' }}>
+                    {t('auth.admin.errorLoadUsers') || 'Error loading users'}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                data?.data?.data.map((user) => (
+                  <TableRow
+                    key={user.id}
+                    hover
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    {/* User info */}
+                    <TableCell
+                      onClick={() =>
+                        navigate((Path.admin as any).userProfile.replace(':id', user.id.toString()))
+                      }
+                      sx={{ cursor: 'pointer', py: 2 }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Avatar
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '12px',
+                            bgcolor: alpha(theme.palette.primary.main, 0.1),
+                            color: 'primary.main',
+                            fontWeight: 800,
+                            fontSize: '0.95rem',
+                          }}
+                        >
+                          {user.firstName[0]}
+                          {user.lastName[0]}
+                        </Avatar>
+                        <Box>
+                          <Typography
+                            variant='body2'
+                            sx={{ fontWeight: 700, color: 'text.primary' }}
+                          >
+                            {user.firstName} {user.lastName}
+                          </Typography>
+                          <Typography
+                            variant='caption'
+                            color='text.secondary'
+                            sx={{ fontWeight: 600 }}
+                          >
+                            {user.email}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </TableCell>
+
+                    {/* Status */}
+                    <TableCell>
+                      <Chip
+                        label={user.isActif ? 'Active' : 'Suspended'}
+                        size='small'
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: '0.6rem',
+                          height: 20,
+                          borderRadius: 1.5,
+                          textTransform: 'uppercase',
+                          bgcolor: alpha(
+                            user.isActif ? theme.palette.success.main : theme.palette.error.main,
+                            0.08,
+                          ),
+                          color: user.isActif ? 'success.main' : 'error.main',
+                          border: '1px solid',
+                          borderColor: alpha(
+                            user.isActif ? theme.palette.success.main : theme.palette.error.main,
+                            0.2,
+                          ),
+                        }}
+                      />
+                    </TableCell>
+
+                    {/* Role */}
+                    <TableCell>
+                      <Typography variant='body2' sx={{ fontWeight: 700, color: 'text.secondary' }}>
+                        {getRoleName(user.role)}
+                      </Typography>
+                    </TableCell>
+
+                    {/* Created date */}
+                    <TableCell>
+                      <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.secondary' }}>
+                        {new Date(user.createdAt).toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </Typography>
+                    </TableCell>
+
+                    {/* Verification status */}
+                    <TableCell>
+                      <Chip
+                        label={user.emailVerified ? 'Verified' : 'Unverified'}
+                        size='small'
+                        variant='outlined'
+                        sx={{
+                          fontWeight: 700,
+                          height: 20,
+                          borderRadius: 1.2,
+                          fontSize: '0.625rem',
+                          textTransform: 'uppercase',
+                          borderColor: 'divider',
+                          color: user.emailVerified ? 'success.main' : 'text.disabled',
+                        }}
+                      />
+                    </TableCell>
+
+                    {/* Actions */}
+                    <TableCell align='right'>
+                      <Stack direction='row' spacing={0.5} justifyContent='flex-end'>
+                        <Tooltip title={t('auth.admin.viewProfile') || 'View Profile'}>
+                          <IconButton
+                            size='small'
+                            onClick={() =>
+                              navigate(
+                                (Path.admin as any).userProfile.replace(':id', user.id.toString()),
+                              )
+                            }
+                            aria-label={`View profile for ${user.firstName}`}
+                          >
+                            <ChevronRightIcon fontSize='small' />
+                          </IconButton>
+                        </Tooltip>
+                        <IconButton
+                          size='small'
+                          onClick={(e) => handleMenuOpen(e, user)}
+                          aria-label={`More options for ${user.firstName}`}
+                        >
+                          <MoreVertIcon fontSize='small' />
+                        </IconButton>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {/* Pagination footer */}
+        <Box
+          sx={{
+            px: 3,
+            py: 2,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -737,7 +718,8 @@ export default function UserList() {
           }}
         >
           <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
-            {data?.data?.meta.total || 0} Total Records
+            {t('auth.admin.recordsCount', { count: data?.data?.meta.total || 0 }) ||
+              `${data?.data?.meta.total || 0} Records`}
           </Typography>
           <Pagination
             count={data?.data?.meta.total ? Math.ceil(data.data.meta.total / 10) : 1}
@@ -749,35 +731,9 @@ export default function UserList() {
             sx={{ '& .MuiPaginationItem-root': { fontWeight: 700, borderRadius: 1.5 } }}
           />
         </Box>
-      </TableContainer>
+      </Card>
 
-      {/* ── Dialogs & Menus ─────────────────────────────────────────────────── */}
-      <CreateUserDialog open={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
-
-      <ConfirmationDialog
-        open={confirmBanOpen}
-        onClose={() => setConfirmBanOpen(false)}
-        title={t('auth.admin.confirmBanTitle')}
-        message={t('auth.admin.confirmBanMessage', {
-          name: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
-        })}
-        onConfirm={handleBanUserConfirm}
-        isSubmitting={banUserMutation.isPending}
-        severity='error'
-      />
-
-      <ConfirmationDialog
-        open={confirmDeleteOpen}
-        onClose={() => setConfirmDeleteOpen(false)}
-        title={t('auth.admin.confirmDeleteTitle')}
-        message={t('auth.admin.confirmDeleteMessage', {
-          name: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
-        })}
-        onConfirm={handleDeleteUserConfirm}
-        isSubmitting={deleteUserMutation.isPending}
-        severity='error'
-      />
-
+      {/* ── Context Menu ─────────────────────────────────────────────────── */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -795,15 +751,15 @@ export default function UserList() {
           }}
         >
           <ListItemIcon>
-            <Edit fontSize='small' />
+            <EditIcon fontSize='small' />
           </ListItemIcon>
-          Edit Profile
+          {t('auth.admin.editProfile') || 'Edit Profile'}
         </MenuItem>
         <MenuItem onClick={handleImpersonate}>
           <ListItemIcon>
-            <Security fontSize='small' />
+            <SecurityIcon fontSize='small' />
           </ListItemIcon>
-          Impersonate
+          {t('auth.admin.impersonate') || 'Impersonate'}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -817,27 +773,29 @@ export default function UserList() {
           <ListItemIcon>
             <HistoryIcon fontSize='small' />
           </ListItemIcon>
-          Audit Logs
+          {t('auth.admin.auditLogs') || 'Audit Logs'}
         </MenuItem>
-        <Divider />
+        <Divider sx={{ my: 1 }} />
         <MenuItem onClick={handleBanUserRequest} sx={{ color: 'error.main' }}>
           <ListItemIcon>
-            <Block fontSize='small' color='error' />
+            <BlockIcon fontSize='small' color='error' />
           </ListItemIcon>
-          Ban User
+          {t('auth.admin.banUser') || 'Ban User'}
         </MenuItem>
         <MenuItem onClick={handleDeleteUserRequest} sx={{ color: 'error.main' }}>
           <ListItemIcon>
-            <Delete fontSize='small' color='error' />
+            <DeleteIcon fontSize='small' color='error' />
           </ListItemIcon>
-          Delete User
+          {t('auth.admin.deleteUser') || 'Delete User'}
         </MenuItem>
       </Menu>
 
+      {/* ── Filter Menus ─────────────────────────────────────────────────── */}
       <Menu
         anchorEl={statusAnchorEl}
         open={Boolean(statusAnchorEl)}
         onClose={() => setStatusAnchorEl(null)}
+        PaperProps={{ sx: { borderRadius: 2, mt: 1, minWidth: 160 } }}
       >
         <MenuItem
           onClick={() => {
@@ -845,8 +803,9 @@ export default function UserList() {
             setStatusAnchorEl(null)
             setPage(1)
           }}
+          disabled={!searchParams.status}
         >
-          All Statuses
+          {t('auth.common.allStatuses') || 'All Statuses'}
         </MenuItem>
         {['ACTIVE', 'INACTIVE', 'SUSPENDED', 'PENDING'].map((s) => (
           <MenuItem
@@ -856,8 +815,9 @@ export default function UserList() {
               setStatusAnchorEl(null)
               setPage(1)
             }}
+            selected={searchParams.status === s}
           >
-            {s}
+            {t(`auth.common.${s.toLowerCase()}`) || s}
           </MenuItem>
         ))}
       </Menu>
@@ -866,6 +826,7 @@ export default function UserList() {
         anchorEl={roleAnchorEl}
         open={Boolean(roleAnchorEl)}
         onClose={() => setRoleAnchorEl(null)}
+        PaperProps={{ sx: { borderRadius: 2, mt: 1, minWidth: 160 } }}
       >
         <MenuItem
           onClick={() => {
@@ -873,8 +834,9 @@ export default function UserList() {
             setRoleAnchorEl(null)
             setPage(1)
           }}
+          disabled={!searchParams.role}
         >
-          All Roles
+          {t('auth.common.allRoles') || 'All Roles'}
         </MenuItem>
         {[1, 5, 6, 8].map((r) => (
           <MenuItem
@@ -884,11 +846,39 @@ export default function UserList() {
               setRoleAnchorEl(null)
               setPage(1)
             }}
+            selected={searchParams.role === r.toString()}
           >
             {getRoleName(r)}
           </MenuItem>
         ))}
       </Menu>
+
+      {/* ── Dialogs ─────────────────────────────────────────────────────── */}
+      <CreateUserDialog open={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+
+      <ConfirmationDialog
+        open={confirmBanOpen}
+        onClose={() => setConfirmBanOpen(false)}
+        title={t('auth.admin.confirmBanTitle') || 'Suspend User?'}
+        message={t('auth.admin.confirmBanMessage', {
+          name: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
+        })}
+        onConfirm={handleBanUserConfirm}
+        isSubmitting={banUserMutation.isPending}
+        severity='error'
+      />
+
+      <ConfirmationDialog
+        open={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        title={t('auth.admin.confirmDeleteTitle') || 'Delete User?'}
+        message={t('auth.admin.confirmDeleteMessage', {
+          name: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
+        })}
+        onConfirm={handleDeleteUserConfirm}
+        isSubmitting={deleteUserMutation.isPending}
+        severity='error'
+      />
     </Box>
   )
 }

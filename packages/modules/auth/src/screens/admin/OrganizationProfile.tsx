@@ -341,26 +341,9 @@ export default function OrganizationProfile() {
       </Box>
 
       <TabPanel value={tab} index={0}>
-        <Grid
-          container
-          spacing={3}
-          direction='row'
-          sx={{
-            flexWrap: { xs: 'wrap', md: 'nowrap' },
-            marginLeft: '0 !important',
-            marginRight: '0 !important',
-            width: '100% !important',
-          }}
-        >
+        <Grid container spacing={3}>
           {/* Main Column */}
-          <Grid
-            size={{ xs: 12, md: 8 }}
-            sx={{
-              flexGrow: 1,
-              flexShrink: 1,
-              flexBasis: { xs: '100%', md: '0%' },
-            }}
-          >
+          <Grid size={{ xs: 12, md: 8 }}>
             <Box
               sx={{
                 width: '100%',
@@ -595,14 +578,7 @@ export default function OrganizationProfile() {
           </Grid>
 
           {/* Side Panel */}
-          <Grid
-            size={{ xs: 12, md: 4 }}
-            sx={{
-              flexGrow: 1,
-              flexShrink: 1,
-              flexBasis: { xs: '100%', md: '0%' },
-            }}
-          >
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card
               sx={{
                 border: '1px solid',
@@ -930,6 +906,40 @@ export default function OrganizationProfile() {
                     setFormData({ ...formData, allowPublicSignup: e.target.checked })
                   }
                 />
+              </Box>
+
+              <Box
+                sx={{
+                  py: 3,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  bgcolor: alpha(theme.palette.info.main, 0.03),
+                  px: 3,
+                  mx: -3,
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <Box>
+                  <Typography variant='body1' sx={{ fontWeight: 700, color: 'info.main' }}>
+                    {t('auth.admin.advancedAccessPolicies')}
+                  </Typography>
+                  <Typography variant='body2' color='text.secondary'>
+                    {t('auth.admin.advancedPoliciesDesc') ||
+                      'Manage IP restrictions, MFA enforcement logic, and granular access rules.'}
+                  </Typography>
+                </Box>
+                <Button
+                  variant='outlined'
+                  color='info'
+                  size='small'
+                  startIcon={<Security />}
+                  onClick={() => navigate(Path.admin.policies.replace(':id', id!))}
+                  sx={{ fontWeight: 700, borderRadius: 2 }}
+                >
+                  {t('auth.admin.managePolicies') || 'Manage Policies'}
+                </Button>
               </Box>
             </Stack>
           </CardContent>

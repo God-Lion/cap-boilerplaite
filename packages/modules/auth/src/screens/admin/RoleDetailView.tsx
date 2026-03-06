@@ -309,7 +309,7 @@ export default function RoleDetailView() {
                 {role.users_count || 0} Members
               </Typography>
               <Chip
-                label={role.guard_name.toUpperCase()}
+                label={(role.guard_name || 'web').toUpperCase()}
                 size='small'
                 sx={{ height: 20, fontSize: '0.6rem', fontWeight: 900, borderRadius: 1 }}
               />
@@ -442,7 +442,11 @@ export default function RoleDetailView() {
                               }}
                             >
                               <Box>
-                                <Typography variant='body2' sx={{ fontWeight: 700, mb: 0.25 }}>
+                                <Typography
+                                  component='span'
+                                  variant='body2'
+                                  sx={{ fontWeight: 700, mb: 0.25 }}
+                                >
                                   {perm.name.split(':').pop()?.replace(/_/g, ' ')}
                                   {isInherited && (
                                     <Chip

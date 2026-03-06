@@ -341,3 +341,24 @@ export interface SecurityLogParams {
   to?: string // ISO date
   [key: string]: string | number | boolean | undefined
 }
+
+// ============================================================================
+// OIDC Client Types - NEW
+// ============================================================================
+
+export interface CreateOIDCClientRequest {
+  name: string
+  redirectUris: string[]
+  grantTypes?: string[]
+  responseTypes?: string[]
+  branding?: any
+}
+
+export interface UpdateOIDCClientRequest {
+  name?: string
+  redirectUris?: string[]
+  grantTypes?: string[]
+  responseTypes?: string[]
+  is_active?: boolean
+  branding?: any
+}

@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Chip,
   IconButton,
   Button,
@@ -33,18 +32,16 @@ import {
   CircularProgress,
   Tooltip,
 } from '@mui/material'
-import {
-  Search,
-  FilterList,
-  Add,
-  MoreVert,
-  Edit,
-  Delete,
-  Security,
-  Group,
-  Shield,
-  ContentCopy,
-} from '@mui/icons-material'
+import SearchIcon from '@mui/icons-material/Search'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import AddIcon from '@mui/icons-material/Add'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import SecurityIcon from '@mui/icons-material/Security'
+import GroupIcon from '@mui/icons-material/Group'
+import ShieldIcon from '@mui/icons-material/Shield'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
@@ -128,43 +125,45 @@ export default function RoleList() {
   }
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
-      {/* ── Premium Banner Style Header ────────────────────────────────────── */}
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+      {/* ── Page Header — mirrors OrganizationProfile top banner ─────────── */}
       <Box
         sx={{
+          mb: 4,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: { xs: 'flex-start', sm: 'center' },
           flexDirection: { xs: 'column', sm: 'row' },
-          gap: 3,
-          mb: 5,
+          gap: 2,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Avatar
             sx={{
-              width: 64,
-              height: 64,
+              width: { xs: 56, md: 64 },
+              height: { xs: 56, md: 64 },
               borderRadius: '20px',
               bgcolor: alpha(theme.palette.primary.main, 0.1),
               color: 'primary.main',
               boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.12)}`,
             }}
           >
-            <Security sx={{ fontSize: 32 }} />
+            <SecurityIcon sx={{ fontSize: 28 }} />
           </Avatar>
           <Box>
             <Typography
               variant='h4'
-              sx={{ fontWeight: 900, letterSpacing: '-0.03em', mb: 0.5, lineHeight: 1.1 }}
+              sx={{
+                fontWeight: 900,
+                letterSpacing: '-0.027em',
+                fontSize: { xs: '1.5rem', md: '2.125rem' },
+                lineHeight: 1.1,
+                mb: 0.5,
+              }}
             >
               {t('auth.admin.roleListTitle')}
             </Typography>
-            <Typography
-              variant='body1'
-              color='text.secondary'
-              sx={{ fontWeight: 500, opacity: 0.8 }}
-            >
+            <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
               {t('auth.admin.roleListSubtitle')}
             </Typography>
           </Box>
@@ -172,56 +171,56 @@ export default function RoleList() {
 
         <Button
           variant='contained'
-          startIcon={<Add />}
+          startIcon={<AddIcon />}
+          onClick={() => navigate(Path.admin.roleDetail.replace(':id', 'new'))}
           sx={{
             bgcolor: 'info.main',
             color: 'white',
-            boxShadow: `0 4px 14px 0 ${alpha(theme.palette.info.main, 0.4)}`,
+            boxShadow: `0 4px 14px 0 ${alpha(theme.palette.info.main, 0.39)}`,
             '&:hover': {
               bgcolor: 'info.dark',
               boxShadow: `0 6px 20px 0 ${alpha(theme.palette.info.main, 0.5)}`,
             },
             textTransform: 'none',
-            fontWeight: 800,
-            height: 48,
-            px: 3.5,
-            borderRadius: 3,
+            fontWeight: 700,
+            height: 44,
+            px: 3,
+            borderRadius: 2,
             width: { xs: '100%', sm: 'auto' },
-            fontSize: '0.95rem',
+            flexShrink: 0,
           }}
-          onClick={() => navigate(Path.admin.roleDetail.replace(':id', 'new'))}
         >
           {t('auth.admin.createRole')}
         </Button>
       </Box>
 
-      {/* ── Standardized Stat Cards ────────────────────────────────────────── */}
+      {/* ── Stat Cards — same card anatomy as OrganizationProfile ─────────── */}
       <Box
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
           gap: 3,
-          mb: 5,
+          mb: 4,
         }}
       >
         {[
           {
             label: t('auth.admin.totalRoles'),
             value: stats?.totalRoles ?? totalItems ?? 0,
-            icon: <Security />,
-            color: 'primary',
+            icon: <SecurityIcon />,
+            color: 'primary' as const,
           },
           {
             label: t('auth.admin.mappedPermissions'),
-            value: stats?.totalPermissions ?? '...',
-            icon: <Shield />,
-            color: 'success',
+            value: stats?.totalPermissions ?? '…',
+            icon: <ShieldIcon />,
+            color: 'success' as const,
           },
           {
             label: t('auth.admin.activeMemberships'),
-            value: stats?.totalMemberships ?? '...',
-            icon: <Group />,
-            color: 'info',
+            value: stats?.totalMemberships ?? '…',
+            icon: <GroupIcon />,
+            color: 'info' as const,
           },
         ].map((stat, idx) => (
           <Card
@@ -231,7 +230,7 @@ export default function RoleList() {
               borderColor: 'divider',
               boxShadow: 'none',
               borderRadius: 4,
-              transition: 'transform 0.2s',
+              transition: 'transform 0.15s ease',
               '&:hover': { transform: 'translateY(-2px)' },
             }}
           >
@@ -241,12 +240,12 @@ export default function RoleList() {
                   width: 48,
                   height: 48,
                   borderRadius: '14px',
-                  bgcolor: alpha((theme.palette as any)[stat.color].main, 0.1),
-                  color: (theme.palette as any)[stat.color].main,
-                  boxShadow: `0 6px 12px ${alpha((theme.palette as any)[stat.color].main, 0.1)}`,
+                  bgcolor: alpha(theme.palette[stat.color].main, 0.1),
+                  color: `${stat.color}.main`,
+                  boxShadow: `0 6px 12px ${alpha(theme.palette[stat.color].main, 0.1)}`,
                 }}
               >
-                {React.cloneElement(stat.icon as any, { fontSize: 'small' })}
+                {React.cloneElement(stat.icon, { fontSize: 'small' })}
               </Avatar>
               <Box>
                 <Typography
@@ -255,7 +254,7 @@ export default function RoleList() {
                   sx={{
                     fontWeight: 700,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
+                    letterSpacing: '0.075em',
                     display: 'block',
                     mb: 0.25,
                     fontSize: '0.65rem',
@@ -272,304 +271,287 @@ export default function RoleList() {
         ))}
       </Box>
 
-      {/* ── Toolbar ─────────────────────────────────────────────────────────── */}
-      <Paper
-        sx={{
-          p: 2,
-          mb: 0,
-          border: '1px solid',
-          borderColor: 'divider',
-          borderBottom: 'none',
-          borderRadius: '20px 20px 0 0',
-          boxShadow: 'none',
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: 2,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          bgcolor: alpha(theme.palette.background.paper, 0.8),
-          backdropFilter: 'blur(12px)',
-        }}
-      >
-        <TextField
-          placeholder={t('auth.admin.searchRolesPlaceholder') || 'Search roles…'}
-          size='small'
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{
-            width: { xs: '100%', sm: 360 },
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 2.5,
-              bgcolor: 'background.default',
-            },
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <Search sx={{ fontSize: 20, color: 'text.disabled' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Stack direction='row' spacing={2} alignItems='center'>
-          <Typography
-            variant='caption'
-            color='text.secondary'
-            sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-          >
-            {totalItems} {t('auth.admin.results')}
-          </Typography>
-          <Button
-            startIcon={<FilterList />}
-            sx={{
-              color: 'text.primary',
-              textTransform: 'none',
-              fontWeight: 700,
-              borderRadius: 2,
-              '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) },
-            }}
-          >
-            {t('auth.common.filters')}
-          </Button>
-        </Stack>
-      </Paper>
-
-      {/* ── Table Container ─────────────────────────────────────────────────── */}
-      <TableContainer
-        component={Paper}
+      {/* ── Roles Table Card — unified Card following OrganizationProfile ─── */}
+      <Card
         sx={{
           border: '1px solid',
           borderColor: 'divider',
-          borderRadius: '0 0 20px 20px',
           boxShadow: 'none',
+          borderRadius: 4,
           overflow: 'hidden',
         }}
       >
-        <Table sx={{ minWidth: 800 }}>
-          <TableHead sx={{ bgcolor: alpha(theme.palette.action.hover, 0.5) }}>
-            <TableRow>
-              <TableCell
-                sx={{
-                  py: 2,
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.admin.colRoleName')}
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.admin.colScope')}
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.admin.colPermissions')}
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.admin.colMembers')}
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.admin.colLastUpdated')}
-              </TableCell>
-              <TableCell
-                align='right'
-                sx={{
-                  fontWeight: 800,
-                  fontSize: '0.7rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.075em',
-                }}
-              >
-                {t('auth.admin.colActions')}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
+        {/* Toolbar */}
+        <Box
+          sx={{
+            px: 3,
+            py: 2,
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 2,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <TextField
+            placeholder={t('auth.admin.searchRolesPlaceholder') || 'Search roles…'}
+            size='small'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{
+              width: { xs: '100%', sm: 340 },
+              '& .MuiOutlinedInput-root': { borderRadius: 2 },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <SearchIcon sx={{ fontSize: 20, color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Stack direction='row' spacing={2} alignItems='center' sx={{ flexShrink: 0 }}>
+            <Typography
+              variant='caption'
+              color='text.secondary'
+              sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+            >
+              {totalItems} {t('auth.admin.results')}
+            </Typography>
+            <Button
+              startIcon={<FilterListIcon />}
+              sx={{
+                color: 'text.primary',
+                textTransform: 'none',
+                fontWeight: 700,
+                borderRadius: 2,
+                '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) },
+              }}
+            >
+              {t('auth.common.filters')}
+            </Button>
+          </Stack>
+        </Box>
+
+        <Divider sx={{ opacity: 0.5 }} />
+
+        {/* Table */}
+        <TableContainer>
+          <Table sx={{ minWidth: 800 }}>
+            <TableHead sx={{ bgcolor: 'action.hover' }}>
               <TableRow>
-                <TableCell colSpan={6} align='center' sx={{ py: 10 }}>
-                  <CircularProgress size={28} />
-                </TableCell>
-              </TableRow>
-            ) : roles.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} align='center' sx={{ py: 12 }}>
-                  <Stack spacing={2} alignItems='center'>
-                    <Avatar
-                      sx={{
-                        width: 64,
-                        height: 64,
-                        bgcolor: 'action.hover',
-                        color: 'text.disabled',
-                      }}
-                    >
-                      <Shield sx={{ fontSize: 32 }} />
-                    </Avatar>
-                    <Box>
-                      <Typography variant='h6' sx={{ fontWeight: 800, mb: 0.5 }}>
-                        No Roles Found
-                      </Typography>
-                      <Typography
-                        variant='body2'
-                        color='text.secondary'
-                        sx={{ maxWidth: 300, mx: 'auto' }}
-                      >
-                        Try refining your search or filters to find what you&apos;re looking for.
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </TableCell>
-              </TableRow>
-            ) : (
-              roles.map((role) => (
-                <TableRow
-                  key={role.id}
-                  hover
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
+                {[
+                  t('auth.admin.colRoleName'),
+                  t('auth.admin.colScope'),
+                  t('auth.admin.colPermissions'),
+                  t('auth.admin.colMembers'),
+                  t('auth.admin.colLastUpdated'),
+                ].map((col) => (
                   <TableCell
-                    onClick={() =>
-                      navigate(Path.admin.roleDetail.replace(':id', role.id.toString()))
-                    }
-                    sx={{ cursor: 'pointer', py: 2 }}
+                    key={col}
+                    sx={{
+                      py: 2,
+                      fontWeight: 800,
+                      fontSize: '0.7rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.075em',
+                    }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {col}
+                  </TableCell>
+                ))}
+                <TableCell
+                  align='right'
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: '0.7rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.075em',
+                  }}
+                >
+                  {t('auth.admin.colActions')}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} align='center' sx={{ py: 10 }}>
+                    <CircularProgress size={28} />
+                  </TableCell>
+                </TableRow>
+              ) : roles.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} align='center' sx={{ py: 12 }}>
+                    <Stack spacing={2} alignItems='center'>
                       <Avatar
                         sx={{
-                          width: 42,
-                          height: 42,
-                          borderRadius: '12px',
-                          bgcolor: alpha(theme.palette.primary.main, 0.1),
-                          color: 'primary.main',
-                          fontWeight: 800,
-                          fontSize: '1rem',
+                          width: 64,
+                          height: 64,
+                          bgcolor: 'action.hover',
+                          color: 'text.disabled',
                         }}
                       >
-                        {role.name[0]}
+                        <ShieldIcon sx={{ fontSize: 32 }} />
                       </Avatar>
                       <Box>
-                        <Typography variant='body2' sx={{ fontWeight: 700, color: 'text.primary' }}>
-                          {role.name}
+                        <Typography variant='h6' sx={{ fontWeight: 800, mb: 0.5 }}>
+                          {t('auth.admin.noRolesFound') || 'No Roles Found'}
                         </Typography>
                         <Typography
-                          variant='caption'
+                          variant='body2'
                           color='text.secondary'
-                          sx={{ display: 'block', fontWeight: 500, opacity: 0.8 }}
+                          sx={{ maxWidth: 300, mx: 'auto' }}
                         >
-                          {role.description || 'No description provided'}
+                          {t('auth.admin.noRolesHint') ||
+                            'Try refining your search or create your first role.'}
                         </Typography>
                       </Box>
-                    </Box>
+                    </Stack>
                   </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={role.guard_name === 'api' ? 'API Engine' : 'Web Portal'}
-                      size='small'
-                      variant='outlined'
-                      sx={{
-                        fontWeight: 800,
-                        height: 20,
-                        borderRadius: 1.5,
-                        fontSize: '0.65rem',
-                        textTransform: 'uppercase',
-                        borderColor: alpha(
-                          role.guard_name === 'api'
-                            ? theme.palette.primary.main
-                            : theme.palette.secondary.main,
-                          0.3,
-                        ),
-                        color: role.guard_name === 'api' ? 'primary.main' : 'secondary.main',
-                        bgcolor: alpha(
-                          role.guard_name === 'api'
-                            ? theme.palette.primary.main
-                            : theme.palette.secondary.main,
-                          0.04,
-                        ),
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant='body2' sx={{ fontWeight: 700 }}>
-                      {role.permissions?.length || 0}
-                    </Typography>
-                    <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
-                      Defined Actions
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                </TableRow>
+              ) : (
+                roles.map((role) => (
+                  <TableRow
+                    key={role.id}
+                    hover
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    {/* Role Name + Description */}
+                    <TableCell
+                      onClick={() =>
+                        navigate(Path.admin.roleDetail.replace(':id', role.id.toString()))
+                      }
+                      sx={{ cursor: 'pointer', py: 2 }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Avatar
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '12px',
+                            bgcolor: alpha(theme.palette.primary.main, 0.1),
+                            color: 'primary.main',
+                            fontWeight: 800,
+                            fontSize: '0.95rem',
+                          }}
+                        >
+                          {role.name[0]}
+                        </Avatar>
+                        <Box>
+                          <Typography
+                            variant='body2'
+                            sx={{ fontWeight: 700, color: 'text.primary' }}
+                          >
+                            {role.name}
+                          </Typography>
+                          <Typography
+                            variant='caption'
+                            color='text.secondary'
+                            sx={{ display: 'block', fontWeight: 500, opacity: 0.8 }}
+                          >
+                            {role.description || t('auth.admin.noDescription') || 'No description'}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </TableCell>
+
+                    {/* Scope Chip */}
+                    <TableCell>
+                      <Chip
+                        label={role.guard_name === 'api' ? 'API Engine' : 'Web Portal'}
+                        size='small'
+                        variant='outlined'
+                        sx={{
+                          fontWeight: 800,
+                          height: 22,
+                          borderRadius: 1.5,
+                          fontSize: '0.65rem',
+                          textTransform: 'uppercase',
+                          borderColor: alpha(
+                            role.guard_name === 'api'
+                              ? theme.palette.primary.main
+                              : theme.palette.secondary.main,
+                            0.3,
+                          ),
+                          color: role.guard_name === 'api' ? 'primary.main' : 'secondary.main',
+                          bgcolor: alpha(
+                            role.guard_name === 'api'
+                              ? theme.palette.primary.main
+                              : theme.palette.secondary.main,
+                            0.04,
+                          ),
+                        }}
+                      />
+                    </TableCell>
+
+                    {/* Permissions count */}
+                    <TableCell>
+                      <Typography variant='body2' sx={{ fontWeight: 700 }}>
+                        {role.permissions?.length || 0}
+                      </Typography>
+                      <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
+                        {t('auth.admin.definedActions') || 'Defined Actions'}
+                      </Typography>
+                    </TableCell>
+
+                    {/* Members count */}
+                    <TableCell>
                       <Typography variant='body2' sx={{ fontWeight: 700 }}>
                         {role.users_count || 0}
                       </Typography>
                       <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
-                        Members
+                        {t('auth.admin.members') || 'Members'}
                       </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                      {new Date(role.updated_at).toLocaleDateString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='right'>
-                    <Stack direction='row' spacing={0.5} justifyContent='flex-end'>
-                      <Tooltip title='Edit Role'>
+                    </TableCell>
+
+                    {/* Last updated */}
+                    <TableCell>
+                      <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.secondary' }}>
+                        {new Date(role.updated_at).toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </Typography>
+                    </TableCell>
+
+                    {/* Actions */}
+                    <TableCell align='right'>
+                      <Stack direction='row' spacing={0.5} justifyContent='flex-end'>
+                        <Tooltip title={t('auth.admin.editRole') || 'Edit Role'}>
+                          <IconButton
+                            size='small'
+                            onClick={() =>
+                              navigate(Path.admin.roleDetail.replace(':id', role.id.toString()))
+                            }
+                            aria-label={`Edit ${role.name}`}
+                          >
+                            <EditIcon fontSize='small' />
+                          </IconButton>
+                        </Tooltip>
                         <IconButton
                           size='small'
-                          onClick={() =>
-                            navigate(Path.admin.roleDetail.replace(':id', role.id.toString()))
-                          }
+                          onClick={(e) => handleMenuOpen(e, role)}
+                          aria-label={`More options for ${role.name}`}
                         >
-                          <Edit fontSize='small' />
+                          <MoreVertIcon fontSize='small' />
                         </IconButton>
-                      </Tooltip>
-                      <IconButton size='small' onClick={(e) => handleMenuOpen(e, role)}>
-                        <MoreVert fontSize='small' />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-        {/* ── Pagination ──────────────────────────────────────────────────────── */}
+        {/* Pagination footer */}
         <Box
           sx={{
-            p: 2.5,
+            px: 3,
+            py: 2,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -578,7 +560,8 @@ export default function RoleList() {
           }}
         >
           <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
-            Page {page} of {totalPages || 1}
+            {t('auth.admin.pageOf', { page, total: totalPages || 1 }) ||
+              `Page ${page} of ${totalPages || 1}`}
           </Typography>
           <Pagination
             count={totalPages}
@@ -587,27 +570,19 @@ export default function RoleList() {
             size='small'
             color='primary'
             sx={{
-              '& .MuiPaginationItem-root': {
-                fontWeight: 700,
-                borderRadius: 1.5,
-              },
+              '& .MuiPaginationItem-root': { fontWeight: 700, borderRadius: 1.5 },
             }}
           />
         </Box>
-      </TableContainer>
+      </Card>
 
-      {/* ── Menus & Dialogs ─────────────────────────────────────────────────── */}
+      {/* ── Context Menu ──────────────────────────────────────────────────── */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
         PaperProps={{
-          sx: {
-            borderRadius: 3,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-            minWidth: 180,
-            mt: 1,
-          },
+          sx: { borderRadius: 3, boxShadow: '0 8px 32px rgba(0,0,0,0.1)', minWidth: 180, mt: 1 },
         }}
       >
         <MenuItem
@@ -617,44 +592,49 @@ export default function RoleList() {
           }}
         >
           <ListItemIcon>
-            <Security fontSize='small' />
+            <SecurityIcon fontSize='small' />
           </ListItemIcon>
-          Permissions
+          {t('auth.admin.permissions') || 'Permissions'}
         </MenuItem>
         <MenuItem onClick={handleDuplicateRole} disabled={duplicateRole.isPending}>
           <ListItemIcon>
-            <ContentCopy fontSize='small' />
+            <ContentCopyIcon fontSize='small' />
           </ListItemIcon>
-          Duplicate
+          {t('auth.common.duplicate') || 'Duplicate'}
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleDeleteRole} sx={{ color: 'error.main' }}>
           <ListItemIcon>
-            <Delete fontSize='small' color='error' />
+            <DeleteIcon fontSize='small' color='error' />
           </ListItemIcon>
-          Delete Role
+          {t('auth.admin.deleteRole') || 'Delete Role'}
         </MenuItem>
       </Menu>
 
+      {/* ── Delete Confirmation Dialog ────────────────────────────────────── */}
       <Dialog
         open={deleteDialogOpen}
         onClose={handleCancelDelete}
-        PaperProps={{
-          sx: { borderRadius: 4, p: 1, backgroundImage: 'none' },
-        }}
+        maxWidth='xs'
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 4, p: 1, backgroundImage: 'none' } }}
       >
-        <DialogTitle sx={{ fontWeight: 900, fontSize: '1.5rem', letterSpacing: '-0.02em' }}>
-          Delete &quot;{selectedRole?.name}&quot;?
+        <DialogTitle sx={{ fontWeight: 900, fontSize: '1.375rem', letterSpacing: '-0.02em' }}>
+          {t('auth.admin.deleteRoleTitle', { name: selectedRole?.name }) ||
+            `Delete "${selectedRole?.name}"?`}
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ fontWeight: 500 }}>
-            This action is permanent. All users currently assigned this role will lose its
-            associated permissions immediately.
+            {t('auth.admin.deleteRoleDesc') ||
+              'This action is permanent. All users assigned this role will lose its permissions immediately.'}
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ p: 3, pt: 1 }}>
-          <Button onClick={handleCancelDelete} sx={{ fontWeight: 700, color: 'text.secondary' }}>
-            Cancel
+          <Button
+            onClick={handleCancelDelete}
+            sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'none' }}
+          >
+            {t('auth.common.cancel')}
           </Button>
           <Button
             onClick={handleConfirmDelete}
@@ -663,12 +643,15 @@ export default function RoleList() {
             disabled={deleteRole.isPending}
             sx={{
               fontWeight: 800,
-              borderRadius: 2.5,
+              textTransform: 'none',
+              borderRadius: 2,
               px: 3,
-              boxShadow: (theme) => `0 4px 12px ${alpha(theme.palette.error.main, 0.4)}`,
+              boxShadow: `0 4px 12px ${alpha(theme.palette.error.main, 0.4)}`,
             }}
           >
-            {deleteRole.isPending ? 'Deleting…' : 'Delete Role'}
+            {deleteRole.isPending
+              ? t('auth.admin.deleting') || 'Deleting…'
+              : t('auth.admin.deleteRole') || 'Delete Role'}
           </Button>
         </DialogActions>
       </Dialog>
