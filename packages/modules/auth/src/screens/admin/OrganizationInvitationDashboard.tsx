@@ -84,9 +84,7 @@ export default function OrganizationInvitationDashboard() {
   if (!id || isNaN(Number(id))) {
     return (
       <Box sx={{ p: 4 }}>
-        <Typography color='error'>
-          {t('auth.admin.invalidOrgId', 'Invalid Organization ID')}
-        </Typography>
+        <Typography color='error'>{t('auth.admin.invalidOrgId')}</Typography>
         <Button onClick={() => navigate(Path.admin.organizations)}>
           {t('auth.admin.backToOrgs')}
         </Button>
@@ -192,7 +190,7 @@ export default function OrganizationInvitationDashboard() {
               {t('auth.admin.memberInvitations')}
             </Typography>
             <Typography variant='body1' color='text.secondary'>
-              {t('auth.admin.memberInvitations_subtitle')}
+              {t('auth.admin.memberInvitationsSubtitle')}
             </Typography>
           </Box>
           <Button
@@ -293,7 +291,7 @@ export default function OrganizationInvitationDashboard() {
               <TableRow>
                 <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.invitedEmail')}</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.assignedRole')}</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.status')}</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>{t('auth.common.status')}</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.sentDate')}</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>{t('auth.admin.expiresAt')}</TableCell>
                 <TableCell align='right' sx={{ fontWeight: 700 }}>
@@ -460,9 +458,7 @@ export default function OrganizationInvitationDashboard() {
         maxWidth='xs'
         PaperProps={{ sx: { borderRadius: 4 } }}
       >
-        <DialogTitle sx={{ fontWeight: 800 }}>
-          {t('auth.admin.inviteMemberModalTitle')}
-        </DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.inviteMemberModalTitle')}</DialogTitle>
         <DialogContent>
           <Typography variant='body2' color='text.secondary' sx={{ mb: 3 }}>
             {t('auth.admin.inviteMemberModalSubtitle')}
@@ -508,5 +504,3 @@ export default function OrganizationInvitationDashboard() {
     </Box>
   )
 }
-
-

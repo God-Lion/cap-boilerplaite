@@ -100,7 +100,7 @@ export default function SystemHealthDashboard() {
       color: 'error',
     },
     {
-      label: 'MEMORY USAGE', // replacing cpu_usage translation
+      label: t('auth.monitoring.memory_usage'),
       value: memoryMB,
       trend: 'stable',
       icon: <StorageIcon />,
@@ -120,10 +120,10 @@ export default function SystemHealthDashboard() {
     return (
       <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto', textAlign: 'center' }}>
         <Typography color='error' variant='h6' sx={{ mb: 2 }}>
-          {t('auth.admin.errorLoadingEvents', 'Failed to load system health. Please try again.')}
+          {t('auth.admin.errorLoadingEvents')}
         </Typography>
         <Button variant='contained' onClick={handleRefresh} startIcon={<Refresh />}>
-          {t('auth.common.retry', 'Retry')}
+          {t('auth.common.retry')}
         </Button>
       </Box>
     )
@@ -155,9 +155,9 @@ export default function SystemHealthDashboard() {
               }}
             />
             {overallStatus === 'unhealthy'
-              ? 'Unhealthy'
+              ? t('auth.monitoring.status_unhealthy')
               : overallStatus === 'degraded'
-                ? 'Degraded'
+                ? t('auth.monitoring.status_degraded')
                 : t('auth.monitoring.live_status_operational')}
           </Stack>
         </Box>
@@ -247,7 +247,7 @@ export default function SystemHealthDashboard() {
                         </Typography>
                       </Box>
                       <Stack direction='row' spacing={2}>
-                        {t('auth.monitoring.latency_label', { latency: service.latency || 'N/A' })}
+                        {t('auth.monitoring.latency_label')}: {service.latency || 'N/A'}
                         <Chip
                           label={service.status}
                           size='small'
@@ -284,13 +284,13 @@ export default function SystemHealthDashboard() {
                           }}
                         />
                       </Box>
-                      {t('auth.monitoring.load_label', { load: service.load })}
+                      {t('auth.monitoring.load_label')}: {service.load}%
                     </Box>
                   </Box>
                 ))}
                 {services.length === 0 && (
                   <Typography variant='body2' color='text.secondary'>
-                    {t('auth.admin.noEventsFound', 'No services found.')}
+                    {t('auth.admin.noEventsFound')}
                   </Typography>
                 )}
               </Stack>

@@ -14,7 +14,7 @@
     "type-check": "tsc --noEmit",
     "analyze": "npm run build && npx vite-bundle-visualizer",
     "analyze:stats": "vite build --mode analyze && npx vite-bundle-visualizer",
-    "lighthouse": "lighthouse http://localhost:3000 --view --output html --output-path ./lighthouse-report.html",
+    "lighthouse": "lighthouse http://localhost:5173 --view --output html --output-path ./lighthouse-report.html",
     "lighthouse:ci": "lhci autorun",
     "perf:build": "npm run build && npm run analyze",
     "perf:profile": "node --inspect-brk ./node_modules/.bin/vite build",

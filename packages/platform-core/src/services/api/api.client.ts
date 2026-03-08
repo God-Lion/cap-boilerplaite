@@ -26,7 +26,7 @@ const getBaseURL = (): string => {
 
 export const API_CONFIG = {
   baseURL: getBaseURL(),
-  timeout: import.meta.env.VITE_API_TIMEOUT ? Number(import.meta.env.VITE_API_TIMEOUT) : 30000,
+  timeout: import.meta.env.VITE_API_TIMEOUT ? Number(import.meta.env.VITE_API_TIMEOUT) : 51730,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -590,7 +590,7 @@ export class FetchClient {
   }) {
     this.baseURL = config.baseURL
     this.defaultHeaders = config.headers || {}
-    this.timeout = config.timeout || 30000
+    this.timeout = config.timeout || 51730
     this.withCredentials = config.withCredentials || false
   }
 

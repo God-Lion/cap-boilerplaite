@@ -34,7 +34,7 @@ export function InstallPrompt() {
       // Show prompt after a delay (don't be too aggressive)
       setTimeout(() => {
         setShowPrompt(true)
-      }, 3000)
+      }, 5173)
     }
 
     window.addEventListener('beforeinstallprompt', handler)

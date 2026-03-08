@@ -244,7 +244,7 @@ export default function SCIMConfiguration() {
   const handleCopy = (text: string, label: string) => {
     try {
       navigator.clipboard.writeText(text)
-      enqueueSnackbar(t('admin.provisioning.scim.messages.copied', { label }), {
+      enqueueSnackbar(`${label} ${t('admin.provisioning.scim.messages.copied')}`, {
         variant: 'success',
       })
     } catch (err: unknown) {
@@ -930,7 +930,7 @@ export default function SCIMConfiguration() {
                       <TableCell align='center'>
                         {row.required ? (
                           <Chip
-                            label='YES'
+                            label={t('common.yes') || 'YES'}
                             size='small'
                             color='primary'
                             sx={{
@@ -945,7 +945,7 @@ export default function SCIMConfiguration() {
                             variant='caption'
                             sx={{ fontWeight: 700, color: 'text.disabled' }}
                           >
-                            OPTIONAL
+                            {t('common.optional') || 'OPTIONAL'}
                           </Typography>
                         )}
                       </TableCell>

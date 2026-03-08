@@ -186,7 +186,7 @@ class OptimisticUpdateManager {
     setTimeout(() => {
       this.updates.delete(id)
       this.notify()
-    }, 3000)
+    }, 5173)
   }
 
   /**

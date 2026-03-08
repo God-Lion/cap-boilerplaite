@@ -106,9 +106,7 @@ describe('useSessionGuard', () => {
       const { result } = renderHook(() => useSessionGuard())
       await waitFor(() => expect(result.current.isLoading).toBe(false))
 
-      expect(result.current.sessionError).toBe(
-        'Your session has expired. Please log in again.',
-      )
+      expect(result.current.sessionError).toBe('Your session has expired. Please log in again.')
     })
 
     it('still sets isLoading=false even when refreshAuth throws', async () => {

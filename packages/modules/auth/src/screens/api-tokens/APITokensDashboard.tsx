@@ -21,6 +21,10 @@ import {
   Tooltip,
   useTheme,
   Grid,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material'
 import {
   Add as AddIcon,
@@ -32,57 +36,67 @@ import {
   VpnKey as KeyIcon,
   Security as SecurityIcon,
   Timer as TimerIcon,
+  Terminal as TerminalIcon,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
+import { useUserTokens, useRevokeToken } from '../../hooks/useUserQuery'
 import Path from '../path'
 
 interface APIToken {
-  id: string
+  id: string | number
   name: string
-  keyPrefix: string
+  abilities: string[]
   createdAt: string
   lastUsedAt: string | null
+  expiresAt: string | null
   status: 'active' | 'revoked' | 'expired'
-  scopes: string[]
 }
 
 const APITokensDashboard: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const theme = useTheme()
+  const { enqueueSnackbar } = useSnackbar()
   const [searchQuery, setSearchQuery] = useState('')
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedToken, setSelectedToken] = useState<APIToken | null>(null)
 
-  // Placeholder data for UI - will be replaced with real data fetching
-  const [tokens] = useState<APIToken[]>([
-    {
-      id: '1',
-      name: 'Production - Backend API',
-      keyPrefix: 'cap_live_...',
-      createdAt: '2025-10-12T14:30:00Z',
-      lastUsedAt: '2026-02-14T09:15:00Z',
-      status: 'active',
-      scopes: ['read:users', 'write:users', 'read:roles'],
+  const { data: tokensResponse, isLoading, isError, refetch } = useUserTokens()
+  const revokeTokenMutation = useRevokeToken({
+    onSuccess: () => {
+      enqueueSnackbar(t('api_tokens:revoked_success', 'Token revoked successfully'), {
+        variant: 'success',
+      })
+      refetch()
+      handleMenuClose()
     },
-    {
-      id: '2',
-      name: 'Development - Frontend CLI',
-      keyPrefix: 'cap_test_...',
-      createdAt: '2026-01-20T10:00:00Z',
-      lastUsedAt: '2026-02-15T15:45:00Z',
-      status: 'active',
-      scopes: ['read:config'],
+    onError: (error: any) => {
+      enqueueSnackbar(error.message || t('api_tokens:revoked_error', 'Failed to revoke token'), {
+        variant: 'error',
+      })
     },
-    {
-      id: '3',
-      name: 'Staging - Automation Bot',
-      keyPrefix: 'cap_stg_...',
-      createdAt: '2026-02-01T08:00:00Z',
-      lastUsedAt: null,
-      status: 'revoked',
-      scopes: ['all'],
-    },
-  ])
+  })
+
+  // Use the fetched data
+  const tokens = (tokensResponse?.data || []) as APIToken[]
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, token: APIToken) => {
+    setAnchorEl(event.currentTarget)
+    setSelectedToken(token)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+    setSelectedToken(null)
+  }
+
+  const handleRevoke = () => {
+    if (selectedToken) {
+      revokeTokenMutation.mutate(selectedToken.id)
+    }
+  }
 
   const getStatusColor = (status: APIToken['status']) => {
     switch (status) {
@@ -129,7 +143,7 @@ const APITokensDashboard: React.FC = () => {
         <Button
           variant='contained'
           startIcon={<AddIcon />}
-          onClick={() => navigate(Path.apiTokens.create_basic)}
+          onClick={() => navigate(Path.apiTokens.createBasic)}
           sx={{ borderRadius: 2, px: 3, py: 1 }}
         >
           {t('api_tokens:create_new_token', 'Create New Token')}
@@ -220,9 +234,6 @@ const APITokensDashboard: React.FC = () => {
                   {t('api_tokens:header_name', 'Token Name')}
                 </TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>
-                  {t('api_tokens:header_prefix', 'Key Prefix')}
-                </TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>
                   {t('api_tokens:header_status', 'Status')}
                 </TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>
@@ -235,9 +246,17 @@ const APITokensDashboard: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredTokens.length === 0 ? (
+              {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} align='center' sx={{ py: 4 }}>
+                  <TableCell colSpan={5} align='center' sx={{ py: 4 }}>
+                    <Typography color='text.secondary'>
+                      {t('common:loading', 'Loading tokens...')}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : filteredTokens.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align='center' sx={{ py: 4 }}>
                     <Typography color='text.secondary'>
                       {t('api_tokens:no_tokens_found', 'No tokens found matching your search.')}
                     </Typography>
@@ -251,7 +270,7 @@ const APITokensDashboard: React.FC = () => {
                         {token.name}
                       </Typography>
                       <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5 }}>
-                        {token.scopes.slice(0, 2).map((scope) => (
+                        {(token.abilities || []).slice(0, 2).map((scope) => (
                           <Chip
                             key={scope}
                             label={scope}
@@ -260,19 +279,14 @@ const APITokensDashboard: React.FC = () => {
                             sx={{ fontSize: '0.65rem', height: 20 }}
                           />
                         ))}
-                        {token.scopes.length > 2 && (
+                        {(token.abilities || []).length > 2 && (
                           <Chip
-                            label={`+${token.scopes.length - 2}`}
+                            label={`+${(token.abilities || []).length - 2}`}
                             size='small'
                             variant='outlined'
                             sx={{ fontSize: '0.65rem', height: 20 }}
                           />
                         )}
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <code>{token.keyPrefix}</code>
                       </Box>
                     </TableCell>
                     <TableCell>
@@ -294,18 +308,13 @@ const APITokensDashboard: React.FC = () => {
                         <IconButton
                           size='small'
                           onClick={() =>
-                            navigate(Path.apiTokens.details.replace(':tokenId', token.id))
+                            navigate(Path.apiTokens.details.replace(':tokenId', String(token.id)))
                           }
                         >
                           <ViewIcon fontSize='small' />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title={t('common:copy_prefix')}>
-                        <IconButton size='small'>
-                          <CopyIcon fontSize='small' />
-                        </IconButton>
-                      </Tooltip>
-                      <IconButton size='small'>
+                      <IconButton size='small' onClick={(e) => handleMenuOpen(e, token)}>
                         <MoreVertIcon fontSize='small' />
                       </IconButton>
                     </TableCell>
@@ -315,6 +324,44 @@ const APITokensDashboard: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Actions Menu */}
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+          <MenuItem
+            onClick={() => {
+              if (selectedToken) {
+                navigate(Path.apiTokens.details.replace(':tokenId', String(selectedToken.id)))
+              }
+              handleMenuClose()
+            }}
+          >
+            <ListItemIcon>
+              <ViewIcon fontSize='small' />
+            </ListItemIcon>
+            <ListItemText primary={t('common:view_details', 'View Details')} />
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              if (selectedToken) {
+                navigate(Path.apiTokens.display.replace(':tokenId', String(selectedToken.id)))
+              }
+              handleMenuClose()
+            }}
+          >
+            <ListItemIcon>
+              <TerminalIcon fontSize='small' />
+            </ListItemIcon>
+            <ListItemText primary={t('api_tokens:usage_guide', 'Usage Guide')} />
+          </MenuItem>
+          <MenuItem onClick={handleRevoke} sx={{ color: 'error.main' }}>
+            <ListItemIcon>
+              <IconButton size='small' sx={{ color: 'error.main', p: 0 }}>
+                <AddIcon sx={{ transform: 'rotate(45deg)', fontSize: 20 }} />
+              </IconButton>
+            </ListItemIcon>
+            <ListItemText primary={t('api_tokens:revoke', 'Revoke Token')} />
+          </MenuItem>
+        </Menu>
       </Card>
 
       {/* Security Tip Banner */}
@@ -344,7 +391,7 @@ const APITokensDashboard: React.FC = () => {
         </Box>
         <Button
           size='small'
-          onClick={() => navigate(Path.apiTokens.security_warning)}
+          onClick={() => navigate(Path.apiTokens.securityWarning)}
           sx={{ ml: 'auto', fontWeight: 'bold' }}
         >
           {t('common:learn_more', 'Learn More')}

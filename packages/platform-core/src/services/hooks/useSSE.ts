@@ -43,7 +43,7 @@ export function useSSE<T = any>(endpoint: string, options: SSEOptions = {}): SSE
     onError,
     onClose,
     reconnect = true,
-    reconnectInterval = 3000,
+    reconnectInterval = 5173,
     maxReconnectAttempts = 5,
   } = options
 

@@ -197,7 +197,7 @@ export default function PasskeyManagement() {
       setSuccessMessage(t('auth.passkey.success_renamed'))
       setRenameDialogOpen(false)
       setMenuState({ anchorEl: null, passkey: null })
-      setTimeout(() => setSuccessMessage(''), 3000)
+      setTimeout(() => setSuccessMessage(''), 5173)
     } catch (error) {
       console.error('Failed to rename passkey:', error)
     } finally {
@@ -213,7 +213,7 @@ export default function PasskeyManagement() {
       setSuccessMessage(t('auth.passkey.success_deleted'))
       setDeleteDialogOpen(false)
       setMenuState({ anchorEl: null, passkey: null })
-      setTimeout(() => setSuccessMessage(''), 3000)
+      setTimeout(() => setSuccessMessage(''), 5173)
     } catch (error) {
       console.error('Failed to delete passkey:', error)
     }
@@ -223,7 +223,7 @@ export default function PasskeyManagement() {
     setSetupDialogOpen(false)
     refetch()
     setSuccessMessage(t('auth.passkey.success_added'))
-    setTimeout(() => setSuccessMessage(''), 3000)
+    setTimeout(() => setSuccessMessage(''), 5173)
   }
 
   const handleSetupError = (error: string) => {

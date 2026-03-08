@@ -342,7 +342,7 @@ export default function PermissionRegistry() {
                     fontSize: '0.65rem',
                   }}
                 >
-                  All
+                  {t('common.all') || 'All'}
                 </Typography>
                 <Typography variant='h5' sx={{ fontWeight: 900, letterSpacing: '-0.02em' }}>
                   {permissions.length}
@@ -431,9 +431,7 @@ export default function PermissionRegistry() {
           }}
         >
           <TextField
-            placeholder={
-              t('auth.admin.filterPermissions') || 'Filter by slug, resource, or description…'
-            }
+            placeholder={t('auth.admin.filterPermissions')}
             size='small'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -465,13 +463,7 @@ export default function PermissionRegistry() {
                 }}
               />
             )}
-            <Typography
-              variant='caption'
-              color='text.secondary'
-              sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-            >
-              {filtered.length} of {permissions.length} {t('auth.admin.actions') || 'Actions'}
-            </Typography>
+            {filtered.length} {t('auth.common.of')} {permissions.length} {t('auth.admin.actions')}
           </Stack>
         </Box>
 
@@ -540,15 +532,14 @@ export default function PermissionRegistry() {
                         <Typography variant='h6' sx={{ fontWeight: 800, mb: 0.5 }}>
                           {search || activeCategory
                             ? t('auth.common.noResults')
-                            : t('auth.admin.noPermissions') || 'No Actions Found'}
+                            : t('auth.admin.noPermissions')}
                         </Typography>
                         <Typography
                           variant='body2'
                           color='text.secondary'
                           sx={{ maxWidth: 300, mx: 'auto' }}
                         >
-                          {t('auth.admin.noPermissionsHint') ||
-                            'Try refining your search or defined your first policy.'}
+                          {t('auth.admin.noPermissionsHint')}
                         </Typography>
                       </Box>
                     </Stack>
@@ -629,7 +620,7 @@ export default function PermissionRegistry() {
                     {/* Actions */}
                     <TableCell align='right'>
                       <Stack direction='row' spacing={0.5} justifyContent='flex-end'>
-                        <Tooltip title={t('auth.admin.editDefinition') || 'Edit Definition'}>
+                        <Tooltip title={t('auth.admin.editDefinition')}>
                           <IconButton
                             size='small'
                             aria-label={`Edit ${perm.name}`}
@@ -638,7 +629,7 @@ export default function PermissionRegistry() {
                             <SettingsIcon fontSize='small' />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title={t('auth.admin.delete') || 'Delete'}>
+                        <Tooltip title={t('auth.common.delete')}>
                           <IconButton
                             size='small'
                             color='error'
@@ -674,7 +665,7 @@ export default function PermissionRegistry() {
             {t('auth.admin.permissionsCount', {
               count: filtered.length,
               total: permissions.length,
-            }) || `Showing ${filtered.length} of ${permissions.length} permissions`}
+            })}
           </Typography>
         </Box>
       </Card>
@@ -688,38 +679,40 @@ export default function PermissionRegistry() {
         PaperProps={{ sx: { borderRadius: 4 } }}
       >
         <DialogTitle sx={{ fontWeight: 900, pb: 1 }}>
-          {editingPermission ? 'Edit Action Definition' : 'Define New Action'}
+          {editingPermission ? t('auth.admin.editAction') : t('auth.admin.defineNewAction')}
         </DialogTitle>
         <DialogContent>
           <Typography variant='body2' color='text.secondary' sx={{ mb: 3, fontWeight: 500 }}>
-            Actions represent granular operations that can be assigned to roles.
+            {t('auth.admin.actionsDescription')}
           </Typography>
           <Stack spacing={3} sx={{ mt: 1 }}>
             <TextField
               fullWidth
-              label='Action Key (Slug)'
-              placeholder='e.g., users:create'
+              label={t('auth.admin.actionKey')}
+              placeholder={t('auth.admin.actionKeyPlaceholder') || 'e.g., users:create'}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              helperText='Use colon notation for consistency'
+              helperText={t('auth.admin.actionKeyHelper')}
               required
             />
             <TextField
               fullWidth
-              label='Resource Category'
-              placeholder='e.g., users, billing, system'
+              label={t('auth.admin.resourceCategory')}
+              placeholder={
+                t('auth.admin.resourceCategoryPlaceholder') || 'e.g., users, billing, system'
+              }
               value={formData.resource}
               onChange={(e) => setFormData({ ...formData, resource: e.target.value })}
             />
             <TextField
               fullWidth
-              label='Guard Name'
+              label={t('auth.admin.guardName')}
               value={formData.guard_name}
               onChange={(e) => setFormData({ ...formData, guard_name: e.target.value })}
             />
             <TextField
               fullWidth
-              label='Description'
+              label={t('auth.admin.description')}
               multiline
               rows={3}
               value={formData.description}
@@ -737,7 +730,7 @@ export default function PermissionRegistry() {
             disabled={createPermission.isPending || updatePermission.isPending || !formData.name}
             sx={{ fontWeight: 800, borderRadius: 2, px: 3 }}
           >
-            {editingPermission ? 'Update Definition' : 'Create Action'}
+            {editingPermission ? t('auth.admin.updateDefinition') : t('auth.admin.createAction')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -745,9 +738,12 @@ export default function PermissionRegistry() {
       {/* ── Confirmation ─────────────────────────────────────────────────── */}
       <ConfirmationDialog
         open={confirmDeleteOpen}
-        title='Delete Action Definition?'
-        message={`Are you sure you want to permanently delete the "${permissionToDelete?.name}" action? This may break existing roles that depend on it.`}
-        confirmLabel='Delete Permanently'
+        title={t('auth.admin.deleteActionTitle') || 'Delete Action Definition?'}
+        message={
+          t('auth.admin.deleteActionMessage', { name: permissionToDelete?.name }) ||
+          `Are you sure you want to permanently delete the "${permissionToDelete?.name}" action? This may break existing roles that depend on it.`
+        }
+        confirmLabel={t('auth.admin.deletePermanently') || 'Delete Permanently'}
         severity='error'
         isSubmitting={deletePermission.isPending}
         onConfirm={handleConfirmDelete}

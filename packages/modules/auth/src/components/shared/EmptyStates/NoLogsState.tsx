@@ -82,4 +82,3 @@ const NoLogsState = ({ title, description, onAction, actionLabel }: NoLogsStateP
 }
 
 export default NoLogsState
-

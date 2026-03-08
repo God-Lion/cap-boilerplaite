@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -338,12 +338,19 @@ export default function SignInV2() {
     setPendingMfaUser(null)
   }, [])
 
+  const [searchParams] = useSearchParams()
+  const interactionIdFromUrl = searchParams.get('interaction')
+
   const handleSocialLogin = useCallback(
     (provider: string) => {
       const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3333'
-      navigate(`${apiUrl}/api/auth/social/${provider}/redirect`)
+      const interactionParam =
+        interactionIdFromUrl && interactionIdFromUrl !== 'null'
+          ? `?interaction=${interactionIdFromUrl}`
+          : ''
+      window.location.assign(`${apiUrl}/api/auth/social/${provider}/redirect${interactionParam}`)
     },
-    [navigate],
+    [interactionIdFromUrl],
   )
 
   const onSubmit = useCallback(

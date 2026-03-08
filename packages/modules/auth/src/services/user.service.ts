@@ -121,7 +121,12 @@ const userService = {
       return apiClient.get(ENDPOINTS.user.tokens.index)
     },
 
-    create: (data: { name: string; expiresIn?: string }): Promise<FetchResponse> => {
+    create: (data: {
+      name: string
+      expiresIn?: string
+      abilities?: string[]
+      ipRestrictions?: string[]
+    }): Promise<FetchResponse> => {
       return apiClient.post(ENDPOINTS.user.tokens.store, data)
     },
 

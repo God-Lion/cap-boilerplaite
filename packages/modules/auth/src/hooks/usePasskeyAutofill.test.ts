@@ -84,9 +84,7 @@ describe('usePasskeyAutofill', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
     expect(result.current.isAvailable).toBe(true)
-    expect(mockSetTokens).toHaveBeenCalledWith(
-      expect.objectContaining({ accessToken: 'tok' }),
-    )
+    expect(mockSetTokens).toHaveBeenCalledWith(expect.objectContaining({ accessToken: 'tok' }))
     expect(mockSetUser).toHaveBeenCalledWith({ id: '1' })
     expect(mockSetAuthenticated).toHaveBeenCalledWith(true)
     expect(mockSetAuthStep).toHaveBeenCalledWith('complete')

@@ -41,7 +41,7 @@ export default function VerificationEmail() {
           setSuccess(true)
           setTimeout(() => {
             navigate('/auth/login')
-          }, 3000)
+          }, 5173)
         }
       } catch (error) {
         setError(error as HttpError)

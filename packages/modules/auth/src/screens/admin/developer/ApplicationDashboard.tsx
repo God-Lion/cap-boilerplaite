@@ -101,7 +101,7 @@ export default function ApplicationDashboard() {
 
   const [formData, setFormData] = useState<CreateOIDCClientRequest>({
     name: '',
-    redirectUris: ['http://localhost:3000/callback'],
+    redirectUris: ['http://localhost:5173/callback'],
     grantTypes: ['authorization_code', 'refresh_token'],
     responseTypes: ['code'],
   })
@@ -124,7 +124,7 @@ export default function ApplicationDashboard() {
       setSelectedAppId(app.id)
       setFormData({
         name: app.name || app.client_name,
-        redirectUris: app.redirectUris || app.redirect_uris || ['http://localhost:3000/callback'],
+        redirectUris: app.redirectUris || app.redirect_uris || ['http://localhost:5173/callback'],
         grantTypes: app.grantTypes || app.grant_types || ['authorization_code'],
         responseTypes: app.responseTypes || app.response_types || ['code'],
       })
@@ -133,7 +133,7 @@ export default function ApplicationDashboard() {
       setSelectedAppId(null)
       setFormData({
         name: '',
-        redirectUris: ['http://localhost:3000/callback'],
+        redirectUris: ['http://localhost:5173/callback'],
         grantTypes: ['authorization_code', 'refresh_token'],
         responseTypes: ['code'],
       })

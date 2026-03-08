@@ -301,7 +301,8 @@ const ConnectorDetailView: React.FC = () => {
           {t('admin.provisioning.connector.not_found')}
         </Typography>
         <Typography color='text.secondary' sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}>
-          The connector you are looking for does not exist or has been removed.
+          {t('admin.provisioning.connector.not_found_desc') ||
+            'The connector you are looking for does not exist or has been removed.'}
         </Typography>
         <Button
           variant='contained'
@@ -437,7 +438,11 @@ const ConnectorDetailView: React.FC = () => {
         <Grid size={{ xs: 12, md: 4 }}>
           <StatCard
             label={t('admin.provisioning.connector.stats.status')}
-            value={(connector.status || 'inactive').toUpperCase()}
+            value={
+              connector.status === 'active'
+                ? t('admin.provisioning.scim.status_active')
+                : t('admin.provisioning.scim.status_inactive')
+            }
             icon={<Security />}
             color='info'
           />
@@ -525,13 +530,13 @@ const ConnectorDetailView: React.FC = () => {
                       sx={{ borderRadius: 3, fontWeight: 700 }}
                     >
                       <MenuItem value='active' sx={{ fontWeight: 700 }}>
-                        ACTIVE
+                        {t('admin.provisioning.scim.status_active').toUpperCase()}
                       </MenuItem>
                       <MenuItem value='inactive' sx={{ fontWeight: 700 }}>
-                        INACTIVE
+                        {t('admin.provisioning.scim.status_inactive').toUpperCase()}
                       </MenuItem>
                       <MenuItem value='error' sx={{ fontWeight: 700 }}>
-                        ERROR
+                        {t('common.error').toUpperCase()}
                       </MenuItem>
                     </Select>
                   </FormControl>
@@ -599,7 +604,7 @@ const ConnectorDetailView: React.FC = () => {
                         variant='caption'
                         sx={{ fontWeight: 800, color: 'text.secondary' }}
                       >
-                        CREATED ON
+                        {t('admin.provisioning.connector.metadata_fields.created_on')}
                       </Typography>
                       <Typography variant='body2' sx={{ fontWeight: 800 }}>
                         {connector.created_at
@@ -620,7 +625,7 @@ const ConnectorDetailView: React.FC = () => {
                         variant='caption'
                         sx={{ fontWeight: 800, color: 'text.secondary' }}
                       >
-                        CONNECTOR TYPE
+                        {t('admin.provisioning.connector.metadata_fields.type')}
                       </Typography>
                       <Chip
                         label={connector.type}

@@ -58,7 +58,7 @@ describe('useInterval', () => {
     unmount()
 
     act(() => {
-      vi.advanceTimersByTime(3000)
+      vi.advanceTimersByTime(5173)
     })
     // Should still be 1 — no more calls after unmount
     expect(callback).toHaveBeenCalledTimes(1)
@@ -102,7 +102,7 @@ describe('useInterval', () => {
     rerender()
 
     act(() => {
-      vi.advanceTimersByTime(3000)
+      vi.advanceTimersByTime(5173)
     })
     expect(callback).toHaveBeenCalledTimes(1)
   })

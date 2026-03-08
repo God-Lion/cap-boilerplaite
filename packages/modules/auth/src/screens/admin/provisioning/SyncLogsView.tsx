@@ -100,7 +100,7 @@ const SyncLogsView: React.FC = () => {
     const isUpdate = eventStr.toLowerCase().includes('update')
     return (
       <Chip
-        label={eventStr.replace(/_/g, ' ').toUpperCase()}
+        label={(eventStr || '').replace(/_/g, ' ').toUpperCase()}
         size='small'
         sx={{
           fontWeight: 900,
@@ -517,7 +517,7 @@ const SyncLogsView: React.FC = () => {
                               fontSize: '0.8rem',
                             }}
                           >
-                            {log.target || '—'}
+                            {log.target || t('common.not_available') || '—'}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -537,7 +537,7 @@ const SyncLogsView: React.FC = () => {
                                 letterSpacing: '0.02em',
                               }}
                             >
-                              {String(log.status)}
+                              {t(String(log.status)).toUpperCase()}
                             </Typography>
                           </Box>
                         </TableCell>
@@ -620,7 +620,7 @@ const SyncLogsView: React.FC = () => {
           color='info'
           sx={{ fontWeight: 900, textTransform: 'none', borderRadius: 2.5, px: 4, height: 44 }}
         >
-          Documentation
+          {t('common.documentation') || 'Documentation'}
         </Button>
       </Card>
     </Box>

@@ -681,5 +681,3 @@ function BanFullHistory() {
     </Stack>
   )
 }
-
-

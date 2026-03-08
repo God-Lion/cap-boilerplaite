@@ -148,4 +148,3 @@ export default function CreateUserDialog({ open, onClose }: CreateUserDialogProp
     </Dialog>
   )
 }
-

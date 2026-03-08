@@ -38,6 +38,9 @@ export interface User {
 
 export interface SsoDiscoveryResponse {
   provider: 'oidc' | 'saml' | 'google' | 'github' | 'microsoft' | 'password'
+  type?: string
+  name?: string
+  url?: string
   clientId?: string
   organizationId?: number
   loginUrl?: string

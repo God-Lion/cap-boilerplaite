@@ -26,21 +26,27 @@ const Path = {
   passwordlessVerification: '/auth/verify-passwordless/:token',
   mfaVerification: '/auth/mfa/verification',
   exportVerification: '/auth/export/verification',
+
   permissionConsent: '/auth/sso/consent',
   oidcLoginPrompt: '/auth/sso/oidc-prompt',
+  providerSelection: '/auth/sso/select-provider',
+  authWait: '/auth/sso/wait',
+
   samlMetadataDisplay: '/auth/sso/saml-metadata',
   samlMetadataBrowser: '/auth/sso/saml-browser',
   oidcConfigBrowser: '/auth/sso/oidc-config',
   samlConfigDashboard: '/auth/sso/saml-config',
   ssfConfiguration: '/auth/sso/ssf-config',
   jwksManagement: '/auth/sso/jwks',
-  providerSelection: '/auth/sso/select-provider',
-  authWait: '/auth/sso/wait',
+
+  oidcWait: '/auth/sso/oidc/wait',
+  samlWait: '/auth/sso/saml/wait',
+  samlSSOInitiation: '/auth/sso/login',
+
   emailTestingDashboard: '/monitoring/email-testing',
   emailTemplatePreview: '/monitoring/email-templates/:id',
   loginHistory: '/auth/login-history',
-  oidcWait: '/auth/sso/oidc/wait',
-  samlWait: '/auth/sso/saml/wait',
+
   unauthorized401: '/auth/system/unauthorized',
   maintenance: '/auth/system/maintenance',
   tooManyRequests429: '/auth/system/too-many-requests',
@@ -49,7 +55,7 @@ const Path = {
   browserNotSupported: '/auth/system/browser-not-supported',
   deviceCode: '/auth/device/code',
   adminLogin: '/auth/admin/login',
-  samlSSOInitiation: '/auth/sso/login',
+
   team: '/team',
   joinOrganization: '/auth/join-organization',
 }

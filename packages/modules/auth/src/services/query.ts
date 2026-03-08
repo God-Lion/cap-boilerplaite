@@ -25,6 +25,7 @@ export const QUERY_KEYS = {
     securityLogs: (params: unknown) => ['auth', 'security-logs', params] as const,
     linkedAccounts: ['auth', 'linked-accounts'] as const,
     emailPreferences: ['auth', 'email-preferences'] as const,
+    oidcInteraction: (uid: string) => ['auth', 'oidc-interaction', uid] as const,
   },
 
   translation: (code: string) => ['translation', code] as const,

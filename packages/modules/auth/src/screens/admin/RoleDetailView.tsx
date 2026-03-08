@@ -227,7 +227,7 @@ export default function RoleDetailView() {
           sx={{ borderRadius: 3, fontWeight: 700 }}
           action={
             <Button color='inherit' onClick={() => navigate(Path.admin.roles)}>
-              Back to List
+              {t('auth.admin.backToList') || 'Back to List'}
             </Button>
           }
         >
@@ -280,7 +280,7 @@ export default function RoleDetailView() {
           </Box>
           <Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-              <Tooltip title='Go back'>
+              <Tooltip title={t('auth.admin.goBack') || 'Go back'}>
                 <IconButton onClick={() => navigate(Path.admin.roles)} sx={{ ml: -1 }}>
                   <ArrowBack fontSize='small' />
                 </IconButton>
@@ -298,7 +298,7 @@ export default function RoleDetailView() {
                 color='text.secondary'
                 sx={{ fontWeight: 700, opacity: 0.7 }}
               >
-                Internal ID: {role.id}
+                {t('auth.admin.internalId') || 'Internal ID'}: {role.id}
               </Typography>
               <Divider
                 orientation='vertical'
@@ -306,7 +306,7 @@ export default function RoleDetailView() {
                 sx={{ height: 14, alignSelf: 'center', opacity: 0.3 }}
               />
               <Typography variant='body2' color='primary.main' sx={{ fontWeight: 800 }}>
-                {role.users_count || 0} Members
+                {role.users_count || 0} {t('auth.admin.members_lowercase') || 'Members'}
               </Typography>
               <Chip
                 label={(role.guard_name || 'web').toUpperCase()}
@@ -332,7 +332,7 @@ export default function RoleDetailView() {
               color: 'text.primary',
             }}
           >
-            Duplicate
+            {t('auth.common.duplicate') || 'Duplicate'}
           </Button>
           <Button
             variant='contained'
@@ -350,7 +350,9 @@ export default function RoleDetailView() {
               borderRadius: 3,
             }}
           >
-            {updateRole.isPending ? 'Saving…' : 'Save Changes'}
+            {updateRole.isPending
+              ? t('auth.common.saving') || 'Saving…'
+              : t('auth.common.saveChanges') || 'Save Changes'}
           </Button>
         </Stack>
       </Box>
@@ -370,12 +372,20 @@ export default function RoleDetailView() {
             },
           }}
         >
-          <Tab icon={<VpnKey sx={{ fontSize: 20 }} />} iconPosition='start' label='Permissions' />
-          <Tab icon={<Group sx={{ fontSize: 20 }} />} iconPosition='start' label='Active Members' />
+          <Tab
+            icon={<VpnKey sx={{ fontSize: 20 }} />}
+            iconPosition='start'
+            label={t('auth.admin.permissions') || 'Permissions'}
+          />
+          <Tab
+            icon={<Group sx={{ fontSize: 20 }} />}
+            iconPosition='start'
+            label={t('auth.admin.activeMembers') || 'Active Members'}
+          />
           <Tab
             icon={<Settings sx={{ fontSize: 20 }} />}
             iconPosition='start'
-            label='Role Settings'
+            label={t('auth.admin.roleSettings') || 'Role Settings'}
           />
         </Tabs>
       </Box>
@@ -417,10 +427,12 @@ export default function RoleDetailView() {
                             letterSpacing: '0.05em',
                           }}
                         >
-                          {resource} Controls
+                          {resource} {t('auth.admin.controls') || 'Controls'}
                         </Typography>
                         <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
-                          Manage fine-grained access to {resource} resources
+                          {t('auth.admin.manageFineGrainedAccess') ||
+                            'Manage fine-grained access to'}{' '}
+                          {resource} {t('auth.admin.resources') || 'resources'}
                         </Typography>
                       </Box>
                     </Stack>
@@ -450,7 +462,7 @@ export default function RoleDetailView() {
                                   {perm.name.split(':').pop()?.replace(/_/g, ' ')}
                                   {isInherited && (
                                     <Chip
-                                      label='Inherited'
+                                      label={t('auth.admin.inherited') || 'Inherited'}
                                       size='small'
                                       color='primary'
                                       variant='outlined'
@@ -468,8 +480,9 @@ export default function RoleDetailView() {
                                   color='text.secondary'
                                   sx={{ opacity: 0.7 }}
                                 >
-                                  Grants ability to perform &quot;{perm.name}&quot; on this
-                                  resource.
+                                  {t('auth.admin.grantsAbility') || 'Grants ability to perform'}{' '}
+                                  &quot;{perm.name}&quot;{' '}
+                                  {t('auth.admin.onThisResource') || 'on this resource.'}
                                 </Typography>
                               </Box>
                               <Switch
@@ -511,14 +524,14 @@ export default function RoleDetailView() {
                       gap: 1,
                     }}
                   >
-                    <Security fontSize='small' color='primary' /> Inheritance Policy
+                    <Security fontSize='small' color='primary' />{' '}
+                    {t('auth.admin.inheritancePolicy')}
                   </Typography>
                   <Typography
                     variant='body2'
                     sx={{ mb: 4, color: 'text.secondary', lineHeight: 1.6, fontWeight: 500 }}
                   >
-                    Parent roles allow this role to automatically inherit permissions, simplifying
-                    access management across complex hierarchies.
+                    {t('auth.admin.inheritancePolicyDesc')}
                   </Typography>
 
                   {role.parents && role.parents.length > 0 && (
@@ -563,7 +576,7 @@ export default function RoleDetailView() {
                     onClick={() => setOpenParentDialog(true)}
                     sx={{ borderRadius: 2.5, fontWeight: 800, textTransform: 'none', height: 44 }}
                   >
-                    Add Parent Role
+                    {t('auth.admin.addParentRole')}
                   </Button>
                 </CardContent>
               </Card>
@@ -586,7 +599,7 @@ export default function RoleDetailView() {
                       letterSpacing: '0.1em',
                     }}
                   >
-                    Quick Insights
+                    {t('auth.admin.quickInsights')}
                   </Typography>
                   <Stack spacing={2}>
                     <Box
@@ -597,7 +610,7 @@ export default function RoleDetailView() {
                       }}
                     >
                       <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 600 }}>
-                        Active Users
+                        {t('auth.admin.activeUsers')}
                       </Typography>
                       <Typography variant='body2' sx={{ fontWeight: 800 }}>
                         {role.users_count || 0}
@@ -611,7 +624,7 @@ export default function RoleDetailView() {
                       }}
                     >
                       <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 600 }}>
-                        Direct Permissions
+                        {t('auth.admin.directPermissions')}
                       </Typography>
                       <Typography variant='body2' sx={{ fontWeight: 800 }}>
                         {role.permissions.length}
@@ -624,7 +637,7 @@ export default function RoleDetailView() {
                       onClick={() => setTab(1)}
                       sx={{ justifyContent: 'space-between', fontWeight: 800, fontSize: '0.8rem' }}
                     >
-                      Explore Audit History
+                      {t('auth.admin.exploreAuditHistory')}
                     </Button>
                   </Stack>
                 </CardContent>
@@ -650,10 +663,10 @@ export default function RoleDetailView() {
           >
             <Box>
               <Typography variant='h6' sx={{ fontWeight: 900, textTransform: 'uppercase' }}>
-                Equipped Members
+                {t('auth.admin.equippedMembers')}
               </Typography>
               <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
-                Historical and active member assignments for this security profile
+                {t('auth.admin.equippedMembersDesc')}
               </Typography>
             </Box>
             <Button
@@ -662,7 +675,7 @@ export default function RoleDetailView() {
               onClick={() => navigate(Path.admin.users)}
               sx={{ borderRadius: 2.5, fontWeight: 800, textTransform: 'none', height: 44 }}
             >
-              Assign New User
+              {t('auth.admin.assignNewUser')}
             </Button>
           </Box>
           <Box sx={{ p: 10, textAlign: 'center' }}>
@@ -670,15 +683,14 @@ export default function RoleDetailView() {
               <Group sx={{ fontSize: 32, color: 'text.disabled' }} />
             </Avatar>
             <Typography variant='subtitle1' sx={{ fontWeight: 800 }}>
-              No Members Found
+              {t('auth.admin.noMembersFound')}
             </Typography>
             <Typography
               variant='body2'
               color='text.secondary'
               sx={{ maxWidth: 300, mx: 'auto', mt: 1 }}
             >
-              Members will appear here once they are assigned this role in the User Management
-              section.
+              {t('auth.admin.noMembersHint')}
             </Typography>
           </Box>
         </Card>
@@ -706,12 +718,12 @@ export default function RoleDetailView() {
                       letterSpacing: '0.1em',
                     }}
                   >
-                    Role Specification
+                    {t('auth.admin.roleSpecification')}
                   </Typography>
                   <Stack spacing={3}>
                     <TextField
                       fullWidth
-                      label='Display Name'
+                      label={t('auth.admin.displayName')}
                       value={editData.name}
                       onChange={(e) => setEditData({ ...editData, name: e.target.value })}
                       variant='filled'
@@ -720,11 +732,11 @@ export default function RoleDetailView() {
                       fullWidth
                       multiline
                       rows={4}
-                      label='Business Description'
+                      label={t('auth.admin.businessDescription')}
                       value={editData.description}
                       onChange={(e) => setEditData({ ...editData, description: e.target.value })}
                       variant='filled'
-                      placeholder='Describe the purpose and scope of this role…'
+                      placeholder={t('auth.admin.descriptionHint')}
                     />
                   </Stack>
                 </CardContent>
@@ -751,15 +763,15 @@ export default function RoleDetailView() {
                       gap: 1.5,
                     }}
                   >
-                    <Delete /> Critical Actions / Danger Zone
+                    <Delete /> {t('auth.admin.dangerZone')}
                   </Typography>
                   <Typography
                     variant='body2'
                     color='text.secondary'
                     sx={{ mb: 4, fontWeight: 600, lineHeight: 1.6 }}
                   >
-                    Deleting a role is irreversible. {role.users_count || 0} active users will lose
-                    all permissions associated with this profile immediately.
+                    {t('auth.admin.deleteRoleWarning1')} {role.users_count || 0}{' '}
+                    {t('auth.admin.deleteRoleWarning2')}
                   </Typography>
                   <Button
                     variant='contained'
@@ -773,7 +785,7 @@ export default function RoleDetailView() {
                       px: 3,
                     }}
                   >
-                    Permanent Deletion
+                    {t('auth.admin.permanentDeletion')}
                   </Button>
                 </CardContent>
               </Card>
@@ -800,7 +812,7 @@ export default function RoleDetailView() {
                       letterSpacing: '0.1em',
                     }}
                   >
-                    Administrative Actions
+                    {t('auth.admin.administrativeActions')}
                   </Typography>
                   <Stack spacing={1}>
                     <Button
@@ -808,21 +820,21 @@ export default function RoleDetailView() {
                       startIcon={<HistoryIcon />}
                       sx={{ justifyContent: 'flex-start', fontWeight: 700, borderRadius: 2 }}
                     >
-                      System Audit Data
+                      {t('auth.admin.systemAuditData')}
                     </Button>
                     <Button
                       fullWidth
                       startIcon={<Description />}
                       sx={{ justifyContent: 'flex-start', fontWeight: 700, borderRadius: 2 }}
                     >
-                      Export Access Logs
+                      {t('auth.admin.exportAccessLogs')}
                     </Button>
                     <Button
                       fullWidth
                       startIcon={<Security />}
                       sx={{ justifyContent: 'flex-start', fontWeight: 700, borderRadius: 2 }}
                     >
-                      Security Baseline
+                      {t('auth.admin.securityBaseline')}
                     </Button>
                   </Stack>
                 </CardContent>
@@ -836,7 +848,7 @@ export default function RoleDetailView() {
       <AutocompleteDialog
         open={openParentDialog}
         onClose={() => setOpenParentDialog(false)}
-        title='Modify Role Inheritance'
+        title={t('auth.admin.modifyRoleInheritance')}
         role={role}
         allRoles={allRolesResponse?.data?.data || []}
         selectedIds={selectedParentIds}
@@ -847,8 +859,8 @@ export default function RoleDetailView() {
 
       <ConfirmationDialog
         open={confirmDeleteOpen}
-        title={`Delete Role: ${role.name}?`}
-        message='Are you sure you want to delete this role? This action cannot be undone and will affect all assigned users.'
+        title={`${t('auth.admin.deleteRoleTitle')} ${role.name}?`}
+        message={t('auth.admin.deleteRoleConfirm')}
         onConfirm={() => deleteRoleMutation.mutate(role.id)}
         onClose={() => setConfirmDeleteOpen(false)}
         isSubmitting={deleteRoleMutation.isPending}
@@ -871,6 +883,7 @@ function AutocompleteDialog({
   onConfirm,
   isPending,
 }: any) {
+  const { t } = useTranslation('common')
   return (
     <Dialog
       open={open}
@@ -882,7 +895,7 @@ function AutocompleteDialog({
       <DialogTitle sx={{ fontWeight: 900, fontSize: '1.4rem' }}>{title}</DialogTitle>
       <DialogContent>
         <Typography variant='body2' sx={{ mb: 3, mt: 1, color: 'text.secondary', fontWeight: 500 }}>
-          Assigned parents allow cascading permission management.
+          {t('auth.admin.assignedParentsDesc')}
         </Typography>
         <Autocomplete
           multiple
@@ -890,7 +903,9 @@ function AutocompleteDialog({
           getOptionLabel={(option: any) => option.name}
           value={allRoles.filter((r: any) => selectedIds.includes(r.id))}
           onChange={(_, newValue) => onChange(newValue.map((v: any) => v.id))}
-          renderInput={(params) => <TextField {...params} variant='filled' label='Select Roles' />}
+          renderInput={(params) => (
+            <TextField {...params} variant='filled' label={t('auth.admin.selectRoles')} />
+          )}
           renderTags={(value, getTagProps) =>
             value.map((option, index) => (
               <Chip
@@ -906,7 +921,7 @@ function AutocompleteDialog({
       </DialogContent>
       <DialogActions sx={{ p: 3, pt: 1 }}>
         <Button onClick={onClose} sx={{ fontWeight: 700, color: 'text.secondary' }}>
-          Cancel
+          {t('auth.common.cancel')}
         </Button>
         <Button
           onClick={onConfirm}
@@ -914,7 +929,7 @@ function AutocompleteDialog({
           disabled={isPending}
           sx={{ fontWeight: 800, borderRadius: 2, px: 3 }}
         >
-          Save Configuration
+          {t('auth.common.saveConfiguration')}
         </Button>
       </DialogActions>
     </Dialog>

@@ -6,9 +6,7 @@ import GuestRoute from '../middlewares/GuestRoute'
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
 vi.mock('react-router-dom', () => ({
-  Navigate: ({ to }: { to: string }) => (
-    <div data-testid="navigate" data-to={to} />
-  ),
+  Navigate: ({ to }: { to: string }) => <div data-testid='navigate' data-to={to} />,
   useLocation: () => ({ pathname: '/sign-in', state: null }),
   Suspense: ({ children }: any) => <>{children}</>,
 }))

@@ -741,10 +741,18 @@ export default function OrganizationListDashboard() {
             : t('auth.admin.suspendTenant')}
         </DialogTitle>
         <DialogContent>
-          <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
-            {selectedOrg?.status === 'SUSPENDED'
-              ? t('auth.admin.activateConfirmMsg', { name: selectedOrg?.name })
-              : t('auth.admin.suspendConfirmMsg', { name: selectedOrg?.name })}
+          <Typography variant='body1'>
+            {selectedOrg?.status === 'SUSPENDED' ? (
+              <>
+                {t('auth.admin.activateConfirmPrefix')} <strong>{selectedOrg?.name}</strong>
+                {t('auth.admin.activateConfirmSuffix')}
+              </>
+            ) : (
+              <>
+                {t('auth.admin.suspendConfirmPrefix')} <strong>{selectedOrg?.name}</strong>
+                {t('auth.admin.suspendConfirmSuffix')}
+              </>
+            )}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 3, pt: 1 }}>
@@ -790,14 +798,11 @@ export default function OrganizationListDashboard() {
           {t('auth.admin.deleteOrganization')}
         </DialogTitle>
         <DialogContent>
-          <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500, mb: 2 }}>
-            {t('auth.admin.deleteConfirmMsg', { name: selectedOrg?.name }) ||
-              `Are you sure you want to delete ${selectedOrg?.name}?`}
+          <Typography variant='body1'>
+            {t('auth.admin.deleteConfirmPrefix')} <strong>{selectedOrg?.name}</strong>
+            {t('auth.admin.deleteConfirmSuffix')}
           </Typography>
-          <Alert
-            severity='warning'
-            sx={{ borderRadius: 2, fontWeight: 600, fontSize: '0.8rem', border: 'none' }}
-          >
+          <Alert severity='warning' sx={{ mt: 2 }}>
             {t('auth.admin.deleteWarningMsg')}
           </Alert>
         </DialogContent>
@@ -821,7 +826,7 @@ export default function OrganizationListDashboard() {
               boxShadow: (theme) => `0 4px 12px ${alpha(theme.palette.error.main, 0.4)}`,
             }}
           >
-            {deleteOrgMutation.isPending ? t('auth.common.loading') : t('auth.admin.delete')}
+            {deleteOrgMutation.isPending ? t('auth.common.loading') : t('auth.common.delete')}
           </Button>
         </DialogActions>
       </Dialog>

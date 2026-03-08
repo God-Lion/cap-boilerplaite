@@ -216,6 +216,18 @@ const authService = {
       return apiClient.post(ENDPOINTS.auth.saml.sso, data)
     },
   },
+
+  oidcInteraction: {
+    get: (uid: string): Promise<FetchResponse> => {
+      return apiClient.get(ENDPOINTS.auth.oidcInteraction.get(uid))
+    },
+    confirm: (uid: string): Promise<FetchResponse> => {
+      return apiClient.post(ENDPOINTS.auth.oidcInteraction.confirm(uid))
+    },
+    abort: (uid: string): Promise<FetchResponse> => {
+      return apiClient.get(ENDPOINTS.auth.oidcInteraction.abort(uid))
+    },
+  },
 }
 
 export default authService

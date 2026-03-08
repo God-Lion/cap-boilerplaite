@@ -117,5 +117,3 @@ export default function IssueBanDialog({ open, onClose }: IssueBanDialogProps) {
     </Dialog>
   )
 }
-
-

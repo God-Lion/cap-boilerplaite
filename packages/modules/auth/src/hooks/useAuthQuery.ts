@@ -803,7 +803,7 @@ export function useSsoDiscovery(
   return useQuery({
     queryKey: ['sso_discovery', email],
     queryFn: () => authService.discoverSso(email),
-    enabled: Boolean(email) && email.includes('@'),
+    enabled: Boolean(email) && email.length >= 2,
     retry: false, // Don't retry heavily on discovery failures
     ...options,
   })

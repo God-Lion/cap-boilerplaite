@@ -338,7 +338,7 @@ export function useCreateToken(
   options?: UseMutationOptions<
     FetchResponse,
     HttpError,
-    { name: string; expiresIn?: string },
+    { name: string; expiresIn?: string; abilities?: string[]; ipRestrictions?: string[] },
     unknown
   >,
 ) {

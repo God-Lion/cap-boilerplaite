@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   Box,
   Typography,
@@ -7,10 +7,7 @@ import {
   CardContent,
   TextField,
   FormLabel,
-  FormGroup,
-  FormControlLabel,
   Checkbox,
-  Divider,
   Stepper,
   Step,
   StepLabel,
@@ -19,190 +16,406 @@ import {
   Breadcrumbs,
   Link,
   Paper,
+  Grid,
+  Stack,
+  Skeleton,
+  Alert,
+  alpha,
+  useTheme,
 } from '@mui/material'
-import {
-  NavigateNext as NavigateNextIcon,
-  ArrowBack as ArrowBackIcon,
-  Security as SecurityIcon,
-} from '@mui/icons-material'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import SecurityIcon from '@mui/icons-material/Security'
+import RefreshIcon from '@mui/icons-material/Refresh'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { useScopes } from '../../hooks/useAdminQuery'
+import type { AuthScope } from '../../services/adminService'
 import Path from '../path'
 
 const CreateAPITokenBasicInfo: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const theme = useTheme()
   const [tokenName, setTokenName] = useState('')
-  const [expiration, setExpiration] = useState('30_days')
-
-  const scopes = [
-    { id: 'read:profile', label: 'Read Profile', description: 'Access basic profile information' },
-    {
-      id: 'write:profile',
-      label: 'Write Profile',
-      description: 'Update profile and account settings',
-    },
-    { id: 'read:users', label: 'Read Users', description: 'List and view user details' },
-    { id: 'write:users', label: 'Write Users', description: 'Create and manage users' },
-    { id: 'read:audit', label: 'Read Audit Logs', description: 'View security and system logs' },
-  ]
-
+  const [expiration, setExpiration] = useState('30 days')
   const [selectedScopes, setSelectedScopes] = useState<string[]>([])
+
+  // Fetch scopes from backend
+  const {
+    data: scopesResponse,
+    isLoading: scopesLoading,
+    isError: scopesError,
+    refetch: refetchScopes,
+  } = useScopes()
+
+  const scopes = useMemo(() => {
+    if (!scopesResponse?.data) return []
+    const raw = Array.isArray(scopesResponse.data) ? scopesResponse.data : []
+    return raw.map((s: AuthScope) => ({
+      id: s.name,
+      label: s.displayName || s.name,
+      description: s.description || '',
+    }))
+  }, [scopesResponse])
 
   const handleToggleScope = (id: string) => {
     setSelectedScopes((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]))
   }
 
   const handleNext = () => {
-    navigate(Path.apiTokens.create_restrictions)
+    navigate(Path.apiTokens.createRestrictions, {
+      state: { name: tokenName, expiresIn: expiration, abilities: selectedScopes },
+    })
   }
 
   return (
-    <Box sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
+    <Box sx={{ p: { xs: 2, md: 6 }, maxWidth: 900, mx: 'auto' }}>
       {/* Breadcrumbs */}
-      <Breadcrumbs separator={<NavigateNextIcon fontSize='small' />} sx={{ mb: 3 }}>
+      <Breadcrumbs
+        separator={<NavigateNextIcon fontSize='small' sx={{ color: 'text.disabled' }} />}
+        sx={{ mb: 4 }}
+      >
         <Link
           underline='hover'
-          color='inherit'
+          color='text.secondary'
           onClick={() => navigate(Path.apiTokens.dashboard)}
-          sx={{ cursor: 'pointer' }}
+          sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', fontWeight: 600 }}
         >
           {t('api_tokens:title', 'API Tokens')}
         </Link>
-        <Typography color='text.primary'>
+        <Typography color='text.primary' sx={{ fontWeight: 800 }}>
           {t('api_tokens:create_title', 'Create New Token')}
         </Typography>
       </Breadcrumbs>
 
-      <Typography variant='h4' fontWeight='bold' gutterBottom>
-        {t('api_tokens:create_header', 'Create a new API Token')}
-      </Typography>
-      <Typography variant='body1' color='text.secondary' sx={{ mb: 4 }}>
-        {t('api_tokens:create_subheader', 'Basic information and permissions for your token.')}
-      </Typography>
+      {/* Header */}
+      <Box sx={{ mb: 5 }}>
+        <Typography variant='h3' sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+          {t('api_tokens:create_header', 'Create API Token')}
+        </Typography>
+        <Typography variant='body1' color='text.secondary' sx={{ fontSize: '1.05rem' }}>
+          {t(
+            'api_tokens:create_subheader',
+            'Configure authentication and permissions for your integrations.',
+          )}
+        </Typography>
+      </Box>
 
-      <Box sx={{ width: '100%', mb: 4 }}>
+      {/* Stepper */}
+      <Box sx={{ mb: 4 }}>
         <Stepper activeStep={0} alternativeLabel>
           <Step>
-            <StepLabel>{t('api_tokens:step_basic', 'Basic Info')}</StepLabel>
+            <StepLabel>
+              <Typography sx={{ fontWeight: 700 }}>
+                {t('api_tokens:step_basic', 'Configuration')}
+              </Typography>
+            </StepLabel>
           </Step>
           <Step>
-            <StepLabel>{t('api_tokens:step_restrictions', 'IP Restrictions')}</StepLabel>
+            <StepLabel>
+              <Typography sx={{ fontWeight: 600, color: 'text.disabled' }}>
+                {t('api_tokens:step_restrictions', 'Restrictions')}
+              </Typography>
+            </StepLabel>
           </Step>
           <Step>
-            <StepLabel>{t('api_tokens:step_review', 'Review & Generate')}</StepLabel>
+            <StepLabel>
+              <Typography sx={{ fontWeight: 600, color: 'text.disabled' }}>
+                {t('api_tokens:step_review', 'Deployment')}
+              </Typography>
+            </StepLabel>
           </Step>
         </Stepper>
       </Box>
 
-      <Card variant='outlined' sx={{ borderRadius: 3 }}>
-        <CardContent sx={{ p: 4 }}>
-          <Box sx={{ mb: 4 }}>
-            <FormLabel component='legend' sx={{ fontWeight: 'bold', mb: 1, color: 'text.primary' }}>
-              {t('api_tokens:field_name', 'Token Name')}
-            </FormLabel>
-            <TextField
-              fullWidth
-              placeholder={t('api_tokens:name_placeholder', 'e.g. My Website Backend')}
-              value={tokenName}
-              onChange={(e) => setTokenName(e.target.value)}
-              variant='outlined'
-            />
-          </Box>
-
-          <Box sx={{ mb: 4 }}>
-            <FormLabel component='legend' sx={{ fontWeight: 'bold', mb: 1, color: 'text.primary' }}>
-              {t('api_tokens:field_expiration', 'Expiration Period')}
-            </FormLabel>
-            <Select fullWidth value={expiration} onChange={(e) => setExpiration(e.target.value)}>
-              <MenuItem value='7_days'>7 Days</MenuItem>
-              <MenuItem value='30_days'>30 Days</MenuItem>
-              <MenuItem value='90_days'>90 Days</MenuItem>
-              <MenuItem value='1_year'>1 Year</MenuItem>
-              <MenuItem value='never'>Never (Not Recommended)</MenuItem>
-            </Select>
-          </Box>
-
-          <Divider sx={{ my: 3 }} />
-
-          <Box>
-            <Typography
-              variant='subtitle1'
-              fontWeight='bold'
-              gutterBottom
-              sx={{ display: 'flex', alignItems: 'center' }}
-            >
-              <SecurityIcon sx={{ mr: 1, fontSize: 20 }} color='primary' />
-              {t('api_tokens:permissions_title', 'Scopes & Permissions')}
-            </Typography>
-            <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
-              {t(
-                'api_tokens:permissions_help',
-                'Select the minimal permissions required for this token.',
-              )}
-            </Typography>
-
-            <FormGroup sx={{ gap: 2 }}>
-              {scopes.map((scope) => (
-                <Paper
-                  key={scope.id}
-                  variant='outlined'
-                  sx={{
-                    p: 2,
-                    borderRadius: 2,
-                    cursor: 'pointer',
-                    '&:hover': { bgcolor: 'action.hover' },
-                    borderColor: selectedScopes.includes(scope.id) ? 'primary.main' : 'divider',
-                  }}
-                  onClick={() => handleToggleScope(scope.id)}
-                >
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={selectedScopes.includes(scope.id)}
-                        onChange={() => handleToggleScope(scope.id)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    }
-                    label={
-                      <Box>
-                        <Typography variant='body2' fontWeight='bold'>
-                          {scope.label}
-                        </Typography>
-                        <Typography variant='caption' color='text.secondary'>
-                          {scope.description}
-                        </Typography>
-                      </Box>
-                    }
-                    sx={{ width: '100%', ml: 0 }}
+      {/* Main Card */}
+      <Card
+        variant='outlined'
+        sx={{
+          borderRadius: 4,
+          border: '1px solid',
+          borderColor: 'divider',
+          boxShadow: 'none',
+          overflow: 'visible',
+        }}
+      >
+        <CardContent sx={{ p: { xs: 3, md: 5 } }}>
+          <Grid container spacing={4}>
+            {/* Left: Basic info */}
+            <Grid size={{ xs: 12, md: 5 }}>
+              <Stack spacing={3}>
+                <Box>
+                  <FormLabel
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: '0.8125rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      mb: 1.5,
+                      display: 'block',
+                      color: 'text.primary',
+                    }}
+                  >
+                    {t('api_tokens:field_name', 'Integration Name')}
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    placeholder={t('api_tokens:name_placeholder', 'e.g. CI/CD Pipeline')}
+                    value={tokenName}
+                    onChange={(e) => setTokenName(e.target.value)}
+                    variant='outlined'
+                    autoFocus
+                    slotProps={{ input: { sx: { borderRadius: 3, fontWeight: 600, height: 52 } } }}
                   />
-                </Paper>
-              ))}
-            </FormGroup>
-          </Box>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{ mt: 1, display: 'block' }}
+                  >
+                    {t(
+                      'api_tokens:name_help',
+                      'A unique name to identify this token in your dashboard.',
+                    )}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <FormLabel
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: '0.8125rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      mb: 1.5,
+                      display: 'block',
+                      color: 'text.primary',
+                    }}
+                  >
+                    {t('api_tokens:field_expiration', 'Expiration Interval')}
+                  </FormLabel>
+                  <Select
+                    fullWidth
+                    value={expiration}
+                    onChange={(e) => setExpiration(e.target.value)}
+                    sx={{ borderRadius: 3, fontWeight: 600, height: 52 }}
+                  >
+                    <MenuItem value='7 days' sx={{ fontWeight: 600 }}>
+                      {t('api_tokens:exp_7d', '7 Days')}
+                    </MenuItem>
+                    <MenuItem value='30 days' sx={{ fontWeight: 600 }}>
+                      {t('api_tokens:exp_30d', '30 Days')}
+                    </MenuItem>
+                    <MenuItem value='90 days' sx={{ fontWeight: 600 }}>
+                      {t('api_tokens:exp_90d', '90 Days')}
+                    </MenuItem>
+                    <MenuItem value='365 days' sx={{ fontWeight: 600 }}>
+                      {t('api_tokens:exp_1y', '1 Year')}
+                    </MenuItem>
+                    <MenuItem value='never' sx={{ fontWeight: 600, color: 'error.main' }}>
+                      {t('api_tokens:exp_never', 'No Expiration')}
+                    </MenuItem>
+                  </Select>
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{ mt: 1, display: 'block' }}
+                  >
+                    {t('api_tokens:exp_help', 'Shorter expiration is more secure.')}
+                  </Typography>
+                </Box>
+              </Stack>
+            </Grid>
+
+            {/* Right: Scopes */}
+            <Grid size={{ xs: 12, md: 7 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                <SecurityIcon color='primary' sx={{ fontSize: 24 }} />
+                <Typography
+                  variant='h6'
+                  sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                >
+                  {t('api_tokens:permissions_title', 'Access Scopes')}
+                </Typography>
+              </Box>
+
+              {/* Scopes loading state */}
+              {scopesLoading && (
+                <Stack spacing={1.5}>
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} variant='rounded' height={56} sx={{ borderRadius: 3 }} />
+                  ))}
+                </Stack>
+              )}
+
+              {/* Scopes error state */}
+              {scopesError && (
+                <Alert
+                  severity='error'
+                  action={
+                    <Button
+                      startIcon={<RefreshIcon />}
+                      color='inherit'
+                      size='small'
+                      onClick={() => refetchScopes()}
+                      sx={{ fontWeight: 700, textTransform: 'none' }}
+                    >
+                      {t('common:retry', 'Retry')}
+                    </Button>
+                  }
+                  sx={{ borderRadius: 2 }}
+                >
+                  {t('api_tokens:scopes_load_error', 'Failed to load available scopes.')}
+                </Alert>
+              )}
+
+              {/* Scopes list */}
+              {!scopesLoading && !scopesError && (
+                <>
+                  <Stack spacing={1.5}>
+                    {scopes.map((scope) => {
+                      const isSelected = selectedScopes.includes(scope.id)
+                      return (
+                        <Paper
+                          key={scope.id}
+                          variant='outlined'
+                          component='div'
+                          role='button'
+                          aria-pressed={isSelected}
+                          tabIndex={0}
+                          onClick={() => handleToggleScope(scope.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                              e.preventDefault()
+                              handleToggleScope(scope.id)
+                            }
+                          }}
+                          sx={{
+                            p: 2,
+                            borderRadius: 3,
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease-in-out',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            border: '2px solid',
+                            borderColor: isSelected ? 'primary.main' : 'divider',
+                            bgcolor: isSelected
+                              ? alpha(theme.palette.primary.main, 0.04)
+                              : 'background.paper',
+                            '&:hover': {
+                              borderColor: isSelected ? 'primary.main' : 'primary.light',
+                              transform: 'translateX(4px)',
+                              bgcolor: isSelected
+                                ? alpha(theme.palette.primary.main, 0.08)
+                                : alpha(theme.palette.primary.main, 0.02),
+                            },
+                            '&:focus-visible': {
+                              outline: `2px solid ${theme.palette.primary.main}`,
+                              outlineOffset: 2,
+                            },
+                          }}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                            <Checkbox
+                              checked={isSelected}
+                              size='small'
+                              tabIndex={-1}
+                              aria-hidden='true'
+                              sx={{ p: 0.5, mt: -0.25 }}
+                            />
+                            <Box>
+                              <Typography variant='body2' sx={{ fontWeight: 800, mb: 0.25 }}>
+                                {scope.label}
+                              </Typography>
+                              <Typography
+                                variant='caption'
+                                color='text.secondary'
+                                sx={{ fontWeight: 500 }}
+                              >
+                                {scope.description}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          {isSelected && (
+                            <Box
+                              sx={{
+                                position: 'absolute',
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                                width: 4,
+                                bgcolor: 'primary.main',
+                              }}
+                            />
+                          )}
+                        </Paper>
+                      )
+                    })}
+                  </Stack>
+
+                  {selectedScopes.length === 0 && (
+                    <Typography
+                      variant='caption'
+                      color='error'
+                      sx={{ mt: 2, display: 'block', fontWeight: 600 }}
+                    >
+                      {t('api_tokens:scope_required', 'Select at least one scope to continue.')}
+                    </Typography>
+                  )}
+                </>
+              )}
+            </Grid>
+          </Grid>
         </CardContent>
 
+        {/* Footer Actions */}
         <Box
           sx={{
-            px: 4,
+            px: { xs: 3, md: 5 },
             py: 3,
-            bgcolor: 'action.hover',
+            bgcolor: (t) => alpha(t.palette.action.hover, 0.4),
             display: 'flex',
             justifyContent: 'space-between',
-            borderBottomLeftRadius: 12,
-            borderBottomRightRadius: 12,
+            alignItems: 'center',
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            borderBottomLeftRadius: 16,
+            borderBottomRightRadius: 16,
           }}
         >
-          <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(Path.apiTokens.dashboard)}>
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate(Path.apiTokens.dashboard)}
+            sx={{
+              fontWeight: 800,
+              textTransform: 'none',
+              color: 'text.secondary',
+              '&:hover': { color: 'text.primary', bgcolor: 'transparent' },
+            }}
+          >
             {t('common:cancel', 'Cancel')}
           </Button>
+
           <Button
             variant='contained'
             endIcon={<NavigateNextIcon />}
             onClick={handleNext}
-            disabled={!tokenName || selectedScopes.length === 0}
+            disabled={
+              !tokenName.trim() || selectedScopes.length === 0 || scopesLoading || scopesError
+            }
+            sx={{
+              px: 4,
+              py: 1.2,
+              borderRadius: 3,
+              fontWeight: 900,
+              textTransform: 'none',
+              boxShadow: `0 8px 20px ${alpha(theme.palette.primary.main, 0.3)}`,
+              '&:hover': {
+                boxShadow: `0 12px 28px ${alpha(theme.palette.primary.main, 0.4)}`,
+              },
+            }}
           >
-            {t('common:continue', 'Continue')}
+            {t('api_tokens:continue', 'Continue to Restrictions')}
           </Button>
         </Box>
       </Card>

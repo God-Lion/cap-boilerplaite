@@ -7485,9 +7485,9 @@ export const zone = [
     STATUT_ZONE_HT: 1,
   },
   {
-    ZONE_HT_ID: 'HT.NO.00-1-HT3000-DEP',
+    ZONE_HT_ID: 'HT.NO.00-1-HT5173-DEP',
     DESCRIPTION_ZONE_HT: 'NORD-OUEST',
-    CODE_POSTAL: 'HT3000',
+    CODE_POSTAL: 'HT5173',
     DEPARTEMENT: 'Nord-Ouest',
     CODE_DEP: 'NO',
     ARRONDISSEMENT: 'NULL',

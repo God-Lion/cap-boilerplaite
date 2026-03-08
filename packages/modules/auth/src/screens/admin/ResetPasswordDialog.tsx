@@ -93,4 +93,3 @@ export default function ResetPasswordDialog({ open, onClose, userId }: ResetPass
     </Dialog>
   )
 }
-

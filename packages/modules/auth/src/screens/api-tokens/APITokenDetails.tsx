@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo } from 'react'
 import {
   Box,
   Typography,
@@ -8,268 +8,479 @@ import {
   Divider,
   Grid,
   Chip,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Breadcrumbs,
-  Link,
+  Skeleton,
+  Alert,
+  Avatar,
+  Stack,
 } from '@mui/material'
 import {
-  NavigateNext as NavigateNextIcon,
   Delete as DeleteIcon,
-  Edit as EditIcon,
-  Refresh as RefreshIcon,
-  History as HistoryIcon,
+  ArrowBack as ArrowBackIcon,
+  AccessTime as AccessTimeIcon,
+  CalendarToday as CalendarTodayIcon,
   Language as GlobeIcon,
+  VpnKey as VpnKeyIcon,
+  Shield as ShieldIcon,
+  Info as InfoIcon,
+  Terminal as TerminalIcon,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
+import { alpha, useTheme } from '@mui/material/styles'
+import { useUserTokens, useRevokeToken } from '../../hooks/useUserQuery'
 import Path from '../path'
 
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+interface TokenData {
+  id: number | string
+  name: string
+  abilities: string[]
+  lastUsedAt: string | null
+  createdAt: string
+  expiresAt: string | null
+  status: 'active' | 'expired'
+}
+
+// ---------------------------------------------------------------------------
+// Sub-components (keeps the main render < 350 lines)
+// ---------------------------------------------------------------------------
+
+/** Canonical metadata label + value pair */
+const MetaRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <Box sx={{ minWidth: 140 }}>
+    <Typography
+      variant='caption'
+      color='text.secondary'
+      sx={{
+        fontWeight: 700,
+        textTransform: 'uppercase',
+        letterSpacing: '0.075em',
+        display: 'block',
+        mb: 0.5,
+      }}
+    >
+      {label}
+    </Typography>
+    <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
+      {children}
+    </Typography>
+  </Box>
+)
+
+/** Canonical card section heading */
+const SectionHeading = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+    {icon}
+    <Typography
+      variant='h6'
+      sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+    >
+      {title}
+    </Typography>
+  </Box>
+)
+
+// ---------------------------------------------------------------------------
+// Main Component
+// ---------------------------------------------------------------------------
 const APITokenDetails: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { tokenId } = useParams<{ tokenId: string }>()
+  const { enqueueSnackbar } = useSnackbar()
+  const theme = useTheme()
 
-  // Mock token data
-  const token = {
-    id: tokenId || '1',
-    name: 'Production - Backend API',
-    keyPrefix: 'cap_live_...',
-    status: 'active',
-    createdAt: '2025-10-12T14:30:00Z',
-    expiresAt: '2026-10-12T14:30:00Z',
-    lastUsedAt: '2026-02-14T09:15:00Z',
-    lastUsedIp: '185.122.45.10',
-    scopes: ['read:users', 'write:users', 'read:roles', 'read:config'],
-    ipRestrictions: ['185.122.45.10', '185.122.45.11'],
+  const { data: tokensResponse, isLoading, isError } = useUserTokens()
+
+  const token = useMemo<TokenData | undefined>(() => {
+    if (!tokensResponse?.data) return undefined
+    const tokens = Array.isArray(tokensResponse.data) ? tokensResponse.data : []
+    return tokens.find((tk: TokenData) => String(tk.id) === tokenId)
+  }, [tokensResponse, tokenId])
+
+  const revokeTokenMutation = useRevokeToken({
+    onSuccess: () => {
+      enqueueSnackbar(t('api_tokens:revoke_success', 'Token revoked successfully'), {
+        variant: 'success',
+      })
+      navigate(Path.apiTokens.dashboard)
+    },
+    onError: (error: unknown) => {
+      const message =
+        error instanceof Error ? error.message : t('api_tokens:revoke_error', 'Failed to revoke')
+      enqueueSnackbar(message, { variant: 'error' })
+    },
+  })
+
+  const handleRevoke = () => {
+    if (token) {
+      revokeTokenMutation.mutate(token.id)
+    }
   }
 
-  const usageHistory = [
-    {
-      id: '1',
-      timestamp: '2026-02-14T09:15:00Z',
-      action: 'List Users',
-      ip: '185.122.45.10',
-      status: 'success',
-    },
-    {
-      id: '2',
-      timestamp: '2026-02-14T08:30:00Z',
-      action: 'Get Role',
-      ip: '185.122.45.10',
-      status: 'success',
-    },
-    {
-      id: '3',
-      timestamp: '2026-02-13T16:00:00Z',
-      action: 'Update User',
-      ip: '185.122.45.11',
-      status: 'success',
-    },
-    {
-      id: '4',
-      timestamp: '2026-02-13T15:45:00Z',
-      action: 'Get Profile',
-      ip: '185.122.45.10',
-      status: 'success',
-    },
-  ]
+  const formatDate = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return t('common:never', 'Never')
+    try {
+      return new Date(dateStr).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    } catch {
+      return dateStr
+    }
+  }
+
+  const getExpiryStatus = () => {
+    if (!token?.expiresAt)
+      return { label: t('api_tokens:no_expiry', 'No Expiry'), color: 'info' as const }
+    const expiresAt = new Date(token.expiresAt)
+    const now = new Date()
+    const daysUntilExpiry = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+
+    if (daysUntilExpiry <= 0)
+      return { label: t('api_tokens:expired', 'Expired'), color: 'error' as const }
+    if (daysUntilExpiry <= 7)
+      return { label: t('api_tokens:expiring_soon', 'Expiring Soon'), color: 'warning' as const }
+    return {
+      label: `${daysUntilExpiry} ${t('common:days_remaining', 'days remaining')}`,
+      color: 'success' as const,
+    }
+  }
+
+  // ── Loading State ────────────────────────────────────────────────────────
+  if (isLoading) {
+    return (
+      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+        <Skeleton variant='text' width={300} height={32} sx={{ mb: 2 }} />
+        <Skeleton variant='text' width={200} height={48} sx={{ mb: 4 }} />
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Skeleton variant='rounded' height={320} sx={{ borderRadius: 2, mb: 3 }} />
+            <Skeleton variant='rounded' height={200} sx={{ borderRadius: 2 }} />
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Skeleton variant='rounded' height={260} sx={{ borderRadius: 2 }} />
+          </Grid>
+        </Grid>
+      </Box>
+    )
+  }
+
+  // ── Error / Not Found State ──────────────────────────────────────────────
+  if (isError || !token) {
+    return (
+      <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+        <Alert
+          severity='error'
+          action={
+            <Button
+              color='inherit'
+              size='small'
+              onClick={() => navigate(Path.apiTokens.dashboard)}
+              sx={{ fontWeight: 700, textTransform: 'none' }}
+            >
+              {t('common:go_back', 'Go Back')}
+            </Button>
+          }
+        >
+          {t('api_tokens:token_not_found', 'Token not found or you do not have access to it.')}
+        </Alert>
+      </Box>
+    )
+  }
+
+  const expiryStatus = getExpiryStatus()
 
   return (
-    <Box sx={{ p: 4, maxWidth: 1000, mx: 'auto' }}>
-      {/* Breadcrumbs */}
-      <Breadcrumbs separator={<NavigateNextIcon fontSize='small' />} sx={{ mb: 3 }}>
-        <Link
-          underline='hover'
-          color='inherit'
-          onClick={() => navigate(Path.apiTokens.dashboard)}
-          sx={{ cursor: 'pointer' }}
-        >
-          {t('api_tokens:title', 'API Tokens')}
-        </Link>
-        <Typography color='text.primary'>
-          {t('api_tokens:details_title', 'Token Details')}
-        </Typography>
-      </Breadcrumbs>
-
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Box>
-          <Typography variant='h4' fontWeight='bold'>
-            {token.name}
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
-            <Chip
-              label={token.status.toUpperCase()}
-              color='success'
-              size='small'
-              sx={{ fontWeight: 'bold', fontSize: '0.7rem' }}
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+      {/* ── Top Banner ─────────────────────────────────────────────────── */}
+      <Box
+        sx={{
+          mb: 4,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: 2,
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {/* Avatar with status dot */}
+          <Box sx={{ position: 'relative' }}>
+            <Avatar
+              sx={{
+                width: { xs: 56, md: 80 },
+                height: { xs: 56, md: 80 },
+                borderRadius: '24px',
+                bgcolor: 'primary.main',
+                boxShadow: `0 12px 24px ${alpha(theme.palette.primary.main, 0.2)}`,
+              }}
+            >
+              <VpnKeyIcon sx={{ fontSize: 32 }} />
+            </Avatar>
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: -4,
+                right: -4,
+                width: 24,
+                height: 24,
+                bgcolor: token.status === 'active' ? 'success.main' : 'error.main',
+                borderRadius: '50%',
+                border: '4px solid',
+                borderColor: 'background.paper',
+              }}
             />
-            <Typography variant='body2' color='text.secondary'>
-              ID: {token.id}
-            </Typography>
+          </Box>
+
+          <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
+              <Button
+                startIcon={<ArrowBackIcon />}
+                onClick={() => navigate(Path.apiTokens.dashboard)}
+                sx={{
+                  p: 0,
+                  minWidth: 'auto',
+                  color: 'text.secondary',
+                  '&:hover': { bgcolor: 'transparent', color: 'primary.main' },
+                }}
+              />
+              <Typography
+                variant='h4'
+                sx={{
+                  fontWeight: 900,
+                  letterSpacing: '-0.027em',
+                  fontSize: { xs: '1.5rem', md: '2.125rem' },
+                }}
+              >
+                {token.name}
+              </Typography>
+            </Box>
+            <Stack direction='row' spacing={1} alignItems='center' flexWrap='wrap'>
+              <Typography variant='body2' color='text.secondary'>
+                ID: {token.id}
+              </Typography>
+              <Chip
+                label={
+                  token.status === 'active'
+                    ? t('common:active', 'Active')
+                    : t('common:expired', 'Expired')
+                }
+                size='small'
+                color={token.status === 'active' ? 'success' : 'error'}
+                variant='outlined'
+                sx={{ fontWeight: 700, height: 20 }}
+              />
+              <Chip
+                label={expiryStatus.label}
+                size='small'
+                color={expiryStatus.color}
+                variant='outlined'
+                sx={{ fontWeight: 700, height: 20 }}
+              />
+            </Stack>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+
+        {/* Primary CTA — Revoke (single location, no duplicate) */}
+        <Stack
+          direction='row'
+          spacing={2}
+          sx={{ flexShrink: 0, width: { xs: '100%', sm: 'auto' } }}
+        >
           <Button
-            variant='outlined'
-            startIcon={<EditIcon />}
-            onClick={() => navigate(Path.apiTokens.actions.replace(':tokenId', token.id))}
+            variant='contained'
+            startIcon={<DeleteIcon />}
+            onClick={handleRevoke}
+            disabled={revokeTokenMutation.isPending}
+            sx={{
+              bgcolor: 'error.main',
+              color: 'white',
+              boxShadow: `0 4px 14px 0 ${alpha(theme.palette.error.main, 0.39)}`,
+              '&:hover': { bgcolor: 'error.dark' },
+              textTransform: 'none',
+              fontWeight: 700,
+              flex: { xs: 1, sm: 'none' },
+              height: 44,
+              px: 3,
+            }}
           >
-            {t('common:edit', 'Edit')}
+            {revokeTokenMutation.isPending
+              ? t('common:revoking', 'Revoking...')
+              : t('common:revoke', 'Revoke Token')}
           </Button>
-          <Button variant='outlined' color='error' startIcon={<DeleteIcon />}>
-            {t('common:revoke', 'Revoke')}
-          </Button>
-        </Box>
+        </Stack>
       </Box>
 
-      <Grid container spacing={4}>
-        {/* Left Column: Metadata */}
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Card variant='outlined' sx={{ borderRadius: 3, mb: 3 }}>
-            <CardContent>
-              <Typography variant='subtitle1' fontWeight='bold' gutterBottom>
-                {t('api_tokens:overview', 'Overview')}
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
+      {/* ── Main Grid ──────────────────────────────────────────────────── */}
+      <Grid container spacing={3}>
+        {/* Main Column */}
+        <Grid size={{ xs: 12, md: 8 }}>
+          {/* Overview Card */}
+          <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', mb: 3 }}>
+            <CardContent sx={{ p: 3 }}>
+              <SectionHeading
+                icon={<VpnKeyIcon color='primary' sx={{ fontSize: 24 }} />}
+                title={t('api_tokens:overview', 'Overview')}
+              />
 
-              <Box sx={{ mb: 2 }}>
-                <Typography variant='caption' color='text.secondary' display='block'>
-                  {t('api_tokens:key_prefix', 'Key Prefix')}
-                </Typography>
-                <Typography variant='body2' fontWeight='medium'>
-                  <code>{token.keyPrefix}</code>
-                </Typography>
-              </Box>
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant='caption' color='text.secondary' display='block'>
-                  {t('api_tokens:created_at', 'Created At')}
-                </Typography>
-                <Typography variant='body2'>
-                  {new Date(token.createdAt).toLocaleString()}
-                </Typography>
-              </Box>
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant='caption' color='text.secondary' display='block'>
-                  {t('api_tokens:expires_at', 'Expires At')}
-                </Typography>
-                <Typography variant='body2'>
-                  {new Date(token.expiresAt).toLocaleString()}
-                </Typography>
-              </Box>
-
-              <Box>
-                <Typography variant='caption' color='text.secondary' display='block'>
-                  {t('api_tokens:last_used', 'Last Used')}
-                </Typography>
-                <Typography variant='body2'>
-                  {new Date(token.lastUsedAt).toLocaleString()}
-                </Typography>
-                <Typography variant='caption' color='text.secondary'>
-                  IP: {token.lastUsedIp}
-                </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+                <MetaRow label={t('api_tokens:created_at', 'Created')}>
+                  {formatDate(token.createdAt)}
+                </MetaRow>
+                <MetaRow label={t('api_tokens:expires_at', 'Expires')}>
+                  {formatDate(token.expiresAt)}
+                </MetaRow>
+                <MetaRow label={t('api_tokens:last_used', 'Last Used')}>
+                  {formatDate(token.lastUsedAt)}
+                </MetaRow>
               </Box>
             </CardContent>
           </Card>
 
-          <Card variant='outlined' sx={{ borderRadius: 3 }}>
-            <CardContent>
-              <Typography variant='subtitle1' fontWeight='bold' gutterBottom>
-                {t('api_tokens:ip_restrictions', 'IP Restrictions')}
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {token.ipRestrictions.map((ip) => (
-                  <Chip
-                    key={ip}
-                    icon={<GlobeIcon fontSize='small' />}
-                    label={ip}
-                    variant='outlined'
-                    size='small'
-                  />
-                ))}
-              </Box>
+          {/* Permissions Card */}
+          <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
+            <CardContent sx={{ p: 3 }}>
+              <SectionHeading
+                icon={<ShieldIcon color='primary' sx={{ fontSize: 24 }} />}
+                title={t('api_tokens:permissions', 'Permissions & Scopes')}
+              />
+
+              {token.abilities && token.abilities.length > 0 ? (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
+                  {token.abilities.map((ability) => (
+                    <Chip
+                      key={ability}
+                      label={ability}
+                      size='small'
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: '0.75rem',
+                        height: 20,
+                        borderRadius: 1.5,
+                        bgcolor: alpha(theme.palette.primary.main, 0.08),
+                        color: 'primary.main',
+                        border: '1px solid',
+                        borderColor: alpha(theme.palette.primary.main, 0.2),
+                      }}
+                    />
+                  ))}
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    p: 3,
+                    textAlign: 'center',
+                    borderRadius: 2,
+                    bgcolor: alpha(theme.palette.action.hover, 0.3),
+                    border: '1px dashed',
+                    borderColor: 'divider',
+                  }}
+                >
+                  <GlobeIcon sx={{ fontSize: 36, color: 'text.disabled', mb: 1 }} />
+                  <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 600 }}>
+                    {t('api_tokens:full_access', 'Full access — no scope restrictions')}
+                  </Typography>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Right Column: Scopes & History */}
-        <Grid size={{ xs: 12, md: 8 }}>
-          <Card variant='outlined' sx={{ borderRadius: 3, mb: 4 }}>
-            <CardContent>
-              <Typography variant='subtitle1' fontWeight='bold' gutterBottom>
-                {t('api_tokens:permissions', 'Permissions & Scopes')}
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {token.scopes.map((scope) => (
-                  <Chip key={scope} label={scope} color='primary' variant='outlined' size='small' />
-                ))}
+        {/* Side Panel */}
+        <Grid size={{ xs: 12, md: 4 }}>
+          {/* Quick Actions Card */}
+          <Card
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 'none',
+              bgcolor: alpha(theme.palette.primary.main, 0.02),
+              mb: 3,
+            }}
+          >
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                <VpnKeyIcon sx={{ color: 'primary.main', fontSize: 24 }} />
+                <Typography variant='subtitle1' sx={{ fontWeight: 800 }}>
+                  {t('api_tokens:quick_actions', 'Quick Actions')}
+                </Typography>
               </Box>
+
+              <Stack spacing={1.5}>
+                <Button
+                  variant='outlined'
+                  fullWidth
+                  startIcon={<TerminalIcon />}
+                  onClick={() =>
+                    navigate(Path.apiTokens.display.replace(':tokenId', String(token.id)))
+                  }
+                  sx={{
+                    justifyContent: 'flex-start',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                  }}
+                >
+                  {t('api_tokens:usage_guide', 'Usage Guide')}
+                </Button>
+                <Button
+                  variant='outlined'
+                  fullWidth
+                  color='error'
+                  startIcon={<DeleteIcon />}
+                  onClick={handleRevoke}
+                  disabled={revokeTokenMutation.isPending}
+                  sx={{
+                    justifyContent: 'flex-start',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                  }}
+                >
+                  {revokeTokenMutation.isPending
+                    ? t('common:revoking', 'Revoking...')
+                    : t('api_tokens:revoke_this_token', 'Revoke This Token')}
+                </Button>
+              </Stack>
             </CardContent>
           </Card>
 
-          <Card variant='outlined' sx={{ borderRadius: 3 }}>
-            <Box
-              sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+          {/* Info Tip Box */}
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              bgcolor: alpha(theme.palette.info.main, 0.05),
+              border: '1px solid',
+              borderColor: alpha(theme.palette.info.main, 0.1),
+            }}
+          >
+            <Typography
+              variant='subtitle2'
+              sx={{
+                fontWeight: 800,
+                mb: 1,
+                color: 'info.main',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
             >
-              <Typography variant='subtitle1' fontWeight='bold'>
-                {t('api_tokens:usage_history', 'Recent Usage History')}
-              </Typography>
-              <IconButton size='small'>
-                <RefreshIcon fontSize='small' />
-              </IconButton>
-            </Box>
-            <TableContainer component={Paper} elevation={0}>
-              <Table size='small'>
-                <TableHead sx={{ bgcolor: 'action.hover' }}>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: 'bold' }}>
-                      {t('common:timestamp', 'Timestamp')}
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>
-                      {t('common:action', 'Action')}
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>
-                      {t('common:ip_address', 'IP Address')}
-                    </TableCell>
-                    <TableCell align='right'>{t('common:status', 'Status')}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {usageHistory.map((entry) => (
-                    <TableRow key={entry.id} hover>
-                      <TableCell>{new Date(entry.timestamp).toLocaleString()}</TableCell>
-                      <TableCell>{entry.action}</TableCell>
-                      <TableCell>{entry.ip}</TableCell>
-                      <TableCell align='right'>
-                        <Chip
-                          label={entry.status.toUpperCase()}
-                          size='small'
-                          color='success'
-                          variant='outlined'
-                          sx={{ fontSize: '0.6rem', height: 18, fontWeight: 'bold' }}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Box sx={{ p: 2, textAlign: 'center' }}>
-              <Button size='small' startIcon={<HistoryIcon />}>
-                {t('common:view_full_history', 'View Full History')}
-              </Button>
-            </Box>
-          </Card>
+              <InfoIcon fontSize='small' />
+              {t('api_tokens:security_tip_title', 'Security Reminder')}
+            </Typography>
+            <Typography variant='body2' color='text.secondary' sx={{ lineHeight: 1.6 }}>
+              {t(
+                'api_tokens:revoke_warning',
+                'Once revoked, this token will immediately stop working. Any applications using this token will lose access.',
+              )}
+            </Typography>
+          </Box>
         </Grid>
       </Grid>
     </Box>

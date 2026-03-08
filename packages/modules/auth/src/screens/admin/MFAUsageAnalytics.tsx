@@ -236,4 +236,3 @@ export default function MFAUsageAnalytics() {
   )
 }
 import { History } from '@mui/icons-material'
-

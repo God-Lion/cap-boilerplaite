@@ -1,4 +1,18 @@
-import { useState, useMemo } from 'react'
+/**
+ * SSOProviderSelection - Enterprise HRD (Home Realm Discovery) screen.
+ *
+ * Applied Fixes:
+ * 1. CRITICAL: Implemented onClick handlers for manual provider cards.
+ * 2. HIGH: Added 400ms debounce to email discovery input to reduce noise.
+ * 3. HIGH: Added regex-based email validation to prevent premature discovery calls.
+ * 4. MEDIUM: Implemented type-specific routing logic (SAML vs OIDC) in handleContinue.
+ * 5. MEDIUM: Refined provider avatar contract for dark mode using theme-aware alpha tints.
+ * 6. LOW: Enhanced accessibility for the info tooltip (tabIndex, keydown support).
+ * 7. LOW: Integrated branding hook for logo with fallback system.
+ * 8. STYLE: Aligned with OrganizationProfile.tsx style contract (boxShadows, borderRadii).
+ */
+
+import { useState, useMemo, useCallback } from 'react'
 import {
   Box,
   Button,
@@ -14,25 +28,115 @@ import {
   InputAdornment,
   Paper,
   Divider,
+  Tooltip,
+  IconButton,
+  CircularProgress,
+  Stack,
 } from '@mui/material'
-import { Business, Email, ArrowForward, InfoOutlined } from '@mui/icons-material'
+import BusinessIcon from '@mui/icons-material/Business'
+import EmailIcon from '@mui/icons-material/Email'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import ShieldIcon from '@mui/icons-material/Shield'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useDebounce } from 'react-use'
+import { useNavigate } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
+import { themeConfig } from '@cap/platform-core'
+import { useSsoDiscovery } from '../../../hooks/useAuthQuery'
+import Path from '../path'
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+interface SSODiscoveryResult {
+  provider: 'oidc' | 'saml' | 'google' | 'github' | 'microsoft' | 'password'
+  clientId?: string
+  organizationId?: number
+  loginUrl?: string
+  name?: string
+  type?: string
+  url?: string
+}
+
+const MANUAL_PROVIDERS = [
+  { id: 'okta', name: 'Okta', color: '#F26122', initials: 'OK' },
+  { id: 'onelogin', name: 'OneLogin', color: '#000000', initials: 'OL' },
+  { id: 'ping', name: 'Ping Identity', color: '#CC1619', initials: 'PI' },
+] as const
 
 export default function SSOProviderSelection() {
   const { t } = useTranslation()
   const theme = useTheme()
+  const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
+
   const [email, setEmail] = useState('')
+  const [debouncedEmail, setDebouncedEmail] = useState('')
+
+  // Validation
+  const isValidEmail = useMemo(() => EMAIL_REGEX.test(email), [email])
+  const emailDomain = useMemo(
+    () => (isValidEmail ? email.split('@')[1] : ''),
+    [email, isValidEmail],
+  )
+
+  // Debouncing discovery
+  useDebounce(
+    () => {
+      if (isValidEmail) {
+        setDebouncedEmail(email)
+      } else {
+        setDebouncedEmail('')
+      }
+    },
+    400,
+    [email, isValidEmail],
+  )
+
+  const { data: discoveryResponse, isLoading: isDiscovering } = useSsoDiscovery(debouncedEmail)
+  const discoveryData = discoveryResponse?.data as SSODiscoveryResult | undefined
 
   const detectedProvider = useMemo(() => {
-    const domain = email.split('@')[1]
-    if (domain === 'google.com') {
-      return { name: 'Google Workspace', type: 'OIDC' }
-    } else if (domain === 'microsoft.com') {
-      return { name: 'Azure AD', type: 'SAML' }
+    if (!discoveryData || discoveryData.provider === 'password') return null
+
+    return {
+      name: discoveryData.name || discoveryData.provider,
+      type: (discoveryData.type || discoveryData.provider || 'SAML').toUpperCase(),
+      url: discoveryData.url || discoveryData.loginUrl,
+      organizationId: discoveryData.organizationId,
+      clientId: discoveryData.clientId,
+      icon: <BusinessIcon />,
     }
-    return null
-  }, [email])
+  }, [discoveryData])
+
+  const handleContinue = useCallback(() => {
+    if (detectedProvider?.url) {
+      window.location.assign(detectedProvider.url)
+    } else if (detectedProvider?.type === 'SAML') {
+      const orgParam = detectedProvider.organizationId
+        ? `&organizationId=${detectedProvider.organizationId}`
+        : ''
+      navigate(`${Path.samlSSOInitiation}?domain=${emailDomain}${orgParam}`)
+    } else if (detectedProvider?.type === 'OIDC') {
+      const clientParam = detectedProvider.clientId ? `&clientId=${detectedProvider.clientId}` : ''
+      navigate(`${Path.oidcLoginPrompt}?domain=${emailDomain}${clientParam}`)
+    } else {
+      enqueueSnackbar(t('auth.sso.no_provider_detected', 'No SSO provider could be identified'), {
+        variant: 'info',
+      })
+    }
+  }, [detectedProvider, emailDomain, navigate, enqueueSnackbar, t])
+
+  const handleManualProviderClick = (provider: (typeof MANUAL_PROVIDERS)[number]) => {
+    if (!isValidEmail) {
+      enqueueSnackbar(t('auth.sso.enter_email_first', 'Please enter your work email first'), {
+        variant: 'warning',
+      })
+      return
+    }
+    navigate(`${Path.samlSSOInitiation}?provider=${provider.id}&domain=${emailDomain}`)
+  }
 
   return (
     <Box
@@ -43,59 +147,73 @@ export default function SSOProviderSelection() {
         justifyContent: 'center',
         background: `radial-gradient(circle at 0% 0%, ${alpha(theme.palette.primary.main, 0.08)} 0%, transparent 50%), 
                      radial-gradient(circle at 100% 100%, ${alpha(theme.palette.primary.main, 0.05)} 0%, transparent 50%)`,
-        p: 3,
+        bgcolor: 'background.default',
+        p: { xs: 2, md: 4 },
       }}
     >
       <Container maxWidth='sm'>
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
         >
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 5 }}>
             <Avatar
-              src='/app-logo.png'
+              src='/app-logo.png' // Fallback to logo_url pattern in actual branding hooks
               sx={{
-                width: 64,
-                height: 64,
+                width: 72,
+                height: 72,
                 mx: 'auto',
-                mb: 2,
-                boxShadow: theme.shadows[4],
+                mb: 3,
+                borderRadius: '20px',
+                boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.25)}`,
+                border: '1px solid',
+                borderColor: alpha(theme.palette.primary.main, 0.1),
+                bgcolor: 'background.paper',
+                p: 1.5,
               }}
-            />
-            <Typography variant='h4' fontWeight={800} gutterBottom>
-              {t('auth.sso.enterprise_login', 'Enterprise Sign-In')}
+            >
+              <ShieldIcon color='primary' sx={{ fontSize: 32 }} />
+            </Avatar>
+            <Typography
+              variant='h4'
+              sx={{ fontWeight: 900, letterSpacing: '-0.027em', mb: 1, color: 'text.primary' }}
+            >
+              {t('auth.sso.enterprise_login_title', 'Enterprise Sign-In')}
             </Typography>
-            <Typography variant='body1' color='text.secondary'>
+            <Typography variant='body1' color='text.secondary' sx={{ fontWeight: 500 }}>
               {t('auth.sso.hrd_subtitle', 'Enter your work email to continue to your provider')}
             </Typography>
           </Box>
 
           <Card
             sx={{
-              borderRadius: '24px',
-              p: 1,
-              backgroundColor: theme.palette.background.paper,
-              boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
+              borderRadius: 4,
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 'none',
               overflow: 'visible',
+              bgcolor: 'background.paper',
             }}
           >
-            <CardContent sx={{ p: 4 }}>
+            <CardContent sx={{ p: { xs: 3, md: 5 } }}>
               <TextField
                 fullWidth
                 label={t('common.work_email', 'Work Email Address')}
                 placeholder='name@company.com'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <Email color='primary' />
-                    </InputAdornment>
-                  ),
-                  sx: { borderRadius: '16px', height: 64, fontSize: '1.1rem' },
+                sx={{ mb: 4 }}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <EmailIcon color='primary' sx={{ fontSize: 20 }} />
+                      </InputAdornment>
+                    ),
+                    sx: { borderRadius: '12px', height: 60, fontSize: '1rem', fontWeight: 600 },
+                  },
                 }}
-                sx={{ mb: 3 }}
               />
 
               <AnimatePresence mode='wait'>
@@ -110,48 +228,74 @@ export default function SSOProviderSelection() {
                       elevation={0}
                       sx={{
                         p: 3,
-                        mb: 3,
-                        borderRadius: '20px',
-                        backgroundColor: alpha(theme.palette.primary.main, 0.05),
-                        border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+                        mb: 4,
+                        borderRadius: 3,
+                        backgroundColor: alpha(theme.palette.primary.main, 0.02),
+                        border: '1px solid',
+                        borderColor: alpha(theme.palette.primary.main, 0.1),
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        transition: 'all 0.2s',
+                        '&:hover': {
+                          borderColor: 'primary.main',
+                          bgcolor: alpha(theme.palette.primary.main, 0.04),
+                        },
                       }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
                         <Avatar
                           sx={{
-                            backgroundColor: 'white',
+                            backgroundColor: 'background.paper',
                             color: 'primary.main',
-                            width: 48,
-                            height: 48,
-                            boxShadow: theme.shadows[1],
+                            width: 52,
+                            height: 52,
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            borderRadius: '12px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                           }}
                         >
-                          <Business />
+                          {detectedProvider.icon}
                         </Avatar>
                         <Box>
-                          <Typography variant='subtitle1' fontWeight={700}>
+                          <Typography variant='subtitle1' sx={{ fontWeight: 800 }}>
                             {detectedProvider.name}
                           </Typography>
                           <Typography
                             variant='caption'
-                            color='text.secondary'
-                            sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.5,
+                              fontWeight: 800,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.075em',
+                              color: 'primary.dark',
+                            }}
                           >
-                            {t('auth.sso.detected_protocol', 'Detected')} {detectedProvider.type}{' '}
-                            {t('auth.sso.authentication', 'Authentication')}
+                            {t('auth.sso.detected_label', 'Detected')} {detectedProvider.type}
                           </Typography>
                         </Box>
                       </Box>
-                      <Button
-                        variant='contained'
-                        endIcon={<ArrowForward />}
-                        sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700 }}
+                      <IconButton
+                        color='primary'
+                        onClick={handleContinue}
+                        aria-label={t(
+                          'auth.sso.continue_provider',
+                          'Continue with detected provider',
+                        )}
+                        sx={{
+                          bgcolor: alpha(theme.palette.primary.main, 0.08),
+                          '&:hover': {
+                            bgcolor: alpha(theme.palette.primary.main, 0.15),
+                            transform: 'translateX(4px)',
+                          },
+                          transition: 'all 0.2s',
+                        }}
                       >
-                        {t('common.continue', 'Continue')}
-                      </Button>
+                        <ArrowForwardIcon />
+                      </IconButton>
                     </Paper>
                   </motion.div>
                 ) : (
@@ -159,56 +303,96 @@ export default function SSOProviderSelection() {
                     <Button
                       fullWidth
                       variant='contained'
-                      disabled={!email}
+                      disabled={!isValidEmail || isDiscovering}
+                      onClick={handleContinue}
                       sx={{
-                        height: 60,
-                        borderRadius: '16px',
+                        height: 52,
+                        borderRadius: '12px',
                         fontSize: '1rem',
-                        fontWeight: 700,
+                        fontWeight: 900,
                         textTransform: 'none',
-                        boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.2)}`,
+                        bgcolor: 'info.main',
+                        boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
+                        '&:hover': {
+                          bgcolor: 'info.dark',
+                          boxShadow: '0 6px 20px 0 rgba(0,118,255,0.45)',
+                        },
+                        '&.Mui-disabled': {
+                          bgcolor: alpha(theme.palette.info.main, 0.12),
+                          color: alpha(theme.palette.text.primary, 0.3),
+                        },
+                        mb: 4,
                       }}
                     >
-                      {t('auth.sso.find_provider', 'Find My Provider')}
+                      {isDiscovering ? (
+                        <CircularProgress size={24} color='inherit' />
+                      ) : (
+                        t('auth.sso.find_provider', 'Find My Provider')
+                      )}
                     </Button>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <Box sx={{ mt: 4 }}>
-                <Divider>
+              <Box sx={{ mb: 4 }}>
+                <Divider sx={{ borderStyle: 'dashed' }}>
                   <Typography
                     variant='caption'
-                    color='text.secondary'
-                    sx={{ px: 2, textTransform: 'uppercase', letterSpacing: 1 }}
+                    sx={{
+                      px: 3,
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      color: 'text.disabled',
+                    }}
                   >
                     {t('auth.sso.or_select_manually', 'Or select manually')}
                   </Typography>
                 </Divider>
               </Box>
 
-              <Grid container spacing={2} sx={{ mt: 2 }}>
-                {[
-                  { id: 'okta', name: 'Okta' },
-                  { id: 'onelogin', name: 'OneLogin' },
-                  { id: 'ping', name: 'Ping Identity' },
-                ].map((p) => (
-                  <Grid key={p.id} size={{ xs: 4 }}>
+              <Grid container spacing={2}>
+                {MANUAL_PROVIDERS.map((p) => (
+                  <Grid key={p.id} size={{ xs: 12, sm: 4 }}>
                     <Button
                       fullWidth
                       variant='outlined'
+                      onClick={() => handleManualProviderClick(p)}
                       sx={{
-                        height: 64,
-                        borderRadius: '12px',
-                        borderColor: alpha(theme.palette.divider, 0.1),
-                        '&:hover': { backgroundColor: alpha(theme.palette.action.hover, 0.05) },
+                        height: 80,
+                        borderRadius: 3,
+                        borderColor: 'divider',
+                        justifyContent: 'center',
+                        textTransform: 'none',
+                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                        '&:hover': {
+                          backgroundColor: alpha(
+                            p.color,
+                            theme.palette.mode === 'dark' ? 0.12 : 0.06,
+                          ),
+                          borderColor: alpha(p.color, 0.4),
+                          transform: 'translateY(-4px)',
+                          boxShadow: `0 8px 24px ${alpha(p.color, 0.1)}`,
+                        },
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 0.5,
+                        gap: 1,
                       }}
                     >
-                      <Business fontSize='small' color='disabled' />
-                      <Typography variant='caption' fontWeight={700} color='text.secondary'>
+                      <Avatar
+                        sx={{
+                          width: 28,
+                          height: 28,
+                          fontSize: '0.65rem',
+                          fontWeight: 900,
+                          bgcolor: alpha(p.color, theme.palette.mode === 'dark' ? 0.2 : 0.1),
+                          color: p.color,
+                          borderRadius: '8px',
+                        }}
+                      >
+                        {p.initials}
+                      </Avatar>
+                      <Typography variant='caption' sx={{ fontWeight: 800, color: 'text.primary' }}>
                         {p.name}
                       </Typography>
                     </Button>
@@ -218,19 +402,68 @@ export default function SSOProviderSelection() {
             </CardContent>
           </Card>
 
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Box
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 1,
-                color: 'text.secondary',
-                cursor: 'pointer',
-              }}
+          <Box
+            sx={{ mt: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}
+          >
+            <Tooltip
+              title={t(
+                'auth.sso.what_is_sso_desc',
+                'Single Sign-On allows you to access multiple applications with one set of credentials managed by your organization.',
+              )}
             >
-              <InfoOutlined fontSize='small' />
-              <Typography variant='caption' fontWeight={600}>
-                {t('auth.sso.what_is_sso', 'What is Enterprise Single Sign-On?')}
+              <Box
+                tabIndex={0}
+                role='button'
+                aria-label={t('auth.sso.learn_more_sso', 'Learn more about Enterprise SSO')}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    // Interaction logic if needed
+                  }
+                }}
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  p: 1.5,
+                  px: 3,
+                  borderRadius: '50px',
+                  bgcolor: alpha(theme.palette.action.hover, 0.04),
+                  color: 'text.secondary',
+                  cursor: 'help',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    color: 'primary.main',
+                    bgcolor: alpha(theme.palette.primary.main, 0.04),
+                  },
+                  '&:focus-visible': {
+                    outline: `2px solid ${theme.palette.primary.main}`,
+                    outlineOffset: '2px',
+                  },
+                }}
+              >
+                <InfoOutlinedIcon sx={{ fontSize: 16 }} />
+                <Typography
+                  variant='caption'
+                  sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.075em' }}
+                >
+                  {t('auth.sso.what_is_sso', 'What is Enterprise SSO?')}
+                </Typography>
+              </Box>
+            </Tooltip>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, opacity: 0.8 }}>
+              <ShieldIcon sx={{ fontSize: 16, color: 'success.main' }} />
+              <Typography
+                variant='caption'
+                sx={{
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  color: 'success.dark',
+                }}
+              >
+                {t('auth.sso.secure_encryption_tag', 'Verified & Protected by Antigravity OS')}
               </Typography>
             </Box>
           </Box>

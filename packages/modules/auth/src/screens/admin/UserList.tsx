@@ -523,8 +523,8 @@ export default function UserList() {
                   t('auth.common.user'),
                   t('auth.common.status'),
                   t('auth.common.role'),
-                  'Active Since', // Consider i18n key if available
-                  'Identity', // Consider i18n key if available
+                  t('auth.common.activeSince'),
+                  t('auth.common.identity'),
                 ].map((col) => (
                   <TableCell
                     key={col}
@@ -615,7 +615,7 @@ export default function UserList() {
                     {/* Status */}
                     <TableCell>
                       <Chip
-                        label={user.isActif ? 'Active' : 'Suspended'}
+                        label={user.isActif ? t('auth.common.active') : t('auth.common.suspended')}
                         size='small'
                         sx={{
                           fontWeight: 700,
@@ -658,7 +658,11 @@ export default function UserList() {
                     {/* Verification status */}
                     <TableCell>
                       <Chip
-                        label={user.emailVerified ? 'Verified' : 'Unverified'}
+                        label={
+                          user.emailVerified
+                            ? t('auth.common.verified')
+                            : t('auth.common.unverified')
+                        }
                         size='small'
                         variant='outlined'
                         sx={{
@@ -718,8 +722,7 @@ export default function UserList() {
           }}
         >
           <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
-            {t('auth.admin.recordsCount', { count: data?.data?.meta.total || 0 }) ||
-              `${data?.data?.meta.total || 0} Records`}
+            {data?.data?.meta.total || 0} {t('auth.admin.records')}
           </Typography>
           <Pagination
             count={data?.data?.meta.total ? Math.ceil(data.data.meta.total / 10) : 1}
@@ -860,9 +863,7 @@ export default function UserList() {
         open={confirmBanOpen}
         onClose={() => setConfirmBanOpen(false)}
         title={t('auth.admin.confirmBanTitle') || 'Suspend User?'}
-        message={t('auth.admin.confirmBanMessage', {
-          name: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
-        })}
+        message={`${t('auth.admin.confirmBanMessage')} ${selectedUser?.firstName} ${selectedUser?.lastName}?`}
         onConfirm={handleBanUserConfirm}
         isSubmitting={banUserMutation.isPending}
         severity='error'
@@ -872,9 +873,7 @@ export default function UserList() {
         open={confirmDeleteOpen}
         onClose={() => setConfirmDeleteOpen(false)}
         title={t('auth.admin.confirmDeleteTitle') || 'Delete User?'}
-        message={t('auth.admin.confirmDeleteMessage', {
-          name: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
-        })}
+        message={`${t('auth.admin.confirmDeleteMessage')} ${selectedUser?.firstName} ${selectedUser?.lastName}?`}
         onConfirm={handleDeleteUserConfirm}
         isSubmitting={deleteUserMutation.isPending}
         severity='error'

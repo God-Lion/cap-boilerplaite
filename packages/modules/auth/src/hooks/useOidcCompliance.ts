@@ -10,6 +10,49 @@ import authService from '../services/auth.service'
 export const oidcComplianceKeys = {
   all: ['oidc-compliance'] as const,
   userinfo: () => [...oidcComplianceKeys.all, 'userinfo'] as const,
+  interaction: (uid: string) => [...oidcComplianceKeys.all, 'interaction', uid] as const,
+}
+
+/**
+ * Get OIDC Interaction Details
+ */
+export function useOidcInteraction(
+  uid: string | null | undefined,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: oidcComplianceKeys.interaction(uid || ''),
+    queryFn: () => authService.oidcInteraction.get(uid || ''),
+    enabled: !!uid,
+    staleTime: 0, // Interactions are temporary and short-lived
+    ...options,
+  })
+}
+
+/**
+ * Confirm OIDC Interaction (Grant Consent)
+ */
+export function useConfirmOidcInteraction(
+  uid: string | null | undefined,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, void, unknown>,
+) {
+  return useMutation({
+    mutationFn: () => authService.oidcInteraction.confirm(uid || ''),
+    ...options,
+  })
+}
+
+/**
+ * Abort OIDC Interaction (Deny Consent)
+ */
+export function useAbortOidcInteraction(
+  uid: string | null | undefined,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, void, unknown>,
+) {
+  return useMutation({
+    mutationFn: () => authService.oidcInteraction.abort(uid || ''),
+    ...options,
+  })
 }
 
 /**

@@ -23,7 +23,7 @@ interface MFAVerificationSuccessProps {
 
 export default function MFAVerificationSuccess({
   autoRedirect = true,
-  redirectDelay = 3000,
+  redirectDelay = 5173,
   redirectPath = '/dashboard',
 }: MFAVerificationSuccessProps) {
   const { t } = useTranslation()
@@ -287,4 +287,3 @@ export default function MFAVerificationSuccess({
     </>
   )
 }
-

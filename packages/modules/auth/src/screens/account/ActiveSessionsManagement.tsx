@@ -307,4 +307,3 @@ const ActiveSessionsManagement = ({ adminView, userName, userId }: ActiveSession
 }
 
 export default ActiveSessionsManagement
-

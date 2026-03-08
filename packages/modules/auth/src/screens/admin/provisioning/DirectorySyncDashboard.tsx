@@ -105,7 +105,11 @@ function StatusChip({ status }: { status: string }) {
       color: 'success',
       icon: <CheckCircle sx={{ fontSize: 14 }} />,
     },
-    error: { label: 'ERROR', color: 'error', icon: <ErrorIcon sx={{ fontSize: 14 }} /> },
+    error: {
+      label: t('common.error') || 'ERROR',
+      color: 'error',
+      icon: <ErrorIcon sx={{ fontSize: 14 }} />,
+    },
     inactive: {
       label: t('admin.provisioning.scim.status_inactive'),
       color: 'default',
@@ -155,7 +159,7 @@ function SyncLogsDialog({
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <History color='primary' sx={{ fontSize: 24 }} />
           <Typography variant='h6' sx={{ fontWeight: 900 }}>
-            {t('admin.provisioning.dashboard.dialogs.logs.title', { name: connectorName })}
+            {t('admin.provisioning.dashboard.dialogs.logs.title')} &ldquo;{connectorName}&rdquo;
           </Typography>
         </Box>
         <IconButton aria-label='Close sync logs' onClick={onClose} size='small'>
@@ -178,10 +182,18 @@ function SyncLogsDialog({
             <Table size='small'>
               <TableHead sx={{ bgcolor: (theme) => alpha(theme.palette.action.hover, 0.6) }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 900, py: 2 }}>EVENT</TableCell>
-                  <TableCell sx={{ fontWeight: 900 }}>TARGET</TableCell>
-                  <TableCell sx={{ fontWeight: 900 }}>STATUS</TableCell>
-                  <TableCell sx={{ fontWeight: 900 }}>DATE</TableCell>
+                  <TableCell sx={{ fontWeight: 900, py: 2 }}>
+                    {t('admin.provisioning.logs.table.event').toUpperCase()}
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 900 }}>
+                    {t('admin.provisioning.logs.table.target').toUpperCase()}
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 900 }}>
+                    {t('admin.provisioning.logs.table.status').toUpperCase()}
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 900 }}>
+                    {t('admin.provisioning.logs.table.timestamp').toUpperCase()}
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -810,7 +822,9 @@ export default function DirectorySyncDashboard() {
                         >
                           {conn.status === 'active'
                             ? t('admin.provisioning.dashboard.connector_card.healthy')
-                            : conn.error_message || 'STANDBY'}
+                            : conn.error_message ||
+                              t('admin.provisioning.dashboard.connector_card.standby') ||
+                              'STANDBY'}
                         </Typography>
                       </Box>
                       <Button

@@ -7,9 +7,7 @@ import AdminRoute from '../middlewares/AdminRoute'
 
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', () => ({
-  Navigate: ({ to }: { to: string }) => (
-    <div data-testid="navigate" data-to={to} />
-  ),
+  Navigate: ({ to }: { to: string }) => <div data-testid='navigate' data-to={to} />,
   useNavigate: () => mockNavigate,
   useLocation: () => ({ pathname: '/admin', state: null }),
   Suspense: ({ children }: any) => <>{children}</>,
@@ -25,7 +23,7 @@ vi.mock('@cap/platform-core', () => ({
 
 // Mock the 403 screen used inside AdminRoute
 vi.mock('../screens', () => ({
-  Page403Forbidden: () => <div data-testid="page-403">403 Forbidden</div>,
+  Page403Forbidden: () => <div data-testid='page-403'>403 Forbidden</div>,
 }))
 
 const mockUseSessionGuard = vi.fn()

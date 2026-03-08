@@ -294,7 +294,7 @@ export default function RoleList() {
           }}
         >
           <TextField
-            placeholder={t('auth.admin.searchRolesPlaceholder') || 'Search roles…'}
+            placeholder={t('auth.admin.searchRolesPlaceholder')}
             size='small'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -397,15 +397,14 @@ export default function RoleList() {
                       </Avatar>
                       <Box>
                         <Typography variant='h6' sx={{ fontWeight: 800, mb: 0.5 }}>
-                          {t('auth.admin.noRolesFound') || 'No Roles Found'}
+                          {t('auth.admin.noRolesFound')}
                         </Typography>
                         <Typography
                           variant='body2'
                           color='text.secondary'
                           sx={{ maxWidth: 300, mx: 'auto' }}
                         >
-                          {t('auth.admin.noRolesHint') ||
-                            'Try refining your search or create your first role.'}
+                          {t('auth.admin.noRolesHint')}
                         </Typography>
                       </Box>
                     </Stack>
@@ -451,7 +450,7 @@ export default function RoleList() {
                             color='text.secondary'
                             sx={{ display: 'block', fontWeight: 500, opacity: 0.8 }}
                           >
-                            {role.description || t('auth.admin.noDescription') || 'No description'}
+                            {role.description || t('auth.admin.noDescription')}
                           </Typography>
                         </Box>
                       </Box>
@@ -460,7 +459,11 @@ export default function RoleList() {
                     {/* Scope Chip */}
                     <TableCell>
                       <Chip
-                        label={role.guard_name === 'api' ? 'API Engine' : 'Web Portal'}
+                        label={
+                          role.guard_name === 'api'
+                            ? t('auth.admin.apiEngine')
+                            : t('auth.admin.webPortal')
+                        }
                         size='small'
                         variant='outlined'
                         sx={{
@@ -492,7 +495,7 @@ export default function RoleList() {
                         {role.permissions?.length || 0}
                       </Typography>
                       <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
-                        {t('auth.admin.definedActions') || 'Defined Actions'}
+                        {t('auth.admin.definedActions')}
                       </Typography>
                     </TableCell>
 
@@ -502,7 +505,7 @@ export default function RoleList() {
                         {role.users_count || 0}
                       </Typography>
                       <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
-                        {t('auth.admin.members') || 'Members'}
+                        {t('auth.admin.members')}
                       </Typography>
                     </TableCell>
 
@@ -520,7 +523,7 @@ export default function RoleList() {
                     {/* Actions */}
                     <TableCell align='right'>
                       <Stack direction='row' spacing={0.5} justifyContent='flex-end'>
-                        <Tooltip title={t('auth.admin.editRole') || 'Edit Role'}>
+                        <Tooltip title={t('auth.admin.editRole')}>
                           <IconButton
                             size='small'
                             onClick={() =>
@@ -560,8 +563,7 @@ export default function RoleList() {
           }}
         >
           <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
-            {t('auth.admin.pageOf', { page, total: totalPages || 1 }) ||
-              `Page ${page} of ${totalPages || 1}`}
+            {t('auth.admin.page')} {page} {t('auth.admin.of')} {totalPages || 1}
           </Typography>
           <Pagination
             count={totalPages}
@@ -594,20 +596,20 @@ export default function RoleList() {
           <ListItemIcon>
             <SecurityIcon fontSize='small' />
           </ListItemIcon>
-          {t('auth.admin.permissions') || 'Permissions'}
+          {t('auth.admin.permissions')}
         </MenuItem>
         <MenuItem onClick={handleDuplicateRole} disabled={duplicateRole.isPending}>
           <ListItemIcon>
             <ContentCopyIcon fontSize='small' />
           </ListItemIcon>
-          {t('auth.common.duplicate') || 'Duplicate'}
+          {t('auth.common.duplicate')}
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleDeleteRole} sx={{ color: 'error.main' }}>
           <ListItemIcon>
             <DeleteIcon fontSize='small' color='error' />
           </ListItemIcon>
-          {t('auth.admin.deleteRole') || 'Delete Role'}
+          {t('auth.admin.deleteRole')}
         </MenuItem>
       </Menu>
 
@@ -620,13 +622,11 @@ export default function RoleList() {
         PaperProps={{ sx: { borderRadius: 4, p: 1, backgroundImage: 'none' } }}
       >
         <DialogTitle sx={{ fontWeight: 900, fontSize: '1.375rem', letterSpacing: '-0.02em' }}>
-          {t('auth.admin.deleteRoleTitle', { name: selectedRole?.name }) ||
-            `Delete "${selectedRole?.name}"?`}
+          {t('auth.admin.deleteRoleTitle')} &rdquo;{selectedRole?.name}&rdquo;?
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ fontWeight: 500 }}>
-            {t('auth.admin.deleteRoleDesc') ||
-              'This action is permanent. All users assigned this role will lose its permissions immediately.'}
+            {t('auth.admin.deleteRoleDesc')}
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ p: 3, pt: 1 }}>
@@ -649,9 +649,7 @@ export default function RoleList() {
               boxShadow: `0 4px 12px ${alpha(theme.palette.error.main, 0.4)}`,
             }}
           >
-            {deleteRole.isPending
-              ? t('auth.admin.deleting') || 'Deleting…'
-              : t('auth.admin.deleteRole') || 'Delete Role'}
+            {deleteRole.isPending ? t('auth.admin.deleting') : t('auth.admin.deleteRole')}
           </Button>
         </DialogActions>
       </Dialog>

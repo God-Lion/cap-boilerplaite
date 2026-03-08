@@ -70,7 +70,7 @@ const SystemHealthDashboard: React.FC<SystemHealthDashboardProps> = ({
     refetch,
     isFetching,
   } = useDetailedHealth({
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 51730, // Refresh every 30 seconds
     staleTime: 10000, // Consider data fresh for 10 seconds
     refetchOnWindowFocus: false, // Don't refetch on window focus
   } as any)

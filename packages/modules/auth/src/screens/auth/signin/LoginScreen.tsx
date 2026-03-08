@@ -108,7 +108,15 @@ export default function LoginScreen() {
         state: 'success',
         msg: t('auth.login.login_successful'),
       })
-      setTimeout(() => navigate('/dashboard'), 1500)
+
+      const interactionUid = new URLSearchParams(window.location.search).get('interaction')
+      if (interactionUid) {
+        // Redirect back to backend interaction handler
+        const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3333'
+        window.location.href = `${apiUrl}/api/auth/oidc/interaction/${interactionUid}`
+      } else {
+        setTimeout(() => navigate('/dashboard'), 1500)
+      }
     },
     onError: (error: any) => {
       setStatus({
@@ -688,5 +696,3 @@ export default function LoginScreen() {
     </>
   )
 }
-
-

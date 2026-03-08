@@ -162,10 +162,10 @@ export default function OrganizationProfile() {
       {
         onSuccess: (response) => {
           setFormData((prev: any) => ({ ...prev, logo_url: response.data.logo_url }))
-          enqueueSnackbar('Logo uploaded successfully', { variant: 'success' })
+          enqueueSnackbar(t('auth.admin.logoUploaded'), { variant: 'success' })
         },
         onError: (err: any) => {
-          enqueueSnackbar(err.message || 'Failed to upload logo', { variant: 'error' })
+          enqueueSnackbar(err.message || t('auth.admin.logoUploadFailed'), { variant: 'error' })
         },
       },
     )
@@ -179,13 +179,15 @@ export default function OrganizationProfile() {
     if (!pendingDomain.trim()) return
     verifyDomainMutation.mutate(pendingDomain.trim(), {
       onSuccess: () => {
-        enqueueSnackbar(`Started verification for ${pendingDomain}`, { variant: 'success' })
+        enqueueSnackbar(`${t('auth.admin.startedVerification')} ${pendingDomain}`, {
+          variant: 'success',
+        })
         queryClient.invalidateQueries({ queryKey: adminKeys.organizations.all })
         setDomainDialogOpen(false)
         setPendingDomain('')
       },
       onError: (err: any) => {
-        enqueueSnackbar(err.message || 'Failed to verify domain', { variant: 'error' })
+        enqueueSnackbar(err.message || t('auth.admin.failedVerifyDomain'), { variant: 'error' })
       },
     })
   }
@@ -201,7 +203,7 @@ export default function OrganizationProfile() {
   if (isError || !orgData) {
     return (
       <Box sx={{ p: 4 }}>
-        <Alert severity='error'>Organization not found or failed to load.</Alert>
+        <Alert severity='error'>{t('auth.admin.orgNotFound')}</Alert>
       </Box>
     )
   }
@@ -382,19 +384,19 @@ export default function OrganizationProfile() {
                   >
                     <TextField
                       fullWidth
-                      label='Organization Name'
+                      label={t('auth.admin.orgNameLabel')}
                       value={formData?.name || ''}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       variant='outlined'
-                      placeholder='e.g. Acme Corp'
+                      placeholder={t('auth.admin.orgNamePlaceholder')}
                     />
                     <TextField
                       fullWidth
-                      label='Workspace Slug'
+                      label={t('auth.admin.workspaceSlugLabel')}
                       value={formData?.slug || ''}
                       onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                       variant='outlined'
-                      helperText='URL-friendly identifier for this workspace'
+                      helperText={t('auth.admin.workspaceSlugHelper')}
                       slotProps={{
                         input: {
                           startAdornment: (
@@ -409,12 +411,12 @@ export default function OrganizationProfile() {
                     />
                     <TextField
                       fullWidth
-                      label='Primary Domain'
+                      label={t('auth.admin.primaryDomainLabel')}
                       value={formData?.domain || ''}
                       onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
                       variant='outlined'
-                      placeholder='example.com'
-                      helperText='The verified domain used for SSO and email routing'
+                      placeholder={t('auth.admin.primaryDomainPlaceholder')}
+                      helperText={t('auth.admin.primaryDomainHelper')}
                       slotProps={{
                         input: {
                           startAdornment: (
@@ -427,12 +429,12 @@ export default function OrganizationProfile() {
                     />
                     <TextField
                       fullWidth
-                      label='Support Email'
+                      label={t('auth.admin.supportEmailLabel')}
                       value={formData?.support_email || ''}
                       onChange={(e) => setFormData({ ...formData, support_email: e.target.value })}
                       variant='outlined'
-                      placeholder='support@example.com'
-                      helperText='Contact email shown to organization members'
+                      placeholder={t('auth.admin.supportEmailPlaceholder')}
+                      helperText={t('auth.admin.supportEmailHelper')}
                       slotProps={{
                         input: {
                           startAdornment: (
@@ -521,9 +523,7 @@ export default function OrganizationProfile() {
                           {orgData.members_count ?? orgData.members?.length ?? 0}
                         </Typography>
                         <Typography variant='caption' color='text.secondary'>
-                          {t('auth.admin.membersLabel', {
-                            count: orgData.members_count ?? orgData.members?.length ?? 0,
-                          }).split(' ')[1] || 'Users'}
+                          {t('auth.admin.membersLabelOther')}
                         </Typography>
                       </Box>
                     </Box>
@@ -658,11 +658,10 @@ export default function OrganizationProfile() {
                 }}
               >
                 <Info fontSize='small' />
-                PLATFORM TIP
+                {t('auth.admin.platformTip')}
               </Typography>
               <Typography variant='body2' color='text.secondary' sx={{ lineHeight: 1.6 }}>
-                The workspace slug is used for **Service Discovery**. If OIDC Discovery is enabled,
-                it allows users to find their tenant by entering just their email.
+                {t('auth.admin.discoveryTip')}
               </Typography>
             </Box>
           </Grid>

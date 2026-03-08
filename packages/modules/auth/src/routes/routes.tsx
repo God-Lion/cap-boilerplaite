@@ -248,13 +248,13 @@ const apiTokenRouteConfig: Array<AuthRouteConfig> = [
     element: <AuthRoute element={<APITokensDashboard />} requiresVerification layout='admin' />,
   },
   {
-    path: Path.apiTokens.create_basic,
+    path: Path.apiTokens.createBasic,
     element: (
       <AuthRoute element={<CreateAPITokenBasicInfo />} requiresVerification layout='admin' />
     ),
   },
   {
-    path: Path.apiTokens.create_restrictions,
+    path: Path.apiTokens.createRestrictions,
     element: (
       <AuthRoute element={<CreateAPITokenIPRestrictions />} requiresVerification layout='admin' />
     ),
@@ -272,10 +272,61 @@ const apiTokenRouteConfig: Array<AuthRouteConfig> = [
     element: <AuthRoute element={<APITokenActions />} requiresVerification layout='admin' />,
   },
   {
-    path: Path.apiTokens.security_warning,
+    path: Path.apiTokens.securityWarning,
     element: (
       <AuthRoute element={<APITokenSecurityWarning />} requiresVerification layout='admin' />
     ),
+  },
+]
+
+const ssoRouteConfig: Array<AuthRouteConfig> = [
+  // SSO & Protocols
+  {
+    path: Path.auth.permissionConsent,
+    element: <PermissionConsentScreen />,
+    layout: 'noLayout',
+  },
+  {
+    path: Path.auth.oidcLoginPrompt,
+    element: <OIDCLoginPrompt />,
+    layout: 'noLayout',
+  },
+  {
+    path: Path.auth.providerSelection,
+    element: <SSOProviderSelection />,
+    layout: 'noLayout',
+  },
+  {
+    path: Path.auth.authWait,
+    element: <AuthWaitScreen />,
+    layout: 'noLayout',
+  },
+
+  // SSO Administrative (Protected - usually Admin only)
+  {
+    path: Path.auth.samlMetadataDisplay,
+    element: <SAMLMetadataDisplay />,
+    layout: 'noLayout',
+  },
+  {
+    path: Path.auth.samlMetadataBrowser,
+    element: <SAMLMetadataBrowser />,
+  },
+  {
+    path: Path.auth.oidcConfigBrowser,
+    element: <OIDCConfigBrowser />,
+  },
+  {
+    path: Path.auth.samlConfigDashboard,
+    element: <SAMLConfigDashboard />,
+  },
+  {
+    path: Path.auth.ssfConfiguration,
+    element: <SSFConfiguration />,
+  },
+  {
+    path: (Path.auth as any).jwksManagement,
+    element: <JWKSManagement />,
   },
 ]
 
@@ -495,62 +546,16 @@ const monitoringRouteConfig: Array<AuthRouteConfig> = [
   },
 ]
 
-const ssoRouteConfig: Array<AuthRouteConfig> = [
-  // SSO & Protocols
-  {
-    path: Path.auth.permissionConsent,
-    element: <PermissionConsentScreen />,
-  },
-  {
-    path: Path.auth.oidcLoginPrompt,
-    element: <OIDCLoginPrompt />,
-  },
-  {
-    path: Path.auth.providerSelection,
-    element: <SSOProviderSelection />,
-  },
-  {
-    path: Path.auth.authWait,
-    element: <AuthWaitScreen />,
-  },
-
-  // SSO Administrative (Protected - usually Admin only)
-  {
-    path: Path.auth.samlMetadataDisplay,
-    element: <SAMLMetadataDisplay />,
-  },
-  {
-    path: Path.auth.samlMetadataBrowser,
-    element: <SAMLMetadataBrowser />,
-  },
-  {
-    path: Path.auth.oidcConfigBrowser,
-    element: <OIDCConfigBrowser />,
-  },
-  {
-    path: Path.auth.samlConfigDashboard,
-    element: <SAMLConfigDashboard />,
-  },
-  {
-    path: Path.auth.ssfConfiguration,
-    element: <SSFConfiguration />,
-  },
-  {
-    path: (Path.auth as any).jwksManagement,
-    element: <JWKSManagement />,
-  },
-]
-
 export const authRouteConfig: Array<AuthRouteConfig> = [
-  ...monitoringRouteConfig,
   ...adminRouteConfig,
+  ...apiTokenRouteConfig,
+  ...ssoRouteConfig,
+  ...monitoringRouteConfig,
   ...accountRouteConfig,
   ...mfaRouteConfig,
   ...passkeyRouteConfig,
   ...passwordlessRouteConfig,
-  ...apiTokenRouteConfig,
   ...emailVerificationRouteConfig,
-  ...ssoRouteConfig,
 
   // Sign In
   {

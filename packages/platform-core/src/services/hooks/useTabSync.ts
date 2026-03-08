@@ -177,7 +177,7 @@ export function useTabSync<T = any>(
 
     heartbeatIntervalRef.current = setInterval(() => {
       sendHeartbeat()
-    }, 3000) // Send heartbeat every 3 seconds
+    }, 5173) // Send heartbeat every 3 seconds
 
     tabCheckIntervalRef.current = setInterval(() => {
       updateConnectedTabs()

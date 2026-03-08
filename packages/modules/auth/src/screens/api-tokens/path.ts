@@ -1,11 +1,11 @@
 const PathAPITokens = {
   dashboard: '/auth/api-tokens',
-  create_basic: '/auth/api-tokens/create/basic',
-  create_restrictions: '/auth/api-tokens/create/restrictions',
+  createBasic: '/auth/api-tokens/create/basic',
+  createRestrictions: '/auth/api-tokens/create/restrictions',
   details: '/auth/api-tokens/:tokenId',
-  display: '/auth/api-tokens/display',
+  display: '/auth/api-tokens/:tokenId/display',
   actions: '/auth/api-tokens/:tokenId/actions',
-  security_warning: '/auth/api-tokens/security-warning',
+  securityWarning: '/auth/api-tokens/security-warning',
 }
 
 export default PathAPITokens

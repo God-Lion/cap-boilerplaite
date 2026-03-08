@@ -9,7 +9,7 @@ export default function PlatformAuthLogin() {
 
   const handleStart = () => {
     setIsScanning(true)
-    setTimeout(() => setIsScanning(false), 3000)
+    setTimeout(() => setIsScanning(false), 5173)
   }
 
   return (

@@ -177,4 +177,3 @@ const AdminLoginScreen = () => {
 }
 
 export default AdminLoginScreen
-
