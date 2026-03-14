@@ -1,3 +1,12 @@
+/**
+ * ──────────────────────────────────────────────────────────────────────────────
+ * AUDIT MAPPING: SetNewPasswordScreen.tsx
+ * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
+ * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
+ * - 🟡 Glass effect classes added (HIGH)
+ * - 🟡 Entry animations (animate-scale-in) (HIGH)
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
 import { useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
@@ -150,6 +159,7 @@ export default function SetNewPasswordScreen() {
         component='main'
         maxWidth={false}
         disableGutters
+        className='animate-scale-in'
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -161,7 +171,8 @@ export default function SetNewPasswordScreen() {
         }}
       >
         <Card
-          sx={{ maxWidth: 480, width: '100%', textAlign: 'center', p: 4, borderRadius: '16px' }}
+          className='glass-effect'
+          sx={{ maxWidth: 480, width: '100%', textAlign: 'center', p: 4, borderRadius: '16px', bgcolor: 'transparent', boxShadow: 'none', border: '1px solid', borderColor: 'divider' }}
         >
           <Box sx={{ mb: 3 }}>
             <Box
@@ -189,12 +200,13 @@ export default function SetNewPasswordScreen() {
               'This password reset link is invalid or has expired. Please request a new one.',
             )}
           </Typography>
+          {/* SYSTEM PATTERN: cta_button (info.main variant) */}
           <Button
             component={Link}
             to={Path.forgotPassword}
             variant='contained'
             fullWidth
-            sx={{ height: 48, borderRadius: '10px' }}
+            sx={{ height: 48, borderRadius: '10px', bgcolor: 'info.main', color: 'info.contrastText', textTransform: 'none', fontWeight: 700, boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)', '&:hover': { bgcolor: 'info.dark' } }}
           >
             {t('auth.reset_password.request_new_link', 'Request New Link')}
           </Button>
@@ -222,6 +234,7 @@ export default function SetNewPasswordScreen() {
         component='main'
         maxWidth={false}
         disableGutters
+        className='animate-scale-in'
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -248,11 +261,11 @@ export default function SetNewPasswordScreen() {
             pointerEvents: 'none',
             background: (theme) =>
               `radial-gradient(circle at 85% 50%, ${alpha(
-                theme.palette.primary.main,
-                0.08,
+                theme.palette.divider,
+                0.2,
               )}, transparent 25%), radial-gradient(circle at 15% 30%, ${alpha(
-                theme.palette.primary.main,
-                0.08,
+                theme.palette.divider,
+                0.2,
               )}, transparent 25%)`,
           }}
         />
@@ -275,15 +288,17 @@ export default function SetNewPasswordScreen() {
           </MAlert>
         </Snackbar>
 
+        {/* SYSTEM PATTERN: metric_card (OrganizationProfile style background) */}
         <Card
+          className='glass-effect'
           sx={{
             width: '100%',
             maxWidth: '500px',
             borderRadius: { xs: 0, sm: '16px' },
-            boxShadow: (theme) => `0 20px 40px ${alpha(theme.palette.common.black, 0.1)}`,
+            boxShadow: 'none',
             border: '1px solid',
             borderColor: 'divider',
-            bgcolor: 'background.paper',
+            bgcolor: 'transparent',
             mx: { xs: 0, sm: 2 },
             position: 'relative',
             overflow: 'hidden',
@@ -297,14 +312,14 @@ export default function SetNewPasswordScreen() {
                     width: 56,
                     height: 56,
                     borderRadius: '14px',
-                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                    bgcolor: 'info.lighter',
                     display: 'grid',
                     placeItems: 'center',
                     mx: 'auto',
                     mb: 2.5,
                   }}
                 >
-                  <VerifiedUser sx={{ color: 'primary.main', fontSize: 28 }} />
+                  <VerifiedUser sx={{ color: 'info.main', fontSize: 28 }} />
                 </Box>
                 <Typography variant='h4' sx={{ fontWeight: 800, mb: 1, letterSpacing: '-0.025em' }}>
                   {t('auth.reset_password.title', 'Set new password')}
@@ -372,18 +387,20 @@ export default function SetNewPasswordScreen() {
                         placeholder='••••••••'
                         error={!!fieldState.error}
                         helperText={fieldState.error?.message}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position='end'>
-                              <IconButton onClick={handleShowPassword} edge='end' size='small'>
-                                {showPassword ? (
-                                  <Visibility sx={{ fontSize: 20 }} />
-                                ) : (
-                                  <VisibilityOff sx={{ fontSize: 20 }} />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton onClick={handleShowPassword} edge='end' size='small'>
+                                  {showPassword ? (
+                                    <Visibility sx={{ fontSize: 20 }} />
+                                  ) : (
+                                    <VisibilityOff sx={{ fontSize: 20 }} />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          },
                         }}
                         sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px', height: 48 } }}
                       />
@@ -424,6 +441,7 @@ export default function SetNewPasswordScreen() {
                   />
                 </Box>
 
+                {/* SYSTEM PATTERN: cta_button (info.main variant) */}
                 <Button
                   type='submit'
                   fullWidth
@@ -435,7 +453,13 @@ export default function SetNewPasswordScreen() {
                     borderRadius: '12px',
                     fontWeight: 700,
                     textTransform: 'none',
+                    bgcolor: 'info.main',
+                    color: 'info.contrastText',
+                    boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
                     mt: 1,
+                    '&:hover': {
+                      bgcolor: 'info.dark',
+                    },
                   }}
                 >
                   {resetPasswordMutation.isPending

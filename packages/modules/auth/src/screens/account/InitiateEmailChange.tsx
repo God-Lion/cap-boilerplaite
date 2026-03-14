@@ -1,3 +1,12 @@
+/**
+ * ──────────────────────────────────────────────────────────────────────────────
+ * AUDIT MAPPING: InitiateEmailChange.tsx
+ * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
+ * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
+ * - 🟡 Glass effect classes added (HIGH)
+ * - 🟡 Entry animations (animate-scale-in) (HIGH)
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
 import React from 'react'
 import {
   Box,
@@ -25,7 +34,7 @@ import {
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import Path from './path'
+import Path from '../path'
 
 const InitiateEmailChange = () => {
   const { t } = useTranslation()
@@ -37,7 +46,7 @@ const InitiateEmailChange = () => {
   }
 
   return (
-    <Container maxWidth='md' sx={{ py: 6 }}>
+    <Container maxWidth='md' className='animate-scale-in' sx={{ py: 6 }}>
       <Box sx={{ mb: 4, display: 'flex', alignItems: 'center' }}>
         <IconButton onClick={() => navigate(-1)} sx={{ mr: 2 }}>
           <ArrowBack />
@@ -57,14 +66,15 @@ const InitiateEmailChange = () => {
       <Grid container spacing={4}>
         <Grid size={{ xs: 12, md: 7 }}>
           <Stack spacing={3}>
-            <Card variant='outlined' sx={{ borderRadius: 3 }}>
+            {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style) ── */}
+            <Card className='glass-effect' variant='outlined' sx={{ borderRadius: 3, bgcolor: 'transparent' }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography variant='subtitle1' fontWeight='bold' sx={{ mb: 3 }}>
                   {t('auth.account.current_account_status', 'Current Account Status')}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar sx={{ bgcolor: 'primary.lighter', mr: 2 }}>
-                    <Mail sx={{ color: 'primary.main' }} />
+                  <Avatar sx={{ bgcolor: 'info.lighter', mr: 2 }}>
+                    <Mail sx={{ color: 'info.main' }} />
                   </Avatar>
                   <Box>
                     <Typography variant='subtitle2' fontWeight='bold'>
@@ -81,19 +91,20 @@ const InitiateEmailChange = () => {
               </CardContent>
             </Card>
 
-            <Card variant='outlined' sx={{ borderRadius: 3 }}>
+            <Card className='glass-effect' variant='outlined' sx={{ borderRadius: 3, bgcolor: 'transparent' }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography
                   variant='subtitle1'
                   fontWeight='bold'
                   sx={{ mb: 3, display: 'flex', alignItems: 'center' }}
                 >
-                  <Security sx={{ mr: 1, fontSize: 20, color: 'primary.main' }} />
+                  <Security sx={{ mr: 1, fontSize: 20, color: 'info.main' }} />
                   {t('auth.account.security_verification', 'Security Verification')}
                 </Typography>
                 <Typography variant='body2' color='text.secondary' sx={{ mb: 3 }}>
                   To proceed, please enter your current password to confirm your identity.
                 </Typography>
+                {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
                 <TextField
                   fullWidth
                   type='password'
@@ -102,33 +113,42 @@ const InitiateEmailChange = () => {
                     'auth.account.current_password_placeholder',
                     'Enter your password',
                   )}
-                  InputProps={{
-                    startAdornment: <Lock sx={{ color: 'text.disabled', mr: 1, fontSize: 20 }} />,
+                  slotProps={{
+                    input: {
+                      startAdornment: <Lock sx={{ color: 'text.disabled', mr: 1, fontSize: 20 }} />,
+                    },
                   }}
                   sx={{ mb: 2 }}
                 />
                 <Button
                   variant='text'
                   size='small'
-                  sx={{ textTransform: 'none', fontWeight: 'bold' }}
+                  sx={{ textTransform: 'none', fontWeight: 'bold', color: 'info.main' }}
                 >
                   {t('auth.account.trouble_mfa', 'Trouble with MFA?')}
                 </Button>
               </CardContent>
             </Card>
 
+            {/* ── SYSTEM PATTERN: cta_button (info.main styling) ── */}
             <Button
               variant='contained'
               fullWidth
               size='large'
               endIcon={<ArrowForward />}
-              onClick={() => navigate(Path.requestEmailChange)}
+              onClick={() => navigate(Path.account.requestEmailChange)}
               sx={{
                 py: 1.5,
                 borderRadius: 3,
                 textTransform: 'none',
                 fontSize: '1.1rem',
                 fontWeight: 'bold',
+                bgcolor: 'info.main',
+                color: 'info.contrastText',
+                boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+                '&:hover': {
+                  bgcolor: 'info.dark',
+                },
               }}
             >
               {t('auth.account.continue', 'Continue')}
@@ -139,13 +159,13 @@ const InitiateEmailChange = () => {
         <Grid size={{ xs: 12, md: 5 }}>
           <Stack spacing={3}>
             <Alert
+              className='glass-effect'
               severity='warning'
               icon={<Warning fontSize='inherit' />}
               sx={{
                 borderRadius: 3,
-                bgcolor: 'warning.lighter',
-                border: '1px solid',
-                borderColor: 'warning.light',
+                bgcolor: 'rgba(245, 158, 11, 0.1)',
+                border: '1px solid rgba(245, 158, 11, 0.2)',
               }}
             >
               <AlertTitle sx={{ fontWeight: 'bold' }}>

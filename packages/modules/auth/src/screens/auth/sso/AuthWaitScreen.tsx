@@ -11,14 +11,91 @@ import {
   alpha,
   useTheme,
   LinearProgress,
+  Button,
+  Alert,
 } from '@mui/material'
 import { Security, Lock } from '@mui/icons-material'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import { useAuth } from '@cap/platform-core'
+import { useLocation, useNavigate } from 'react-router-dom'
+import Path from '../../path'
 
 export default function AuthWaitScreen() {
   const { t } = useTranslation()
   const theme = useTheme()
+
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { isAuthenticated, user, refreshAuth } = useAuth()
+
+  const [secondsElapsed, setSecondsElapsed] = useState(0)
+  const [error, setError] = useState<string | null>(null)
+
+  const redirectTo = useMemo(() => {
+    const qs = new URLSearchParams(location.search)
+    const qp = qs.get('redirectTo')
+
+    if (qp) return qp
+    const stateRedirectTo = (location.state as any)?.redirectTo
+    if (typeof stateRedirectTo === 'string' && stateRedirectTo.length > 0) return stateRedirectTo
+
+    return '/dashboard'
+  }, [location.search, location.state])
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      navigate(redirectTo, { replace: true })
+    }
+  }, [isAuthenticated, user, navigate, redirectTo])
+
+  useEffect(() => {
+    setError(null)
+    setSecondsElapsed(0)
+
+    let cancelled = false
+    let intervalId: number | undefined
+    let timeoutId: number | undefined
+
+    const tick = async () => {
+      try {
+        if (typeof refreshAuth === 'function') {
+          await refreshAuth()
+        }
+      } catch {
+        if (!cancelled) {
+          setError(t('auth.sso.session_refresh_failed', 'Unable to verify your session.'))
+        }
+      }
+    }
+
+    intervalId = window.setInterval(() => {
+      setSecondsElapsed((s) => s + 1)
+      void tick()
+    }, 1500)
+
+    timeoutId = window.setTimeout(() => {
+      if (!cancelled) {
+        setError(
+          t(
+            'auth.sso.auth_wait_timeout',
+            'This is taking longer than expected. You can retry or return to sign in.',
+          ),
+        )
+      }
+    }, 30000)
+
+    void tick()
+
+    return () => {
+      cancelled = true
+      if (intervalId) window.clearInterval(intervalId)
+      if (timeoutId) window.clearTimeout(timeoutId)
+    }
+  }, [refreshAuth, t])
+
+  const progressValue = Math.min((secondsElapsed / 30) * 100, 100)
 
   return (
     <Box
@@ -116,6 +193,8 @@ export default function AuthWaitScreen() {
 
           <Box sx={{ px: 4 }}>
             <LinearProgress
+              variant='determinate'
+              value={progressValue}
               sx={{
                 height: 6,
                 borderRadius: 3,
@@ -125,6 +204,47 @@ export default function AuthWaitScreen() {
                 },
               }}
             />
+
+            {error && (
+              <Box sx={{ mt: 3 }}>
+                <Alert
+                  severity='warning'
+                  sx={{
+                    textAlign: 'left',
+                    borderRadius: 3,
+                    bgcolor: alpha(theme.palette.warning.main, 0.06),
+                    border: '1px solid',
+                    borderColor: alpha(theme.palette.warning.main, 0.2),
+                    '& .MuiAlert-message': { fontWeight: 600 },
+                  }}
+                >
+                  {error}
+                </Alert>
+
+                <Box sx={{ display: 'flex', gap: 1.5, mt: 2 }}>
+                  <Button
+                    fullWidth
+                    variant='contained'
+                    onClick={() => {
+                      setError(null)
+                      setSecondsElapsed(0)
+                    }}
+                    sx={{ textTransform: 'none', fontWeight: 800, borderRadius: 3 }}
+                  >
+                    {t('common.retry', 'Retry')}
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant='outlined'
+                    onClick={() => navigate(Path.auth.signin, { replace: true })}
+                    sx={{ textTransform: 'none', fontWeight: 800, borderRadius: 3 }}
+                  >
+                    {t('auth.signin', 'Sign in')}
+                  </Button>
+                </Box>
+              </Box>
+            )}
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
                 <Lock sx={{ fontSize: 14 }} aria-hidden='true' />

@@ -1,3 +1,12 @@
+/**
+ * ──────────────────────────────────────────────────────────────────────────────
+ * AUDIT MAPPING: MFAResetConfirmation.tsx
+ * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
+ * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
+ * - 🟡 Glass effect classes added (HIGH)
+ * - 🟡 Entry animations (animate-scale-in) (HIGH)
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
 import { useState } from 'react'
 import {
   Box,
@@ -27,6 +36,7 @@ import {
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 
+// ── SYSTEM PATTERN: mfa_reset_screen (OrganizationProfile layout pattern) ──
 export default function MFAResetConfirmation() {
   const { t } = useTranslation()
 
@@ -50,6 +60,7 @@ export default function MFAResetConfirmation() {
       }}
     >
       <Box
+        className='animate-scale-in'
         sx={{
           maxWidth: 900,
           width: '100%',
@@ -81,15 +92,17 @@ export default function MFAResetConfirmation() {
         </Box>
 
         {/* User Profile Card */}
+        {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style) ── */}
         <Card
+          className='glass-effect'
           variant='outlined'
           sx={{
             p: 3,
             borderRadius: 3,
-            bgcolor: 'background.paper',
             display: 'flex',
             alignItems: 'center',
             gap: 2,
+            bgcolor: 'transparent',
           }}
         >
           <Avatar
@@ -130,7 +143,7 @@ export default function MFAResetConfirmation() {
               {t('auth.mfa.current_status', 'Current MFA Status')}
             </Typography>
             <Stack spacing={2}>
-              <Card variant='outlined' sx={{ p: 2, borderRadius: 2 }}>
+              <Card className='glass-effect' variant='outlined' sx={{ p: 2, borderRadius: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                   <Smartphone fontSize='small' color='action' />
                   <Typography variant='body2' sx={{ fontWeight: 600 }}>
@@ -149,7 +162,7 @@ export default function MFAResetConfirmation() {
                 </Typography>
               </Card>
 
-              <Card variant='outlined' sx={{ p: 2, borderRadius: 2, bgcolor: 'action.hover' }}>
+              <Card className='glass-effect' variant='outlined' sx={{ p: 2, borderRadius: 2, bgcolor: 'action.hover' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                   <Sms fontSize='small' color='disabled' />
                   <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.disabled' }}>
@@ -161,7 +174,7 @@ export default function MFAResetConfirmation() {
                 </Typography>
               </Card>
 
-              <Card variant='outlined' sx={{ p: 2, borderRadius: 2 }}>
+              <Card className='glass-effect' variant='outlined' sx={{ p: 2, borderRadius: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                   <VpnKey fontSize='small' color='action' />
                   <Typography variant='body2' sx={{ fontWeight: 600 }}>
@@ -185,9 +198,9 @@ export default function MFAResetConfirmation() {
               {t('auth.mfa.reset_options', 'Reset Options')}
             </Typography>
 
-            <Card variant='outlined' sx={{ borderRadius: 3, overflow: 'hidden' }}>
+            <Card className='glass-effect' variant='outlined' sx={{ borderRadius: 3, overflow: 'hidden' }}>
               <RadioGroup value={resetMethod} onChange={(e) => setResetMethod(e.target.value)}>
-                <Box sx={{ p: 2, '&:hover': { bgcolor: 'action.hover' } }}>
+                <Box sx={{ p: 2, '&:hover': { bgcolor: 'action.hover' }, transition: 'background-color 0.2s' }}>
                   <FormControlLabel
                     value='refresh'
                     control={<Radio size='small' />}
@@ -208,11 +221,12 @@ export default function MFAResetConfirmation() {
                     sx={{ m: 0, alignItems: 'flex-start' }}
                   />
                 </Box>
-                <Divider />
+                <Divider sx={{ opacity: 0.5 }} />
                 <Box
                   sx={{
                     p: 2,
                     bgcolor: resetMethod === 'full' ? 'error.lighterOpacity' : 'transparent',
+                    transition: 'background-color 0.2s',
                     '&:hover': {
                       bgcolor: resetMethod === 'full' ? 'error.lighterOpacity' : 'action.hover',
                     },
@@ -245,8 +259,8 @@ export default function MFAResetConfirmation() {
                     sx={{ m: 0, alignItems: 'flex-start' }}
                   />
                 </Box>
-                <Divider />
-                <Box sx={{ p: 2, '&:hover': { bgcolor: 'action.hover' } }}>
+                <Divider sx={{ opacity: 0.5 }} />
+                <Box sx={{ p: 2, '&:hover': { bgcolor: 'action.hover' }, transition: 'background-color 0.2s' }}>
                   <FormControlLabel
                     value='temp'
                     control={<Radio size='small' />}
@@ -279,9 +293,10 @@ export default function MFAResetConfirmation() {
                 <Shield fontSize='small' color='primary' />
                 {t('auth.mfa.security_verification', 'Security Verification')}
               </Typography>
-              <Alert severity='warning' sx={{ mb: 2, borderRadius: 2 }}>
+              <Alert className='glass-effect' severity='warning' sx={{ mb: 2, borderRadius: 2 }}>
                 Critical action: Please verify your identity before proceeding.
               </Alert>
+              {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
               <TextField
                 fullWidth
                 type='password'
@@ -289,22 +304,36 @@ export default function MFAResetConfirmation() {
                 value={adminPassword}
                 onChange={(e) => setAdminPassword(e.target.value)}
                 sx={{ mb: 2 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <VpnKey fontSize='small' />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <VpnKey fontSize='small' />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
               />
               <Stack direction='row' spacing={2}>
+                {/* ── SYSTEM PATTERN: cta_button (info.main variant) ── */}
                 <Button
                   fullWidth
                   variant='contained'
                   color={resetMethod === 'full' ? 'error' : 'primary'}
                   disabled={!adminPassword || isProcessing}
                   onClick={handleReset}
-                  sx={{ py: 1.5, fontWeight: 700, borderRadius: 2, textTransform: 'none' }}
+                  sx={{
+                    py: 1.5,
+                    fontWeight: 700,
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    ...(resetMethod !== 'full' && {
+                      bgcolor: 'info.main',
+                      color: 'info.contrastText',
+                      '&:hover': { bgcolor: 'info.dark' },
+                      boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+                    }),
+                  }}
                 >
                   {isProcessing
                     ? t('common.processing', 'Processing...')

@@ -14,12 +14,16 @@ import {
   SettingsProvider,
   themeConfig,
   GlobalZIndexStyles,
+  i18n,
+  onForbiddenError,
 } from '@cap/platform-core'
+import { AuthModule } from '@cap/module-auth'
 import type { ChildrenType, Direction } from '@cap/platform-core'
-import { i18n } from '@cap/platform-core'
 import { TourProvider } from '@reactour/tour'
+import { toast } from 'react-toastify'
 import common_us from './data/dictionaries/en.json'
 import common_fr from './data/dictionaries/fr.json'
+import common_ar from './data/dictionaries/ar.json'
 import ThemeProvider from './theme/index'
 import AppReactToastify from './lib/styles/AppReactToastify'
 
@@ -36,12 +40,33 @@ if (!i18next.isInitialized) {
   i18next.use(LanguageDetector).init({
     interpolation: { escapeValue: false },
     lng: i18n.defaultLocale,
+    fallbackLng: i18n.defaultLocale,
+    defaultNS: 'common',
+    fallbackNS: 'common',
     resources: {
       en: {
-        common: common_us,
+        common: {
+          ...common_us,
+          ...(AuthModule.i18n?.en?.common || {}),
+          ...AuthModule.i18n?.en?.auth, // Flatten auth into common so auth.* keys work
+          auth: AuthModule.i18n?.en?.auth || {}, // Keep auth nested as well
+        },
       },
-      FR: {
-        common: common_fr,
+      fr: {
+        common: {
+          ...common_fr,
+          ...(AuthModule.i18n?.fr?.common || {}),
+          ...AuthModule.i18n?.fr?.auth,
+          auth: AuthModule.i18n?.fr?.auth || {},
+        },
+      },
+      ar: {
+        common: {
+          ...common_ar,
+          ...(AuthModule.i18n?.ar?.common || {}),
+          ...AuthModule.i18n?.ar?.auth,
+          auth: AuthModule.i18n?.ar?.auth || {},
+        },
       },
     },
   })
@@ -71,6 +96,28 @@ const tourStyles = {
   }),
 }
 
+const ForbiddenListener = () => {
+  React.useEffect(() => {
+    const unregister = onForbiddenError(() => {
+      toast.error('Access Denied: You do not have permission to perform this action.', {
+        toastId: 'forbidden-error',
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        className: 'custom-toast',
+      })
+    })
+    return () => {
+      unregister()
+    }
+  }, [])
+
+  return null
+}
+
 const Providers: React.FC<
   ChildrenType & {
     direction: Direction
@@ -83,6 +130,7 @@ const Providers: React.FC<
 
   return (
     <SettingsProvider settingsCookie={settingsCookie} mode={mode} demoName={demoName}>
+      <ForbiddenListener />
       <QueryClientProvider client={queryClient}>
         <I18nextProvider i18n={i18next}>
           <ThemeProvider direction={direction} systemMode={systemMode}>

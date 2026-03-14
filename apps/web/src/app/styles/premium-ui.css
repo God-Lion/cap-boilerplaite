@@ -7,18 +7,20 @@
   --premium-gradient: linear-gradient(135deg, hsla(240, 100%, 70%, 0.1) 0%, hsla(280, 100%, 70%, 0.1) 100%);
 }
 
-[data-mui-color-scheme='dark'] :root {
-  --glass-bg: rgba(15, 23, 42, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
+.dark {
+  --glass-bg: rgba(255, 255, 255, 0.02); /* Near-invisible tint for maximum background integration */
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --premium-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* Glassmorphism utility */
 .glass-effect {
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  background-color: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--premium-shadow);
+  backdrop-filter: blur(24px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+  background-color: var(--glass-bg) !important;
+  background-image: none !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--premium-shadow) !important;
 }
 
 /* Micro-animations */
@@ -54,4 +56,51 @@
 .premium-menu-item:hover i {
   transform: scale(1.1);
   color: var(--mui-palette-primary-main) !important;
+}
+
+/* Premium Auth Buttons */
+.premium-auth-container .MuiButton-contained {
+  backdrop-filter: blur(12px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(150%) !important;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid var(--glass-border) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.premium-auth-container .MuiButton-contained:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Base transparency for primary and info buttons so they fit the background */
+.premium-auth-container .MuiButton-containedPrimary {
+  background: rgba(var(--mui-palette-primary-mainChannel) / 0.15) !important;
+  color: var(--mui-palette-primary-main) !important;
+}
+.premium-auth-container .MuiButton-containedPrimary:hover {
+  background: rgba(var(--mui-palette-primary-mainChannel) / 0.25) !important;
+}
+
+.premium-auth-container .MuiButton-containedInfo {
+  background: rgba(var(--mui-palette-info-mainChannel) / 0.15) !important;
+  color: var(--mui-palette-info-main) !important;
+}
+.premium-auth-container .MuiButton-containedInfo:hover {
+  background: rgba(var(--mui-palette-info-mainChannel) / 0.25) !important;
+}
+
+.premium-auth-container .MuiButton-containedError {
+  background: rgba(var(--mui-palette-error-mainChannel) / 0.15) !important;
+  color: var(--mui-palette-error-main) !important;
+}
+.premium-auth-container .MuiButton-containedError:hover {
+  background: rgba(var(--mui-palette-error-mainChannel) / 0.25) !important;
+}
+
+.premium-auth-container .MuiButton-containedSuccess {
+  background: rgba(var(--mui-palette-success-mainChannel) / 0.15) !important;
+  color: var(--mui-palette-success-main) !important;
+}
+.premium-auth-container .MuiButton-containedSuccess:hover {
+  background: rgba(var(--mui-palette-success-mainChannel) / 0.25) !important;
 }

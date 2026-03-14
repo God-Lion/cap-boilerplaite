@@ -95,6 +95,8 @@ import {
   SAMLMetadataDisplay,
   SAMLMetadataBrowser,
   OIDCConfigBrowser,
+  OIDCClientCreate,
+  OIDCClientEdit,
   SAMLConfigDashboard,
   SSFConfiguration,
   JWKSManagement,
@@ -305,28 +307,35 @@ const ssoRouteConfig: Array<AuthRouteConfig> = [
   // SSO Administrative (Protected - usually Admin only)
   {
     path: Path.auth.samlMetadataDisplay,
-    element: <SAMLMetadataDisplay />,
-    layout: 'noLayout',
+    element: <AdminRoute element={<SAMLMetadataDisplay />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.auth.samlMetadataBrowser,
-    element: <SAMLMetadataBrowser />,
+    element: <AdminRoute element={<SAMLMetadataBrowser />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.auth.oidcConfigBrowser,
-    element: <OIDCConfigBrowser />,
+    element: <AdminRoute element={<OIDCConfigBrowser />} minimumRole={Roles.ADMIN} layout='admin' />,
+  },
+  {
+    path: (Path.auth as any).oidcClientCreate, // Cast due to type inference lag
+    element: <AdminRoute element={<OIDCClientCreate />} minimumRole={Roles.ADMIN} layout='admin' />,
+  },
+  {
+    path: (Path.auth as any).oidcClientEdit,
+    element: <AdminRoute element={<OIDCClientEdit />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.auth.samlConfigDashboard,
-    element: <SAMLConfigDashboard />,
+    element: <AdminRoute element={<SAMLConfigDashboard />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: Path.auth.ssfConfiguration,
-    element: <SSFConfiguration />,
+    element: <AdminRoute element={<SSFConfiguration />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
   {
     path: (Path.auth as any).jwksManagement,
-    element: <JWKSManagement />,
+    element: <AdminRoute element={<JWKSManagement />} minimumRole={Roles.ADMIN} layout='admin' />,
   },
 ]
 
@@ -691,7 +700,7 @@ const LayoutRouteWrapper = ({
     }
   }, [layout, updateLayoutOverride])
 
-  return <>{element}</>
+  return <div className="premium-auth-container" style={{ display: 'contents' }}>{element}</div>
 }
 
 export const authRoutes: React.FC<RoutesProps> = ({ location }) => {

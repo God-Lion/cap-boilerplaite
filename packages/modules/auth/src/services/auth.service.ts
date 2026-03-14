@@ -42,9 +42,10 @@ const authService = {
     return apiClient.post(ENDPOINTS.auth.resetPassword, body)
   },
 
-  discoverSso: (email: string): Promise<FetchResponse> => {
-    // Pass email as query param: /api/auth/sso/discover?email=user@domain.com
-    return apiClient.get(ENDPOINTS.auth.sso.discover, { params: { email } })
+  discoverSso: (identifier: string): Promise<FetchResponse> => {
+    const isEmail = identifier.includes('@')
+    const params = isEmail ? { email: identifier } : { domain: identifier }
+    return apiClient.get(ENDPOINTS.auth.sso.discover, { params })
   },
 
   verifyResetPassword: (email: string, signature: string): Promise<FetchResponse> => {

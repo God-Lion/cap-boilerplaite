@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Button, Container, Typography, Card, CardContent, Divider } from '@mui/material'
+import { Box, Button, Container, Typography, Card, CardContent, Divider, alpha } from '@mui/material'
 import { CheckCircle, AppShortcut } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { themeConfig } from '@cap/platform-core'
@@ -39,7 +39,7 @@ export default function RegistrationSuccess({
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100dvh',
-          bgcolor: '#f6f7f8',
+          bgcolor: 'background.default',
           fontFamily: "'Inter', sans-serif",
         }}
       >
@@ -50,11 +50,12 @@ export default function RegistrationSuccess({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid #e5e7eb',
-            bgcolor: '#ffffff',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
             px: 5,
             py: 2,
-            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+            boxShadow: (theme) => `0 1px 2px 0 ${alpha(theme.palette.common.black, 0.05)}`,
             zIndex: 10,
           }}
         >
@@ -66,14 +67,14 @@ export default function RegistrationSuccess({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#137fec',
+                color: 'primary.main',
               }}
             >
               <AppShortcut sx={{ fontSize: 24 }} />
             </Box>
             <Typography
               variant='h6'
-              sx={{ fontWeight: 700, fontSize: '1.125rem', color: '#111418' }}
+              sx={{ fontWeight: 700, fontSize: '1.125rem', color: 'text.primary' }}
             >
               {themeConfig.templateName || 'App Name'}
             </Typography>
@@ -84,10 +85,10 @@ export default function RegistrationSuccess({
               sx={{
                 fontSize: '0.875rem',
                 fontWeight: 500,
-                color: '#637588',
+                color: 'text.secondary',
                 textTransform: 'none',
                 '&:hover': {
-                  color: '#137fec',
+                  color: 'primary.main',
                   bgcolor: 'transparent',
                 },
               }}
@@ -112,8 +113,10 @@ export default function RegistrationSuccess({
             <Card
               sx={{
                 borderRadius: '12px',
-                boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-                border: '1px solid #e5e7eb',
+                boxShadow: (theme) => `0 20px 25px -5px ${alpha(theme.palette.common.black, 0.1)}, 0 8px 10px -6px ${alpha(theme.palette.common.black, 0.1)}`,
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
                 overflow: 'hidden',
                 animation: 'fadeInUp 0.6s ease-out',
                 '@keyframes fadeInUp': {
@@ -144,13 +147,13 @@ export default function RegistrationSuccess({
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderRadius: '50%',
-                    bgcolor: 'rgba(19, 127, 236, 0.1)',
+                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
                     p: 3,
                   }}
                 >
                   <CheckCircle
                     sx={{
-                      color: '#137fec',
+                      color: 'primary.main',
                       fontSize: 60,
                     }}
                   />
@@ -169,7 +172,7 @@ export default function RegistrationSuccess({
                   <Typography
                     variant='h4'
                     sx={{
-                      color: '#111418',
+                      color: 'text.primary',
                       fontSize: '1.5rem',
                       fontWeight: 700,
                       letterSpacing: '-0.015em',
@@ -180,7 +183,7 @@ export default function RegistrationSuccess({
                   <Typography
                     variant='body2'
                     sx={{
-                      color: '#637588',
+                      color: 'text.secondary',
                       fontSize: '0.875rem',
                       maxWidth: '320px',
                       lineHeight: 1.6,
@@ -197,7 +200,7 @@ export default function RegistrationSuccess({
                   sx={{
                     width: '100%',
                     my: 1,
-                    borderColor: '#f0f2f4',
+                    borderColor: 'divider',
                   }}
                 />
 
@@ -220,13 +223,13 @@ export default function RegistrationSuccess({
                       textTransform: 'none',
                       fontWeight: 700,
                       fontSize: '1rem',
-                      bgcolor: '#137fec',
-                      color: '#ffffff',
-                      boxShadow: '0 4px 6px -1px rgba(19, 127, 236, 0.3)',
+                      bgcolor: 'primary.main',
+                      color: 'primary.contrastText',
+                      boxShadow: (theme) => `0 4px 6px -1px ${alpha(theme.palette.primary.main, 0.3)}`,
                       fontFamily: 'inherit',
                       '&:hover': {
-                        bgcolor: '#1068c1',
-                        boxShadow: '0 6px 8px -1px rgba(19, 127, 236, 0.4)',
+                        bgcolor: 'primary.dark',
+                        boxShadow: (theme) => `0 6px 8px -1px ${alpha(theme.palette.primary.main, 0.4)}`,
                       },
                     }}
                   >
@@ -242,12 +245,12 @@ export default function RegistrationSuccess({
                       textTransform: 'none',
                       fontWeight: 700,
                       fontSize: '0.875rem',
-                      borderColor: 'transparent',
-                      color: '#111418',
+                      borderColor: 'divider',
+                      color: 'text.primary',
                       fontFamily: 'inherit',
                       '&:hover': {
-                        bgcolor: '#f0f2f4',
-                        borderColor: '#d1d5db',
+                        bgcolor: (theme) => alpha(theme.palette.action.hover, 0.04),
+                        borderColor: 'divider',
                       },
                     }}
                   >
@@ -261,7 +264,7 @@ export default function RegistrationSuccess({
                   sx={{
                     mt: 2,
                     fontSize: '0.75rem',
-                    color: '#9ca3af',
+                    color: 'text.disabled',
                     textAlign: 'center',
                   }}
                 >

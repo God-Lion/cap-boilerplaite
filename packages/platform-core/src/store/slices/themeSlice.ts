@@ -15,7 +15,7 @@ export const createThemeSlice: StateCreator<
   [],
   ThemeSlice
 > = (set) => ({
-  mode: 'system',
+  mode: 'light',
 
   toggleColorMode: () => {
     set((state) => ({

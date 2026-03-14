@@ -1,3 +1,12 @@
+/**
+ * ──────────────────────────────────────────────────────────────────────────────
+ * AUDIT MAPPING: OrganizationInvitationDashboard.tsx
+ * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
+ * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
+ * - 🟡 Glass effect classes added (HIGH)
+ * - 🟡 Entry animations (animate-scale-in) (HIGH)
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
 import React, { useState } from 'react'
 import {
   Box,
@@ -64,6 +73,7 @@ interface Invitation {
   expiresAt?: string
 }
 
+// ── SYSTEM PATTERN: org_invitation_dashboard (OrganizationProfile layout pattern) ──
 export default function OrganizationInvitationDashboard() {
   const { t } = useTranslation('common')
   const navigate = useNavigate()
@@ -85,7 +95,7 @@ export default function OrganizationInvitationDashboard() {
     return (
       <Box sx={{ p: 4 }}>
         <Typography color='error'>{t('auth.admin.invalidOrgId')}</Typography>
-        <Button onClick={() => navigate(Path.admin.organizations)}>
+        <Button onClick={() => navigate(Path.admin.organizations)} sx={{ textTransform: 'none' }}>
           {t('auth.admin.backToOrgs')}
         </Button>
       </Box>
@@ -174,7 +184,7 @@ export default function OrganizationInvitationDashboard() {
   }
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
+    <Box className='animate-scale-in' sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Button
@@ -193,11 +203,22 @@ export default function OrganizationInvitationDashboard() {
               {t('auth.admin.memberInvitationsSubtitle')}
             </Typography>
           </Box>
+          {/* ── SYSTEM PATTERN: cta_button (info.main variant) ── */}
           <Button
             variant='contained'
             startIcon={<PersonAdd />}
             onClick={() => setInviteModalOpen(true)}
-            sx={{ px: 3, py: 1.2, borderRadius: 2, fontWeight: 700, textTransform: 'none' }}
+            sx={{
+              px: 3,
+              py: 1.2,
+              borderRadius: 2,
+              fontWeight: 700,
+              textTransform: 'none',
+              bgcolor: 'info.main',
+              color: 'info.contrastText',
+              boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+              '&:hover': { bgcolor: 'info.dark' },
+            }}
           >
             {t('auth.admin.inviteNewMember')}
           </Button>
@@ -235,8 +256,10 @@ export default function OrganizationInvitationDashboard() {
         ].map((stat, i) => (
           <Card
             key={i}
+            className='glass-effect'
             sx={{ borderRadius: 3, border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}
           >
+            {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style) ── */}
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Avatar
                 sx={{ bgcolor: alpha(stat.color, 0.1), color: stat.color, width: 44, height: 44 }}
@@ -258,29 +281,34 @@ export default function OrganizationInvitationDashboard() {
 
       {/* Table */}
       <Paper
+        className='glass-effect'
         sx={{
           borderRadius: 4,
           border: '1px solid',
           borderColor: 'divider',
           boxShadow: 'none',
           overflow: 'hidden',
+          bgcolor: 'transparent',
         }}
       >
         <Box
           sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', gap: 2 }}
         >
+          {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
           <TextField
             fullWidth
             placeholder={t('auth.common.searchUsers')}
             size='small'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Search sx={{ fontSize: 20, color: 'text.secondary' }} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Search sx={{ fontSize: 20, color: 'text.secondary' }} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{ maxWidth: 400 }}
           />
@@ -381,6 +409,7 @@ export default function OrganizationInvitationDashboard() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         slotProps={{
           paper: {
+            className: 'glass-effect',
             sx: { borderRadius: 3, minWidth: 200, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' },
           },
         }}
@@ -406,7 +435,7 @@ export default function OrganizationInvitationDashboard() {
           <ListItemIcon>
             <Replay fontSize='small' />
           </ListItemIcon>
-          <ListItemText>{t('auth.admin.resendInvitation')}</ListItemText>
+          <ListItemText sx={{ '& .MuiTypography-root': { fontWeight: 600 } }}>{t('auth.admin.resendInvitation')}</ListItemText>
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -422,7 +451,7 @@ export default function OrganizationInvitationDashboard() {
           <ListItemIcon>
             <ContentCopy fontSize='small' />
           </ListItemIcon>
-          <ListItemText>{t('auth.admin.copyInviteLink')}</ListItemText>
+          <ListItemText sx={{ '& .MuiTypography-root': { fontWeight: 600 } }}>{t('auth.admin.copyInviteLink')}</ListItemText>
         </MenuItem>
         {menuInvite?.status === 'pending' && (
           <MenuItem
@@ -445,7 +474,7 @@ export default function OrganizationInvitationDashboard() {
             <ListItemIcon>
               <BlockOutlined fontSize='small' color='error' />
             </ListItemIcon>
-            <ListItemText>{t('auth.admin.revokeInvitation')}</ListItemText>
+            <ListItemText sx={{ '& .MuiTypography-root': { fontWeight: 600 } }}>{t('auth.admin.revokeInvitation')}</ListItemText>
           </MenuItem>
         )}
       </Menu>
@@ -456,7 +485,7 @@ export default function OrganizationInvitationDashboard() {
         onClose={() => setInviteModalOpen(false)}
         fullWidth
         maxWidth='xs'
-        PaperProps={{ sx: { borderRadius: 4 } }}
+        PaperProps={{ className: 'glass-effect', sx: { borderRadius: 4 } }}
       >
         <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.inviteMemberModalTitle')}</DialogTitle>
         <DialogContent>
@@ -495,7 +524,16 @@ export default function OrganizationInvitationDashboard() {
             variant='contained'
             onClick={handleInvite}
             disabled={inviteMutation.isPending || !inviteEmail.trim()}
-            sx={{ borderRadius: 2, fontWeight: 700, textTransform: 'none', px: 3 }}
+            sx={{
+              borderRadius: 2,
+              fontWeight: 700,
+              textTransform: 'none',
+              px: 3,
+              bgcolor: 'info.main',
+              color: 'info.contrastText',
+              boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+              '&:hover': { bgcolor: 'info.dark' },
+            }}
           >
             {t('auth.admin.sendInvitation')}
           </Button>

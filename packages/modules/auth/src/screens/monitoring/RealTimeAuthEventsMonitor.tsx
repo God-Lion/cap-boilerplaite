@@ -205,6 +205,7 @@ const RealTimeAuthEventsMonitor = () => {
 
       {/* Top Navigation */}
       <Box
+        className='animate-scale-in'
         sx={{
           position: 'sticky',
           top: 0,
@@ -257,9 +258,17 @@ const RealTimeAuthEventsMonitor = () => {
           </Box>
         </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
+          {/* ── SYSTEM PATTERN: cta_button (info.main variant) ── */}
           <Button
             variant='contained'
-            sx={{ bgcolor: 'primary.main', textTransform: 'none', fontWeight: 600 }}
+            sx={{
+              bgcolor: 'info.main',
+              color: 'info.contrastText',
+              textTransform: 'none',
+              fontWeight: 600,
+              boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+              '&:hover': { bgcolor: 'info.dark' },
+            }}
           >
             Profile
           </Button>
@@ -325,7 +334,7 @@ const RealTimeAuthEventsMonitor = () => {
             {stats.map((stat, index) => {
               const Icon = stat.icon
               return (
-                <Paper key={index} sx={{ p: 3, borderRadius: 2, bgcolor: 'background.paper' }}>
+                <Paper key={index} className='glass-effect' sx={{ p: 3, borderRadius: 2, bgcolor: 'transparent', boxShadow: 'none' }}>
                   <Box
                     sx={{
                       display: 'flex',
@@ -377,11 +386,19 @@ const RealTimeAuthEventsMonitor = () => {
           }}
         >
           <Box sx={{ display: 'flex', gap: 1 }}>
+            {/* ── SYSTEM PATTERN: cta_button ── */}
             <Button
               startIcon={isPaused ? <PlayArrow /> : <Pause />}
               variant='contained'
               onClick={() => setIsPaused(!isPaused)}
-              sx={{ bgcolor: 'primary.main', textTransform: 'none', fontWeight: 600 }}
+              sx={{
+                bgcolor: 'info.main',
+                color: 'info.contrastText',
+                textTransform: 'none',
+                fontWeight: 600,
+                boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+                '&:hover': { bgcolor: 'info.dark' },
+              }}
             >
               {isPaused ? 'Resume' : 'Pause'}
             </Button>
@@ -395,18 +412,21 @@ const RealTimeAuthEventsMonitor = () => {
           </Box>
 
           {/* Search */}
+          {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
           <TextField
             fullWidth
             size='small'
             placeholder='Search by User ID, IP Address, or Request ID...'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Search fontSize='small' sx={{ color: 'text.secondary' }} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Search fontSize='small' sx={{ color: 'text.secondary' }} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               minWidth: 240,
@@ -500,15 +520,17 @@ const RealTimeAuthEventsMonitor = () => {
         >
           {/* Feed List (Left) */}
           <Paper
+            className='glass-effect'
             sx={{
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
               borderRadius: 2,
               overflow: 'hidden',
-              bgcolor: 'background.paper',
+              bgcolor: 'transparent',
               border: 1,
               borderColor: 'divider',
+              boxShadow: 'none',
             }}
           >
             <Box
@@ -641,15 +663,17 @@ const RealTimeAuthEventsMonitor = () => {
 
           {/* Detail View (Right Panel) */}
           <Paper
+            className='glass-effect'
             sx={{
               width: { xs: '100%', lg: 400 },
               display: 'flex',
               flexDirection: 'column',
               borderRadius: 2,
               overflow: 'hidden',
-              bgcolor: 'background.paper',
+              bgcolor: 'transparent',
               border: 1,
               borderColor: 'divider',
+              boxShadow: 'none',
             }}
           >
             <Box

@@ -35,10 +35,12 @@ const Path = {
   samlMetadataDisplay: '/auth/sso/saml-metadata',
   samlMetadataBrowser: '/auth/sso/saml-browser',
   oidcConfigBrowser: '/auth/sso/oidc-config',
+  oidcClientCreate: '/auth/sso/oidc-config/create',
+  oidcClientEdit: '/auth/sso/oidc-config/:id/edit',
   samlConfigDashboard: '/auth/sso/saml-config',
   ssfConfiguration: '/auth/sso/ssf-config',
   jwksManagement: '/auth/sso/jwks',
-
+  
   oidcWait: '/auth/sso/oidc/wait',
   samlWait: '/auth/sso/saml/wait',
   samlSSOInitiation: '/auth/sso/login',

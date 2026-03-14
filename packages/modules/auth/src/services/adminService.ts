@@ -144,6 +144,28 @@ export interface InviteToOrganizationRequest {
   message?: string
 }
 
+// ── SSF Configuration ──────────────────────────────────────────────────────
+export interface SSFConfig {
+  enabled?: boolean
+  issuer?: string
+  audience?: string
+  delivery_method?: string
+  events_supported?: string[]
+  events_delivered?: string[]
+  events_meta?: { id: string; name: string; desc: string }[]
+}
+
+export interface BroadcastSSFEventRequest {
+  eventType: string
+  subject: string
+  reason?: string
+}
+
+export interface BroadcastSSFEventResponse {
+  message: string
+  event: any
+  recipients: any[]
+}
 // ── Provisioning ───────────────────────────────────────────────────────────
 export interface Connector {
   id: number
@@ -224,6 +246,33 @@ export interface BulkActionRequest {
 export interface BulkActionResult {
   succeeded: number[]
   failed: Array<{ id: number; reason: string }>
+}
+
+// ── JWKS Management ────────────────────────────────────────────────────────
+export interface JWKSKey {
+  kid: string
+  status: 'active' | 'standby' | 'revoked'
+  alg: string
+  use: string
+  created: string
+  expires?: string
+  health?: number
+}
+
+export interface CreateJWKSKeyRequest {
+  kid: string
+  privateKey: string
+  publicKey: string
+  algorithm: string
+  use: string
+  status: 'active' | 'standby' | 'revoked'
+  expiresAt?: string
+}
+
+export interface JWKSKeyDetail extends JWKSKey {
+  updated: string
+  publicJwk: Record<string, any>
+  metadata: Record<string, any> | null
 }
 
 export interface OIDCClient {
@@ -331,22 +380,19 @@ export interface UpdateUserRequest {
 }
 
 export interface SAMLConfig {
-  entity_id: string
-  sso_url: string
-  slo_url?: string
+  entityId: string
+  ssoUrl: string
+  sloUrl?: string
+  acsUrl?: string
   certificate: string
-  name_id_format: string
-  want_assertions_signed: boolean
-  want_response_signed: boolean
+  nameIdFormat: string
+  wantAssertionsSigned: boolean
+  wantResponseSigned: boolean
+  enabled: boolean
+  attributeMapping: Record<string, string> | null
 }
 
-export interface SSFConfig {
-  issuer: string
-  audience: string
-  delivery_method: string
-  events_supported: string[]
-  events_delivered: string[]
-}
+
 
 export interface MessageResponse {
   message: string
@@ -583,48 +629,25 @@ export class AdminService {
    * Upload IdP metadata
    */
   async uploadSAMLMetadata(file: File): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.uploadFormData<MessageResponse>(
-      '/api/admin/saml/metadata/upload',
-      { metadata: file },
-      'post',
-    )
-  }
-
-  // ==========================================================================
-  // SSF Configuration
-  // ==========================================================================
-
-  /**
-   * Get SSF configuration
-   */
-  async getSSFConfig(): Promise<FetchResponse<SSFConfig>> {
-    return apiClient.get<SSFConfig>('/api/admin/ssf/config')
+    const formData = new FormData()
+    formData.append('metadata', file)
+    return apiClient.post<MessageResponse>('/api/admin/saml/metadata/upload', formData)
   }
 
   /**
-   * Update SSF configuration
+   * Fetch remote SAML metadata from a URL
    */
-  async updateSSFConfig(data: Partial<SSFConfig>): Promise<FetchResponse<SSFConfig>> {
-    return apiClient.put<SSFConfig>('/api/admin/ssf/config', data)
+  async fetchRemoteMetadata(url: string): Promise<FetchResponse<{ xml: string; entityId: string; name: string }>> {
+    return apiClient.post('/api/admin/saml/metadata/fetch-remote', { url })
   }
 
   /**
-   * Test SSF stream
+   * List recently explored SAML entities
    */
-  async testSSFStream(): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>('/api/admin/ssf/test')
+  async listRecentSAMLEntities(): Promise<FetchResponse<any[]>> {
+    return apiClient.get('/api/admin/saml/metadata/recent')
   }
 
-  /**
-   * Broadcast SSF event
-   */
-  async broadcastSSFEvent(data: {
-    event_type: string
-    subject: string
-    payload: any
-  }): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>('/api/admin/ssf/broadcast', data)
-  }
 
   // ==========================================================================
   // Domain Verification
@@ -1241,6 +1264,66 @@ export class AdminService {
 
   async getSecurityHealth(): Promise<FetchResponse<SecurityHealthResponse>> {
     return apiClient.get<SecurityHealthResponse>(ENDPOINTS.admin.security.health)
+  }
+
+  // ==========================================================================
+  // SSF Configuration
+  // ==========================================================================
+
+  async getSSFConfig(): Promise<FetchResponse<SSFConfig>> {
+    return apiClient.get<SSFConfig>(ENDPOINTS.admin.ssf.config)
+  }
+
+  async updateSSFConfig(config: SSFConfig): Promise<FetchResponse<{ message: string; config: SSFConfig }>> {
+    return apiClient.put<{ message: string; config: SSFConfig }>(ENDPOINTS.admin.ssf.updateConfig, config)
+  }
+
+  async testSSFStream(): Promise<FetchResponse<{ success: boolean; message: string; timestamp: string }>> {
+    return apiClient.post<{ success: boolean; message: string; timestamp: string }>(ENDPOINTS.admin.ssf.test, {})
+  }
+
+  async broadcastSSFEvent(data: BroadcastSSFEventRequest): Promise<FetchResponse<BroadcastSSFEventResponse>> {
+    return apiClient.post<BroadcastSSFEventResponse>(ENDPOINTS.admin.ssf.broadcast, data)
+  }
+
+  async getSSFHistory(): Promise<FetchResponse<any[]>> {
+    return apiClient.get<any[]>('/api/admin/ssf/history')
+  }
+
+  // ==========================================================================
+  // JWKS Management
+  // ==========================================================================
+
+  /**
+   * Get all JWKS keys
+   */
+  async getJWKSKeys(): Promise<FetchResponse<JWKSKey[]>> {
+    return apiClient.get<JWKSKey[]>(ENDPOINTS.admin.jwks.index)
+  }
+
+  /**
+   * Rotate JWKS keys
+   */
+  async rotateJWKSKeys(): Promise<FetchResponse<JWKSKey>> {
+    return apiClient.post<JWKSKey>(ENDPOINTS.admin.jwks.rotate)
+  }
+
+  /**
+   * Delete a JWKS key
+   */
+  async deleteJWKSKey(kid: string): Promise<FetchResponse<MessageResponse>> {
+    return apiClient.delete<MessageResponse>(ENDPOINTS.admin.jwks.destroy(kid))
+  }
+
+  async createJWKSKey(data: CreateJWKSKeyRequest): Promise<FetchResponse<JWKSKey>> {
+    return apiClient.post<JWKSKey>(ENDPOINTS.admin.jwks.store, data)
+  }
+
+  /**
+   * Get a single JWKS key's public details
+   */
+  async getJWKSKeyDetail(kid: string): Promise<FetchResponse<JWKSKeyDetail>> {
+    return apiClient.get<JWKSKeyDetail>(ENDPOINTS.admin.jwks.show(kid))
   }
 
   // ==========================================================================

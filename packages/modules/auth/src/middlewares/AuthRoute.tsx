@@ -3,6 +3,8 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Backdrop, CircularProgress, Alert, Box, Button } from '@mui/material'
 import { Roles, useAppStore, type LayoutOverride } from '@cap/platform-core'
 import { useSessionGuard } from './useSessionGuard'
+import { Path } from '../screens'
+import { normalizeAuthUser } from '../utils/normalizeAuthUser'
 
 interface AuthRouteProps {
   element: ReactNode
@@ -53,7 +55,7 @@ const AuthRoute = ({
         <Alert severity='warning' sx={{ maxWidth: 500 }}>
           {sessionError}
         </Alert>
-        <Button variant='contained' onClick={() => navigate('/auth/signin')}>
+        <Button variant='contained' onClick={() => navigate(Path.auth.signin)}>
           Go to Login
         </Button>
       </Box>
@@ -61,15 +63,11 @@ const AuthRoute = ({
   }
 
   if (!isAuthenticated) {
-    return <Navigate to='/auth/sign-in' replace state={{ from: location }} />
+    return <Navigate to={Path.auth.signin} replace state={{ from: location }} />
   }
 
   // Securely resolve user data and role
-  // Handle cases where user might be the auth object itself or wrapped in a tuple like [userData, isLoading]
-  const rawUser = user as any
-  const userData: any = Array.isArray(rawUser)
-    ? rawUser[0]?.user || rawUser[0]
-    : rawUser?.user || rawUser
+  const userData: any = normalizeAuthUser(user)
 
   const userRole = (userData?.role as Roles) || Roles.USER
 
@@ -128,7 +126,7 @@ const AuthRoute = ({
               Please verify your email address to access this feature. Check your inbox for a
               verification email.
             </Alert>
-            <Button variant='contained' onClick={() => navigate('/auth/verification/email')}>
+            <Button variant='contained' onClick={() => navigate(Path.auth.emailVerification)}>
               Resend Verification Email
             </Button>
           </Box>

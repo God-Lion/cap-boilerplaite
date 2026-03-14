@@ -48,3 +48,16 @@ export interface AccessPolicy {
   status: 'active' | 'inactive'
   priority: number // Execution order
 }
+
+export interface ImpersonationSession {
+  id: string | number
+  startedAt: string
+  actorAvatar?: string
+  actorName: string
+  actorEmail: string
+  targetAvatar?: string
+  targetName: string
+  targetEmail: string
+  reason?: string
+  status: 'active' | 'completed' | 'revoked'
+}

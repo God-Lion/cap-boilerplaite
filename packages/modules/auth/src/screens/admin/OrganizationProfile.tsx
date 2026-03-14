@@ -209,7 +209,7 @@ export default function OrganizationProfile() {
   }
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }} className='animate-scale-in'>
       {/* Top Banner / Action Area */}
       <Box
         sx={{
@@ -273,7 +273,7 @@ export default function OrganizationProfile() {
               </Typography>
             </Box>
             <Stack direction='row' spacing={1} alignItems='center' flexWrap='wrap'>
-              <Typography variant='body2' color='text.secondary'>
+              <Typography variant='body2' color='text.primary' sx={{ fontWeight: 600 }}>
                 ID: {orgData.id} • {orgData.domain || orgData.slug}
               </Typography>
               <Chip
@@ -352,9 +352,9 @@ export default function OrganizationProfile() {
               }}
             >
               <Card
+                className='glass-effect'
                 sx={{
-                  border: '1px solid',
-                  borderColor: 'divider',
+                  bgcolor: 'transparent',
                   boxShadow: 'none',
                   width: '100%',
                   mb: 3,
@@ -459,18 +459,18 @@ export default function OrganizationProfile() {
                     <Box sx={{ minWidth: 140 }}>
                       <Typography
                         variant='caption'
-                        color='text.secondary'
                         sx={{
-                          fontWeight: 700,
+                          fontWeight: 800,
                           textTransform: 'uppercase',
                           letterSpacing: '0.075em',
                           display: 'block',
                           mb: 0.5,
+                          color: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.95)' : 'text.secondary'),
                         }}
                       >
                         {t('auth.admin.regDate')}
                       </Typography>
-                      <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
+                      <Typography variant='body2' sx={{ fontWeight: 800, color: (theme) => (theme.palette.mode === 'dark' ? '#FFFFFF' : 'text.primary') }}>
                         {orgData.created_at
                           ? new Date(orgData.created_at).toLocaleDateString(undefined, {
                               year: 'numeric',
@@ -483,18 +483,19 @@ export default function OrganizationProfile() {
                     <Box sx={{ minWidth: 140 }}>
                       <Typography
                         variant='caption'
-                        color='text.secondary'
+                        color='text.primary'
                         sx={{
-                          fontWeight: 700,
+                          fontWeight: 800,
                           textTransform: 'uppercase',
                           letterSpacing: '0.075em',
                           display: 'block',
                           mb: 0.5,
+                          color: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'text.secondary'),
                         }}
                       >
                         {t('auth.admin.lastUpdated')}
                       </Typography>
-                      <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
+                      <Typography variant='body2' sx={{ fontWeight: 800, color: (theme) => (theme.palette.mode === 'dark' ? '#FFFFFF' : 'text.primary') }}>
                         {orgData.updated_at
                           ? new Date(orgData.updated_at).toLocaleDateString(undefined, {
                               year: 'numeric',
@@ -519,10 +520,10 @@ export default function OrganizationProfile() {
                         {t('auth.admin.members')}
                       </Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant='body2' sx={{ fontWeight: 800, color: 'text.primary' }}>
+                        <Typography variant='body2' sx={{ fontWeight: 800, color: (theme) => (theme.palette.mode === 'dark' ? '#FFFFFF' : 'text.primary') }}>
                           {orgData.members_count ?? orgData.members?.length ?? 0}
                         </Typography>
-                        <Typography variant='caption' color='text.secondary'>
+                        <Typography variant='caption' color='text.primary' sx={{ opacity: 0.7, fontWeight: 700 }}>
                           {t('auth.admin.membersLabelOther')}
                         </Typography>
                       </Box>
@@ -534,11 +535,10 @@ export default function OrganizationProfile() {
               {process.env.NODE_ENV === 'development' && (
                 <Box sx={{ width: '100%' }}>
                   <Card
+                    className='glass-effect'
                     sx={{
-                      border: '1px solid',
-                      borderColor: 'divider',
+                      bgcolor: 'transparent',
                       boxShadow: 'none',
-                      bgcolor: (theme) => alpha(theme.palette.info.main, 0.02),
                       mt: 3,
                     }}
                   >
@@ -580,11 +580,10 @@ export default function OrganizationProfile() {
           {/* Side Panel */}
           <Grid size={{ xs: 12, md: 4 }}>
             <Card
+              className='glass-effect'
               sx={{
-                border: '1px solid',
-                borderColor: 'divider',
+                bgcolor: 'transparent',
                 boxShadow: 'none',
-                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.02),
               }}
             >
               <CardContent sx={{ p: 3 }}>
@@ -679,10 +678,10 @@ export default function OrganizationProfile() {
             }}
           >
             <Card
+              className='glass-effect'
               sx={{
+                bgcolor: 'transparent',
                 borderRadius: 4,
-                border: '1px solid',
-                borderColor: 'divider',
                 boxShadow: 'none',
                 height: '100%',
               }}
@@ -947,7 +946,8 @@ export default function OrganizationProfile() {
 
       <TabPanel value={tab} index={3}>
         <Card
-          sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}
+          className='glass-effect'
+          sx={{ borderRadius: 4, boxShadow: 'none' }}
         >
           <CardContent sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
@@ -1042,7 +1042,8 @@ export default function OrganizationProfile() {
 
       <TabPanel value={tab} index={4}>
         <Card
-          sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}
+          className='glass-effect'
+          sx={{ borderRadius: 4, boxShadow: 'none' }}
         >
           <CardContent sx={{ p: 3 }}>
             <Box
@@ -1060,7 +1061,7 @@ export default function OrganizationProfile() {
               </Button>
             </Box>
 
-            <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3 }}>
+            <TableContainer className='glass-effect' sx={{ borderRadius: 3, boxShadow: 'none' }}>
               <Table>
                 <TableHead sx={{ bgcolor: 'action.hover' }}>
                   <TableRow>

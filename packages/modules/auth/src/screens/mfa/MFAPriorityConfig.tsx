@@ -1,3 +1,12 @@
+/**
+ * ──────────────────────────────────────────────────────────────────────────────
+ * AUDIT MAPPING: MFAPriorityConfig.tsx
+ * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
+ * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
+ * - 🟡 Glass effect classes added (HIGH)
+ * - 🟡 Entry animations (animate-scale-in) (HIGH)
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
 import { useState } from 'react'
 import {
   Box,
@@ -40,25 +49,25 @@ export default function MFAPriorityConfig() {
       id: 'totp',
       title: 'Authenticator App (TOTP)',
       description: 'Google Authenticator, Authy, 1Password',
-      icon: <Smartphone color='primary' />,
+      icon: <Smartphone color='info' />,
     },
     {
       id: 'webauthn',
       title: 'Security Key (WebAuthn)',
       description: 'YubiKey, Titan, Windows Hello',
-      icon: <VpnKey color='primary' />,
+      icon: <VpnKey color='info' />,
     },
     {
       id: 'sms',
       title: 'SMS Verification',
       description: 'OTP sent via text message',
-      icon: <Sms color='primary' />,
+      icon: <Sms color='info' />,
     },
     {
       id: 'email',
       title: 'Email Verification',
       description: 'Link or code sent via email',
-      icon: <Email color='primary' />,
+      icon: <Email color='info' />,
     },
   ])
 
@@ -93,6 +102,7 @@ export default function MFAPriorityConfig() {
       }}
     >
       <Box
+        className='animate-scale-in'
         sx={{
           maxWidth: 1200,
           width: '100%',
@@ -131,6 +141,8 @@ export default function MFAPriorityConfig() {
               )}
             </Typography>
           </Box>
+
+          {/* ── SYSTEM PATTERN: cta_button (info.main variant) ── */}
           <Button
             variant='contained'
             startIcon={<Save />}
@@ -142,6 +154,12 @@ export default function MFAPriorityConfig() {
               borderRadius: 2,
               px: 3,
               whiteSpace: 'nowrap',
+              bgcolor: 'info.main',
+              color: 'info.contrastText',
+              boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+              '&:hover': {
+                bgcolor: 'info.dark',
+              },
             }}
           >
             {isSaving ? t('common.saving', 'Saving...') : t('common.save_changes', 'Save Changes')}
@@ -172,12 +190,15 @@ export default function MFAPriorityConfig() {
                 </Typography>
               </Box>
 
+              {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style) ── */}
               <Card
+                className='glass-effect'
                 variant='outlined'
                 sx={{
                   borderRadius: 3,
                   borderColor: 'divider',
                   overflow: 'hidden',
+                  bgcolor: 'transparent',
                 }}
               >
                 <Stack divider={<Divider />}>
@@ -200,7 +221,7 @@ export default function MFAPriorityConfig() {
                           width: 40,
                           height: 40,
                           borderRadius: 2,
-                          bgcolor: 'primary.lighterOpacity',
+                          bgcolor: 'rgba(19, 127, 236, 0.1)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -230,19 +251,23 @@ export default function MFAPriorityConfig() {
                 </Typography>
               </Box>
               <Card
+                className='glass-effect'
                 variant='outlined'
                 sx={{
                   p: 3,
                   borderRadius: 3,
-                  bgcolor: 'background.paper',
+                  bgcolor: 'transparent',
                 }}
               >
+                {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input if applicable, Select used here) ── */}
                 <TextField
                   select
                   fullWidth
                   label={t('auth.mfa.fallback_policy', 'Fallback Policy')}
                   defaultValue='sequential'
-                  SelectProps={{ native: true }}
+                  slotProps={{
+                    select: { native: true },
+                  }}
                 >
                   <option value='sequential'>Sequential (Try each method in order)</option>
                   <option value='selection'>Selection (Allow user to choose fallback)</option>
@@ -260,6 +285,7 @@ export default function MFAPriorityConfig() {
               </Typography>
             </Box>
             <Card
+              className='glass-effect'
               variant='outlined'
               sx={{
                 p: 3,
@@ -267,6 +293,7 @@ export default function MFAPriorityConfig() {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 3,
+                bgcolor: 'transparent',
               }}
             >
               <Box>
@@ -275,6 +302,7 @@ export default function MFAPriorityConfig() {
                     <Switch
                       checked={enforcement.everyLogin}
                       onChange={() => handleToggle('everyLogin')}
+                      color='info'
                     />
                   }
                   label={
@@ -303,6 +331,7 @@ export default function MFAPriorityConfig() {
                     <Switch
                       checked={enforcement.sensitiveActions}
                       onChange={() => handleToggle('sensitiveActions')}
+                      color='info'
                     />
                   }
                   label={
@@ -337,6 +366,7 @@ export default function MFAPriorityConfig() {
                     </IconButton>
                   </Tooltip>
                 </Typography>
+                {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
                 <TextField
                   fullWidth
                   type='number'
@@ -344,8 +374,10 @@ export default function MFAPriorityConfig() {
                   onChange={(e) =>
                     setEnforcement((prev) => ({ ...prev, trustDuration: e.target.value }))
                   }
-                  InputProps={{
-                    endAdornment: <InputAdornment position='end'>Days</InputAdornment>,
+                  slotProps={{
+                    input: {
+                      endAdornment: <InputAdornment position='end'>Days</InputAdornment>,
+                    },
                   }}
                 />
               </Box>

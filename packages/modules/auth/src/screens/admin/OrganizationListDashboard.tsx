@@ -161,7 +161,7 @@ export default function OrganizationListDashboard() {
   }
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }} className='animate-scale-in'>
       {/* ── Page Header ─────────────────────────────────────────────────── */}
       <Box
         sx={{
@@ -199,24 +199,18 @@ export default function OrganizationListDashboard() {
             >
               {t('auth.admin.orgListTitle')}
             </Typography>
-            <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
+            <Typography variant='body2' color='text.primary' sx={{ fontWeight: 600 }}>
               {t('auth.admin.orgListSubtitle')}
             </Typography>
           </Box>
         </Box>
 
+        {/* ── SYSTEM PATTERN: cta_button (info.main variant) ── */}
         <Button
           variant='contained'
           startIcon={<AddIcon />}
           onClick={() => setCreateOpen(true)}
           sx={{
-            bgcolor: 'info.main',
-            color: 'white',
-            boxShadow: `0 4px 14px 0 ${alpha(theme.palette.info.main, 0.39)}`,
-            '&:hover': {
-              bgcolor: 'info.dark',
-              boxShadow: `0 6px 20px 0 ${alpha(theme.palette.info.main, 0.5)}`,
-            },
             textTransform: 'none',
             fontWeight: 700,
             height: 44,
@@ -224,6 +218,12 @@ export default function OrganizationListDashboard() {
             borderRadius: 2,
             width: { xs: '100%', sm: 'auto' },
             flexShrink: 0,
+            bgcolor: 'info.main',
+            color: 'info.contrastText',
+            boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+            '&:hover': {
+              bgcolor: 'info.dark',
+            },
           }}
         >
           {t('auth.admin.newOrg')}
@@ -267,9 +267,9 @@ export default function OrganizationListDashboard() {
         ].map((stat, idx) => (
           <Card
             key={idx}
+            className='glass-effect'
             sx={{
-              border: '1px solid',
-              borderColor: 'divider',
+              bgcolor: 'transparent',
               boxShadow: 'none',
               borderRadius: 4,
               transition: 'transform 0.15s ease',
@@ -292,19 +292,19 @@ export default function OrganizationListDashboard() {
               <Box>
                 <Typography
                   variant='caption'
-                  color='text.secondary'
                   sx={{
-                    fontWeight: 700,
+                    fontWeight: 800,
                     textTransform: 'uppercase',
                     letterSpacing: '0.075em',
                     display: 'block',
                     mb: 0.25,
                     fontSize: '0.65rem',
+                    color: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.95)' : 'text.secondary'),
                   }}
                 >
                   {stat.label}
                 </Typography>
-                <Typography variant='h5' sx={{ fontWeight: 900, letterSpacing: '-0.02em' }}>
+                <Typography variant='h5' sx={{ fontWeight: 900, letterSpacing: '-0.02em', color: (theme) => (theme.palette.mode === 'dark' ? '#FFFFFF' : 'text.primary') }}>
                   {stat.value}
                 </Typography>
               </Box>
@@ -315,9 +315,9 @@ export default function OrganizationListDashboard() {
 
       {/* ── Organizations Table Card ────────────────────────────────────── */}
       <Card
+        className='glass-effect'
         sx={{
-          border: '1px solid',
-          borderColor: 'divider',
+          bgcolor: 'transparent',
           boxShadow: 'none',
           borderRadius: 4,
           overflow: 'hidden',
@@ -335,23 +335,26 @@ export default function OrganizationListDashboard() {
             justifyContent: 'space-between',
           }}
         >
-          <TextField
-            placeholder={t('auth.common.searchOrgs') || 'Search organizations…'}
-            size='small'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{
-              width: { xs: '100%', sm: 340 },
-              '& .MuiOutlinedInput-root': { borderRadius: 2 },
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <SearchIcon sx={{ fontSize: 20, color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
+            {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
+            <TextField
+              placeholder={t('auth.common.searchOrgs') || 'Search organizations…'}
+              size='small'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              sx={{
+                width: { xs: '100%', sm: 340 },
+                '& .MuiOutlinedInput-root': { borderRadius: 2 },
+              }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <SearchIcon sx={{ fontSize: 20, color: 'text.disabled' }} />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
           <Button
             startIcon={<FilterListIcon />}
             sx={{
@@ -369,9 +372,12 @@ export default function OrganizationListDashboard() {
         <Divider sx={{ opacity: 0.5 }} />
 
         {/* Table */}
-        <TableContainer>
+        <TableContainer sx={{ borderRadius: 0, boxShadow: 'none' }}>
           <Table sx={{ minWidth: 800 }}>
-            <TableHead sx={{ bgcolor: 'action.hover' }}>
+            <TableHead sx={{
+              bgcolor: (theme) => alpha(theme.palette.action.hover, 0.4),
+              borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+            }}>
               <TableRow>
                 {[
                   t('auth.admin.colOrganization'),
@@ -384,11 +390,12 @@ export default function OrganizationListDashboard() {
                   <TableCell
                     key={col}
                     sx={{
-                      py: 2,
-                      fontWeight: 800,
-                      fontSize: '0.7rem',
+                      py: 2.5,
+                      fontWeight: 900,
+                      fontSize: '0.75rem',
                       textTransform: 'uppercase',
-                      letterSpacing: '0.075em',
+                      letterSpacing: '0.1em',
+                      color: 'text.primary',
                     }}
                   >
                     {col}
@@ -397,10 +404,11 @@ export default function OrganizationListDashboard() {
                 <TableCell
                   align='right'
                   sx={{
-                    fontWeight: 800,
-                    fontSize: '0.7rem',
+                    fontWeight: 900,
+                    fontSize: '0.75rem',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.075em',
+                    letterSpacing: '0.1em',
+                    color: 'text.primary',
                   }}
                 >
                   {t('auth.admin.colActions')}
@@ -427,7 +435,17 @@ export default function OrganizationListDashboard() {
                 </TableRow>
               ) : (
                 orgs.map((org: Organization) => (
-                  <TableRow key={org.id} hover>
+                  <TableRow
+                    key={org.id}
+                    hover
+                    sx={{
+                      '&:last-child td, &:last-child th': { border: 0 },
+                      transition: 'background-color 0.2s ease',
+                      '&:hover': {
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.02),
+                      }
+                    }}
+                  >
                     <TableCell
                       onClick={() =>
                         navigate(Path.organizationProfile.replace(':id', org.id.toString()))
@@ -458,8 +476,7 @@ export default function OrganizationListDashboard() {
                           </Typography>
                           <Typography
                             variant='caption'
-                            color='text.secondary'
-                            sx={{ display: 'block', fontWeight: 500, opacity: 0.8 }}
+                            sx={{ display: 'block', fontWeight: 700, color: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'text.secondary') }}
                           >
                             /{org.slug}
                           </Typography>
@@ -475,25 +492,26 @@ export default function OrganizationListDashboard() {
                             : t('auth.common.active')
                         }
                         size='small'
-                        variant='outlined'
                         sx={{
-                          fontWeight: 700,
-                          height: 20,
+                          fontWeight: 800,
+                          height: 22,
                           fontSize: '0.625rem',
                           textTransform: 'uppercase',
+                          letterSpacing: '0.03em',
                           color: org.status === 'SUSPENDED' ? 'error.main' : 'success.main',
                           borderColor: alpha(
                             org.status === 'SUSPENDED'
                               ? theme.palette.error.main
                               : theme.palette.success.main,
-                            0.2,
+                            0.25,
                           ),
                           bgcolor: alpha(
                             org.status === 'SUSPENDED'
                               ? theme.palette.error.main
                               : theme.palette.success.main,
-                            0.04,
+                            0.12,
                           ),
+                          border: '1px solid',
                         }}
                       />
                     </TableCell>
@@ -505,7 +523,7 @@ export default function OrganizationListDashboard() {
                     </TableCell>
 
                     <TableCell>
-                      <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.secondary' }}>
+                      <Typography variant='body2' sx={{ fontWeight: 700, color: 'text.primary' }}>
                         {typeof org.members_count === 'number'
                           ? org.members_count.toLocaleString()
                           : '0'}
@@ -549,7 +567,7 @@ export default function OrganizationListDashboard() {
                         </Box>
                         <Typography
                           variant='caption'
-                          sx={{ fontWeight: 700, color: 'text.secondary' }}
+                          sx={{ fontWeight: 800, color: 'text.primary' }}
                         >
                           100%
                         </Typography>
@@ -707,16 +725,20 @@ export default function OrganizationListDashboard() {
           >
             {t('auth.common.cancel')}
           </Button>
+          {/* ── SYSTEM PATTERN: cta_button (info.main) ── */}
           <Button
             onClick={handleCreateSubmit}
             variant='contained'
-            color='info'
             disabled={createOrgMutation.isPending || !newOrgData.name || !newOrgData.slug}
             sx={{
               fontWeight: 800,
               textTransform: 'none',
               borderRadius: 2,
               px: 3,
+              bgcolor: 'info.main',
+              color: 'info.contrastText',
+              boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+              '&:hover': { bgcolor: 'info.dark' },
             }}
           >
             {createOrgMutation.isPending ? t('auth.common.loading') : t('auth.admin.create')}

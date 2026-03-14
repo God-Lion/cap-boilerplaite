@@ -9,6 +9,7 @@ import {
   InputAdornment,
   IconButton,
   Stack,
+  alpha,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
@@ -36,12 +37,21 @@ const AdminLoginScreen = () => {
   return (
     <Box
       sx={{
-        background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+        background: (theme) =>
+          theme.palette.mode === 'dark'
+            ? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${alpha(
+                theme.palette.primary.dark,
+                0.2,
+              )} 50%, ${theme.palette.background.paper} 100%)`
+            : `linear-gradient(135deg, #f6f7f8 0%, ${alpha(
+                theme.palette.primary.light,
+                0.1,
+              )} 50%, #ffffff 100%)`,
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'white',
+        color: 'text.primary',
       }}
     >
       <Container maxWidth='xs'>
@@ -50,22 +60,23 @@ const AdminLoginScreen = () => {
             sx={{
               p: 2,
               borderRadius: '50%',
-              background: 'rgba(156, 39, 176, 0.15)',
-              border: '1px solid rgba(156, 39, 176, 0.2)',
+              bgcolor: (theme) => alpha(theme.palette.secondary.main, 0.1),
+              border: '1px solid',
+              borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2),
               mb: 1,
             }}
           >
-            <AdminPanelSettings sx={{ fontSize: 48, color: '#e040fb' }} />
+            <AdminPanelSettings sx={{ fontSize: 48, color: 'secondary.main' }} />
           </Box>
           <Box textAlign='center' sx={{ mb: 2 }}>
             <Typography
               variant='h4'
               component='h1'
-              sx={{ fontWeight: 800, letterSpacing: '-0.02em', mb: 1 }}
+              sx={{ fontWeight: 800, letterSpacing: '-0.02em', mb: 1, color: 'text.primary' }}
             >
               {t('auth.admin.loginTitle', 'Admin Console')}
             </Typography>
-            <Typography variant='body2' sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+            <Typography variant='body2' sx={{ color: 'text.secondary' }}>
               {t('auth.admin.loginDesc', 'Authorized personnel access only')}
             </Typography>
           </Box>
@@ -76,12 +87,17 @@ const AdminLoginScreen = () => {
               p: 4,
               width: '100%',
               borderRadius: 4,
-              background: 'rgba(255, 255, 255, 0.04)',
+              bgcolor: 'background.paper',
               backdropFilter: 'blur(25px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: (theme) =>
+                theme.palette.mode === 'dark'
+                  ? `0 20px 50px ${alpha(theme.palette.common.black, 0.5)}`
+                  : `0 20px 50px ${alpha(theme.palette.primary.main, 0.1)}`,
             }}
           >
+ Broadway
             <Box component='form' onSubmit={handleSubmit(onSubmit)} noValidate>
               <TextField
                 margin='normal'
@@ -145,8 +161,10 @@ const AdminLoginScreen = () => {
                   py: 1.8,
                   mb: 2,
                   borderRadius: 2,
-                  background: 'linear-gradient(45deg, #9c27b0 30%, #e040fb 90%)',
-                  boxShadow: '0 4px 14px 0 rgba(156, 39, 176, 0.39)',
+                  background: (theme) =>
+                    `linear-gradient(45deg, ${theme.palette.secondary.main} 30%, ${theme.palette.secondary.light} 90%)`,
+                  boxShadow: (theme) =>
+                    `0 4px 14px 0 ${alpha(theme.palette.secondary.main, 0.39)}`,
                   fontWeight: 600,
                 }}
               >
@@ -157,7 +175,7 @@ const AdminLoginScreen = () => {
                 variant='text'
                 size='small'
                 onClick={() => navigate(Path.signin)}
-                sx={{ color: 'rgba(255, 255, 255, 0.4)', '&:hover': { color: 'white' } }}
+                sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary' } }}
               >
                 {t('auth.admin.backToUser', 'Standard User Login?')}
               </Button>

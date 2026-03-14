@@ -4,6 +4,8 @@ import { Backdrop, CircularProgress, Alert, Box, Button } from '@mui/material'
 import { isObjectEmpty, Roles, useAppStore, type LayoutOverride } from '@cap/platform-core'
 import { useSessionGuard } from './useSessionGuard'
 import { Page403Forbidden } from '../screens'
+import { Path } from '../screens'
+import { normalizeAuthUser } from '../utils/normalizeAuthUser'
 
 interface AdminRouteProps {
   element: ReactNode
@@ -12,6 +14,13 @@ interface AdminRouteProps {
 }
 
 const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+
+const ROLE_RANK: Record<string, number> = {
+  [Roles.USER]: 10,
+  [Roles.ADMIN]: 50,
+  [Roles.SUPERADMINEMPLOYEE]: 80,
+  [Roles.SUPERADMIN]: 100,
+}
 
 const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: AdminRouteProps) => {
   const { isLoading, sessionError, isAuthenticated, user } = useSessionGuard()
@@ -53,7 +62,7 @@ const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: Ad
         <Alert severity='warning' sx={{ maxWidth: 500 }}>
           {sessionError}
         </Alert>
-        <Button variant='contained' onClick={() => navigate('/auth/signin')}>
+        <Button variant='contained' onClick={() => navigate(Path.auth.signin)}>
           Go to Login
         </Button>
       </Box>
@@ -61,15 +70,11 @@ const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: Ad
   }
 
   if (!isUserAuthenticated) {
-    return <Navigate to='/auth/signin' replace state={{ from: location }} />
+    return <Navigate to={Path.auth.signin} replace state={{ from: location }} />
   }
 
   // Securely resolve user data and role
-  // Handle cases where user might be the auth object itself or wrapped in a tuple like [userData, isLoading]
-  const rawUser = user as any
-  const userData: any = Array.isArray(rawUser)
-    ? rawUser[0]?.user || rawUser[0]
-    : rawUser?.user || rawUser
+  const userData: any = normalizeAuthUser(user)
 
   const userRole = (userData?.role as Roles) || Roles.USER
 
@@ -80,7 +85,10 @@ const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: Ad
     return <Page403Forbidden />
   }
 
-  if (userRole < minimumRole) {
+  const userRank = ROLE_RANK[String(userRole)] ?? 0
+  const minRank = ROLE_RANK[String(minimumRole)] ?? 0
+
+  if (userRank < minRank) {
     return (
       <Box
         sx={{
@@ -99,7 +107,7 @@ const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: Ad
           <br />
           This admin feature requires higher privileges.
         </Alert>
-        <Button variant='contained' onClick={() => navigate('/admin')}>
+        <Button variant='contained' onClick={() => navigate(Path.admin.users)}>
           Go to Admin Dashboard
         </Button>
       </Box>

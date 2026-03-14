@@ -170,7 +170,10 @@ export default function SystemHealthDashboard() {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {metrics.map((metric, idx) => (
           <Grid key={idx} size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
+            <Card 
+              className='glass-effect'
+              sx={{ bgcolor: 'transparent', border: 'none', boxShadow: 'none' }}
+            >
               <CardContent>
                 <Stack
                   direction='row'
@@ -199,13 +202,12 @@ export default function SystemHealthDashboard() {
                     sx={{ fontWeight: 700, height: 20, fontSize: '0.65rem' }}
                   />
                 </Stack>
-                <Typography variant='h4' sx={{ fontWeight: 800 }}>
+                <Typography variant='h4' sx={{ fontWeight: 800, color: (theme) => (theme.palette.mode === 'dark' ? '#FFFFFF' : 'text.primary') }}>
                   {metric.value}
                 </Typography>
                 <Typography
                   variant='caption'
-                  color='text.secondary'
-                  sx={{ fontWeight: 700, textTransform: 'uppercase' }}
+                  sx={{ fontWeight: 800, textTransform: 'uppercase', color: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.95)' : 'text.secondary') }}
                 >
                   {metric.label}
                 </Typography>
@@ -218,7 +220,10 @@ export default function SystemHealthDashboard() {
       {/* Services List */}
       <Grid container spacing={4}>
         <Grid size={{ xs: 12, md: 8 }}>
-          <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
+          <Card 
+            className='glass-effect'
+            sx={{ bgcolor: 'transparent', border: 'none', boxShadow: 'none' }}
+          >
             <CardContent>
               <Typography variant='h6' sx={{ fontWeight: 800, mb: 3 }}>
                 {t('auth.monitoring.services_status')}
@@ -300,7 +305,13 @@ export default function SystemHealthDashboard() {
 
         <Grid size={{ xs: 12, md: 4 }}>
           <Card
-            sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', height: '100%' }}
+            className='glass-effect'
+            sx={{
+              bgcolor: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+              height: '100%',
+            }}
           >
             <CardContent>
               <Typography variant='h6' sx={{ fontWeight: 800, mb: 3 }}>
@@ -324,7 +335,7 @@ export default function SystemHealthDashboard() {
                       alignItems='center'
                       sx={{ mt: 1 }}
                     >
-                      <Typography variant='caption' color='text.secondary'>
+                      <Typography variant='caption' color='text.primary' sx={{ fontWeight: 700, opacity: 0.8 }}>
                         {incident.time}
                       </Typography>
                       <Chip

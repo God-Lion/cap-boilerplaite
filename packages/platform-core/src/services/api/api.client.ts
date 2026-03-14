@@ -449,6 +449,21 @@ const notifyTerminalError = () => {
   terminalErrorHandlers.forEach((handler) => handler())
 }
 
+// --- Forbidden Error Registry ---
+
+export type ForbiddenErrorHandler = () => void
+const forbiddenErrorHandlers: Set<ForbiddenErrorHandler> = new Set()
+
+export const onForbiddenError = (handler: ForbiddenErrorHandler) => {
+  forbiddenErrorHandlers.add(handler)
+  return () => forbiddenErrorHandlers.delete(handler)
+}
+
+const notifyForbiddenError = () => {
+  console.error('[FetchClient] Access forbidden (403), notifying subscribers')
+  forbiddenErrorHandlers.forEach((handler) => handler())
+}
+
 // --- Token Refresh Manager ---
 
 class TokenRefreshManager {
@@ -730,6 +745,10 @@ export class FetchClient {
           } catch {
             throw new HttpError('Token refresh failed', config, result, 'REFRESH_FAILED')
           }
+        }
+
+        if (response.status === 403) {
+          notifyForbiddenError()
         }
 
         throw new HttpError(

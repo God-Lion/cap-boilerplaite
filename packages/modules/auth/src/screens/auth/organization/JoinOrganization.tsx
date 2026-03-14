@@ -63,7 +63,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100dvh',
-          bgcolor: '#f6f7f8',
+          bgcolor: 'background.default',
           fontFamily: "'Inter', sans-serif",
         }}
       >
@@ -74,11 +74,12 @@ function PageShell({ children }: { children: React.ReactNode }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid #e5e7eb',
-            bgcolor: '#ffffff',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
             px: 5,
             py: 2,
-            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+            boxShadow: (theme) => `0 1px 2px 0 ${alpha(theme.palette.common.black, 0.05)}`,
             zIndex: 10,
           }}
         >
@@ -90,14 +91,14 @@ function PageShell({ children }: { children: React.ReactNode }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#137fec',
+                color: 'primary.main',
               }}
             >
               <AppShortcut sx={{ fontSize: 24 }} />
             </Box>
             <Typography
               variant='h6'
-              sx={{ fontWeight: 700, fontSize: '1.125rem', color: '#111418' }}
+              sx={{ fontWeight: 700, fontSize: '1.125rem', color: 'text.primary' }}
             >
               {themeConfig.templateName || 'App Name'}
             </Typography>
@@ -132,8 +133,10 @@ const fadeInUpSx = {
 
 const cardBaseSx = {
   borderRadius: '16px',
-  boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
-  border: '1px solid #e5e7eb',
+  boxShadow: (theme: any) => `0 20px 25px -5px ${alpha(theme.palette.common.black, 0.1)}`,
+  border: '1px solid',
+  borderColor: 'divider',
+  bgcolor: 'background.paper',
   overflow: 'hidden',
   ...fadeInUpSx,
 }
@@ -238,8 +241,8 @@ export default function JoinOrganization() {
               p: 5,
             }}
           >
-            <CircularProgress size={48} sx={{ color: '#137fec' }} />
-            <Typography sx={{ color: '#637588', fontWeight: 500 }}>
+            <CircularProgress size={48} sx={{ color: 'primary.main' }} />
+            <Typography sx={{ color: 'text.secondary', fontWeight: 500 }}>
               Loading invitation details...
             </Typography>
           </CardContent>
@@ -256,18 +259,18 @@ export default function JoinOrganization() {
           <CardContent
             sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
           >
-            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: alpha('#ef4444', 0.1) }}>
-              <ErrorOutline sx={{ color: '#ef4444', fontSize: 52 }} />
+            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: (theme) => alpha(theme.palette.error.main, 0.1) }}>
+              <ErrorOutline sx={{ color: 'error.main', fontSize: 52 }} />
             </Box>
             <Typography
               variant='h5'
-              sx={{ fontWeight: 700, color: '#111418', textAlign: 'center' }}
+              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
             >
               Something went wrong
             </Typography>
             <Typography
               variant='body2'
-              sx={{ color: '#637588', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
+              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
             >
               {errorMessage}
             </Typography>
@@ -281,8 +284,8 @@ export default function JoinOrganization() {
                 borderRadius: '10px',
                 textTransform: 'none',
                 fontWeight: 700,
-                bgcolor: '#137fec',
-                '&:hover': { bgcolor: '#1068c1' },
+                bgcolor: 'primary.main',
+                '&:hover': { bgcolor: 'primary.dark' },
               }}
             >
               Go to Login
@@ -301,18 +304,18 @@ export default function JoinOrganization() {
           <CardContent
             sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
           >
-            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: alpha('#f59e0b', 0.1) }}>
-              <TimerOutlined sx={{ color: '#f59e0b', fontSize: 52 }} />
+            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: (theme) => alpha(theme.palette.warning.main, 0.1) }}>
+              <TimerOutlined sx={{ color: 'warning.main', fontSize: 52 }} />
             </Box>
             <Typography
               variant='h5'
-              sx={{ fontWeight: 700, color: '#111418', textAlign: 'center' }}
+              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
             >
               Invitation Expired
             </Typography>
             <Typography
               variant='body2'
-              sx={{ color: '#637588', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
+              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
             >
               This invitation has expired. Please contact the organization administrator to receive
               a new invitation.
@@ -327,8 +330,8 @@ export default function JoinOrganization() {
                 borderRadius: '10px',
                 textTransform: 'none',
                 fontWeight: 700,
-                bgcolor: '#137fec',
-                '&:hover': { bgcolor: '#1068c1' },
+                bgcolor: 'primary.main',
+                '&:hover': { bgcolor: 'primary.dark' },
               }}
             >
               Go to Login
@@ -347,18 +350,18 @@ export default function JoinOrganization() {
           <CardContent
             sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
           >
-            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: alpha('#6b7280', 0.1) }}>
-              <ErrorOutline sx={{ color: '#6b7280', fontSize: 52 }} />
+            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: (theme) => alpha(theme.palette.action.disabledBackground, 0.1) }}>
+              <ErrorOutline sx={{ color: 'text.disabled', fontSize: 52 }} />
             </Box>
             <Typography
               variant='h5'
-              sx={{ fontWeight: 700, color: '#111418', textAlign: 'center' }}
+              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
             >
               Invitation No Longer Valid
             </Typography>
             <Typography
               variant='body2'
-              sx={{ color: '#637588', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
+              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
             >
               {errorMessage}
             </Typography>
@@ -372,8 +375,8 @@ export default function JoinOrganization() {
                 borderRadius: '10px',
                 textTransform: 'none',
                 fontWeight: 700,
-                bgcolor: '#137fec',
-                '&:hover': { bgcolor: '#1068c1' },
+                bgcolor: 'primary.main',
+                '&:hover': { bgcolor: 'primary.dark' },
               }}
             >
               Go to Dashboard
@@ -396,7 +399,7 @@ export default function JoinOrganization() {
               sx={{
                 p: 2.5,
                 borderRadius: '50%',
-                bgcolor: alpha('#10b981', 0.1),
+                bgcolor: (theme) => alpha(theme.palette.success.main, 0.1),
                 animation: 'scaleIn 0.5s ease-out',
                 '@keyframes scaleIn': {
                   '0%': { transform: 'scale(0)' },
@@ -405,17 +408,17 @@ export default function JoinOrganization() {
                 },
               }}
             >
-              <CheckCircle sx={{ color: '#10b981', fontSize: 52 }} />
+              <CheckCircle sx={{ color: 'success.main', fontSize: 52 }} />
             </Box>
             <Typography
               variant='h5'
-              sx={{ fontWeight: 700, color: '#111418', textAlign: 'center' }}
+              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
             >
               Welcome to {invitation?.organization.name}!
             </Typography>
             <Typography
               variant='body2'
-              sx={{ color: '#637588', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
+              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
             >
               You have successfully joined the organization as a <strong>{invitation?.role}</strong>
               . You can now collaborate with your team.
@@ -431,11 +434,11 @@ export default function JoinOrganization() {
                 textTransform: 'none',
                 fontWeight: 700,
                 fontSize: '1rem',
-                bgcolor: '#10b981',
-                boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.3)',
+                bgcolor: 'success.main',
+                boxShadow: (theme) => `0 4px 6px -1px ${alpha(theme.palette.success.main, 0.3)}`,
                 '&:hover': {
-                  bgcolor: '#059669',
-                  boxShadow: '0 6px 8px -1px rgba(16, 185, 129, 0.4)',
+                  bgcolor: 'success.dark',
+                  boxShadow: (theme) => `0 6px 8px -1px ${alpha(theme.palette.success.main, 0.4)}`,
                 },
               }}
             >
@@ -455,18 +458,18 @@ export default function JoinOrganization() {
           <CardContent
             sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
           >
-            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: alpha('#6b7280', 0.1) }}>
-              <Close sx={{ color: '#6b7280', fontSize: 52 }} />
+            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: (theme) => alpha(theme.palette.action.disabledBackground, 0.1) }}>
+              <Close sx={{ color: 'text.disabled', fontSize: 52 }} />
             </Box>
             <Typography
               variant='h5'
-              sx={{ fontWeight: 700, color: '#111418', textAlign: 'center' }}
+              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
             >
               Invitation Declined
             </Typography>
             <Typography
               variant='body2'
-              sx={{ color: '#637588', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
+              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
             >
               You have declined the invitation to join{' '}
               <strong>{invitation?.organization.name}</strong>. No action was taken on your account.
@@ -481,8 +484,8 @@ export default function JoinOrganization() {
                 borderRadius: '10px',
                 textTransform: 'none',
                 fontWeight: 700,
-                bgcolor: '#137fec',
-                '&:hover': { bgcolor: '#1068c1' },
+                bgcolor: 'primary.main',
+                '&:hover': { bgcolor: 'primary.dark' },
               }}
             >
               Go to Login
@@ -539,7 +542,7 @@ export default function JoinOrganization() {
             <Typography
               variant='body2'
               sx={{
-                color: 'rgba(255,255,255,0.85)',
+                color: (theme) => alpha(theme.palette.common.white, 0.85),
                 textAlign: 'center',
                 maxWidth: 320,
                 lineHeight: 1.6,
@@ -579,7 +582,7 @@ export default function JoinOrganization() {
                   <Typography
                     variant='caption'
                     sx={{
-                      color: '#637588',
+                      color: 'text.secondary',
                       fontWeight: 600,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
@@ -588,7 +591,7 @@ export default function JoinOrganization() {
                   >
                     Organization
                   </Typography>
-                  <Typography variant='body1' sx={{ fontWeight: 700, color: '#111418' }}>
+                  <Typography variant='body1' sx={{ fontWeight: 700, color: 'text.primary' }}>
                     {invitation?.organization.name}
                   </Typography>
                 </Box>
@@ -621,7 +624,7 @@ export default function JoinOrganization() {
                   <Typography
                     variant='caption'
                     sx={{
-                      color: '#637588',
+                      color: 'text.secondary',
                       fontWeight: 600,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
@@ -631,7 +634,7 @@ export default function JoinOrganization() {
                     Assigned Role
                   </Typography>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography variant='body1' sx={{ fontWeight: 700, color: '#111418' }}>
+                    <Typography variant='body1' sx={{ fontWeight: 700, color: 'text.primary' }}>
                       {invitation?.role}
                     </Typography>
                     <Chip
@@ -676,7 +679,7 @@ export default function JoinOrganization() {
                   <Typography
                     variant='caption'
                     sx={{
-                      color: '#637588',
+                      color: 'text.secondary',
                       fontWeight: 600,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
@@ -685,14 +688,14 @@ export default function JoinOrganization() {
                   >
                     Invited Email
                   </Typography>
-                  <Typography variant='body1' sx={{ fontWeight: 700, color: '#111418' }}>
+                  <Typography variant='body1' sx={{ fontWeight: 700, color: 'text.primary' }}>
                     {invitation?.email}
                   </Typography>
                 </Box>
               </Box>
             </Stack>
 
-            <Divider sx={{ my: 3, borderColor: '#f0f2f4' }} />
+            <Divider sx={{ my: 3, borderColor: 'divider' }} />
 
             {/* Action Buttons */}
             <Stack spacing={1.5}>
@@ -743,10 +746,10 @@ export default function JoinOrganization() {
                   textTransform: 'none',
                   fontWeight: 600,
                   fontSize: '0.875rem',
-                  color: '#637588',
+                  color: 'text.secondary',
                   '&:hover': {
-                    bgcolor: '#f0f2f4',
-                    color: '#ef4444',
+                    bgcolor: (theme) => alpha(theme.palette.action.hover, 0.1),
+                    color: 'error.main',
                   },
                 }}
               >
@@ -761,7 +764,7 @@ export default function JoinOrganization() {
                 display: 'block',
                 mt: 3,
                 fontSize: '0.7rem',
-                color: '#9ca3af',
+                color: 'text.disabled',
                 textAlign: 'center',
                 lineHeight: 1.5,
               }}

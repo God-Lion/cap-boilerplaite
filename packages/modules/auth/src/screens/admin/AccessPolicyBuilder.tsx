@@ -1,3 +1,6 @@
+// FILE: packages/modules/auth/src/screens/admin/AccessPolicyBuilder.tsx
+// STYLE AUDIT: Aligned to OrganizationProfile.tsx design system
+// FIXES: [CRITICAL] Modernized InputProps to slotProps.input, applied info.main to CTAs [HIGH] Added animate-scale-in [MEDIUM] Added divider opacity and avatar 24px radius [LOW] Added aria-labels and i18n fallbacks
 import React, { useState, useMemo } from 'react'
 import {
   Box,
@@ -60,11 +63,11 @@ export default function AccessPolicyBuilder() {
 
   const savePoliciesMutation = useSaveAccessPolicies(orgId as number, {
     onSuccess: () => {
-      enqueueSnackbar(t('auth.admin.policiesSavedSuccess'), { variant: 'success' })
+      enqueueSnackbar(t('auth.admin.policiesSavedSuccess', 'Policies saved successfully'), { variant: 'success' })
       setDialogOpen(false)
     },
     onError: (err: any) => {
-      enqueueSnackbar(err.message || t('auth.admin.policiesSaveError'), { variant: 'error' })
+      enqueueSnackbar(err.message || t('auth.admin.policiesSaveError', 'Failed to save policies'), { variant: 'error' })
     },
   })
 
@@ -143,8 +146,9 @@ export default function AccessPolicyBuilder() {
     }
   }
 
+  // ── SYSTEM PATTERN: Entry animation (OrganizationProfile L60) ──
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
+    <Box className="animate-scale-in" sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
       {/* Header */}
       <Box
         sx={{
@@ -157,13 +161,15 @@ export default function AccessPolicyBuilder() {
         }}
       >
         <Box>
-          <Typography variant='h4' sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.02em' }}>
-            {t('auth.admin.accessPolicies')}
+          {/* ── SYSTEM PATTERN: h4 titles (OrganizationProfile L62) ── */}
+          <Typography variant='h4' sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+            {t('auth.admin.accessPolicies', 'Access Policies')}
           </Typography>
           <Typography variant='body1' color='text.secondary' sx={{ fontWeight: 500 }}>
-            {t('auth.admin.accessPolicies_subtitle')}
+            {t('auth.admin.accessPolicies_subtitle', 'Manage security rules and conditionals')}
           </Typography>
         </Box>
+        {/* ── SYSTEM PATTERN: CTA buttons (OrganizationProfile L58) ── */}
         <Button
           variant='contained'
           startIcon={<Add />}
@@ -172,21 +178,24 @@ export default function AccessPolicyBuilder() {
             px: 3,
             py: 1.2,
             borderRadius: 2.5,
-            fontWeight: 800,
+            bgcolor: 'info.main',
+            boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
+            fontWeight: 700,
             textTransform: 'none',
-            boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
           }}
         >
-          {t('auth.admin.createNewPolicy')}
+          {t('auth.admin.createNewPolicy', 'Create New Policy')}
         </Button>
       </Box>
 
       {/* Stats/Overview Card */}
+      {/* ── SYSTEM PATTERN: Glass cards (OrganizationProfile L59) ── */}
       <Card
+        className="glass-effect"
         sx={{
           mb: 4,
           borderRadius: 4,
-          bgcolor: alpha(theme.palette.primary.main, 0.02),
+          bgcolor: 'transparent',
           border: '1px dashed',
           borderColor: alpha(theme.palette.primary.main, 0.2),
           boxShadow: 'none',
@@ -209,12 +218,13 @@ export default function AccessPolicyBuilder() {
             sx={{ overflowX: 'auto', width: '100%', pb: { xs: 1, md: 0 } }}
           >
             <Box>
+              {/* ── SYSTEM PATTERN: Caption labels (OrganizationProfile L63) ── */}
               <Typography
                 variant='caption'
                 color='text.secondary'
-                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.075em' }}
               >
-                {t('auth.admin.activePolicies')}
+                {t('auth.admin.activePolicies', 'Active Policies')}
               </Typography>
               <Typography variant='h5' sx={{ fontWeight: 900, color: 'primary.main' }}>
                 {policies.filter((p) => p.status === 'active').length}
@@ -224,9 +234,9 @@ export default function AccessPolicyBuilder() {
               <Typography
                 variant='caption'
                 color='text.secondary'
-                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.075em' }}
               >
-                {t('auth.admin.signalsTracked')}
+                {t('auth.admin.signalsTracked', 'Signals Tracked')}
               </Typography>
               <Typography variant='h5' sx={{ fontWeight: 900 }}>
                 IP, MFA, Device
@@ -236,9 +246,9 @@ export default function AccessPolicyBuilder() {
               <Typography
                 variant='caption'
                 color='text.secondary'
-                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.075em' }}
               >
-                {t('auth.admin.executionMode')}
+                {t('auth.admin.executionMode', 'Execution Mode')}
               </Typography>
               <Typography variant='h5' sx={{ fontWeight: 900 }}>
                 First Match
@@ -247,9 +257,9 @@ export default function AccessPolicyBuilder() {
           </Stack>
           <Button
             startIcon={<History />}
-            sx={{ textTransform: 'none', fontWeight: 700, whiteSpace: 'nowrap' }}
+            sx={{ textTransform: 'none', fontWeight: 700, whiteSpace: 'nowrap', color: 'info.main' }}
           >
-            {t('auth.admin.viewChangeLogs')}
+            {t('auth.admin.viewChangeLogs', 'View Change Logs')}
           </Button>
         </CardContent>
       </Card>
@@ -269,25 +279,27 @@ export default function AccessPolicyBuilder() {
           {policies.map((policy) => (
             <Box key={policy.id} sx={{ height: '100%' }}>
               <Paper
+                className="glass-effect"
                 sx={{
                   p: 3,
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
                   borderRadius: 4,
+                  bgcolor: 'transparent',
                   border: '1px solid',
                   borderColor: 'divider',
                   boxShadow: 'none',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
                     borderColor: 'primary.main',
-                    boxShadow: `0 12px 24px ${alpha(theme.palette.primary.main, 0.08)}`,
                     transform: 'translateY(-4px)',
                   },
                 }}
               >
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                   <Stack direction='row' spacing={2} alignItems='center'>
+                    {/* ── SYSTEM PATTERN: Avatar (OrganizationProfile L64) ── */}
                     <Avatar
                       sx={{
                         bgcolor: alpha(
@@ -299,7 +311,7 @@ export default function AccessPolicyBuilder() {
                         color: policy.status === 'active' ? 'primary.main' : 'text.disabled',
                         width: 52,
                         height: 52,
-                        borderRadius: 2.5,
+                        borderRadius: '24px',
                       }}
                     >
                       <Shield />
@@ -308,17 +320,16 @@ export default function AccessPolicyBuilder() {
                       <Typography variant='h6' sx={{ fontWeight: 800, lineHeight: 1.2 }}>
                         {policy.name}
                       </Typography>
+                      {/* ── SYSTEM PATTERN: Status chips (OrganizationProfile L66) ── */}
                       <Chip
                         label={policy.type.replace('_', ' ')}
                         size='small'
                         sx={{
                           mt: 0.5,
                           height: 20,
-                          fontSize: '0.625rem',
-                          fontWeight: 900,
-                          textTransform: 'uppercase',
+                          fontWeight: 700,
                         }}
-                        color={policy.status === 'active' ? 'primary' : 'default'}
+                        color={policy.status === 'active' ? 'info' : 'default'}
                         variant='outlined'
                       />
                     </Box>
@@ -326,7 +337,8 @@ export default function AccessPolicyBuilder() {
                   <Switch
                     checked={policy.status === 'active'}
                     onChange={() => handleToggleStatus(policy)}
-                    color='primary'
+                    color='info'
+                    inputProps={{ 'aria-label': 'Toggle Policy Status' }}
                   />
                 </Box>
 
@@ -338,9 +350,11 @@ export default function AccessPolicyBuilder() {
                   {policy.description}
                 </Typography>
 
-                <Divider sx={{ mb: 3, borderStyle: 'dashed' }} />
+                {/* ── SYSTEM PATTERN: Dividers (OrganizationProfile L65) ── */}
+                <Divider sx={{ mb: 3, borderStyle: 'dashed', opacity: 0.5 }} />
 
                 <Box sx={{ mb: 3, flexGrow: 1 }}>
+                  {/* ── SYSTEM PATTERN: Section headings (OrganizationProfile L61) ── */}
                   <Typography
                     variant='caption'
                     color='text.secondary'
@@ -419,16 +433,18 @@ export default function AccessPolicyBuilder() {
                     <Tooltip title='Edit Policy'>
                       <IconButton
                         size='small'
+                        aria-label="Edit policy"
                         onClick={() => handleOpenDialog(policy)}
-                        sx={{ bgcolor: alpha(theme.palette.primary.main, 0.05) }}
+                        sx={{ bgcolor: alpha(theme.palette.info.main, 0.05) }}
                       >
-                        <Settings fontSize='small' color='primary' />
+                        <Settings fontSize='small' color='info' />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title='Delete Policy'>
                       <IconButton
                         size='small'
                         color='error'
+                        aria-label="Delete policy"
                         onClick={() => handleDelete(policy.id)}
                         sx={{ bgcolor: alpha(theme.palette.error.main, 0.05) }}
                       >
@@ -458,16 +474,17 @@ export default function AccessPolicyBuilder() {
                 cursor: 'pointer',
                 transition: 'all 0.3s',
                 '&:hover': {
-                  borderColor: 'primary.main',
-                  bgcolor: alpha(theme.palette.primary.main, 0.02),
+                  borderColor: 'info.main',
+                  bgcolor: alpha(theme.palette.info.main, 0.02),
                   '& .add-avatar': {
-                    bgcolor: 'primary.main',
+                    bgcolor: 'info.main',
                     color: 'white',
                     transform: 'scale(1.1)',
                   },
                 },
               }}
             >
+              {/* ── SYSTEM PATTERN: Avatar (OrganizationProfile L64) ── */}
               <Avatar
                 className='add-avatar'
                 sx={{
@@ -476,16 +493,17 @@ export default function AccessPolicyBuilder() {
                   mb: 2,
                   width: 56,
                   height: 56,
+                  borderRadius: '24px',
                   transition: 'all 0.3s',
                 }}
               >
                 <Add sx={{ fontSize: 32 }} />
               </Avatar>
               <Typography variant='subtitle1' sx={{ fontWeight: 900 }}>
-                {t('auth.admin.defineCustomLogic')}
+                {t('auth.admin.defineCustomLogic', 'Define Custom Logic')}
               </Typography>
               <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
-                {t('auth.admin.combineSignalsDesc')}
+                {t('auth.admin.combineSignalsDesc', 'Combine signals to create a new access policy')}
               </Typography>
             </Box>
           </Box>
@@ -505,28 +523,30 @@ export default function AccessPolicyBuilder() {
         <DialogTitle
           sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}
         >
-          <Typography variant='h5' component='span' sx={{ fontWeight: 900 }}>
-            {editingPolicy ? t('auth.admin.editPolicy') : t('auth.admin.createNewPolicy')}
+          <Typography variant='h5' component='span' sx={{ fontWeight: 900, letterSpacing: '-0.027em' }}>
+            {editingPolicy ? t('auth.admin.editPolicy', 'Edit Policy') : t('auth.admin.createNewPolicy', 'Create New Policy')}
           </Typography>
-          <IconButton onClick={() => setDialogOpen(false)} size='small'>
+          <IconButton onClick={() => setDialogOpen(false)} size='small' aria-label="Close dialog">
             <Close />
           </IconButton>
         </DialogTitle>
 
-        <DialogContent dividers sx={{ borderStyle: 'dashed' }}>
+        {/* ── SYSTEM PATTERN: Dividers (OrganizationProfile L65) ── */}
+        <DialogContent dividers sx={{ borderStyle: 'dashed', borderColor: alpha(theme.palette.divider, 0.5) }}>
           <Stack spacing={3} sx={{ mt: 1 }}>
+            {/* ── SYSTEM PATTERN: MUI v6 API input props (OrganizationProfile L67) ── */}
             <TextField
-              label={t('auth.admin.policyName')}
+              label={t('auth.admin.policyName', 'Policy Name')}
               fullWidth
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder='e.g., Block External IPs'
               variant='outlined'
-              InputProps={{ sx: { borderRadius: 2 } }}
+              slotProps={{ input: { sx: { borderRadius: 2 } } }}
             />
 
             <TextField
-              label={t('auth.admin.description')}
+              label={t('auth.admin.description', 'Description')}
               fullWidth
               multiline
               rows={3}
@@ -534,7 +554,7 @@ export default function AccessPolicyBuilder() {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder='Explain the purpose of this policy...'
               variant='outlined'
-              InputProps={{ sx: { borderRadius: 2 } }}
+              slotProps={{ input: { sx: { borderRadius: 2 } } }}
             />
 
             <Box
@@ -545,11 +565,11 @@ export default function AccessPolicyBuilder() {
               }}
             >
               <FormControl fullWidth variant='outlined'>
-                <InputLabel>{t('auth.admin.policyType')}</InputLabel>
+                <InputLabel>{t('auth.admin.policyType', 'Policy Type')}</InputLabel>
                 <Select
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
-                  label={t('auth.admin.policyType')}
+                  label={t('auth.admin.policyType', 'Policy Type')}
                   sx={{ borderRadius: 2 }}
                 >
                   <MenuItem value='conditional_access'>Conditional Access</MenuItem>
@@ -557,13 +577,13 @@ export default function AccessPolicyBuilder() {
                 </Select>
               </FormControl>
               <TextField
-                label={t('auth.admin.priority')}
+                label={t('auth.admin.priority', 'Priority')}
                 type='number'
                 fullWidth
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
                 variant='outlined'
-                InputProps={{ sx: { borderRadius: 2 } }}
+                slotProps={{ input: { sx: { borderRadius: 2 } } }}
               />
             </Box>
 
@@ -573,7 +593,7 @@ export default function AccessPolicyBuilder() {
                 sx={{ fontWeight: 800, mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}
               >
                 Rules / Signal Logic
-                <Chip label={formData.rules?.length || 0} size='small' sx={{ fontWeight: 800 }} />
+                <Chip label={formData.rules?.length || 0} size='small' sx={{ fontWeight: 700, height: 20 }} />
               </Typography>
               <Paper
                 variant='outlined'
@@ -624,6 +644,7 @@ export default function AccessPolicyBuilder() {
                           <IconButton
                             size='small'
                             color='error'
+                            aria-label="Delete rule"
                             onClick={() => {
                               const newRules = formData.rules?.filter((_, i) => i !== idx)
                               setFormData({ ...formData, rules: newRules })
@@ -721,7 +742,7 @@ export default function AccessPolicyBuilder() {
                 <Button
                   fullWidth
                   startIcon={<Add />}
-                  sx={{ mt: 2, borderRadius: 2, textTransform: 'none', fontWeight: 700 }}
+                  sx={{ mt: 2, borderRadius: 2, textTransform: 'none', fontWeight: 700, color: 'info.main' }}
                   onClick={() => {
                     const newRule: AccessPolicyRule = {
                       id: `RULE_${Date.now()}`,
@@ -742,10 +763,11 @@ export default function AccessPolicyBuilder() {
         <DialogActions sx={{ p: 3 }}>
           <Button
             onClick={() => setDialogOpen(false)}
-            sx={{ fontWeight: 700, textTransform: 'none' }}
+            sx={{ fontWeight: 700, textTransform: 'none', color: 'text.secondary' }}
           >
-            {t('auth.common.cancel')}
+            {t('auth.common.cancel', 'Cancel')}
           </Button>
+          {/* ── SYSTEM PATTERN: CTA buttons (OrganizationProfile L58) ── */}
           <Button
             variant='contained'
             onClick={handleSave}
@@ -753,7 +775,9 @@ export default function AccessPolicyBuilder() {
             sx={{
               px: 4,
               borderRadius: 2,
-              fontWeight: 800,
+              bgcolor: 'info.main',
+              boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
+              fontWeight: 700,
               textTransform: 'none',
               minWidth: 120,
             }}
@@ -761,7 +785,7 @@ export default function AccessPolicyBuilder() {
             {savePoliciesMutation.isPending ? (
               <CircularProgress size={24} color='inherit' />
             ) : (
-              t('auth.common.save')
+              t('auth.common.save', 'Save')
             )}
           </Button>
         </DialogActions>

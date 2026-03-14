@@ -18,6 +18,7 @@ type LayoutWrapperProps = {
   noLayout?: ReactElement
   publicLayout?: ReactElement
 }
+
 const LayoutWrapper = ({
   systemMode,
   verticalLayout,
@@ -36,24 +37,52 @@ const LayoutWrapper = ({
   const isNoLayout = layoutOverride === 'noLayout'
 
   const isAdminLayout = React.useMemo(() => {
-    // If we have an explicit override, respect it
     if (layoutOverride === 'admin') return true
     if (layoutOverride === 'public') return false
-
     return false
   }, [layoutOverride])
 
+  // While hydrating: render the actual layout tree invisibly behind a
+  // transparent overlay. This prevents layout-shift / blink because the DOM
+  // is already in its final state when we make it visible.
+  // A centred spinner still floats on top so the user sees activity.
   if (isHydrating) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          blockSize: '100vh',
-        }}
-      >
-        <CircularProgress />
+      <Box sx={{ position: 'relative', minBlockSize: '100vh' }}>
+        {/* Invisible pre-render of final layout — eliminates pop-in */}
+        <Box sx={{ visibility: 'hidden', pointerEvents: 'none' }}>
+          {isNoLayout
+            ? (noLayout ?? null)
+            : isAdminLayout
+              ? (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: '1 1 auto',
+                    backgroundColor: 'transparent',
+                  }}
+                  data-skin={settings.skin}
+                >
+                  {settings.layout === 'horizontal' ? horizontalLayout : verticalLayout}
+                </Box>
+              )
+              : (publicLayout ?? null)}
+        </Box>
+
+        {/* Centered spinner overlay */}
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'var(--mui-palette-background-default, inherit)',
+          }}
+        >
+          <CircularProgress />
+        </Box>
       </Box>
     )
   }

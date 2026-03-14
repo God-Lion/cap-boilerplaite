@@ -1,3 +1,12 @@
+/**
+ * ──────────────────────────────────────────────────────────────────────────────
+ * AUDIT MAPPING: ChangeEmail.tsx
+ * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
+ * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
+ * - 🟡 Glass effect classes added (HIGH)
+ * - 🟡 Entry animations (animate-scale-in) (HIGH)
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -64,6 +73,7 @@ function ChangeEmail() {
         component='main'
         maxWidth={false}
         disableGutters
+        className='animate-scale-in'
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -91,7 +101,9 @@ function ChangeEmail() {
           }}
         />
 
+        {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style background) ── */}
         <Card
+          className='glass-effect'
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -100,10 +112,10 @@ function ChangeEmail() {
             position: 'relative',
             overflow: 'hidden',
             borderRadius: '12px',
-            boxShadow: (theme) => theme.shadows[4],
+            boxShadow: 'none',
             border: '1px solid',
             borderColor: 'divider',
-            bgcolor: 'background.paper',
+            bgcolor: 'transparent',
             mx: { xs: 2, sm: 4 },
             zIndex: 1,
           }}
@@ -120,7 +132,7 @@ function ChangeEmail() {
                 sx={{
                   width: 56,
                   height: 56,
-                  bgcolor: 'primary.lighter',
+                  bgcolor: 'info.lighter',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
@@ -128,7 +140,7 @@ function ChangeEmail() {
                   mb: 3,
                 }}
               >
-                <LockReset sx={{ color: 'primary.main', fontSize: 32 }} />
+                <LockReset sx={{ color: 'info.main', fontSize: 32 }} />
               </Box>
 
               <Typography
@@ -160,7 +172,7 @@ function ChangeEmail() {
                 noValidate
                 sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}
               >
-                {/* New Password Field */}
+                {/* Current Email Field */}
                 <Box>
                   <Typography
                     component='label'
@@ -187,17 +199,19 @@ function ChangeEmail() {
                         fullWidth
                         placeholder={t('auth.account.email_placeholder')}
                         type='email'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <Mail sx={{ fontSize: 20, color: 'text.disabled' }} />
-                            </InputAdornment>
-                          ),
-                          endAdornment: (
-                            <InputAdornment position='end'>
-                              <Lock sx={{ fontSize: 18, color: 'text.disabled' }} />
-                            </InputAdornment>
-                          ),
+                        slotProps={{
+                          input: {
+                            startAdornment: (
+                              <InputAdornment position='start'>
+                                <Mail sx={{ fontSize: 20, color: 'text.disabled' }} />
+                              </InputAdornment>
+                            ),
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <Lock sx={{ fontSize: 18, color: 'text.disabled' }} />
+                              </InputAdornment>
+                            ),
+                          },
                         }}
                         sx={{
                           '& .MuiOutlinedInput-root': {
@@ -205,9 +219,9 @@ function ChangeEmail() {
                             height: 48,
                             bgcolor: 'background.paper',
                             '& fieldset': { borderColor: 'divider' },
-                            '&:hover fieldset': { borderColor: 'primary.main' },
+                            '&:hover fieldset': { borderColor: 'info.main' },
                             '&.Mui-focused fieldset': {
-                              borderColor: 'primary.main',
+                              borderColor: 'info.main',
                               borderWidth: '1px',
                             },
                           },
@@ -225,7 +239,7 @@ function ChangeEmail() {
                 <Box>
                   <Typography
                     component='label'
-                    htmlFor='password'
+                    htmlFor='newEmail'
                     sx={{
                       display: 'block',
                       fontSize: '0.875rem',
@@ -249,12 +263,14 @@ function ChangeEmail() {
                         label={t('auth.account.new_email')}
                         placeholder={t('auth.account.new_email_placeholder')}
                         type='email'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <AlternateEmail sx={{ fontSize: 20 }} />
-                            </InputAdornment>
-                          ),
+                        slotProps={{
+                          input: {
+                            startAdornment: (
+                              <InputAdornment position='start'>
+                                <AlternateEmail sx={{ fontSize: 20 }} />
+                              </InputAdornment>
+                            ),
+                          },
                         }}
                         sx={{
                           '& .MuiOutlinedInput-root': {
@@ -262,9 +278,9 @@ function ChangeEmail() {
                             height: 48,
                             bgcolor: 'background.paper',
                             '& fieldset': { borderColor: 'divider' },
-                            '&:hover fieldset': { borderColor: 'primary.main' },
+                            '&:hover fieldset': { borderColor: 'info.main' },
                             '&.Mui-focused fieldset': {
-                              borderColor: 'primary.main',
+                              borderColor: 'info.main',
                               borderWidth: '1px',
                             },
                           },
@@ -296,30 +312,32 @@ function ChangeEmail() {
                     render={({ field, fieldState }) => (
                       <TextField
                         {...field}
-                        id='password'
+                        id='confirmPassword'
                         fullWidth
                         type={showConfirmPassword ? 'text' : 'password'}
                         label={t('auth.account.current_password')}
                         placeholder={t('auth.account.current_password_placeholder')}
                         error={!!fieldState.error}
                         helperText={fieldState.error?.message}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <VpnKey sx={{ fontSize: 20 }} />
-                            </InputAdornment>
-                          ),
-                          endAdornment: (
-                            <InputAdornment position='end'>
-                              <IconButton onClick={handleClickShowConfirmPassword} edge='end'>
-                                {showConfirmPassword ? (
-                                  <VisibilityOff sx={{ fontSize: 20 }} />
-                                ) : (
-                                  <Visibility sx={{ fontSize: 20 }} />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
+                        slotProps={{
+                          input: {
+                            startAdornment: (
+                              <InputAdornment position='start'>
+                                <VpnKey sx={{ fontSize: 20 }} />
+                              </InputAdornment>
+                            ),
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton onClick={handleClickShowConfirmPassword} edge='end'>
+                                  {showConfirmPassword ? (
+                                    <VisibilityOff sx={{ fontSize: 20 }} />
+                                  ) : (
+                                    <Visibility sx={{ fontSize: 20 }} />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          },
                         }}
                         sx={{
                           '& .MuiOutlinedInput-root': {
@@ -327,9 +345,9 @@ function ChangeEmail() {
                             height: 48,
                             bgcolor: 'background.paper',
                             '& fieldset': { borderColor: 'divider' },
-                            '&:hover fieldset': { borderColor: 'primary.main' },
+                            '&:hover fieldset': { borderColor: 'info.main' },
                             '&.Mui-focused fieldset': {
-                              borderColor: 'primary.main',
+                              borderColor: 'info.main',
                               borderWidth: '1px',
                             },
                           },
@@ -346,11 +364,11 @@ function ChangeEmail() {
                   sx={{
                     mt: 1,
                     borderRadius: 2,
-                    bgcolor: 'primary.lighter',
+                    bgcolor: 'info.lighter',
                     border: 1,
-                    borderColor: 'primary.light',
+                    borderColor: 'info.light',
                     '& .MuiAlert-icon': {
-                      color: 'primary.main',
+                      color: 'info.main',
                     },
                   }}
                 >
@@ -362,6 +380,7 @@ function ChangeEmail() {
                   </Typography>
                 </Alert>
 
+                {/* ── SYSTEM PATTERN: cta_button (info.main variant) ── */}
                 <Button
                   type='submit'
                   variant='contained'
@@ -374,6 +393,12 @@ function ChangeEmail() {
                     textTransform: 'none',
                     fontSize: '1rem',
                     fontWeight: 700,
+                    bgcolor: 'info.main',
+                    color: 'info.contrastText',
+                    boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+                    '&:hover': {
+                      bgcolor: 'info.dark',
+                    },
                   }}
                 >
                   {t('auth.account.update_email')}

@@ -222,7 +222,7 @@ export default function UserList() {
   const [roleAnchorEl, setRoleAnchorEl] = useState<null | HTMLElement>(null)
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }} className='animate-scale-in'>
       {/* ── Page Header ─────────────────────────────────────────────────── */}
       <Box
         sx={{
@@ -260,7 +260,7 @@ export default function UserList() {
             >
               {t('auth.admin.userListTitle')}
             </Typography>
-            <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
+            <Typography variant='body2' color='text.primary' sx={{ fontWeight: 600 }}>
               {t('auth.admin.userListSubtitle')}
             </Typography>
           </Box>
@@ -283,15 +283,9 @@ export default function UserList() {
           </Button>
           <Button
             variant='contained'
+            color='info'
             startIcon={<AddIcon />}
             sx={{
-              bgcolor: 'info.main',
-              color: 'white',
-              boxShadow: `0 4px 14px 0 ${alpha(theme.palette.info.main, 0.39)}`,
-              '&:hover': {
-                bgcolor: 'info.dark',
-                boxShadow: `0 6px 20px 0 ${alpha(theme.palette.info.main, 0.5)}`,
-              },
               textTransform: 'none',
               fontWeight: 700,
               height: 44,
@@ -359,9 +353,8 @@ export default function UserList() {
         ].map((stat, idx) => (
           <Card
             key={idx}
+            className='glass-effect'
             sx={{
-              border: '1px solid',
-              borderColor: 'divider',
               boxShadow: 'none',
               borderRadius: 4,
               cursor: 'pointer',
@@ -389,19 +382,19 @@ export default function UserList() {
               <Box>
                 <Typography
                   variant='caption'
-                  color='text.secondary'
                   sx={{
-                    fontWeight: 700,
+                    fontWeight: 800,
                     textTransform: 'uppercase',
                     letterSpacing: '0.075em',
                     display: 'block',
                     mb: 0.25,
                     fontSize: '0.65rem',
+                    color: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.95)' : 'text.secondary'),
                   }}
                 >
                   {stat.label}
                 </Typography>
-                <Typography variant='h5' sx={{ fontWeight: 900, letterSpacing: '-0.02em' }}>
+                <Typography variant='h5' sx={{ fontWeight: 900, letterSpacing: '-0.02em', color: (theme) => (theme.palette.mode === 'dark' ? '#FFFFFF' : 'text.primary') }}>
                   {stat.value}
                 </Typography>
               </Box>
@@ -412,9 +405,9 @@ export default function UserList() {
 
       {/* ── Users Table Card ────────────────────────────────────────────── */}
       <Card
+        className='glass-effect'
         sx={{
-          border: '1px solid',
-          borderColor: 'divider',
+          bgcolor: 'transparent',
           boxShadow: 'none',
           borderRadius: 4,
           overflow: 'hidden',
@@ -504,8 +497,8 @@ export default function UserList() {
             <Divider orientation='vertical' flexItem sx={{ mx: 1, height: 24, opacity: 0.5 }} />
             <Typography
               variant='caption'
-              color='text.secondary'
-              sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+              color='text.primary'
+              sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
             >
               {data?.data?.meta.total || 0} Records
             </Typography>
@@ -515,9 +508,12 @@ export default function UserList() {
         <Divider sx={{ opacity: 0.5 }} />
 
         {/* Table */}
-        <TableContainer>
+        <TableContainer sx={{ borderRadius: 0, boxShadow: 'none' }}>
           <Table sx={{ minWidth: 900 }}>
-            <TableHead sx={{ bgcolor: 'action.hover' }}>
+            <TableHead sx={{ 
+              bgcolor: (theme) => alpha(theme.palette.action.hover, 0.4),
+              borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+            }}>
               <TableRow>
                 {[
                   t('auth.common.user'),
@@ -529,11 +525,12 @@ export default function UserList() {
                   <TableCell
                     key={col}
                     sx={{
-                      py: 2,
-                      fontWeight: 800,
-                      fontSize: '0.7rem',
+                      py: 2.5,
+                      fontWeight: 900,
+                      fontSize: '0.75rem',
                       textTransform: 'uppercase',
-                      letterSpacing: '0.075em',
+                      letterSpacing: '0.1em',
+                      color: 'text.primary',
                     }}
                   >
                     {col}
@@ -542,10 +539,11 @@ export default function UserList() {
                 <TableCell
                   align='right'
                   sx={{
-                    fontWeight: 800,
-                    fontSize: '0.7rem',
+                    fontWeight: 900,
+                    fontSize: '0.75rem',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.075em',
+                    letterSpacing: '0.1em',
+                    color: 'text.primary',
                   }}
                 >
                   {t('auth.common.actions')}
@@ -570,7 +568,13 @@ export default function UserList() {
                   <TableRow
                     key={user.id}
                     hover
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    sx={{ 
+                      '&:last-child td, &:last-child th': { border: 0 },
+                      transition: 'background-color 0.2s ease',
+                      '&:hover': {
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.02),
+                      }
+                    }}
                   >
                     {/* User info */}
                     <TableCell
@@ -603,8 +607,7 @@ export default function UserList() {
                           </Typography>
                           <Typography
                             variant='caption'
-                            color='text.secondary'
-                            sx={{ fontWeight: 600 }}
+                            sx={{ fontWeight: 700, color: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'text.secondary') }}
                           >
                             {user.email}
                           </Typography>
@@ -618,20 +621,21 @@ export default function UserList() {
                         label={user.isActif ? t('auth.common.active') : t('auth.common.suspended')}
                         size='small'
                         sx={{
-                          fontWeight: 700,
-                          fontSize: '0.6rem',
-                          height: 20,
+                          fontWeight: 800,
+                          fontSize: '0.625rem',
+                          height: 22,
                           borderRadius: 1.5,
                           textTransform: 'uppercase',
+                          letterSpacing: '0.03em',
                           bgcolor: alpha(
                             user.isActif ? theme.palette.success.main : theme.palette.error.main,
-                            0.08,
+                            0.12,
                           ),
                           color: user.isActif ? 'success.main' : 'error.main',
                           border: '1px solid',
                           borderColor: alpha(
                             user.isActif ? theme.palette.success.main : theme.palette.error.main,
-                            0.2,
+                            0.25,
                           ),
                         }}
                       />

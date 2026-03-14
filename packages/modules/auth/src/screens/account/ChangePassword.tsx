@@ -1,3 +1,12 @@
+/**
+ * ──────────────────────────────────────────────────────────────────────────────
+ * AUDIT MAPPING: ChangePassword.tsx
+ * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
+ * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
+ * - 🟡 Glass effect classes added (HIGH)
+ * - 🟡 Entry animations (animate-scale-in) (HIGH)
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
 import React, { useState, useMemo } from 'react'
 import {
   Box,
@@ -84,6 +93,7 @@ function ChangePassword() {
         component='main'
         maxWidth={false}
         disableGutters
+        className='animate-scale-in'
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -112,7 +122,9 @@ function ChangePassword() {
           }}
         />
 
+        {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style background) ── */}
         <Card
+          className='glass-effect'
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -121,10 +133,10 @@ function ChangePassword() {
             position: 'relative',
             overflow: 'hidden',
             borderRadius: '12px',
-            boxShadow: (theme) => theme.shadows[4],
+            boxShadow: 'none',
             border: '1px solid',
             borderColor: 'divider',
-            bgcolor: 'background.paper',
+            bgcolor: 'transparent',
             mx: { xs: 2, sm: 4 },
             zIndex: 1,
           }}
@@ -141,7 +153,7 @@ function ChangePassword() {
                 sx={{
                   width: 56,
                   height: 56,
-                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                  bgcolor: 'info.lighter',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
@@ -149,7 +161,7 @@ function ChangePassword() {
                   mb: 3,
                 }}
               >
-                <LockReset sx={{ color: 'primary.main', fontSize: 32 }} />
+                <LockReset sx={{ color: 'info.main', fontSize: 32 }} />
               </Box>
 
               <Typography
@@ -181,6 +193,52 @@ function ChangePassword() {
                 noValidate
                 sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}
               >
+                {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
+                <Box>
+                  <Typography
+                    component='label'
+                    htmlFor='currentPassword'
+                    sx={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      color: 'text.primary',
+                      mb: 1,
+                    }}
+                  >
+                    {t('auth.account.current_password')}
+                  </Typography>
+                  <TextField
+                    id='currentPassword'
+                    fullWidth
+                    placeholder={t('auth.account.current_password_placeholder')}
+                    type='password'
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <Lock sx={{ fontSize: 20, color: 'text.disabled' }} />
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px',
+                        height: 48,
+                        bgcolor: 'background.paper',
+                        '& fieldset': { borderColor: 'divider' },
+                        '&:hover fieldset': { borderColor: 'info.main' },
+                        '&.Mui-focused fieldset': {
+                          borderColor: 'info.main',
+                          borderWidth: '1px',
+                        },
+                      },
+                      '& .MuiInputBase-input': { fontSize: '1rem' },
+                    }}
+                  />
+                </Box>
+
                 {/* New Password Field */}
                 <Box>
                   <Typography
@@ -194,48 +252,8 @@ function ChangePassword() {
                       mb: 1,
                     }}
                   >
-                    {t('auth.set_new_password.password_label')}
+                    {t('auth.account.new_password_label', 'New Password')}
                   </Typography>
-                  <Controller
-                    name='password'
-                    control={controlForm.control}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        id='password'
-                        fullWidth
-                        placeholder={t('auth.set_new_password.password_placeholder')}
-                        type={showPassword ? 'text' : 'password'}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <Mail sx={{ fontSize: 20, color: 'text.disabled' }} />
-                            </InputAdornment>
-                          ),
-                          endAdornment: (
-                            <InputAdornment position='end'>
-                              <Lock sx={{ fontSize: 18, color: 'text.disabled' }} />
-                            </InputAdornment>
-                          ),
-                        }}
-                        sx={{
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: '8px',
-                            height: 48,
-                            bgcolor: 'background.paper',
-                            '& fieldset': { borderColor: 'divider' },
-                            '&:hover fieldset': { borderColor: 'primary.main' },
-                            '&.Mui-focused fieldset': {
-                              borderColor: 'primary.main',
-                              borderWidth: '1px',
-                            },
-                          },
-                          '& .MuiInputBase-input': { fontSize: '1rem' },
-                        }}
-                      />
-                    )}
-                  />
 
                   <Controller
                     name='password'
@@ -248,18 +266,20 @@ function ChangePassword() {
                         fullWidth
                         placeholder={t('auth.set_new_password.password_placeholder')}
                         type={showPassword ? 'text' : 'password'}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position='end'>
-                              <IconButton onClick={handleClickShowPassword} edge='end'>
-                                {showPassword ? (
-                                  <VisibilityOff sx={{ fontSize: 20 }} />
-                                ) : (
-                                  <Visibility sx={{ fontSize: 20 }} />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton onClick={handleClickShowPassword} edge='end'>
+                                  {showPassword ? (
+                                    <VisibilityOff sx={{ fontSize: 20 }} />
+                                  ) : (
+                                    <Visibility sx={{ fontSize: 20 }} />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          },
                         }}
                         sx={{
                           '& .MuiOutlinedInput-root': {
@@ -267,9 +287,9 @@ function ChangePassword() {
                             height: 48,
                             bgcolor: 'background.paper',
                             '& fieldset': { borderColor: 'divider' },
-                            '&:hover fieldset': { borderColor: 'primary.main' },
+                            '&:hover fieldset': { borderColor: 'info.main' },
                             '&.Mui-focused fieldset': {
-                              borderColor: 'primary.main',
+                              borderColor: 'info.main',
                               borderWidth: '1px',
                             },
                           },
@@ -343,18 +363,20 @@ function ChangePassword() {
                         type={showConfirmPassword ? 'text' : 'password'}
                         error={!!fieldState.error}
                         helperText={fieldState.error?.message}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position='end'>
-                              <IconButton onClick={handleClickShowConfirmPassword} edge='end'>
-                                {showConfirmPassword ? (
-                                  <VisibilityOff sx={{ fontSize: 20 }} />
-                                ) : (
-                                  <Visibility sx={{ fontSize: 20 }} />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton onClick={handleClickShowConfirmPassword} edge='end'>
+                                  {showConfirmPassword ? (
+                                    <VisibilityOff sx={{ fontSize: 20 }} />
+                                  ) : (
+                                    <Visibility sx={{ fontSize: 20 }} />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          },
                         }}
                         sx={{
                           '& .MuiOutlinedInput-root': {
@@ -362,9 +384,9 @@ function ChangePassword() {
                             height: 48,
                             bgcolor: 'background.paper',
                             '& fieldset': { borderColor: 'divider' },
-                            '&:hover fieldset': { borderColor: 'primary.main' },
+                            '&:hover fieldset': { borderColor: 'info.main' },
                             '&.Mui-focused fieldset': {
-                              borderColor: 'primary.main',
+                              borderColor: 'info.main',
                               borderWidth: '1px',
                             },
                           },
@@ -378,11 +400,11 @@ function ChangePassword() {
                 {/* Requirements Card */}
                 <Box
                   sx={{
-                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.05),
+                    bgcolor: (theme) => alpha(theme.palette.info.main, 0.05),
                     borderRadius: '8px',
                     p: 2,
                     border: '1px solid',
-                    borderColor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                    borderColor: (theme) => alpha(theme.palette.info.main, 0.1),
                   }}
                 >
                   <Typography
@@ -415,6 +437,7 @@ function ChangePassword() {
                   </Box>
                 </Box>
 
+                {/* ── SYSTEM PATTERN: cta_button (info.main variant) ── */}
                 <Button
                   type='submit'
                   fullWidth
@@ -422,16 +445,15 @@ function ChangePassword() {
                   sx={{
                     py: 1.75,
                     borderRadius: '8px',
-                    bgcolor: 'primary.main',
-                    color: 'primary.contrastText',
+                    bgcolor: 'info.main',
+                    color: 'info.contrastText',
                     textTransform: 'none',
                     fontWeight: 700,
                     fontSize: '1rem',
                     mt: 1,
-                    boxShadow: (theme) =>
-                      `0 4px 6px -1px ${alpha(theme.palette.primary.main, 0.2)}`,
+                    boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
                     '&:hover': {
-                      bgcolor: 'primary.dark',
+                      bgcolor: 'info.dark',
                       boxShadow: 'none',
                     },
                   }}

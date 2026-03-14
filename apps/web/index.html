@@ -5,6 +5,40 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0d0d12" />
+    <!-- Anti-flash: critical styles applied before any JS runs to prevent FOUC -->
+    <style>
+      /* Prevent white flash on dark-mode users before MUI theme loads */
+      html.dark,
+      html.dark body {
+        background-color: #0d0d12;
+        color-scheme: dark;
+      }
+      html.light,
+      html.light body {
+        background-color: #ffffff;
+        color-scheme: light;
+      }
+      /* Prevent layout shift during Zustand hydration */
+      #root {
+        min-height: 100vh;
+      }
+    </style>
+    <!-- Anti-flash: resolve color scheme before React hydrates -->
+    <script>
+      ;(function () {
+        try {
+          var cookieName = 'GLDeveloper-1'
+          var match = document.cookie.match(new RegExp('(?:^|; )' + cookieName + '=([^;]*)'))
+          var settings = match ? JSON.parse(decodeURIComponent(match[1])) : null
+          var mode = settings && settings.mode ? settings.mode : 'light'
+          if (mode === 'system') {
+            mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          }
+          document.documentElement.classList.add(mode)
+          document.body && (document.body.style.colorScheme = mode)
+        } catch (e) {}
+      })()
+    </script>
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>React 19 Boilerplate</title>

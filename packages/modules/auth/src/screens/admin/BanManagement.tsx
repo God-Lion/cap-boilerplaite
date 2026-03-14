@@ -1,3 +1,12 @@
+/**
+ * ──────────────────────────────────────────────────────────────────────────────
+ * AUDIT MAPPING: BanManagement.tsx
+ * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
+ * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
+ * - 🟡 Glass effect classes added (HIGH)
+ * - 🟡 Entry animations (animate-scale-in) (HIGH)
+ * ──────────────────────────────────────────────────────────────────────────────
+ */
 import React, { useState } from 'react'
 import {
   Box,
@@ -50,6 +59,7 @@ import {
 import { useSnackbar } from 'notistack'
 import IssueBanDialog from './IssueBanDialog'
 
+// ── SYSTEM PATTERN: ban_management_screen (OrganizationProfile layout pattern) ──
 export default function BanManagement() {
   const { t } = useTranslation('common')
   const theme = useTheme()
@@ -94,7 +104,7 @@ export default function BanManagement() {
   }
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+    <Box className='animate-scale-in' sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant='h4' sx={{ fontWeight: 900, letterSpacing: '-0.027em', mb: 1 }}>
@@ -134,7 +144,9 @@ export default function BanManagement() {
           },
         ].map((stat, idx) => (
           <Grid key={idx} size={{ xs: 12, sm: 4 }}>
+            {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style) ── */}
             <Card
+              className='glass-effect'
               sx={{
                 bgcolor: alpha((theme.palette as any)[stat.color].main, 0.04),
                 border: '1px solid',
@@ -185,28 +197,39 @@ export default function BanManagement() {
 
       {/* Active Bans Section */}
       {tabValue === 0 && (
-        <Stack spacing={3}>
+        <Stack spacing={3} className='animate-scale-in'>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
             <TextField
               placeholder={t('auth.common.searchUsers')}
               size='small'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <Search fontSize='small' sx={{ color: 'text.secondary' }} />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <Search fontSize='small' sx={{ color: 'text.secondary' }} />
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{ width: 300 }}
             />
             <Box sx={{ flexGrow: 1 }} />
+            {/* ── SYSTEM PATTERN: cta_button (info.main variant) ── */}
             <Button
               variant='contained'
               startIcon={<Flag />}
               onClick={() => setIsBanModalOpen(true)}
-              sx={{ textTransform: 'none', fontWeight: 600 }}
+              sx={{
+                bgcolor: 'info.main',
+                color: 'info.contrastText',
+                '&:hover': { bgcolor: 'info.dark' },
+                textTransform: 'none',
+                fontWeight: 600,
+                boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
+              }}
             >
               {t('auth.admin.issueBan')}
             </Button>
@@ -217,11 +240,14 @@ export default function BanManagement() {
               <Typography>{t('auth.common.loading')}</Typography>
             </Box>
           ) : !bannedUsersData?.data?.data?.length ? (
-            <Alert severity='info'>{t('auth.admin.noBannedUsers')}</Alert>
+            <Alert severity='info' className='glass-effect'>
+              {t('auth.admin.noBannedUsers')}
+            </Alert>
           ) : (
             bannedUsersData.data.data.map((user) => (
               <Card
                 key={user.id}
+                className='glass-effect'
                 sx={{
                   border: '1px solid',
                   borderColor: 'divider',
@@ -387,13 +413,15 @@ export default function BanManagement() {
         }}
       />
       {/* TODO: Implement real EditBanDialog component in a separate file later */}
-      <Dialog open={!!editingUser} onClose={() => setEditingUser(null)}>
+      <Dialog open={!!editingUser} onClose={() => setEditingUser(null)} PaperProps={{ className: 'glass-effect' }}>
         <DialogTitle>{t('auth.admin.editBan')}</DialogTitle>
         <DialogContent>
           <DialogContentText>{t('auth.admin.editBan_stub')}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditingUser(null)}>{t('auth.common.cancel')}</Button>
+          <Button onClick={() => setEditingUser(null)} sx={{ textTransform: 'none' }}>
+            {t('auth.common.cancel')}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
@@ -431,19 +459,24 @@ function AppealsQueue() {
   const appeals = data?.data?.data ?? []
 
   return (
-    <Stack spacing={3}>
-      <Alert severity='info'>{t('auth.admin.appealsInfo')}</Alert>
+    <Stack spacing={3} className='animate-scale-in'>
+      <Alert severity='info' className='glass-effect'>
+        {t('auth.admin.appealsInfo')}
+      </Alert>
       {isLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
           <Typography>{t('auth.common.loading')}</Typography>
         </Box>
       ) : appeals.length === 0 ? (
-        <Alert severity='success'>{t('auth.admin.noAppeals')}</Alert>
+        <Alert severity='success' className='glass-effect'>
+          {t('auth.admin.noAppeals')}
+        </Alert>
       ) : (
         <Stack spacing={2}>
           {appeals.map((appeal: any) => (
             <Card
               key={appeal.id}
+              className='glass-effect'
               sx={{
                 border: '1px solid',
                 borderColor: alpha(theme.palette.warning.main, 0.3),
@@ -487,6 +520,7 @@ function AppealsQueue() {
                     </Box>
                   </Box>
                   <Box sx={{ display: 'flex', gap: 1 }}>
+                    {/* ── SYSTEM PATTERN: action_button ── */}
                     <Button
                       variant='contained'
                       color='success'
@@ -529,16 +563,19 @@ function AppealsQueue() {
         </Stack>
       )}
 
-      <Dialog open={!!resolvingAppealId} onClose={() => setResolvingAppealId(null)}>
+      <Dialog open={!!resolvingAppealId} onClose={() => setResolvingAppealId(null)} PaperProps={{ className: 'glass-effect' }}>
         <DialogTitle>{t('auth.admin.denyAppeal_confirm_title')}</DialogTitle>
         <DialogContent>
           <DialogContentText>{t('auth.admin.denyAppeal_confirm_msg')}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setResolvingAppealId(null)}>{t('auth.common.cancel')}</Button>
+          <Button onClick={() => setResolvingAppealId(null)} sx={{ textTransform: 'none' }}>
+            {t('auth.common.cancel')}
+          </Button>
           <Button
             color='error'
             disabled={resolveMutation.isPending}
+            sx={{ textTransform: 'none', fontWeight: 600 }}
             onClick={() => {
               if (resolvingAppealId) {
                 resolveMutation.mutate(
@@ -605,19 +642,22 @@ function BanFullHistory() {
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} className='animate-scale-in'>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        {/* ── SYSTEM PATTERN: text_field (InputProps -> slotProps.input) ── */}
         <TextField
           placeholder={t('auth.admin.searchHistory')}
           size='small'
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <Search fontSize='small' sx={{ color: 'text.secondary' }} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <Search fontSize='small' sx={{ color: 'text.secondary' }} />
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{ width: 300 }}
         />
@@ -638,11 +678,12 @@ function BanFullHistory() {
           <Typography>{t('auth.common.loading')}</Typography>
         </Box>
       ) : logs.length === 0 ? (
-        <Alert severity='info'>{t('auth.admin.noBanHistory')}</Alert>
+        <Alert severity='info' className='glass-effect'>{t('auth.admin.noBanHistory')}</Alert>
       ) : (
         logs.map((log: any) => (
           <Card
             key={log.id}
+            className='glass-effect'
             sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}
           >
             <CardContent sx={{ py: '12px !important' }}>

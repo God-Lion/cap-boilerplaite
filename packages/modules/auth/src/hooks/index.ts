@@ -41,6 +41,9 @@ export {
   useUpdateSAMLConfig,
   useSAMLMetadata,
   useUploadSAMLMetadata,
+  useFetchRemoteMetadata,
+  useRemoteMetadata,
+  useRecentSAMLEntities,
 
   // SSF Configuration
   useSSFConfig,

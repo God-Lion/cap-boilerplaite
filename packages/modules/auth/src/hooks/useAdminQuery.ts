@@ -27,6 +27,12 @@ export const adminKeys = {
   ssf: {
     all: ['admin', 'ssf'] as const,
     config: () => [...adminKeys.ssf.all, 'config'] as const,
+    history: () => [...adminKeys.ssf.all, 'history'] as const,
+  },
+  jwks: {
+    all: ['admin', 'jwks'] as const,
+    list: () => [...adminKeys.jwks.all, 'list'] as const,
+    detail: (kid: string) => [...adminKeys.jwks.all, 'detail', kid] as const,
   },
   dashboard: () => ['admin', 'dashboard'] as const,
   auditLogs: (params?: any) => ['admin', 'auditLogs', params] as const,
@@ -75,6 +81,7 @@ export const adminKeys = {
     all: ['admin', 'statistics'] as const,
     summary: () => [...adminKeys.statistics.all, 'summary'] as const,
   },
+
   systemHealth: () => ['admin', 'systemHealth'] as const,
   systemMetrics: () => ['admin', 'systemMetrics'] as const,
 }
@@ -109,6 +116,8 @@ import type {
   SAMLConfig,
   EmailTemplate,
   EmailTestRequest,
+  BroadcastSSFEventRequest,
+  BroadcastSSFEventResponse,
   MFAStats,
   UserStats,
   BulkActionRequest,
@@ -119,6 +128,9 @@ import type {
   SCIMConfig,
   DetailedHealthReport,
   BasicMetrics,
+  JWKSKey,
+  JWKSKeyDetail,
+  CreateJWKSKeyRequest,
 } from '../services/adminService'
 // ============================================================================
 // OIDC Client Management Hooks
@@ -277,7 +289,6 @@ export function useUpdateClientBranding(
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
   return useMutation({
     mutationFn: ({ id, data }) => adminService.updateClientBranding(id, data),
-    ...options,
     ...options,
     onSuccess: (...args) => {
       const [, variables] = args
@@ -645,83 +656,54 @@ export function useUploadSAMLMetadata(
     ...restOptions,
   })
 }
-// ============================================================================
-// SSF Configuration Hooks
-// ============================================================================
 /**
- * Get SSF configuration
+ * Fetch remote SAML metadata from a URL
  */
-export function useSSFConfig(
-  _options?: Omit<UseQueryOptions<FetchResponse<SSFConfig>, HttpError>, 'queryKey' | 'queryFn'>,
-) {
-  return useQuery({
-    queryKey: adminKeys.ssf.config(),
-    queryFn: () => adminService.getSSFConfig(),
-    staleTime: 1000 * 60 * 10,
-  })
-}
-/**
- * Update SSF configuration
- */
-export function useUpdateSSFConfig(
-  options?: UseMutationOptions<FetchResponse<SSFConfig>, HttpError, Partial<SSFConfig>, unknown>,
-) {
-  const queryClient = useQueryClient()
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-  return useMutation({
-    mutationFn: (data) => adminService.updateSSFConfig(data),
-    onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.ssf.config() })
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-/**
- * Test SSF stream
- */
-export function useTestSSFStream(
-  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, void, unknown>,
-) {
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
-  return useMutation({
-    mutationFn: () => adminService.testSSFStream(),
-    onSuccess: (...args) => {
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
-  })
-}
-/**
- * Broadcast SSF event
- */
-export function useBroadcastSSFEvent(
+export function useFetchRemoteMetadata(
   options?: UseMutationOptions<
-    FetchResponse<MessageResponse>,
+    FetchResponse<{ xml: string; entityId: string; name: string }>,
     HttpError,
-    { event_type: string; subject: string; payload: any },
+    string,
     unknown
   >,
 ) {
-  const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
   return useMutation({
-    mutationFn: (data) => adminService.broadcastSSFEvent(data),
-    onSuccess: (...args) => {
-      customOnSuccess?.(...args)
-    },
-    onError: (...args) => {
-      customOnError?.(...args)
-    },
-    ...restOptions,
+    mutationFn: (url: string) => adminService.fetchRemoteMetadata(url),
+    ...options,
   })
 }
-// ============================================================================
+
+/**
+ * Get remote SAML metadata from a URL (Query)
+ */
+export function useRemoteMetadata(
+  url: string,
+  options?: Omit<
+    UseQueryOptions<FetchResponse<{ xml: string; entityId: string; name: string }>, HttpError>,
+    'queryKey' | 'queryFn'
+  >,
+) {
+  return useQuery({
+    queryKey: ['admin', 'saml', 'remote', url],
+    queryFn: () => adminService.fetchRemoteMetadata(url),
+    enabled: !!url,
+    ...options,
+  })
+}
+
+/**
+ * List recently explored SAML entities
+ */
+export function useRecentSAMLEntities(
+  _options?: Omit<UseQueryOptions<FetchResponse<any[]>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: ['admin', 'saml', 'recent'],
+    queryFn: () => adminService.listRecentSAMLEntities(),
+    staleTime: 1000 * 60 * 5,
+  })
+}
+
 // Domain Verification Hooks
 // ============================================================================
 /**
@@ -751,10 +733,6 @@ export function useCheckDomain(
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
   return useMutation({
     mutationFn: (domain) => adminService.checkDomain(domain),
-    ...options,
-    ...options,
-    ...options,
-    ...options,
     ...options,
     onSuccess: (...args) => {
       customOnSuccess?.(...args)
@@ -946,9 +924,6 @@ export function useTestWebhook(
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
   return useMutation({
     mutationFn: (id) => adminService.testWebhook(id),
-    ...options,
-    ...options,
-    ...options,
     ...options,
     onSuccess: (...args) => {
       customOnSuccess?.(...args)
@@ -1189,7 +1164,6 @@ export function useDeleteRole(
   return useMutation({
     mutationFn: (id) => adminService.deleteRole(id),
     ...options,
-    ...options,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
       options?.onSuccess?.(...args)
@@ -1251,7 +1225,6 @@ export function useDeletePermission(
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id) => adminService.deletePermission(id),
-    ...options,
     ...options,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.rbac.permissions() })
@@ -1322,8 +1295,6 @@ export function useRevokePermission(
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data) => adminService.revokePermission(data),
-    ...options,
-    ...options,
     ...options,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.rbac.roles.all() })
@@ -1456,7 +1427,6 @@ export function useRemoveOrganizationMember(
   return useMutation({
     mutationFn: ({ orgId, userId }) => adminService.removeOrganizationMember(orgId, userId),
     ...options,
-    ...options,
     onSuccess: (...args) => {
       const [, variables] = args
       queryClient.invalidateQueries({ queryKey: adminKeys.organizations.detail(variables.orgId) })
@@ -1530,7 +1500,6 @@ export function useUploadOrganizationLogo(
   return useMutation({
     mutationFn: ({ id, file }) => adminService.uploadOrganizationLogo(id, file),
     ...options,
-    ...options,
     onSuccess: (...args) => {
       const [, variables] = args
       queryClient.invalidateQueries({ queryKey: adminKeys.organizations.all })
@@ -1567,7 +1536,6 @@ export function useUpdateOrganizationPolicies(
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ orgId, data }) => adminService.updateOrganizationPolicies(orgId, data),
-    ...options,
     ...options,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
@@ -1611,7 +1579,6 @@ export function useRevokeSCIMToken(
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id) => adminService.revokeSCIMToken(id as number),
-    ...options,
     ...options,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.scim.tokens() })
@@ -1769,9 +1736,6 @@ export function useBulkUserAction(
   const { onSuccess, ...restOptions } = options || {}
   return useMutation({
     mutationFn: (data) => adminService.bulkAction(data),
-    ...options,
-    ...options,
-    ...options,
     ...options,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.users.all })
@@ -2031,6 +1995,176 @@ export function useSystemMetrics(
     queryKey: adminKeys.systemMetrics(),
     queryFn: () => adminService.getSystemMetrics(),
     staleTime: 1000 * 10,
+    ...options,
+  })
+}
+
+// ============================================================================
+// SSF Configuration Hooks
+// ============================================================================
+
+export function useSSFConfig(
+  options?: Omit<UseQueryOptions<FetchResponse<SSFConfig>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: adminKeys.ssf.config(),
+    queryFn: () => adminService.getSSFConfig(),
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}
+
+export function useUpdateSSFConfig(
+  options?: Omit<
+    UseMutationOptions<
+      FetchResponse<{ message: string; config: SSFConfig }>,
+      HttpError,
+      SSFConfig
+    >,
+    'mutationFn'
+  >,
+) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (config: SSFConfig) => adminService.updateSSFConfig(config),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.ssf.config() })
+      if (options?.onSuccess) {
+        options.onSuccess(...args)
+      }
+    },
+    ...options,
+  })
+}
+
+export function useTestSSFStream(
+  options?: Omit<
+    UseMutationOptions<
+      FetchResponse<{ success: boolean; message: string; timestamp: string }>,
+      HttpError,
+      void
+    >,
+    'mutationFn'
+  >,
+) {
+  return useMutation({
+    mutationFn: () => adminService.testSSFStream(),
+    ...options,
+  })
+}
+
+export function useBroadcastSSFEvent(
+  options?: Omit<
+    UseMutationOptions<
+      FetchResponse<BroadcastSSFEventResponse>,
+      HttpError,
+      BroadcastSSFEventRequest
+    >,
+    'mutationFn'
+  >,
+) {
+  return useMutation({
+    mutationFn: (data: BroadcastSSFEventRequest) => adminService.broadcastSSFEvent(data),
+    ...options,
+  })
+}
+
+export function useSSFHistory(
+  options?: Omit<UseQueryOptions<FetchResponse<any[]>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: adminKeys.ssf.history(),
+    queryFn: () => adminService.getSSFHistory(),
+    staleTime: 1000 * 30, // 30 seconds
+    ...options,
+  })
+}
+// ============================================================================
+// JWKS Management Hooks
+// ============================================================================
+
+/**
+ * Get all JWKS keys
+ */
+export function useJWKSKeys(
+  options?: Omit<UseQueryOptions<FetchResponse<JWKSKey[]>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: adminKeys.jwks.list(),
+    queryFn: () => adminService.getJWKSKeys(),
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    ...options,
+  })
+}
+
+/**
+ * Rotate JWKS keys
+ */
+export function useRotateJWKSKeys(
+  options?: UseMutationOptions<FetchResponse<JWKSKey>, HttpError, void, unknown>,
+) {
+  const queryClient = useQueryClient()
+  const { onSuccess: customOnSuccess, ...restOptions } = options || {}
+  
+  return useMutation({
+    mutationFn: () => adminService.rotateJWKSKeys(),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.jwks.list() })
+      customOnSuccess?.(...args)
+    },
+    ...restOptions,
+  })
+}
+
+/**
+ * Delete a JWKS key
+ */
+export function useDeleteJWKSKey(
+  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, string, unknown>,
+) {
+  const queryClient = useQueryClient()
+  const { onSuccess: customOnSuccess, ...restOptions } = options || {}
+  
+  return useMutation({
+    mutationFn: (kid: string) => adminService.deleteJWKSKey(kid),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.jwks.list() })
+      customOnSuccess?.(...args)
+    },
+    ...restOptions,
+  })
+}
+
+/**
+ * Manually create a JWKS key
+ */
+export function useCreateJWKSKey(
+  options?: Omit<UseMutationOptions<FetchResponse<JWKSKey>, HttpError, CreateJWKSKeyRequest, unknown>, 'mutationFn'>,
+) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    ...options,
+    mutationFn: (data: CreateJWKSKeyRequest) => adminService.createJWKSKey(data),
+    onSuccess: (res, variables, context, mutation) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.jwks.all })
+      options?.onSuccess?.(res, variables, context, mutation)
+    },
+  })
+}
+
+/**
+ * Get detailed info for a single JWKS key
+ */
+export function useGetJWKSKeyDetail(
+  kid: string | null,
+  options?: Omit<UseQueryOptions<FetchResponse<JWKSKeyDetail>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: adminKeys.jwks.detail(kid ?? ''),
+    queryFn: () => adminService.getJWKSKeyDetail(kid!),
+    enabled: !!kid,
+    staleTime: 1000 * 60 * 5,
     ...options,
   })
 }

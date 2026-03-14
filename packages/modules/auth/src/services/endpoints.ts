@@ -61,6 +61,12 @@ export const ENDPOINTS = {
         enrollStart: '/api/mfa/totp/enroll',
         enrollConfirm: '/api/mfa/totp/enroll',
       },
+      sms: {
+        sendCode: '/api/auth/mfa/sms/send-code',
+        verify: '/api/auth/mfa/sms/verify',
+        disable: '/api/auth/mfa/sms/disable',
+        verifyLogin: '/api/auth/mfa/sms/verify-login',
+      },
     },
     passkey: {
       registerStart: '/api/auth/passkey/register/start',
@@ -272,6 +278,13 @@ export const ENDPOINTS = {
       updateConfig: '/api/admin/ssf/config',
       test: '/api/admin/ssf/test',
       broadcast: '/api/admin/ssf/broadcast',
+    },
+    jwks: {
+      index: '/api/admin/jwks',
+      show: (kid: string) => `/api/admin/jwks/${kid}`,
+      store: '/api/admin/jwks',
+      rotate: '/api/admin/jwks/rotate',
+      destroy: (kid: string) => `/api/admin/jwks/${kid}`,
     },
     scopes: {
       list: '/api/admin/scopes',

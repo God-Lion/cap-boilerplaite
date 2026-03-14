@@ -59,6 +59,12 @@ export interface RegisterRequest {
   firstname: string
   lastname: string
   isTermsSign: boolean
+  organization?: {
+    name?: string
+    domain?: string
+    phone?: string
+    website?: string
+  }
 }
 
 export interface ForgotPasswordRequest {
