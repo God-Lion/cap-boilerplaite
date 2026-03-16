@@ -16,6 +16,7 @@ import {
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import { LockReset, Mail, ArrowBack } from '@mui/icons-material'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Alert as MAlert, themeConfig, IStatus } from '@cap/platform-core'
@@ -51,7 +52,7 @@ export default function ForgotPassword() {
         open: true,
         type: 'success',
         state: 'success',
-        msg: t('auth.forgot_password.reset_link_sent'),
+        msg: t('auth.forgot_password.reset_link_sent', 'Check your email for the reset link.'),
       })
       setTimeout(() => navigate(Path.auth.checkEmail), 2000)
     },
@@ -60,7 +61,7 @@ export default function ForgotPassword() {
         open: true,
         type: 'error',
         state: 'error',
-        msg: error.response?.data?.detail || t('auth.forgot_password.request_failed'),
+        msg: error.response?.data?.detail || t('auth.forgot_password.request_failed', 'Password reset request failed.'),
       })
     },
   })
@@ -75,11 +76,11 @@ export default function ForgotPassword() {
   return (
     <>
       <title>
-        {t('auth.forgot_password.title_page')} - {themeConfig.templateName}
+        {t('auth.forgot_password.title_page', 'Forgot Password')} - {themeConfig.templateName}
       </title>
 
       <Container
-        component='main'
+        component="main"
         maxWidth={false}
         disableGutters
         sx={{
@@ -95,9 +96,9 @@ export default function ForgotPassword() {
       >
         <Backdrop
           open={forgotPasswordMutation.isPending}
-          sx={{ color: 'primary.contrastText', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          sx={{ color: "info.main", zIndex: (theme) => theme.zIndex.drawer + 1, backdropFilter: 'blur(4px)' }}
         >
-          <CircularProgress color='inherit' />
+          <CircularProgress color="inherit" />
         </Backdrop>
 
         <Snackbar
@@ -111,256 +112,266 @@ export default function ForgotPassword() {
           </MAlert>
         </Snackbar>
 
-        <Card
-          sx={{
-            width: '100%',
-            maxWidth: '480px',
-            borderRadius: '12px',
-            boxShadow: (theme) => theme.shadows[4],
-            border: '1px solid',
-            borderColor: 'divider',
-            overflow: 'hidden',
-            position: 'relative',
-            mx: 2,
-            bgcolor: 'background.paper',
-          }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
         >
-          {/* Top Accent Bar */}
-          <Box
+          <Card
             sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
               width: '100%',
-              height: 4,
-              background: (theme) =>
-                `linear-gradient(to right, ${alpha(theme.palette.primary.main, 0.6)}, ${theme.palette.primary.main})`,
-            }}
-          />
-
-          <CardContent
-            sx={{
-              px: { xs: 3, sm: 4 },
-              py: 5,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
+              maxWidth: '480px',
+              borderRadius: '16px',
+              boxShadow: (theme) => `0 20px 40px ${alpha(theme.palette.common.black, 0.1)}`,
+              border: '1px solid',
+              borderColor: 'divider',
+              overflow: 'hidden',
+              position: 'relative',
+              mx: 2,
+              bgcolor: 'background.paper',
             }}
           >
-            {/* Security Icon */}
+            {/* Top Accent Bar */}
             <Box
               sx={{
-                mb: 3,
-                width: 56,
-                height: 56,
-                borderRadius: '50%',
-                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <LockReset sx={{ color: 'primary.main', fontSize: 32 }} />
-            </Box>
-
-            {/* Headlines */}
-            <Typography
-              variant='h4'
-              sx={{
-                color: 'text.primary',
-                fontSize: '1.75rem',
-                fontWeight: 700,
-                letterSpacing: '-0.025em',
-                mb: 1.5,
-                fontFamily: 'inherit',
-              }}
-            >
-              {t('auth.forgot_password.title')}
-            </Typography>
-
-            <Typography
-              variant='body1'
-              sx={{
-                color: 'text.secondary',
-                fontSize: '1rem',
-                mb: 4,
-                maxWidth: '340px',
-                fontFamily: 'inherit',
-              }}
-            >
-              {t('auth.forgot_password.subtitle')}
-            </Typography>
-
-            {/* Form */}
-            <Box
-              component='form'
-              onSubmit={handleSubmit(onSubmit)}
-              noValidate
-              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
                 width: '100%',
+                height: 4,
+                background: (theme) =>
+                  `linear-gradient(to right, ${alpha(theme.palette.info.main, 0.6)}, ${theme.palette.info.main})`,
+              }}
+            />
+
+            <CardContent
+              sx={{
+                px: { xs: 3, sm: 4 },
+                py: 5,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 3,
-                textAlign: 'left',
+                alignItems: 'center',
+                textAlign: 'center',
               }}
             >
-              {/* Email Input */}
-              <Box>
-                <Typography
-                  component='label'
-                  htmlFor='email'
-                  sx={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: 'text.primary',
-                    mb: 1,
-                    ml: 0.5,
-                    fontFamily: 'inherit',
-                  }}
-                >
-                  {t('auth.forgot_password.email_label')}
-                </Typography>
-                <Controller
-                  name='email'
-                  control={control}
-                  rules={{
-                    required: t('auth.forgot_password.email_required'),
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: t('auth.forgot_password.invalid_email'),
-                    },
-                  }}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      id='email'
-                      type='email'
-                      fullWidth
-                      autoComplete='email'
-                      placeholder={t('auth.forgot_password.email_placeholder')}
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <Mail sx={{ fontSize: 20, color: 'text.secondary' }} />
-                          </InputAdornment>
-                        ),
-                      }}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          height: 48,
-                          borderRadius: '8px',
-                          bgcolor: 'background.paper',
-                          '& fieldset': {
-                            borderColor: 'divider',
-                          },
-                          '&:hover fieldset': {
-                            borderColor: 'primary.main',
-                          },
-                          '&.Mui-focused fieldset': {
-                            borderColor: 'primary.main',
-                            borderWidth: '2px',
-                          },
-                        },
-                        '& input::placeholder': {
-                          color: 'text.secondary',
-                          opacity: 0.5,
-                        },
-                      }}
-                    />
-                  )}
-                />
+              {/* Security Icon */}
+              <Box
+                sx={{
+                  mb: 3,
+                  width: 56,
+                  height: 56,
+                  borderRadius: '12px',
+                  bgcolor: (theme) => alpha(theme.palette.info.main, 0.1),
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transform: 'rotate(-5deg)',
+                }}
+              >
+                <LockReset sx={{ color: 'info.main', fontSize: 32 }} />
               </Box>
 
-              {/* Submit Button */}
-              <Button
-                type='submit'
-                fullWidth
-                variant='contained'
-                disabled={forgotPasswordMutation.isPending}
+              {/* Headlines */}
+              <Typography
+                variant="h4"
                 sx={{
-                  height: 48,
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  fontWeight: 700,
-                  fontSize: '1rem',
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
-                  boxShadow: (theme) => `0 1px 2px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+                  color: 'text.primary',
+                  fontSize: '1.75rem',
+                  fontWeight: 800,
+                  letterSpacing: '-0.025em',
+                  mb: 1.5,
                   fontFamily: 'inherit',
-                  '&:hover': {
-                    bgcolor: 'primary.dark',
-                    boxShadow: (theme) =>
-                      `0 4px 6px -1px ${alpha(theme.palette.primary.main, 0.3)}`,
-                  },
-                  '&:active': {
-                    bgcolor: 'primary.dark',
-                  },
                 }}
               >
-                {forgotPasswordMutation.isPending
-                  ? t('auth.forgot_password.button_sending')
-                  : t('auth.forgot_password.button_send')}
-              </Button>
-            </Box>
+                {t('auth.forgot_password.title', 'Forgot Password')}
+              </Typography>
 
-            {/* Back to Login Link */}
-            <Box
-              sx={{
-                mt: 4,
-                pt: 3,
-                borderTop: '1px solid',
-                borderColor: 'divider',
-                width: '100%',
-              }}
-            >
-              <MuiLink
-                component={Link}
-                to={Path.auth.signin}
+              <Typography
+                variant="body1"
                 sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
                   color: 'text.secondary',
-                  textDecoration: 'none',
+                  fontSize: '1rem',
+                  mb: 4,
+                  maxWidth: '340px',
                   fontFamily: 'inherit',
-                  transition: 'all 0.2s',
-                  '&:hover': {
-                    color: 'primary.main',
-                    '& .MuiSvgIcon-root': {
-                      transform: 'translateX(-4px)',
-                    },
-                  },
-                  '& .MuiSvgIcon-root': {
-                    fontSize: 18,
-                    transition: 'transform 0.2s',
-                  },
+                  lineHeight: 1.6,
                 }}
               >
-                <ArrowBack />
-                {t('auth.forgot_password.back_to_login')}
-              </MuiLink>
-            </Box>
-          </CardContent>
-        </Card>
+                {t('auth.forgot_password.subtitle', "Enter your email address and we'll send you a link to reset your password.")}
+              </Typography>
+
+              {/* Form */}
+              <Box
+                component="form"
+                onSubmit={handleSubmit(onSubmit)}
+                noValidate
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 3,
+                  textAlign: 'left',
+                }}
+              >
+                {/* Email Input */}
+                <Box>
+                  <Typography
+                    component="label"
+                    htmlFor="email"
+                    sx={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      color: 'text.primary',
+                      mb: 1,
+                      ml: 0.5,
+                      fontFamily: 'inherit',
+                    }}
+                  >
+                    {t('auth.forgot_password.email_label', 'Email Address')}
+                  </Typography>
+                  <Controller
+                    name="email"
+                    control={control}
+                    rules={{
+                      required: t('auth.forgot_password.email_required', 'Email is required.'),
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: t('auth.forgot_password.invalid_email', 'Invalid email address.'),
+                      },
+                    }}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        id="email"
+                        type="email"
+                        fullWidth
+                        autoComplete="email"
+                        placeholder={t('auth.forgot_password.email_placeholder', 'name@example.com')}
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        slotProps={{
+                          input: {
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Mail sx={{ fontSize: 20, color: 'info.main', opacity: 0.7 }} />
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            height: 48,
+                            borderRadius: '12px',
+                            bgcolor: (theme) => alpha(theme.palette.background.default, 0.5),
+                            '& fieldset': {
+                              borderColor: 'divider',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: 'info.main',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: 'info.main',
+                              borderWidth: '2px',
+                            },
+                          },
+                          '& input::placeholder': {
+                            color: 'text.secondary',
+                            opacity: 0.5,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
+
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="info"
+                  disabled={forgotPasswordMutation.isPending}
+                  sx={{
+                    height: 52,
+                    borderRadius: '12px',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    boxShadow: (theme) => `0 4px 14px 0 ${alpha(theme.palette.info.main, 0.3)}`,
+                    fontFamily: 'inherit',
+                    '&:hover': {
+                      bgcolor: 'info.dark',
+                      boxShadow: (theme) =>
+                        `0 6px 20px 0 ${alpha(theme.palette.info.main, 0.4)}`,
+                    },
+                    '&:active': {
+                      transform: 'translateY(1px)',
+                    },
+                  }}
+                >
+                  {forgotPasswordMutation.isPending
+                    ? t('auth.forgot_password.button_sending', 'Sending...')
+                    : t('auth.forgot_password.button_send', 'Send Reset Link')}
+                </Button>
+              </Box>
+
+              {/* Back to Login Link */}
+              <Box
+                sx={{
+                  mt: 4,
+                  pt: 3,
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  width: '100%',
+                }}
+              >
+                <MuiLink
+                  component={Link}
+                  to={Path.auth.signin}
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: 'text.secondary',
+                    textDecoration: 'none',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.2s',
+                    '&:hover': {
+                      color: 'info.main',
+                      '& .MuiSvgIcon-root': {
+                        transform: 'translateX(-4px)',
+                      },
+                    },
+                    '& .MuiSvgIcon-root': {
+                      fontSize: 18,
+                      transition: 'transform 0.2s',
+                    },
+                  }}
+                >
+                  <ArrowBack />
+                  {t('auth.forgot_password.back_to_login', 'Back to Login')}
+                </MuiLink>
+              </Box>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Footer */}
         <Box sx={{ mt: 4, textAlign: 'center' }}>
           <Typography
-            variant='caption'
+            variant="caption"
             sx={{
               fontSize: '0.875rem',
               color: 'text.disabled',
               fontFamily: 'inherit',
             }}
           >
-            © {new Date().getFullYear()} {t('auth.common.appName')}.{' '}
-            {t('auth.common.allRightsReserved')}
+            © {new Date().getFullYear()} {t('auth.common.appName', 'Godlio')}.{' '}
+            {t('auth.common.allRightsReserved', 'All rights reserved.')}
           </Typography>
         </Box>
       </Container>

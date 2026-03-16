@@ -226,11 +226,11 @@ export default function LoginScreen() {
               fontSize: '1rem',
               textTransform: 'none',
               bgcolor: 'info.main',
-              boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
+              boxShadow: (theme) => `0 4px 14px ${alpha(theme.palette.info.main, 0.4)}`,
               '&:hover': {
                 bgcolor: 'info.dark',
                 transform: 'translateY(-1px)',
-                boxShadow: '0 6px 20px rgba(0,118,255,0.23)',
+                boxShadow: (theme) => `0 6px 20px ${alpha(theme.palette.info.main, 0.23)}`,
               },
             }}
           >
@@ -250,7 +250,7 @@ export default function LoginScreen() {
         <Button
           fullWidth
           variant="outlined"
-          startIcon={<Google sx={{ color: '#DB4437' }} />}
+          startIcon={<Google sx={{ color: theme.palette.mode === 'dark' ? '#fff' : '#DB4437' }} />}
           onClick={() => handleSocialLogin('google')}
           disabled={isLoading}
           sx={{
@@ -271,7 +271,7 @@ export default function LoginScreen() {
         <Button
           fullWidth
           variant="outlined"
-          startIcon={<Microsoft sx={{ color: '#00A4EF' }} />}
+          startIcon={<Microsoft sx={{ color: theme.palette.mode === 'dark' ? '#fff' : '#00A4EF' }} />}
           onClick={() => handleSocialLogin('microsoft')}
           disabled={isLoading}
           sx={{

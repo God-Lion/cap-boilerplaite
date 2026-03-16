@@ -526,7 +526,7 @@ export default function SignInV2() {
                       bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
                       display: 'grid',
                       placeItems: 'center',
-                      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
+                      boxShadow: (theme) => `inset 0 2px 4px ${alpha(theme.palette.common.black, theme.palette.mode === 'dark' ? 0.2 : 0.05)}`,
                     }}
                   >
                     <LockPerson sx={{ color: 'primary.main', fontSize: 32 }} />
@@ -791,10 +791,10 @@ export default function SignInV2() {
                                   borderWidth: '1px',
                                 },
                               },
-                              '& input::placeholder': {
-                                color: '#617589',
-                                opacity: 1,
-                              },
+                                '& input::placeholder': {
+                                  color: 'text.secondary',
+                                  opacity: 0.7,
+                                },
                             }}
                           />
                         )}
@@ -870,8 +870,8 @@ export default function SignInV2() {
                                   },
                                 },
                                 '& input::placeholder': {
-                                  color: '#617589',
-                                  opacity: 1,
+                                  color: 'text.secondary',
+                                  opacity: 0.7,
                                 },
                               }}
                             />
@@ -1049,8 +1049,8 @@ export default function SignInV2() {
                           color: 'text.primary',
                           fontFamily: 'inherit',
                           '&:hover': {
-                            bgcolor: '#f9fafb',
-                            borderColor: '#c5cad0',
+                            bgcolor: (theme) => alpha(theme.palette.action.hover, 0.04),
+                            borderColor: 'divider',
                           },
                         }}
                       >
@@ -1083,8 +1083,8 @@ export default function SignInV2() {
                           color: 'text.primary',
                           fontFamily: 'inherit',
                           '&:hover': {
-                            bgcolor: '#f9fafb',
-                            borderColor: '#c5cad0',
+                            bgcolor: (theme) => alpha(theme.palette.action.hover, 0.04),
+                            borderColor: 'divider',
                           },
                         }}
                       >
