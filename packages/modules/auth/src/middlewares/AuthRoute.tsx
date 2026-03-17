@@ -24,12 +24,27 @@ const AuthRoute = ({
   const updateLayoutOverride = useAppStore((state) => state.updateLayoutOverride)
   const navigate = useNavigate()
 
+  // Securely resolve user data and role
+  const userData: any = normalizeAuthUser(user)
+  const userRole = (userData?.role as Roles) || Roles.USER
+
   React.useEffect(() => {
-    if (layout !== 'none') {
-      updateLayoutOverride(layout)
-      return () => updateLayoutOverride('none')
+    const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+    const isAdminSession = ADMIN_ROLES.includes(userRole)
+
+    // Force admin layout for admins if currently set to 'none'
+    const finalLayout = isAdminSession && layout === 'none' ? 'admin' : layout
+
+    if (finalLayout !== 'none') {
+      updateLayoutOverride(finalLayout)
+      return () => {
+        // Only reset if we are NOT an admin
+        if (!isAdminSession) {
+          updateLayoutOverride('none')
+        }
+      }
     }
-  }, [layout, updateLayoutOverride])
+  }, [layout, updateLayoutOverride, userRole])
 
   if (isLoading) {
     return (
@@ -66,10 +81,9 @@ const AuthRoute = ({
     return <Navigate to={Path.auth.signin} replace state={{ from: location }} />
   }
 
-  // Securely resolve user data and role
-  const userData: any = normalizeAuthUser(user)
-
-  const userRole = (userData?.role as Roles) || Roles.USER
+  if (!isAuthenticated) {
+    return <Navigate to={Path.auth.signin} replace state={{ from: location }} />
+  }
 
   // Check role access
   if (allowedRoles && allowedRoles.length > 0) {

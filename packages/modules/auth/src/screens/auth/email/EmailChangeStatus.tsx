@@ -1,201 +1,106 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  Box,
-  Container,
-  Typography,
-  Card,
-  alpha,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Chip,
-  IconButton,
-  Tooltip,
-  Button,
+  Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead,
+  TableRow, Chip, IconButton, Tooltip, Button, Card, Avatar, alpha, useTheme,
 } from '@mui/material'
-
-import { InfoOutlined, Refresh, ArrowBack } from '@mui/icons-material'
+import { InfoOutlined, Refresh, ArrowBack, ArrowForward, Email } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { themeConfig } from '@cap/platform-core'
 import Path from '../path'
+import { useEmailChanges } from '../../../hooks/useUserQuery'
+import { EmailChangeRequest } from '../../../types/api.types'
 
 export default function EmailChangeStatus() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('auth')
+  const theme = useTheme()
   const navigate = useNavigate()
-
-  // Mock data for requests
-  const requests = [
-    {
-      id: 1,
-      oldEmail: 'current@example.com',
-      newEmail: 'new@example.com',
-      status: 'pending_authorization',
-      date: '2026-02-15 10:30',
-    },
-    {
-      id: 2,
-      oldEmail: 'old@example.com',
-      newEmail: 'current@example.com',
-      status: 'completed',
-      date: '2025-11-20 14:15',
-    },
-  ]
+  const { data: response, isLoading, isError, refetch } = useEmailChanges()
+  const requests = response?.data || []
 
   const getStatusChip = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return (
-          <Chip
-            label={t('auth.email.status_completed', 'Completed')}
-            color='success'
-            size='small'
-            variant='outlined'
-          />
-        )
-      case 'pending_authorization':
-        return (
-          <Chip
-            label={t('auth.email.status_pending', 'Pending Auth')}
-            color='warning'
-            size='small'
-            variant='outlined'
-          />
-        )
-      case 'expired':
-        return (
-          <Chip
-            label={t('auth.email.status_expired', 'Expired')}
-            color='error'
-            size='small'
-            variant='outlined'
-          />
-        )
-      default:
-        return <Chip label={status} size='small' variant='outlined' />
+    const map: Record<string, any> = {
+      completed: { label: t('email.statusCompleted', 'Completed'), color: 'success' },
+      pending_authorization: { label: t('email.statusPending', 'Pending Auth'), color: 'warning' },
+      expired: { label: t('email.statusExpired', 'Expired'), color: 'error' },
     }
+    const cfg = map[status] || { label: status, color: 'default' }
+    return <Chip label={cfg.label} color={cfg.color} size="small" variant="outlined" />
   }
 
   return (
-    <>
-      <title>
-        {t('auth.email.change_status_title', 'Email Change Status')} - {themeConfig.templateName}
-      </title>
-
-      <Container
-        component='main'
-        maxWidth='md'
-        sx={{
-          py: 8,
-          minHeight: '100dvh',
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
-        <Box
-          sx={{
-            mb: 6,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-          }}
-        >
+    <Box
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 720, mx: 'auto', p: { xs: 3, md: 5 } }}
+    >
+      <Box sx={{ mb: 5, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+          <Avatar variant="square"
+            sx={{ width: 56, height: 56, bgcolor: 'transparent', color: 'primary.main', borderRadius: '24px', border: '2px solid', borderColor: alpha(theme.palette.primary.main, 0.2), flexShrink: 0 }}>
+            <Email sx={{ fontSize: 32 }} />
+          </Avatar>
           <Box>
-            <Typography variant='h4' sx={{ fontWeight: 800, mb: 1, letterSpacing: '-0.025em' }}>
-              {t('auth.email.status_heading', 'Email Management')}
+            <Typography variant="h4" sx={{ fontWeight: 900, mb: 0.5, letterSpacing: '-0.027em' }}>
+              {t('email.statusHeading', 'Email Management')}
             </Typography>
-            <Typography variant='body1' color='text.secondary'>
-              {t(
-                'auth.email.status_description',
-                'Track and manage your email address change requests.',
-              )}
+            <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
+              {t('email.statusDescription', 'Track and manage your email address change requests.')}
             </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Tooltip title={t('auth.common.refresh', 'Refresh')}>
-              <IconButton sx={{ border: '1px solid', borderColor: 'divider' }}>
-                <Refresh />
-              </IconButton>
-            </Tooltip>
-            <Button
-              variant='contained'
-              onClick={() => navigate(Path.requestEmailChange)}
-              sx={{ borderRadius: '10px', textTransform: 'none', fontWeight: 700 }}
-            >
-              {t('auth.email.new_request', 'New Request')}
-            </Button>
           </Box>
         </Box>
-
-        <Card
-          sx={{
-            borderRadius: '16px',
-            boxShadow: (theme) => `0 10px 30px ${alpha(theme.palette.common.black, 0.05)}`,
-            border: '1px solid',
-            borderColor: 'divider',
-            overflow: 'hidden',
-          }}
-        >
-          <TableContainer>
-            <Table>
-              <TableHead sx={{ bgcolor: 'action.hover' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700 }}>
-                    {t('auth.email.col_emails', 'Email Addresses')}
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>
-                    {t('auth.email.col_date', 'Date Requested')}
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>
-                    {t('auth.email.col_status', 'Status')}
-                  </TableCell>
-                  <TableCell align='right' />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {requests.map((request) => (
-                  <TableRow key={request.id} sx={{ '&:last-child td': { border: 0 } }}>
-                    <TableCell>
-                      <Box>
-                        <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                          {request.newEmail}
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, opacity: 0.6 }}>
-                          <Typography variant='caption'>
-                            {t('auth.email.from', 'from')}: {request.oldEmail}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant='body2' color='text.secondary'>
-                        {request.date}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>{getStatusChip(request.status)}</TableCell>
-                    <TableCell align='right'>
-                      <IconButton size='small'>
-                        <InfoOutlined fontSize='small' />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
-
-        <Box sx={{ mt: 5 }}>
-          <Button
-            onClick={() => navigate(Path.team)}
-            startIcon={<ArrowBack />}
-            sx={{ textTransform: 'none', fontWeight: 600, color: 'text.secondary' }}
-          >
-            {t('auth.common.backToDashboard', 'Back to Dashboard')}
+        <Box sx={{ display: 'flex', gap: 2, flexShrink: 0 }}>
+          <Tooltip title={t('common.refresh', 'Refresh')}>
+            <IconButton onClick={() => refetch()} disabled={isLoading} sx={{ border: '1px solid', borderColor: 'divider' }}>
+              <Refresh />
+            </IconButton>
+          </Tooltip>
+          <Button variant="contained" onClick={() => navigate(Path.requestEmailChange)} endIcon={<ArrowForward />}
+            sx={{ borderRadius: 3, textTransform: 'none', fontWeight: 800, bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark' } }}>
+            {t('email.newRequest', 'New Request')}
           </Button>
         </Box>
-      </Container>
-    </>
+      </Box>
+
+      <Card sx={{ borderRadius: 3, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
+        <TableContainer>
+          <Table>
+            <TableHead sx={{ bgcolor: 'action.hover' }}>
+              <TableRow>
+                <TableCell><Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', color: 'text.secondary' }}>{t('email.colEmails', 'Email Addresses')}</Typography></TableCell>
+                <TableCell><Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', color: 'text.secondary' }}>{t('email.colDate', 'Date Requested')}</Typography></TableCell>
+                <TableCell><Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', color: 'text.secondary' }}>{t('email.colStatus', 'Status')}</Typography></TableCell>
+                <TableCell align="right" />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading && <TableRow><TableCell colSpan={4} align="center" sx={{ py: 4 }}><Typography variant="body2" color="text.secondary">{t('common.loading', 'Loading...')}</Typography></TableCell></TableRow>}
+              {isError && <TableRow><TableCell colSpan={4} align="center" sx={{ py: 4 }}><Typography variant="body2" color="error">{t('common.errorLoading', 'Failed to load changes.')}</Typography></TableCell></TableRow>}
+              {!isLoading && !isError && requests.length === 0 && <TableRow><TableCell colSpan={4} align="center" sx={{ py: 4 }}><Typography variant="body2" color="text.secondary">{t('email.noRequests', 'No email change requests found.')}</Typography></TableCell></TableRow>}
+              {!isLoading && !isError && requests.map((request: EmailChangeRequest) => (
+                <TableRow key={request.id} sx={{ '&:last-child td': { border: 0 } }}>
+                  <TableCell>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>{request.newEmail}</Typography>
+                    <Typography variant="caption" color="text.secondary">{t('email.from', 'from')}: {request.oldEmail}</Typography>
+                  </TableCell>
+                  <TableCell><Typography variant="body2" color="text.secondary">{request.date}</Typography></TableCell>
+                  <TableCell>{getStatusChip(request.status)}</TableCell>
+                  <TableCell align="right"><IconButton size="small"><InfoOutlined fontSize="small" /></IconButton></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
+
+      <Box sx={{ mt: 4 }}>
+        <Button onClick={() => navigate(Path.team)} startIcon={<ArrowBack />}
+          sx={{ textTransform: 'none', fontWeight: 600, color: 'text.secondary' }}>
+          {t('common.backToDashboard', 'Back to Dashboard')}
+        </Button>
+      </Box>
+    </Box>
   )
 }

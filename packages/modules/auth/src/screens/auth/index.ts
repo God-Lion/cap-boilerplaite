@@ -21,7 +21,6 @@ export { default as Page429TooManyRequests } from './system/Page429TooManyReques
 export { default as CsrfErrorScreen } from './system/CsrfErrorScreen'
 
 // Email & Verification Flow
-export { default as RequestEmailChange } from './email/RequestEmailChange'
 export { default as InitiateEmailChange } from './email/InitiateEmailChange'
 export { default as EmailChangeVerificationPending } from './email/EmailChangeVerificationPending'
 export { default as EmailChangeVerification } from './email/EmailChangeVerification'

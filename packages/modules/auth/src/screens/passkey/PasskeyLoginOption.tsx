@@ -1,130 +1,83 @@
 import { useState } from 'react'
 import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  TextField,
-  Divider,
-  CircularProgress,
-  alpha,
+  Box, Button, TextField, Typography, Avatar, Divider,
+  CircularProgress, Stack, alpha, useTheme,
 } from '@mui/material'
 import { Fingerprint, ArrowForward, Lock } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
 export default function PasskeyLoginOption() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('auth')
+  const theme = useTheme()
   const [isAuthenticating, setIsAuthenticating] = useState(false)
   const [email, setEmail] = useState('')
 
   const handlePasskeyLogin = () => {
     setIsAuthenticating(true)
-    // Simulate authentication
     setTimeout(() => setIsAuthenticating(false), 2000)
   }
 
   return (
-    <Container maxWidth='xs' sx={{ py: 6 }}>
-      {/* Hero */}
+    <Box
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 440, mx: 'auto', p: { xs: 3, md: 5 } }}
+    >
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Box
-          sx={{
-            width: 72,
-            height: 72,
-            borderRadius: '50%',
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            mx: 'auto',
-            mb: 3,
-          }}
-        >
-          <Fingerprint sx={{ fontSize: 36, color: 'primary.main' }} />
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <Avatar variant="square"
+            sx={{ width: 56, height: 56, bgcolor: 'transparent', color: 'primary.main', borderRadius: '24px', border: '2px solid', borderColor: alpha(theme.palette.primary.main, 0.2) }}>
+            <Fingerprint sx={{ fontSize: 32 }} />
+          </Avatar>
         </Box>
-        <Typography variant='h4' fontWeight={800} letterSpacing='-0.02em' sx={{ mb: 1 }}>
-          {t('auth.passkey.welcome_back', 'Welcome back')}
+        <Typography variant="h4" fontWeight={900} letterSpacing="-0.027em" sx={{ mb: 1 }}>
+          {t('passkey.welcomeBack', 'Welcome back')}
         </Typography>
-        <Typography variant='body1' color='text.secondary'>
-          {t('auth.passkey.login_subtitle', 'Sign in with your passkey for quick, secure access.')}
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
+          {t('passkey.loginSubtitle', 'Sign in with your passkey for quick, secure access.')}
         </Typography>
       </Box>
 
-      {/* Email Input */}
-      <TextField
-        fullWidth
-        label={t('auth.passkey.email_label', 'Email address')}
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder='you@example.com'
-        sx={{
-          mb: 3,
-          '& .MuiOutlinedInput-root': { borderRadius: 2 },
-        }}
-      />
+      <Stack spacing={3}>
+        <Box>
+          <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', ml: 1, mb: 1, display: 'block', color: 'text.secondary' }}>
+            {t('passkey.emailLabel', 'Email Address')}
+          </Typography>
+          <TextField fullWidth type="email" placeholder="you@example.com" value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            slotProps={{ input: { sx: { borderRadius: 3, bgcolor: alpha(theme.palette.background.paper, 0.6) } } }} />
+        </Box>
 
-      {/* Passkey Login Button */}
-      <Button
-        fullWidth
-        variant='contained'
-        size='large'
-        onClick={handlePasskeyLogin}
-        disabled={isAuthenticating || !email}
-        startIcon={
-          isAuthenticating ? <CircularProgress size={20} color='inherit' /> : <Fingerprint />
-        }
-        sx={{
-          textTransform: 'none',
-          fontWeight: 700,
-          fontSize: '1rem',
-          borderRadius: 2,
-          py: 1.5,
-          mb: 2,
-        }}
-      >
-        {isAuthenticating
-          ? t('auth.passkey.authenticating', 'Authenticating...')
-          : t('auth.passkey.login_passkey', 'Sign in with Passkey')}
-      </Button>
+        <Button fullWidth variant="contained" size="large" onClick={handlePasskeyLogin}
+          disabled={isAuthenticating || !email}
+          startIcon={isAuthenticating ? <CircularProgress size={20} color="inherit" /> : <Fingerprint />}
+          sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)', boxShadow: (t) => `0 6px 20px ${alpha(t.palette.info.main, 0.23)}` } }}>
+          {isAuthenticating ? t('passkey.authenticating', 'Authenticating...') : t('passkey.loginPasskey', 'Sign in with Passkey')}
+        </Button>
 
-      {/* Divider */}
-      <Divider sx={{ my: 3 }}>
-        <Typography variant='caption' color='text.secondary'>
-          {t('common.or', 'or')}
-        </Typography>
-      </Divider>
+        <Divider sx={{ opacity: 0.5 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+            {t('common.or', 'OR')}
+          </Typography>
+        </Divider>
 
-      {/* Alternative Login */}
-      <Button
-        fullWidth
-        variant='outlined'
-        size='large'
-        endIcon={<ArrowForward />}
-        sx={{
-          textTransform: 'none',
-          fontWeight: 600,
-          borderRadius: 2,
-          py: 1.25,
-          mb: 1,
-        }}
-      >
-        {t('auth.passkey.use_password', 'Sign in with password')}
-      </Button>
+        <Button fullWidth variant="outlined" size="large" endIcon={<ArrowForward />}
+          sx={{ py: 1.2, borderRadius: 3, fontWeight: 700, textTransform: 'none', color: 'text.primary', borderColor: alpha(theme.palette.divider, 0.8), '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) } }}>
+          {t('passkey.usePassword', 'Sign in with password')}
+        </Button>
+      </Stack>
 
-      {/* Security Footer */}
       <Box sx={{ mt: 5, textAlign: 'center' }}>
-        <Typography
-          variant='caption'
-          color='text.disabled'
-          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5 }}
-        >
+        <Typography variant="caption" color="text.disabled"
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5 }}>
           <Lock sx={{ fontSize: 12 }} />
-          {t(
-            'auth.passkey.phishing_resistant',
-            'Passkeys are phishing-resistant and encrypted end-to-end.',
-          )}
+          {t('passkey.phishingResistant', 'Passkeys are phishing-resistant and encrypted end-to-end.')}
         </Typography>
       </Box>
-    </Container>
+    </Box>
   )
 }

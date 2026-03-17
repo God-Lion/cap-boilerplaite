@@ -710,11 +710,16 @@ export function useRecentSAMLEntities(
  * Verify a domain
  */
 export function useVerifyDomain(
-  options?: UseMutationOptions<FetchResponse<MessageResponse>, HttpError, string, unknown>,
+  options?: UseMutationOptions<
+    FetchResponse<MessageResponse>,
+    HttpError,
+    { domain: string; organizationId?: number },
+    unknown
+  >,
 ) {
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
   return useMutation({
-    mutationFn: (domain) => adminService.verifyDomain(domain),
+    mutationFn: ({ domain, organizationId }) => adminService.verifyDomain(domain, organizationId),
     onSuccess: (...args) => {
       customOnSuccess?.(...args)
     },

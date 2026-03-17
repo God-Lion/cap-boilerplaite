@@ -1,0 +1,5 @@
+export { default as ChangeEmail } from './ChangeEmail'
+export { default as InitiateEmailChange } from './InitiateEmailChange'
+export { default as EmailChangeStatusDashboard } from './EmailChangeStatusDashboard'
+export { default as DeactivateAccount } from './DeactivateAccount'
+export { default as DeleteAccount } from './DeleteAccount'

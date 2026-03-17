@@ -30,7 +30,12 @@ import {
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import {
+  AuthPageLayout,
+  AuthScreenIcon,
+  AuthInputLabel,
+  AuthActionButton,
+} from '../../../components/shared/auth'
 
 export default function LoginScreen() {
   const { t } = useTranslation('auth')
@@ -54,7 +59,7 @@ export default function LoginScreen() {
     setError(null)
     
     if (!identifier || !password) {
-      setError(t('login.errorIncomplete', 'Please enter both email and password.'))
+      setError(t('signIn.errorIncomplete', 'Please fill in all fields.'))
       return
     }
 
@@ -67,7 +72,7 @@ export default function LoginScreen() {
       // Simulate successful login
       navigate(redirectUrl)
     } catch (err: any) {
-      setError(err.message || t('login.errorGeneric', 'An error occurred during sign in. Please try again.'))
+      setError(err.message || t('signIn.errorGeneric', 'An error occurred. Please try again.'))
     } finally {
       setIsLoading(false)
     }
@@ -81,44 +86,17 @@ export default function LoginScreen() {
 
   // ── SYSTEM PATTERN: Entry animation (OrganizationProfile L60) ──
   return (
-    <Box
-      className="animate-scale-in"
-      component={motion.div}
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      sx={{
-        width: '100%',
-        maxWidth: 440,
-        mx: 'auto',
-        p: { xs: 3, md: 5 },
-        position: 'relative',
-      }}
-    >
+    <AuthPageLayout>
       <Box sx={{ mb: 4, textAlign: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-           {/* ── SYSTEM PATTERN: Avatar (OrganizationProfile L64) ── */}
-          <Avatar
-            variant="square"
-            sx={{
-              width: 56,
-              height: 56,
-              bgcolor: 'transparent',
-              color: 'primary.main',
-              borderRadius: '24px',
-              border: '2px solid',
-              borderColor: alpha(theme.palette.primary.main, 0.2),
-            }}
-          >
-            <VpnKey sx={{ fontSize: 32 }} />
-          </Avatar>
+          <AuthScreenIcon icon={<VpnKey sx={{ fontSize: 32 }} />} />
         </Box>
-        {/* ── SYSTEM PATTERN: h4 titles (OrganizationProfile L62) ── */}
+        {/* ── SYSTEM PATTERN: h4 titles (Standardized Title) ── */}
         <Typography variant='h4' sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
-          {t('login.welcomeBack', 'Welcome back')}
+          {t('signIn.title', 'Welcome back')}
         </Typography>
         <Typography variant='body1' color='text.secondary' sx={{ fontWeight: 500 }}>
-          {t('login.signIntoAccount', 'Sign in to your Antigravity OS account')}
+          {t('signIn.subtitle', 'Please enter your details to sign in')}
         </Typography>
       </Box>
 
@@ -134,11 +112,7 @@ export default function LoginScreen() {
       <form onSubmit={handleLogin}>
         <Stack spacing={3}>
           <Box>
-            {/* ── SYSTEM PATTERN: Section headings (OrganizationProfile L61) ── */}
-            <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', ml: 1, mb: 1, display: 'block', color: 'text.secondary' }}>
-              {t('login.emailAddress', 'Email Address')}
-            </Typography>
-            {/* ── SYSTEM PATTERN: MUI v6 API input props (OrganizationProfile L67) ── */}
+            <AuthInputLabel>{t('signIn.emailLabel', 'EMAIL ADDRESS')}</AuthInputLabel>
             <TextField
               fullWidth
               placeholder="name@company.com"
@@ -162,9 +136,7 @@ export default function LoginScreen() {
 
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, px: 1 }}>
-              <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', color: 'text.secondary' }}>
-                {t('login.password', 'Password')}
-              </Typography>
+              <AuthInputLabel>{t('signIn.passwordLabel', 'PASSWORD')}</AuthInputLabel>
               <Typography
                 variant="caption"
                 onClick={() => navigate('/auth/recovery')}
@@ -172,10 +144,11 @@ export default function LoginScreen() {
                   fontWeight: 700,
                   color: 'info.main',
                   cursor: 'pointer',
-                  '&:hover': { textDecoration: 'underline' }
+                  '&:hover': { textDecoration: 'underline' },
+                  mt: -1 // Align with label
                 }}
               >
-                {t('login.forgotPassword', 'Forgot password?')}
+                {t('signIn.forgotPassword', 'Forgot password?')}
               </Typography>
             </Box>
             <TextField
@@ -211,38 +184,18 @@ export default function LoginScreen() {
             />
           </Box>
 
-          {/* ── SYSTEM PATTERN: CTA buttons (OrganizationProfile L58) ── */}
-          <Button
+          <AuthActionButton
             type="submit"
-            fullWidth
-            variant="contained"
+            isLoading={isLoading}
+            label={isLoading ? t('signIn.submitting', 'Signing In...') : t('signIn.submit', 'Sign In')}
             disabled={isLoading || !identifier || !password}
-            endIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <ArrowForward />}
-            sx={{
-              py: 1.5,
-              mt: 2,
-              borderRadius: 3,
-              fontWeight: 800,
-              fontSize: '1rem',
-              textTransform: 'none',
-              bgcolor: 'info.main',
-              boxShadow: (theme) => `0 4px 14px ${alpha(theme.palette.info.main, 0.4)}`,
-              '&:hover': {
-                bgcolor: 'info.dark',
-                transform: 'translateY(-1px)',
-                boxShadow: (theme) => `0 6px 20px ${alpha(theme.palette.info.main, 0.23)}`,
-              },
-            }}
-          >
-            {isLoading ? t('login.signingIn', 'Signing In...') : t('login.signInAccount', 'Sign In')}
-          </Button>
+          />
         </Stack>
       </form>
 
-      {/* ── SYSTEM PATTERN: Dividers (OrganizationProfile L65) ── */}
       <Divider sx={{ my: 4, opacity: 0.5 }}>
         <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-          {t('login.orContinueWith', 'OR CONTINUE WITH')}
+          {t('signIn.orSignInWith', 'OR SIGN IN WITH')}
         </Typography>
       </Divider>
 
@@ -314,7 +267,7 @@ export default function LoginScreen() {
 
       <Box sx={{ mt: 5, textAlign: 'center' }}>
         <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-          {t('login.dontHaveAccount', "Don't have an account?")}{' '}
+          {t('signIn.noAccount', "Don't have an account?")}{' '}
           <Typography
             component="span"
             variant="body2"
@@ -326,10 +279,11 @@ export default function LoginScreen() {
               '&:hover': { textDecoration: 'underline' }
             }}
           >
-            {t('login.signUpNow', 'Sign up now')}
+            {t('signIn.signUpHere', 'Sign up here')}
           </Typography>
         </Typography>
       </Box>
-    </Box>
+    </AuthPageLayout>
+
   )
 }

@@ -1,0 +1,493 @@
+import type { TenantConfig, UserPreferences } from '../types/tenant'
+
+const TENANT_CACHE_KEY = 'tenant-config-cache'
+const TENANT_VERSION_KEY = 'tenant-version'
+const USER_PREFERENCES_KEY = 'user-preferences'
+const CACHE_EXPIRY_MS = 5 * 60 * 1000 // 5 minutes
+
+interface CachedTenant {
+  config: TenantConfig
+  timestamp: number
+  domain: string
+}
+
+interface TenantCache {
+  [domain: string]: CachedTenant
+}
+
+const mockTenants: Record<string, TenantConfig> = {
+  'tenant1.localhost': {
+    id: 'tenant1',
+    slug: 'tenant1',
+    domain: 'tenant1.localhost',
+    name: 'Acme Corp',
+    theme: {
+      mode: 'light',
+      skin: 'default',
+      semiDark: false,
+      primaryColor: '#1976D2',
+      secondaryColor: '#455A64',
+      colors: {
+        primary: {
+          main: '#1976D2',
+          light: '#42A5F5',
+          dark: '#1565C0',
+          contrastText: '#FFF',
+        },
+        secondary: {
+          main: '#455A64',
+          light: '#607D8B',
+          dark: '#37474F',
+          contrastText: '#FFF',
+        },
+        error: {
+          main: '#D32F2F',
+          light: '#EF5350',
+          dark: '#C62828',
+          contrastText: '#FFF',
+        },
+        success: {
+          main: '#388E3C',
+          light: '#66BB6A',
+          dark: '#2E7D32',
+          contrastText: '#FFF',
+        },
+        warning: {
+          main: '#F57C00',
+          light: '#FFB74D',
+          dark: '#EF6C00',
+          contrastText: '#FFF',
+        },
+        info: {
+          main: '#0288D1',
+          light: '#03A9F4',
+          dark: '#0277BD',
+          contrastText: '#FFF',
+        },
+        brandGold: '#FFC107',
+        brandBrown: '#795548',
+        brandSlate: '#607D8B',
+        brandCream: '#FFF8E1',
+      },
+      shape: {
+        borderRadius: 8,
+        customBorderRadius: { xs: 4, sm: 6, md: 8, lg: 10, xl: 12 },
+      },
+      typography: {
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+        h1: { fontWeight: 700 },
+        h2: { fontWeight: 700 },
+        h3: { fontWeight: 600 },
+        h4: { fontWeight: 600 },
+        h5: { fontWeight: 600 },
+        h6: { fontWeight: 600 },
+      },
+    },
+    layout: {
+      layout: 'vertical',
+      layoutPadding: 24,
+      compactContentWidth: 1440,
+      navbar: {
+        type: 'fixed',
+        contentWidth: 'compact',
+        floating: true,
+        detached: true,
+        blur: true,
+      },
+      footer: { type: 'static', contentWidth: 'compact', detached: true },
+      contentWidth: 'compact',
+      disableRipple: false,
+      toastPosition: 'top-right',
+    },
+    branding: {
+      appName: 'Acme Dashboard',
+      companyName: 'Acme Corporation',
+      welcomeText: 'Welcome to Acme Corp',
+    },
+    features: { darkMode: true, rtl: false, notifications: true, chat: true },
+    version: 1,
+  },
+  'tenant2.localhost': {
+    id: 'tenant2',
+    slug: 'tenant2',
+    domain: 'tenant2.localhost',
+    name: 'TechStart Inc',
+    theme: {
+      mode: 'dark',
+      skin: 'bordered',
+      semiDark: true,
+      primaryColor: '#7C4DFF',
+      secondaryColor: '#00BCD4',
+      colors: {
+        primary: {
+          main: '#7C4DFF',
+          light: '#B388FF',
+          dark: '#651FFF',
+          contrastText: '#FFF',
+        },
+        secondary: {
+          main: '#00BCD4',
+          light: '#4DD0E1',
+          dark: '#00ACC1',
+          contrastText: '#000',
+        },
+        error: {
+          main: '#F44336',
+          light: '#EF5350',
+          dark: '#E53935',
+          contrastText: '#FFF',
+        },
+        success: {
+          main: '#4CAF50',
+          light: '#81C784',
+          dark: '#43A047',
+          contrastText: '#FFF',
+        },
+        warning: {
+          main: '#FF9800',
+          light: '#FFB74D',
+          dark: '#F57C00',
+          contrastText: '#000',
+        },
+        info: {
+          main: '#00BCD4',
+          light: '#4DD0E1',
+          dark: '#00ACC1',
+          contrastText: '#000',
+        },
+        brandGold: '#FFD54F',
+        brandBrown: '#8D6E63',
+        brandSlate: '#78909C',
+        brandCream: '#263238',
+      },
+      shape: {
+        borderRadius: 12,
+        customBorderRadius: { xs: 6, sm: 8, md: 12, lg: 16, xl: 20 },
+      },
+      typography: {
+        fontFamily: '"Inter", "Segoe UI", sans-serif',
+        h1: { fontWeight: 800 },
+        h2: { fontWeight: 700 },
+        h3: { fontWeight: 700 },
+        h4: { fontWeight: 600 },
+        h5: { fontWeight: 600 },
+        h6: { fontWeight: 600 },
+      },
+    },
+    layout: {
+      layout: 'horizontal',
+      layoutPadding: 16,
+      compactContentWidth: 1200,
+      navbar: {
+        type: 'fixed',
+        contentWidth: 'wide',
+        floating: false,
+        detached: false,
+        blur: false,
+      },
+      footer: { type: 'fixed', contentWidth: 'wide', detached: false },
+      contentWidth: 'wide',
+      disableRipple: true,
+      toastPosition: 'bottom-right',
+    },
+    branding: {
+      appName: 'TechStart Portal',
+      companyName: 'TechStart Inc',
+      welcomeText: 'Innovate with TechStart',
+    },
+    features: { darkMode: true, rtl: false, notifications: true, chat: false },
+    version: 1,
+  },
+  'tenant3.localhost': {
+    id: 'tenant3',
+    slug: 'tenant3',
+    domain: 'tenant3.localhost',
+    name: 'Green Eco',
+    theme: {
+      mode: 'light',
+      skin: 'default',
+      semiDark: false,
+      primaryColor: '#2E7D32',
+      secondaryColor: '#00897B',
+      colors: {
+        primary: {
+          main: '#2E7D32',
+          light: '#4CAF50',
+          dark: '#1B5E20',
+          contrastText: '#FFF',
+        },
+        secondary: {
+          main: '#00897B',
+          light: '#26A69A',
+          dark: '#00695C',
+          contrastText: '#FFF',
+        },
+        error: {
+          main: '#C62828',
+          light: '#EF5350',
+          dark: '#B71C1C',
+          contrastText: '#FFF',
+        },
+        success: {
+          main: '#2E7D32',
+          light: '#4CAF50',
+          dark: '#1B5E20',
+          contrastText: '#FFF',
+        },
+        warning: {
+          main: '#F9A825',
+          light: '#FFD54F',
+          dark: '#F57F17',
+          contrastText: '#000',
+        },
+        info: {
+          main: '#0277BD',
+          light: '#29B6F6',
+          dark: '#01579B',
+          contrastText: '#FFF',
+        },
+        brandGold: '#AED581',
+        brandBrown: '#5D4037',
+        brandSlate: '#455A64',
+        brandCream: '#F1F8E9',
+      },
+      shape: {
+        borderRadius: 4,
+        customBorderRadius: { xs: 2, sm: 4, md: 6, lg: 8, xl: 10 },
+      },
+      typography: {
+        fontFamily: '"Nunito", "Verdana", sans-serif',
+        h1: { fontWeight: 700 },
+        h2: { fontWeight: 600 },
+        h3: { fontWeight: 600 },
+        h4: { fontWeight: 600 },
+        h5: { fontWeight: 500 },
+        h6: { fontWeight: 500 },
+      },
+    },
+    layout: {
+      layout: 'collapsed',
+      layoutPadding: 20,
+      compactContentWidth: 1366,
+      navbar: {
+        type: 'static',
+        contentWidth: 'compact',
+        floating: false,
+        detached: true,
+        blur: false,
+      },
+      footer: { type: 'static', contentWidth: 'compact', detached: true },
+      contentWidth: 'compact',
+      disableRipple: false,
+      toastPosition: 'top-left',
+    },
+    branding: {
+      appName: 'Green Eco Dashboard',
+      companyName: 'Green Eco Solutions',
+      welcomeText: 'Go Green with Us',
+    },
+    features: { darkMode: false, rtl: false, notifications: true, chat: true },
+    version: 1,
+  },
+}
+
+export class TenantService {
+  private static getCurrentHostname(): string {
+    if (typeof window === 'undefined') return 'localhost'
+    return window.location.hostname
+  }
+
+  private static isDevelopment(): boolean {
+    return import.meta.env.DEV
+  }
+
+  static getTenantFromHostname(): string {
+    const hostname = this.getCurrentHostname()
+    
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'default'
+    }
+    
+    const parts = hostname.split('.')
+    if (parts.length >= 2 && parts[0] !== 'www') {
+      return parts[0]
+    }
+    
+    return 'default'
+  }
+
+  static getCache(): TenantCache {
+    try {
+      const cached = localStorage.getItem(TENANT_CACHE_KEY)
+      return cached ? JSON.parse(cached) : {}
+    } catch {
+      return {}
+    }
+  }
+
+  static setCache(domain: string, config: TenantConfig): void {
+    try {
+      const cache = this.getCache()
+      cache[domain] = {
+        config,
+        timestamp: Date.now(),
+        domain,
+      }
+      localStorage.setItem(TENANT_CACHE_KEY, JSON.stringify(cache))
+    } catch (error) {
+      console.error('[TenantService] Failed to cache tenant config:', error)
+    }
+  }
+
+  static getCachedTenant(domain: string): TenantConfig | null {
+    try {
+      const cache = this.getCache()
+      const cached = cache[domain]
+      
+      if (!cached) return null
+      
+      if (Date.now() - cached.timestamp > CACHE_EXPIRY_MS) {
+        delete cache[domain]
+        localStorage.setItem(TENANT_CACHE_KEY, JSON.stringify(cache))
+        return null
+      }
+      
+      return cached.config
+    } catch {
+      return null
+    }
+  }
+
+  static async fetchTenant(tenantSlug?: string): Promise<TenantConfig> {
+    const domain = this.getCurrentHostname()
+    const slug = tenantSlug || this.getTenantFromHostname()
+    
+    const cached = this.getCachedTenant(domain)
+    if (cached) {
+      console.log('[TenantService] Using cached tenant config for:', domain)
+      return cached
+    }
+
+    if (this.isDevelopment() && mockTenants[domain]) {
+      console.log('[TenantService] Using mock tenant config for:', domain)
+      const mockConfig = mockTenants[domain]
+      this.setCache(domain, mockConfig)
+      return mockConfig
+    }
+
+    try {
+      const response = await fetch(`/api/guest/tenant?domain=${domain}`)
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch tenant: ${response.statusText}`)
+      }
+      
+      const config: TenantConfig = await response.json()
+      this.setCache(domain, config)
+      return config
+    } catch (error) {
+      console.warn('[TenantService] Failed to fetch tenant, using default:', error)
+      
+      // Default fallback config
+      return {
+        id: 'default',
+        slug: 'default',
+        domain: 'localhost',
+        name: 'Default',
+        theme: {
+          mode: 'light',
+          skin: 'default',
+          semiDark: false,
+          primaryColor: '#1976D2',
+          secondaryColor: '#455A64',
+          colors: {
+            primary: {
+              main: '#1976D2',
+              light: '#42A5F5',
+              dark: '#1565C0',
+              contrastText: '#FFF',
+            },
+            secondary: {
+              main: '#455A64',
+              light: '#607D8B',
+              dark: '#37474F',
+              contrastText: '#FFF',
+            },
+          },
+        },
+        layout: {
+          layout: 'vertical',
+          layoutPadding: 24,
+          compactContentWidth: 1440,
+          navbar: {
+            type: 'fixed',
+            contentWidth: 'compact',
+            floating: true,
+            detached: true,
+            blur: true,
+          },
+          footer: { type: 'static', contentWidth: 'compact', detached: true },
+          contentWidth: 'compact',
+          disableRipple: false,
+          toastPosition: 'top-right',
+        },
+        branding: { appName: 'My App', companyName: 'My Company' },
+        features: { darkMode: true, rtl: false, notifications: true, chat: true },
+        version: 1,
+      } as TenantConfig
+    }
+  }
+
+  static async checkForUpdates(): Promise<boolean> {
+    const domain = this.getCurrentHostname()
+    const cache = this.getCache()
+    const cached = cache[domain]
+    
+    if (!cached) return false
+    
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || '/api'
+      const slug = this.getTenantFromHostname()
+      const response = await fetch(`${apiUrl}/tenants/${slug}/version`, {
+        credentials: 'include',
+      })
+      
+      if (response.ok) {
+        const { version } = await response.json()
+        if (version !== cached.config.version) {
+          console.log('[TenantService] New tenant version available:', version)
+          return true
+        }
+      }
+    } catch {
+      // Silently fail - will use cached version
+    }
+    
+    return false
+  }
+
+  static clearCache(): void {
+    localStorage.removeItem(TENANT_CACHE_KEY)
+    localStorage.removeItem(TENANT_VERSION_KEY)
+  }
+
+  static getUserPreferences(): UserPreferences {
+    try {
+      const stored = localStorage.getItem(USER_PREFERENCES_KEY)
+      return stored ? JSON.parse(stored) : {}
+    } catch {
+      return {}
+    }
+  }
+
+  static setUserPreferences(prefs: UserPreferences): void {
+    try {
+      const current = this.getUserPreferences()
+      localStorage.setItem(USER_PREFERENCES_KEY, JSON.stringify({ ...current, ...prefs }))
+    } catch (error) {
+      console.error('[TenantService] Failed to save user preferences:', error)
+    }
+  }
+}
+
+export default TenantService

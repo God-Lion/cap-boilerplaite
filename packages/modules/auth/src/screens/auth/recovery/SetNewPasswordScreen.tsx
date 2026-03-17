@@ -1,38 +1,24 @@
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * AUDIT MAPPING: SetNewPasswordScreen.tsx
- * - 🔴 InputProps → slotProps.input modernized (CRITICAL)
- * - 🔴 CTA Button styling applied (info.main) (CRITICAL)
- * - 🟡 Glass effect classes added (HIGH)
- * - 🟡 Entry animations (animate-scale-in) (HIGH)
- * ──────────────────────────────────────────────────────────────────────────────
- */
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   Box,
   Button,
-  Container,
   TextField,
   Typography,
-  Card,
-  CardContent,
-  IconButton,
+  Alert,
   InputAdornment,
-  Snackbar,
-  Backdrop,
+  IconButton,
   CircularProgress,
-  Link as MuiLink,
   alpha,
-  Divider,
+  useTheme,
+  Avatar,
+  Stack,
+  Link as MuiLink,
 } from '@mui/material'
-import { LockReset, Visibility, VisibilityOff, ArrowBack, VerifiedUser } from '@mui/icons-material'
-import { useForm, Controller } from 'react-hook-form'
+import { LockReset, Visibility, VisibilityOff, ArrowBack, ArrowForward } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
-  Alert as MAlert,
-  themeConfig,
-  IStatus,
   FetchResponse,
   HttpError,
   IUserResponseEmailResetPassword,
@@ -42,70 +28,23 @@ import { useResetPassword } from '../../../hooks/useAuthQuery'
 import authService from '../../../services/auth.service'
 import Path from '../path'
 
-interface ResetPasswordFormData {
-  token: string
-  new_password: string
-  confirmPassword: string
-}
-
 const SUPPORT_EMAIL = 'support@example.com'
 
 export default function SetNewPasswordScreen() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('auth')
+  const theme = useTheme()
   const navigate = useNavigate()
   const { email } = useParams()
   const [searchParams] = useSearchParams()
   const signature = searchParams.get('signature')
 
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState(true)
   const [signatureValid, setSignatureValid] = useState<boolean | null>(null)
-  const [token, setToken] = useState<string>('')
-  const [status, setStatus] = useState<IStatus>({
-    open: false,
-    type: '',
-    state: '',
-    msg: '',
-  })
-
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-
-  const { control, handleSubmit, setValue } = useForm<ResetPasswordFormData>({
-    defaultValues: {
-      token: '',
-      new_password: '',
-      confirmPassword: '',
-    },
-  })
-
-  const handleCloseStatus = useCallback(() => {
-    setStatus((prev) => ({ ...prev, open: false }))
-  }, [])
-
-  const handleShowPassword = useCallback(() => {
-    setShowPassword((prev) => !prev)
-  }, [])
-
-  const resetPasswordMutation = useResetPassword({
-    onSuccess: () => {
-      setStatus({
-        open: true,
-        type: 'success',
-        state: 'success',
-        msg: t('auth.reset_password.success_msg', 'Password has been successfully reset.'),
-      })
-      setTimeout(() => navigate('/auth/password-reset-success'), 2000)
-    },
-    onError: (error: any) => {
-      setStatus({
-        open: true,
-        type: 'error',
-        state: 'error',
-        msg:
-          error.response?.data?.detail ||
-          t('auth.reset_password.error_msg', 'Error resetting password.'),
-      })
-    },
-  })
+  const [token, setToken] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function verifySignature() {
@@ -113,384 +52,302 @@ export default function SetNewPasswordScreen() {
         setLoading(true)
         const response: FetchResponse<IUserResponseEmailResetPassword> =
           await authService.verifyResetPassword(email || '', signature ?? '')
-
         if (response.status === 202 && response.data.isSignatureValid) {
           setSignatureValid(true)
           setToken(response.data.token || '')
-          setValue('token', response.data.token || '')
         } else {
           setSignatureValid(false)
         }
-      } catch (error) {
+      } catch {
         setSignatureValid(false)
-        console.error('Signature verification error:', error)
       } finally {
         setLoading(false)
       }
     }
     verifySignature()
-  }, [email, signature, setValue])
+  }, [email, signature])
 
-  const onSubmit = useCallback(
-    (data: ResetPasswordFormData) => {
-      resetPasswordMutation.mutate({
-        data: {
-          token: data.token,
-          email: email || '',
-          password: data.new_password,
-          confirmPassword: data.confirmPassword,
-        },
-      })
+  const resetPasswordMutation = useResetPassword({
+    onSuccess: () => {
+      navigate('/auth/password-reset-success')
     },
-    [email, resetPasswordMutation],
+    onError: (err: any) => {
+      setError(
+        err.response?.data?.detail ||
+          t('resetPassword.errorMsg', 'Error resetting password.'),
+      )
+    },
+  })
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault()
+      setError(null)
+      if (!newPassword || !confirmPassword) {
+        setError(t('resetPassword.fillAll', 'Please fill in all fields.'))
+        return
+      }
+      if (newPassword.length < 8) {
+        setError(t('register.passwordMinLength', 'Password must be at least 8 characters.'))
+        return
+      }
+      if (newPassword !== confirmPassword) {
+        setError(t('register.passwordsMustMatch', 'Passwords do not match.'))
+        return
+      }
+      const data: ResetPasswordRequest = {
+        token,
+        email: email || '',
+        password: newPassword,
+        confirmPassword,
+      }
+      resetPasswordMutation.mutate({ data })
+    },
+    [token, email, newPassword, confirmPassword, resetPasswordMutation, t],
   )
 
   if (loading) {
     return (
-      <Container sx={{ height: '100dvh', display: 'grid', placeItems: 'center' }}>
+      <Box sx={{ height: '100dvh', display: 'grid', placeItems: 'center' }}>
         <CircularProgress />
-      </Container>
+      </Box>
     )
   }
 
   if (signatureValid === false) {
     return (
-      <Container
-        component='main'
-        maxWidth={false}
-        disableGutters
-        className='animate-scale-in'
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100dvh',
-          justifyContent: 'center',
-          alignItems: 'center',
-          bgcolor: 'background.default',
-          p: 3,
-        }}
+      <Box
+        className="animate-scale-in"
+        component={motion.div}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        sx={{ width: '100%', maxWidth: 440, mx: 'auto', p: { xs: 3, md: 5 }, textAlign: 'center' }}
       >
-        <Card
-          className='glass-effect'
-          sx={{ maxWidth: 480, width: '100%', textAlign: 'center', p: 4, borderRadius: '16px', bgcolor: 'transparent', boxShadow: 'none', border: '1px solid', borderColor: 'divider' }}
-        >
-          <Box sx={{ mb: 3 }}>
-            <Box
-              sx={{
-                width: 64,
-                height: 64,
-                bgcolor: 'error.lighter',
-                color: 'error.main',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mx: 'auto',
-              }}
-            >
-              <LockReset fontSize='large' />
-            </Box>
-          </Box>
-          <Typography variant='h5' fontWeight={700} gutterBottom>
-            {t('auth.reset_password.invalid_link_title', 'Invalid or Expired Link')}
-          </Typography>
-          <Typography variant='body2' color='text.secondary' sx={{ mb: 4 }}>
-            {t(
-              'auth.reset_password.invalid_link_desc',
-              'This password reset link is invalid or has expired. Please request a new one.',
-            )}
-          </Typography>
-          {/* SYSTEM PATTERN: cta_button (info.main variant) */}
-          <Button
-            component={Link}
-            to={Path.forgotPassword}
-            variant='contained'
-            fullWidth
-            sx={{ height: 48, borderRadius: '10px', bgcolor: 'info.main', color: 'info.contrastText', textTransform: 'none', fontWeight: 700, boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)', '&:hover': { bgcolor: 'info.dark' } }}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <Avatar
+            variant="square"
+            sx={{
+              width: 56,
+              height: 56,
+              bgcolor: 'transparent',
+              color: 'primary.main',
+              borderRadius: '24px',
+              border: '2px solid',
+              borderColor: alpha(theme.palette.primary.main, 0.2),
+            }}
           >
-            {t('auth.reset_password.request_new_link', 'Request New Link')}
-          </Button>
-          <Box sx={{ mt: 3 }}>
-            <MuiLink
-              component={Link}
-              to={Path.signin}
-              sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
-            >
-              {t('auth.common.backToLogin', 'Back to log in')}
-            </MuiLink>
-          </Box>
-        </Card>
-      </Container>
+            <LockReset sx={{ fontSize: 32 }} />
+          </Avatar>
+        </Box>
+        <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+          {t('resetPassword.invalidLinkTitle', 'Invalid or Expired Link')}
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, mb: 4 }}>
+          {t('resetPassword.invalidLinkDesc', 'This password reset link is invalid or has expired. Please request a new one.')}
+        </Typography>
+        <Alert severity="error" sx={{ mb: 4, borderRadius: 2, textAlign: 'left', '& .MuiAlert-message': { fontWeight: 600 } }}>
+          {t('resetPassword.invalidLinkDesc2', `If you need help, contact us at ${SUPPORT_EMAIL}`)}
+        </Alert>
+        <Button
+          component={Link}
+          to={Path.forgotPassword}
+          fullWidth
+          variant="contained"
+          sx={{
+            py: 1.5,
+            borderRadius: 3,
+            fontWeight: 800,
+            fontSize: '1rem',
+            textTransform: 'none',
+            bgcolor: 'info.main',
+            boxShadow: (theme) => `0 4px 14px ${alpha(theme.palette.info.main, 0.4)}`,
+            '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)' },
+          }}
+        >
+          {t('resetPassword.requestNewLink', 'Request New Link')}
+        </Button>
+        <Box sx={{ mt: 3 }}>
+          <MuiLink
+            component={Link}
+            to={Path.signin}
+            sx={{ color: 'text.secondary', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none', '&:hover': { color: 'info.main' } }}
+          >
+            {t('common.backToLogin', 'Back to log in')}
+          </MuiLink>
+        </Box>
+      </Box>
     )
   }
 
   return (
-    <>
-      <title>
-        {t('auth.reset_password.title_page', 'Set New Password')} - {themeConfig.templateName}
-      </title>
-
-      <Container
-        component='main'
-        maxWidth={false}
-        disableGutters
-        className='animate-scale-in'
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100dvh',
-          justifyContent: 'center',
-          alignItems: 'center',
-          bgcolor: 'background.default',
-          py: { xs: 4, sm: 8 },
-          position: 'relative',
-          overflow: 'hidden',
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
-        {/* Background Decoration */}
-        <Box
-          sx={{
-            position: 'fixed',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: -1,
-            opacity: 0.4,
-            pointerEvents: 'none',
-            background: (theme) =>
-              `radial-gradient(circle at 85% 50%, ${alpha(
-                theme.palette.divider,
-                0.2,
-              )}, transparent 25%), radial-gradient(circle at 15% 30%, ${alpha(
-                theme.palette.divider,
-                0.2,
-              )}, transparent 25%)`,
-          }}
-        />
-
-        <Backdrop
-          open={resetPasswordMutation.isPending}
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        >
-          <CircularProgress color='inherit' />
-        </Backdrop>
-
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={status.open}
-          autoHideDuration={6000}
-          onClose={handleCloseStatus}
-        >
-          <MAlert onClose={handleCloseStatus} severity={status.type} sx={{ width: '100%' }}>
-            {status.msg}
-          </MAlert>
-        </Snackbar>
-
-        {/* SYSTEM PATTERN: metric_card (OrganizationProfile style background) */}
-        <Card
-          className='glass-effect'
-          sx={{
-            width: '100%',
-            maxWidth: '500px',
-            borderRadius: { xs: 0, sm: '16px' },
-            boxShadow: 'none',
-            border: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'transparent',
-            mx: { xs: 0, sm: 2 },
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          <CardContent sx={{ p: 0 }}>
-            <Box sx={{ px: { xs: 3, sm: 5 }, py: 6 }}>
-              <Box sx={{ textAlign: 'center', mb: 5 }}>
-                <Box
-                  sx={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: '14px',
-                    bgcolor: 'info.lighter',
-                    display: 'grid',
-                    placeItems: 'center',
-                    mx: 'auto',
-                    mb: 2.5,
-                  }}
-                >
-                  <VerifiedUser sx={{ color: 'info.main', fontSize: 28 }} />
-                </Box>
-                <Typography variant='h4' sx={{ fontWeight: 800, mb: 1, letterSpacing: '-0.025em' }}>
-                  {t('auth.reset_password.title', 'Set new password')}
-                </Typography>
-                <Typography variant='body2' color='text.secondary'>
-                  {t(
-                    'auth.reset_password.subtitle',
-                    "Please choose a strong password that you haven't used before.",
-                  )}
-                </Typography>
-              </Box>
-
-              <Box
-                component='form'
-                onSubmit={handleSubmit(onSubmit)}
-                noValidate
-                sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
-              >
-                <Box>
-                  <Typography
-                    component='label'
-                    sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, mb: 1 }}
-                  >
-                    {t('auth.reset_password.email_label', 'Email Address')}
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    value={email || ''}
-                    disabled
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '10px',
-                        height: 48,
-                        bgcolor: 'action.hover',
-                      },
-                    }}
-                  />
-                </Box>
-
-                <Box>
-                  <Typography
-                    component='label'
-                    sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, mb: 1 }}
-                  >
-                    {t('auth.reset_password.new_password_label', 'New Password')}
-                  </Typography>
-                  <Controller
-                    name='new_password'
-                    control={control}
-                    rules={{
-                      required: t('auth.reset_password.password_required', 'Password is required'),
-                      minLength: {
-                        value: 8,
-                        message: t(
-                          'auth.register.password_min_length',
-                          'Password must be at least 8 characters',
-                        ),
-                      },
-                    }}
-                    render={({ field, fieldState }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder='••••••••'
-                        error={!!fieldState.error}
-                        helperText={fieldState.error?.message}
-                        slotProps={{
-                          input: {
-                            endAdornment: (
-                              <InputAdornment position='end'>
-                                <IconButton onClick={handleShowPassword} edge='end' size='small'>
-                                  {showPassword ? (
-                                    <Visibility sx={{ fontSize: 20 }} />
-                                  ) : (
-                                    <VisibilityOff sx={{ fontSize: 20 }} />
-                                  )}
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px', height: 48 } }}
-                      />
-                    )}
-                  />
-                </Box>
-
-                <Box>
-                  <Typography
-                    component='label'
-                    sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, mb: 1 }}
-                  >
-                    {t('auth.reset_password.confirm_password_label', 'Confirm Password')}
-                  </Typography>
-                  <Controller
-                    name='confirmPassword'
-                    control={control}
-                    rules={{
-                      required: t(
-                        'auth.reset_password.confirm_password_required',
-                        'Please confirm your password',
-                      ),
-                      validate: (value, values) =>
-                        value === values.new_password ||
-                        t('auth.register.passwords_must_match', 'Passwords do not match'),
-                    }}
-                    render={({ field, fieldState }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder='••••••••'
-                        error={!!fieldState.error}
-                        helperText={fieldState.error?.message}
-                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px', height: 48 } }}
-                      />
-                    )}
-                  />
-                </Box>
-
-                {/* SYSTEM PATTERN: cta_button (info.main variant) */}
-                <Button
-                  type='submit'
-                  fullWidth
-                  variant='contained'
-                  size='large'
-                  disabled={resetPasswordMutation.isPending}
-                  sx={{
-                    height: 52,
-                    borderRadius: '12px',
-                    fontWeight: 700,
-                    textTransform: 'none',
-                    bgcolor: 'info.main',
-                    color: 'info.contrastText',
-                    boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.2)',
-                    mt: 1,
-                    '&:hover': {
-                      bgcolor: 'info.dark',
-                    },
-                  }}
-                >
-                  {resetPasswordMutation.isPending
-                    ? t('auth.reset_password.button_resetting', 'Resetting...')
-                    : t('auth.reset_password.button_reset', 'Reset password')}
-                </Button>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-
-        {/* Support Links */}
-        <Box sx={{ mt: 6, display: 'flex', gap: 4 }}>
-          <MuiLink
-            component={Link}
-            to={Path.signin}
+    <Box
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{
+        width: '100%',
+        maxWidth: 440,
+        mx: 'auto',
+        p: { xs: 3, md: 5 },
+        position: 'relative',
+      }}
+    >
+      <Box sx={{ mb: 4, textAlign: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <Avatar
+            variant="square"
             sx={{
-              fontSize: '0.875rem',
-              color: 'text.secondary',
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              '&:hover': { color: 'text.primary' },
+              width: 56,
+              height: 56,
+              bgcolor: 'transparent',
+              color: 'primary.main',
+              borderRadius: '24px',
+              border: '2px solid',
+              borderColor: alpha(theme.palette.primary.main, 0.2),
             }}
           >
-            <ArrowBack sx={{ fontSize: 16 }} />
-            {t('auth.common.backToLogin', 'Back to log in')}
-          </MuiLink>
+            <LockReset sx={{ fontSize: 32 }} />
+          </Avatar>
         </Box>
-      </Container>
-    </>
+        <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+          {t('resetPassword.title', 'Set new password')}
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
+          {t('resetPassword.subtitle', "Choose a strong password you haven't used before.")}
+        </Typography>
+      </Box>
+
+      {error && (
+        <Alert
+          severity="error"
+          sx={{ mb: 4, borderRadius: 2, '& .MuiAlert-message': { fontWeight: 600 } }}
+        >
+          {error}
+        </Alert>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={3}>
+          <Box>
+            <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', ml: 1, mb: 1, display: 'block', color: 'text.secondary' }}>
+              {t('resetPassword.emailLabel', 'Email Address')}
+            </Typography>
+            <TextField
+              fullWidth
+              value={email || ''}
+              disabled
+              slotProps={{
+                input: {
+                  sx: { borderRadius: 3, bgcolor: alpha(theme.palette.background.paper, 0.6) },
+                },
+              }}
+            />
+          </Box>
+
+          <Box>
+            <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', ml: 1, mb: 1, display: 'block', color: 'text.secondary' }}>
+              {t('resetPassword.newPasswordLabel', 'New Password')}
+            </Typography>
+            <TextField
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••••••"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              disabled={resetPasswordMutation.isPending}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" size="small" aria-label="Toggle password visibility">
+                        {showPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 3, bgcolor: alpha(theme.palette.background.paper, 0.6) },
+                },
+              }}
+            />
+          </Box>
+
+          <Box>
+            <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', ml: 1, mb: 1, display: 'block', color: 'text.secondary' }}>
+              {t('resetPassword.confirmPasswordLabel', 'Confirm Password')}
+            </Typography>
+            <TextField
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={resetPasswordMutation.isPending}
+              slotProps={{
+                input: {
+                  sx: { borderRadius: 3, bgcolor: alpha(theme.palette.background.paper, 0.6) },
+                },
+              }}
+            />
+          </Box>
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={resetPasswordMutation.isPending || !newPassword || !confirmPassword}
+            endIcon={
+              resetPasswordMutation.isPending ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                <ArrowForward />
+              )
+            }
+            sx={{
+              py: 1.5,
+              mt: 2,
+              borderRadius: 3,
+              fontWeight: 800,
+              fontSize: '1rem',
+              textTransform: 'none',
+              bgcolor: 'info.main',
+              boxShadow: (theme) => `0 4px 14px ${alpha(theme.palette.info.main, 0.4)}`,
+              '&:hover': {
+                bgcolor: 'info.dark',
+                transform: 'translateY(-1px)',
+                boxShadow: (theme) => `0 6px 20px ${alpha(theme.palette.info.main, 0.23)}`,
+              },
+            }}
+          >
+            {resetPasswordMutation.isPending
+              ? t('resetPassword.buttonResetting', 'Resetting...')
+              : t('resetPassword.buttonReset', 'Reset Password')}
+          </Button>
+        </Stack>
+      </form>
+
+      <Box sx={{ mt: 5, textAlign: 'center' }}>
+        <MuiLink
+          component={Link}
+          to={Path.signin}
+          sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 1,
+            fontSize: '0.875rem',
+            fontWeight: 600,
+            color: 'text.secondary',
+            textDecoration: 'none',
+            '&:hover': { color: 'info.main' },
+            '& .MuiSvgIcon-root': { fontSize: 18, transition: 'transform 0.2s' },
+            '&:hover .MuiSvgIcon-root': { transform: 'translateX(-4px)' },
+          }}
+        >
+          <ArrowBack />
+          {t('common.backToLogin', 'Back to log in')}
+        </MuiLink>
+      </Box>
+    </Box>
   )
 }

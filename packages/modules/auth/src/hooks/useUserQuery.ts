@@ -17,6 +17,12 @@ import {
   UpdateEmailRequest,
   UpdatePhotoRequest,
   ChangePasswordRequest,
+  UpdatePreferencesRequest,
+  UpdateMeRequest,
+  SecurityStatusResponse,
+  AuditLog,
+  ActivityTimelineResponse,
+  EmailChangesResponse,
 } from '../types/api.types'
 import { QUERY_KEYS } from '../services'
 import userService from '../services/user.service'
@@ -33,11 +39,43 @@ const USER_KEYS = {
   passkeys: ['user', 'passkeys'] as const,
   mfaMethods: ['user', 'mfa-methods'] as const,
   complianceExport: ['user', 'compliance-export'] as const,
+  securityStatus: ['user', 'security-status'] as const,
+  activityTimeline: ['user', 'activity-timeline'] as const,
+  emailChanges: ['user', 'email-changes'] as const,
 }
 
 // ============================================================================
 // Query Hooks (GET operations)
 // ============================================================================
+
+/**
+ * Get security status
+ */
+export function useSecurityStatus(
+  options?: Omit<UseQueryOptions<FetchResponse<SecurityStatusResponse>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: USER_KEYS.securityStatus,
+    queryFn: () => userService.getSecurityStatus(),
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}
+
+/**
+ * Get activity timeline
+ */
+export function useActivityTimeline(
+  options?: Omit<UseQueryOptions<FetchResponse<AuditLog[]>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: USER_KEYS.activityTimeline,
+    queryFn: () => userService.getActivityTimeline(),
+    staleTime: 1000 * 60 * 2,
+    ...options,
+  })
+}
+
 /**
  * Update user profile
  */
@@ -51,13 +89,13 @@ export function useGetUser(options?: UseQueryOptions<FetchResponse, HttpError>) 
 }
 
 export function useUpdateMe(
-  options?: UseMutationOptions<FetchResponse, HttpError, UpdateNamesRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse, HttpError, UpdateMeRequest, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
 
   return useMutation({
-    mutationFn: (data: UpdateNamesRequest) => userService.updateMe(data),
+    mutationFn: (data: UpdateMeRequest) => userService.updateMe(data),
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: USER_KEYS.profile })
       customOnSuccess?.(...args)
@@ -67,13 +105,13 @@ export function useUpdateMe(
 }
 
 export function useUpdateUser(
-  options?: UseMutationOptions<FetchResponse, HttpError, UpdateNamesRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse, HttpError, UpdateMeRequest, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
 
   return useMutation({
-    mutationFn: (data: UpdateNamesRequest) => userService.update(data),
+    mutationFn: (data: UpdateMeRequest) => userService.update(data),
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: USER_KEYS.profile })
       customOnSuccess?.(...args)
@@ -119,6 +157,23 @@ export function useChangeEmail(
 }
 
 /**
+ * Change password
+ */
+export function useChangePassword(
+  options?: UseMutationOptions<FetchResponse, HttpError, ChangePasswordRequest, unknown>,
+) {
+  const { onSuccess: customOnSuccess, ...restOptions } = options || {}
+
+  return useMutation({
+    mutationFn: (data: ChangePasswordRequest) => userService.changePassword(data),
+    onSuccess: (...args) => {
+      customOnSuccess?.(...args)
+    },
+    ...restOptions,
+  })
+}
+
+/**
  * Get user profile
  */
 export function useUserProfile(
@@ -132,17 +187,6 @@ export function useUserProfile(
   })
 }
 
-/**
- * Change password
- */
-export function useChangePassword(
-  options?: UseMutationOptions<FetchResponse, HttpError, ChangePasswordRequest, unknown>,
-) {
-  return useMutation({
-    mutationFn: (data: ChangePasswordRequest) => userService.changePassword(data),
-    ...options,
-  })
-}
 
 /**
  * Delete account
@@ -381,6 +425,45 @@ export function useComplianceExport(
     queryKey: USER_KEYS.complianceExport,
     queryFn: () => userService.compliance.export(),
     staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}export function useUpdatePreferences(
+  options?: UseMutationOptions<FetchResponse, HttpError, UpdatePreferencesRequest, unknown>,
+) {
+  const queryClient = useQueryClient()
+  const { onSuccess: customOnSuccess, ...restOptions } = options || {}
+
+  return useMutation({
+    mutationFn: (data: UpdatePreferencesRequest) => userService.updatePreferences(data),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: USER_KEYS.profile })
+      customOnSuccess?.(...args)
+    },
+    ...restOptions,
+  })
+}
+
+export function useUserPreferences(
+  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: ['user', 'preferences'],
+    queryFn: () => userService.preferences(),
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  })
+}
+
+/**
+ * Get email change requests
+ */
+export function useEmailChanges(
+  options?: Omit<UseQueryOptions<FetchResponse<EmailChangesResponse>, HttpError>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery({
+    queryKey: USER_KEYS.emailChanges,
+    queryFn: () => userService.getEmailChanges(),
+    staleTime: 1000 * 30, // 30 seconds
     ...options,
   })
 }

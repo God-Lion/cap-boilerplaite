@@ -192,6 +192,10 @@ const authService = {
     authorize: (clientId: string): Promise<FetchResponse> => {
       return apiClient.post(ENDPOINTS.auth.oidcDevice.authorize, { client_id: clientId })
     },
+    /** Verify a device code entered by the user */
+    verify: (userCode: string): Promise<FetchResponse<{ success: boolean; redirectUrl: string }>> => {
+      return apiClient.post(ENDPOINTS.auth.oidcDevice.verifyAction, { userCode })
+    },
   },
 
   // ========================================================================

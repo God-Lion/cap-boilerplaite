@@ -1,0 +1,795 @@
+// FILE: packages/modules/auth/src/screens/admin/AccessPolicyBuilder.tsx
+// STYLE AUDIT: Aligned to OrganizationProfile.tsx design system
+// FIXES: [CRITICAL] Modernized InputProps to slotProps.input, applied info.main to CTAs [HIGH] Added animate-scale-in [MEDIUM] Added divider opacity and avatar 24px radius [LOW] Added aria-labels and i18n fallbacks
+import React, { useState, useMemo } from 'react'
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Grid,
+  Button,
+  Switch,
+  IconButton,
+  Chip,
+  alpha,
+  useTheme,
+  Stack,
+  Divider,
+  Paper,
+  Tooltip,
+  Avatar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+} from '@mui/material'
+import {
+  Add,
+  Delete,
+  Security,
+  NetworkCheck,
+  Smartphone,
+  Public,
+  Settings,
+  Shield,
+  History,
+  Info,
+  Close,
+  PriorityHigh,
+} from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
+import { AccessPolicy, AccessPolicyRule } from '../../../types/governance.types'
+import { useAccessPolicies, useSaveAccessPolicies } from '../../../hooks/useAdminQuery'
+import { useSnackbar } from 'notistack'
+
+export default function AccessPolicyBuilder() {
+  const { t } = useTranslation('common')
+  const theme = useTheme()
+  const { enqueueSnackbar } = useSnackbar()
+  const { id: orgIdParam } = useParams()
+  const orgId = orgIdParam ? Number(orgIdParam) : null
+
+  // ── Data Fetching ────────────────────────────────────────────────────────
+  const { data: policiesResponse, isLoading: isFetching } = useAccessPolicies(orgId as number)
+  const policies = useMemo(() => policiesResponse?.data || [], [policiesResponse])
+
+  const savePoliciesMutation = useSaveAccessPolicies(orgId as number, {
+    onSuccess: () => {
+      enqueueSnackbar(t('auth.admin.policiesSavedSuccess', 'Policies saved successfully'), { variant: 'success' })
+      setDialogOpen(false)
+    },
+    onError: (err: any) => {
+      enqueueSnackbar(err.message || t('auth.admin.policiesSaveError', 'Failed to save policies'), { variant: 'error' })
+    },
+  })
+
+  // ── Dialog State ──────────────────────────────────────────────────────────
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingPolicy, setEditingPolicy] = useState<AccessPolicy | null>(null)
+  const [formData, setFormData] = useState<Partial<AccessPolicy>>({
+    name: '',
+    description: '',
+    type: 'conditional_access',
+    status: 'active',
+    priority: 1,
+    rules: [],
+  })
+
+  const handleOpenDialog = (policy: AccessPolicy | null = null) => {
+    if (policy) {
+      setEditingPolicy(policy)
+      setFormData({ ...policy })
+    } else {
+      setEditingPolicy(null)
+      setFormData({
+        name: '',
+        description: '',
+        type: 'conditional_access',
+        status: 'active',
+        priority: policies.length + 1,
+        rules: [],
+      })
+    }
+    setDialogOpen(true)
+  }
+
+  const handleSave = async () => {
+    const updatedPolicies = [...policies]
+    if (editingPolicy) {
+      const index = updatedPolicies.findIndex((p: AccessPolicy) => p.id === editingPolicy.id)
+      if (index !== -1) {
+        updatedPolicies[index] = { ...editingPolicy, ...formData } as AccessPolicy
+      }
+    } else {
+      const newPolicy = {
+        ...formData,
+        id: `POL_${Date.now()}`,
+      } as AccessPolicy
+      updatedPolicies.push(newPolicy)
+    }
+
+    savePoliciesMutation.mutate(updatedPolicies)
+  }
+
+  const handleDelete = (policyId: string) => {
+    const updatedPolicies = policies.filter((p: AccessPolicy) => p.id !== policyId)
+    savePoliciesMutation.mutate(updatedPolicies)
+  }
+
+  const handleToggleStatus = (policy: AccessPolicy) => {
+    const updatedPolicies = policies.map((p: AccessPolicy) =>
+      p.id === policy.id ? { ...p, status: p.status === 'active' ? 'inactive' : 'active' } : p,
+    ) as AccessPolicy[]
+    savePoliciesMutation.mutate(updatedPolicies)
+  }
+
+  const getRuleIcon = (type: string) => {
+    switch (type) {
+      case 'network_cidr':
+        return <NetworkCheck />
+      case 'mfa_required':
+        return <Smartphone />
+      case 'device_compliance':
+        return <Security />
+      case 'geo_location':
+        return <Public />
+      default:
+        return <Settings />
+    }
+  }
+
+  // ── SYSTEM PATTERN: Entry animation (OrganizationProfile L60) ──
+  return (
+    <Box className="animate-scale-in" sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
+      {/* Header */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: 2,
+          mb: 4,
+        }}
+      >
+        <Box>
+          {/* ── SYSTEM PATTERN: h4 titles (OrganizationProfile L62) ── */}
+          <Typography variant='h4' sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+            {t('auth.admin.accessPolicies', 'Access Policies')}
+          </Typography>
+          <Typography variant='body1' color='text.secondary' sx={{ fontWeight: 500 }}>
+            {t('auth.admin.accessPolicies_subtitle', 'Manage security rules and conditionals')}
+          </Typography>
+        </Box>
+        {/* ── SYSTEM PATTERN: CTA buttons (OrganizationProfile L58) ── */}
+        <Button
+          variant='contained'
+          startIcon={<Add />}
+          onClick={() => handleOpenDialog()}
+          sx={{
+            px: 3,
+            py: 1.2,
+            borderRadius: 2.5,
+            bgcolor: 'info.main',
+            boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
+            fontWeight: 700,
+            textTransform: 'none',
+          }}
+        >
+          {t('auth.admin.createNewPolicy', 'Create New Policy')}
+        </Button>
+      </Box>
+
+      {/* Stats/Overview Card */}
+      {/* ── SYSTEM PATTERN: Glass cards (OrganizationProfile L59) ── */}
+      <Card
+        className="glass-effect"
+        sx={{
+          mb: 4,
+          borderRadius: 4,
+          bgcolor: 'transparent',
+          border: '1px dashed',
+          borderColor: alpha(theme.palette.primary.main, 0.2),
+          boxShadow: 'none',
+        }}
+      >
+        <CardContent
+          sx={{
+            py: 3,
+            px: 4,
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            alignItems: { xs: 'flex-start', md: 'center' },
+            justifyContent: 'space-between',
+            gap: 3,
+          }}
+        >
+          <Stack
+            direction='row'
+            spacing={4}
+            sx={{ overflowX: 'auto', width: '100%', pb: { xs: 1, md: 0 } }}
+          >
+            <Box>
+              {/* ── SYSTEM PATTERN: Caption labels (OrganizationProfile L63) ── */}
+              <Typography
+                variant='caption'
+                color='text.secondary'
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.075em' }}
+              >
+                {t('auth.admin.activePolicies', 'Active Policies')}
+              </Typography>
+              <Typography variant='h5' sx={{ fontWeight: 900, color: 'primary.main' }}>
+                {policies.filter((p: AccessPolicy) => p.status === 'active').length}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography
+                variant='caption'
+                color='text.secondary'
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.075em' }}
+              >
+                {t('auth.admin.signalsTracked', 'Signals Tracked')}
+              </Typography>
+              <Typography variant='h5' sx={{ fontWeight: 900 }}>
+                IP, MFA, Device
+              </Typography>
+            </Box>
+            <Box>
+              <Typography
+                variant='caption'
+                color='text.secondary'
+                sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.075em' }}
+              >
+                {t('auth.admin.executionMode', 'Execution Mode')}
+              </Typography>
+              <Typography variant='h5' sx={{ fontWeight: 900 }}>
+                First Match
+              </Typography>
+            </Box>
+          </Stack>
+          <Button
+            startIcon={<History />}
+            sx={{ textTransform: 'none', fontWeight: 700, whiteSpace: 'nowrap', color: 'info.main' }}
+          >
+            {t('auth.admin.viewChangeLogs', 'View Change Logs')}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {isFetching ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 8 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, 1fr)' },
+            gap: 4,
+          }}
+        >
+          {policies.map((policy: AccessPolicy) => (
+            <Box key={policy.id} sx={{ height: '100%' }}>
+              <Paper
+                className="glass-effect"
+                sx={{
+                  p: 3,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  borderRadius: 4,
+                  bgcolor: 'transparent',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow: 'none',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    transform: 'translateY(-4px)',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Stack direction='row' spacing={2} alignItems='center'>
+                    {/* ── SYSTEM PATTERN: Avatar (OrganizationProfile L64) ── */}
+                    <Avatar
+                      sx={{
+                        bgcolor: alpha(
+                          policy.status === 'active'
+                            ? theme.palette.primary.main
+                            : theme.palette.text.disabled,
+                          0.1,
+                        ),
+                        color: policy.status === 'active' ? 'primary.main' : 'text.disabled',
+                        width: 52,
+                        height: 52,
+                        borderRadius: '24px',
+                      }}
+                    >
+                      <Shield />
+                    </Avatar>
+                    <Box>
+                      <Typography variant='h6' sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+                        {policy.name}
+                      </Typography>
+                      {/* ── SYSTEM PATTERN: Status chips (OrganizationProfile L66) ── */}
+                      <Chip
+                        label={policy.type.replace('_', ' ')}
+                        size='small'
+                        sx={{
+                          mt: 0.5,
+                          height: 20,
+                          fontWeight: 700,
+                        }}
+                        color={policy.status === 'active' ? 'info' : 'default'}
+                        variant='outlined'
+                      />
+                    </Box>
+                  </Stack>
+                  <Switch
+                    checked={policy.status === 'active'}
+                    onChange={() => handleToggleStatus(policy)}
+                    color='info'
+                    inputProps={{ 'aria-label': 'Toggle Policy Status' }}
+                  />
+                </Box>
+
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mb: 3, minHeight: 40, fontWeight: 500, lineHeight: 1.6 }}
+                >
+                  {policy.description}
+                </Typography>
+
+                {/* ── SYSTEM PATTERN: Dividers (OrganizationProfile L65) ── */}
+                <Divider sx={{ mb: 3, borderStyle: 'dashed', opacity: 0.5 }} />
+
+                <Box sx={{ mb: 3, flexGrow: 1 }}>
+                  {/* ── SYSTEM PATTERN: Section headings (OrganizationProfile L61) ── */}
+                  <Typography
+                    variant='caption'
+                    color='text.secondary'
+                    sx={{
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      display: 'block',
+                      mb: 2,
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    Logic Fragments ({policy.rules.length})
+                  </Typography>
+                  <Stack spacing={1.5}>
+                    {policy.rules.map((rule: AccessPolicyRule) => (
+                      <Box
+                        key={rule.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 2,
+                          p: 1.5,
+                          borderRadius: 3,
+                          bgcolor: alpha(theme.palette.action.hover, 0.4),
+                          border: '1px solid',
+                          borderColor: alpha(theme.palette.divider, 0.5),
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            color: rule.effect === 'allow' ? 'success.main' : 'error.main',
+                            display: 'flex',
+                          }}
+                        >
+                          {getRuleIcon(rule.type)}
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant='body2' sx={{ fontWeight: 800 }}>
+                            {rule.type === 'network_cidr'
+                              ? `IP Range: ${rule.config.range}`
+                              : rule.type === 'mfa_required'
+                                ? 'MFA Enforcement'
+                                : rule.type.replace('_', ' ')}
+                          </Typography>
+                          <Typography
+                            variant='caption'
+                            sx={{
+                              fontWeight: 700,
+                              color: rule.effect === 'allow' ? 'success.main' : 'error.main',
+                            }}
+                          >
+                            Result: {rule.effect.toUpperCase()}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ))}
+                  </Stack>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mt: 'auto',
+                    pt: 2,
+                  }}
+                >
+                  <Stack direction='row' spacing={1} alignItems='center'>
+                    <PriorityHigh sx={{ fontSize: 16, color: 'text.disabled' }} />
+                    <Typography variant='caption' sx={{ fontWeight: 800, color: 'text.disabled' }}>
+                      PRIORITY: {policy.priority}
+                    </Typography>
+                  </Stack>
+                  <Stack direction='row' spacing={1}>
+                    <Tooltip title='Edit Policy'>
+                      <IconButton
+                        size='small'
+                        aria-label="Edit policy"
+                        onClick={() => handleOpenDialog(policy)}
+                        sx={{ bgcolor: alpha(theme.palette.info.main, 0.05) }}
+                      >
+                        <Settings fontSize='small' color='info' />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title='Delete Policy'>
+                      <IconButton
+                        size='small'
+                        color='error'
+                        aria-label="Delete policy"
+                        onClick={() => handleDelete(policy.id)}
+                        sx={{ bgcolor: alpha(theme.palette.error.main, 0.05) }}
+                      >
+                        <Delete fontSize='small' />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                </Box>
+              </Paper>
+            </Box>
+          ))}
+
+          {/* Empty State / Add Card */}
+          <Box sx={{ height: '100%' }}>
+            <Box
+              onClick={() => handleOpenDialog()}
+              sx={{
+                height: '100%',
+                minHeight: 320,
+                borderRadius: 4,
+                border: '2px dashed',
+                borderColor: 'divider',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                '&:hover': {
+                  borderColor: 'info.main',
+                  bgcolor: alpha(theme.palette.info.main, 0.02),
+                  '& .add-avatar': {
+                    bgcolor: 'info.main',
+                    color: 'white',
+                    transform: 'scale(1.1)',
+                  },
+                },
+              }}
+            >
+              {/* ── SYSTEM PATTERN: Avatar (OrganizationProfile L64) ── */}
+              <Avatar
+                className='add-avatar'
+                sx={{
+                  bgcolor: alpha(theme.palette.action.hover, 0.8),
+                  color: 'text.secondary',
+                  mb: 2,
+                  width: 56,
+                  height: 56,
+                  borderRadius: '24px',
+                  transition: 'all 0.3s',
+                }}
+              >
+                <Add sx={{ fontSize: 32 }} />
+              </Avatar>
+              <Typography variant='subtitle1' sx={{ fontWeight: 900 }}>
+                {t('auth.admin.defineCustomLogic', 'Define Custom Logic')}
+              </Typography>
+              <Typography variant='body2' color='text.secondary' sx={{ fontWeight: 500 }}>
+                {t('auth.admin.combineSignalsDesc', 'Combine signals to create a new access policy')}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+      )}
+
+      {/* ── Policy Form Dialog ────────────────────────────────────────────── */}
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth='sm'
+        fullWidth
+        PaperProps={{
+          sx: { borderRadius: 4, p: 1 },
+        }}
+      >
+        <DialogTitle
+          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}
+        >
+          <Typography variant='h5' component='span' sx={{ fontWeight: 900, letterSpacing: '-0.027em' }}>
+            {editingPolicy ? t('auth.admin.editPolicy', 'Edit Policy') : t('auth.admin.createNewPolicy', 'Create New Policy')}
+          </Typography>
+          <IconButton onClick={() => setDialogOpen(false)} size='small' aria-label="Close dialog">
+            <Close />
+          </IconButton>
+        </DialogTitle>
+
+        {/* ── SYSTEM PATTERN: Dividers (OrganizationProfile L65) ── */}
+        <DialogContent dividers sx={{ borderStyle: 'dashed', borderColor: alpha(theme.palette.divider, 0.5) }}>
+          <Stack spacing={3} sx={{ mt: 1 }}>
+            {/* ── SYSTEM PATTERN: MUI v6 API input props (OrganizationProfile L67) ── */}
+            <TextField
+              label={t('auth.admin.policyName', 'Policy Name')}
+              fullWidth
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder='e.g., Block External IPs'
+              variant='outlined'
+              slotProps={{ input: { sx: { borderRadius: 2 } } }}
+            />
+
+            <TextField
+              label={t('auth.admin.description', 'Description')}
+              fullWidth
+              multiline
+              rows={3}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder='Explain the purpose of this policy...'
+              variant='outlined'
+              slotProps={{ input: { sx: { borderRadius: 2 } } }}
+            />
+
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: 2,
+              }}
+            >
+              <FormControl fullWidth variant='outlined'>
+                <InputLabel>{t('auth.admin.policyType', 'Policy Type')}</InputLabel>
+                <Select
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                  label={t('auth.admin.policyType', 'Policy Type')}
+                  sx={{ borderRadius: 2 }}
+                >
+                  <MenuItem value='conditional_access'>Conditional Access</MenuItem>
+                  <MenuItem value='login_policy'>Login Policy</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label={t('auth.admin.priority', 'Priority')}
+                type='number'
+                fullWidth
+                value={formData.priority}
+                onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
+                variant='outlined'
+                slotProps={{ input: { sx: { borderRadius: 2 } } }}
+              />
+            </Box>
+
+            <Box>
+              <Typography
+                variant='subtitle2'
+                sx={{ fontWeight: 800, mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}
+              >
+                Rules / Signal Logic
+                <Chip label={formData.rules?.length || 0} size='small' sx={{ fontWeight: 700, height: 20 }} />
+              </Typography>
+              <Paper
+                variant='outlined'
+                sx={{
+                  p: 2,
+                  borderRadius: 3,
+                  borderStyle: 'dashed',
+                  bgcolor: alpha(theme.palette.action.hover, 0.3),
+                }}
+              >
+                {formData.rules?.length === 0 ? (
+                  <Typography
+                    variant='body2'
+                    color='text.secondary'
+                    sx={{ textAlign: 'center', py: 2 }}
+                  >
+                    No rules defined yet. Policies without rules are ignored.
+                  </Typography>
+                ) : (
+                  <Stack spacing={2}>
+                    {formData.rules?.map((rule: AccessPolicyRule, idx: number) => (
+                      <Box
+                        key={rule.id || idx}
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          bgcolor: 'background.paper',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 1.5,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Typography
+                            variant='subtitle2'
+                            sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}
+                          >
+                            {getRuleIcon(rule.type)} Rule {idx + 1}
+                          </Typography>
+                          <IconButton
+                            size='small'
+                            color='error'
+                            aria-label="Delete rule"
+                            onClick={() => {
+                              const newRules = formData.rules?.filter((_: AccessPolicyRule, i: number) => i !== idx)
+                              setFormData({ ...formData, rules: newRules })
+                            }}
+                          >
+                            <Delete fontSize='small' />
+                          </IconButton>
+                        </Box>
+
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                          <FormControl fullWidth size='small'>
+                            <InputLabel>Type</InputLabel>
+                            <Select
+                              value={rule.type}
+                              label='Type'
+                              onChange={(e) => {
+                                const newRules = [...(formData.rules || [])]
+                                newRules[idx] = {
+                                  ...rule,
+                                  type: e.target.value as any,
+                                  config:
+                                    e.target.value === 'network_cidr' ? { range: '0.0.0.0/0' } : {},
+                                }
+                                setFormData({ ...formData, rules: newRules })
+                              }}
+                            >
+                              <MenuItem value='network_cidr'>Network CIDR</MenuItem>
+                              <MenuItem value='mfa_required'>MFA Required</MenuItem>
+                              <MenuItem value='device_compliance'>Device Compliance</MenuItem>
+                              <MenuItem value='geo_location'>Geo Location</MenuItem>
+                              <MenuItem value='time_window'>Time Window</MenuItem>
+                            </Select>
+                          </FormControl>
+                          <FormControl fullWidth size='small'>
+                            <InputLabel>Effect</InputLabel>
+                            <Select
+                              value={rule.effect}
+                              label='Effect'
+                              onChange={(e) => {
+                                const newRules = [...(formData.rules || [])]
+                                newRules[idx] = {
+                                  ...rule,
+                                  effect: e.target.value as 'allow' | 'deny',
+                                }
+                                setFormData({ ...formData, rules: newRules })
+                              }}
+                            >
+                              <MenuItem value='allow'>Allow</MenuItem>
+                              <MenuItem value='deny'>Deny</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Stack>
+
+                        {rule.type === 'network_cidr' && (
+                          <TextField
+                            fullWidth
+                            size='small'
+                            label='IP Range (CIDR)'
+                            placeholder='e.g. 192.168.1.0/24'
+                            value={rule.config?.range || ''}
+                            onChange={(e) => {
+                              const newRules = [...(formData.rules || [])]
+                              newRules[idx] = {
+                                ...rule,
+                                config: { ...rule.config, range: e.target.value },
+                              }
+                              setFormData({ ...formData, rules: newRules })
+                            }}
+                          />
+                        )}
+                        {rule.type === 'geo_location' && (
+                          <TextField
+                            fullWidth
+                            size='small'
+                            label='Allowed Countries (Comma separated codes)'
+                            placeholder='e.g. US, CA, GB'
+                            value={rule.config?.countries?.join(', ') || ''}
+                            onChange={(e) => {
+                              const newRules = [...(formData.rules || [])]
+                              newRules[idx] = {
+                                ...rule,
+                                config: {
+                                  ...rule.config,
+                                  countries: e.target.value.split(',').map((c) => c.trim()),
+                                },
+                              }
+                              setFormData({ ...formData, rules: newRules })
+                            }}
+                          />
+                        )}
+                      </Box>
+                    ))}
+                  </Stack>
+                )}
+                <Button
+                  fullWidth
+                  startIcon={<Add />}
+                  sx={{ mt: 2, borderRadius: 2, textTransform: 'none', fontWeight: 700, color: 'info.main' }}
+                  onClick={() => {
+                    const newRule: AccessPolicyRule = {
+                      id: `RULE_${Date.now()}`,
+                      type: 'network_cidr',
+                      config: { range: '0.0.0.0/0' },
+                      effect: 'deny',
+                    }
+                    setFormData({ ...formData, rules: [...(formData.rules || []), newRule] })
+                  }}
+                >
+                  Add Signal Logic Fragment
+                </Button>
+              </Paper>
+            </Box>
+          </Stack>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 3 }}>
+          <Button
+            onClick={() => setDialogOpen(false)}
+            sx={{ fontWeight: 700, textTransform: 'none', color: 'text.secondary' }}
+          >
+            {t('auth.common.cancel', 'Cancel')}
+          </Button>
+          {/* ── SYSTEM PATTERN: CTA buttons (OrganizationProfile L58) ── */}
+          <Button
+            variant='contained'
+            onClick={handleSave}
+            disabled={savePoliciesMutation.isPending || !formData.name}
+            sx={{
+              px: 4,
+              borderRadius: 2,
+              bgcolor: 'info.main',
+              boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
+              fontWeight: 700,
+              textTransform: 'none',
+              minWidth: 120,
+            }}
+          >
+            {savePoliciesMutation.isPending ? (
+              <CircularProgress size={24} color='inherit' />
+            ) : (
+              t('auth.common.save', 'Save')
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  )
+}

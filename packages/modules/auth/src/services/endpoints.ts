@@ -81,6 +81,7 @@ export const ENDPOINTS = {
     oidcDevice: {
       authorize: '/api/auth/oidc/device',
       verify: '/api/auth/device',
+      verifyAction: '/api/auth/device/verify',
     },
     oidcInteraction: {
       get: (uid: string) => `/api/auth/oidc/interaction/${uid}`,
@@ -113,6 +114,7 @@ export const ENDPOINTS = {
     update: '/api/user/update',
     avatar: '/api/user/avatar',
     changeEmail: '/api/user/change-email',
+    emailChanges: '/api/user/change-email',
     changePhone: '/api/user/change-phone',
     changePassword: '/api/user/change-password',
     activityTimeline: '/api/user/activity-timeline',

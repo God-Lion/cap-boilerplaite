@@ -11,6 +11,9 @@ import {
   UpdatePhotoRequest,
   ChangePasswordRequest,
   UpdatePreferencesRequest,
+  UpdateMeRequest,
+  SecurityStatusResponse,
+  AuditLog,
 } from '../types/api.types'
 import { ENDPOINTS } from './endpoints'
 
@@ -18,7 +21,7 @@ const userService = {
   getMe: (): Promise<FetchResponse> => {
     return apiClient.get(ENDPOINTS.user.me)
   },
-  updateMe: (data: UpdateNamesRequest): Promise<FetchResponse> => {
+  updateMe: (data: UpdateMeRequest): Promise<FetchResponse> => {
     return apiClient.patch(ENDPOINTS.user.update, data)
   },
   getProfileSettings: (): Promise<FetchResponse> => {
@@ -29,15 +32,15 @@ const userService = {
     return apiClient.get(ENDPOINTS.user.me)
   },
 
-  update: (data: UpdateNamesRequest): Promise<FetchResponse> => {
+  update: (data: UpdateMeRequest): Promise<FetchResponse> => {
     return apiClient.patch(ENDPOINTS.user.update, data)
   },
-  updateNames: (data: UpdateNamesRequest): Promise<FetchResponse> => {
+  updateNames: (data: UpdateMeRequest): Promise<FetchResponse> => {
     return apiClient.patch(ENDPOINTS.user.update, data)
   },
 
   updatePhoto: (data: UpdatePhotoRequest): Promise<FetchResponse> => {
-    return apiClient.uploadFormData(ENDPOINTS.user.update, { photo: data.photo }, 'patch')
+    return apiClient.uploadFormData(ENDPOINTS.user.avatar, { avatar: data.photo }, 'post')
   },
 
   updateEmail: (data: UpdateEmailRequest): Promise<FetchResponse> => {
@@ -46,6 +49,10 @@ const userService = {
 
   changeEmail: (data: UpdateEmailRequest): Promise<FetchResponse> => {
     return apiClient.post(ENDPOINTS.user.changeEmail, data)
+  },
+
+  getEmailChanges: (): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.user.emailChanges)
   },
 
   changePassword: (data: ChangePasswordRequest): Promise<FetchResponse> => {
@@ -139,6 +146,23 @@ const userService = {
     export: (): Promise<FetchResponse> => {
       return apiClient.get(ENDPOINTS.user.compliance.export)
     },
+  },
+
+  getSecurityStatus: (): Promise<FetchResponse<SecurityStatusResponse>> => {
+    return apiClient.get(ENDPOINTS.user.securityStatus)
+  },
+
+  getActivityTimeline: (): Promise<FetchResponse<AuditLog[]>> => {
+    return apiClient.get(ENDPOINTS.user.activityTimeline)
+  },
+  getSessions: (): Promise<FetchResponse> => {
+    return apiClient.get(ENDPOINTS.auth.sessions)
+  },
+  revokeSession: (id: string | number): Promise<FetchResponse> => {
+    return apiClient.delete(ENDPOINTS.auth.revokeSession(id.toString()))
+  },
+  revokeAllSessions: (): Promise<FetchResponse> => {
+    return apiClient.post(ENDPOINTS.auth.revokeAllSessions)
   },
 }
 

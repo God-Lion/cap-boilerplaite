@@ -31,9 +31,15 @@ const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: Ad
   React.useEffect(() => {
     if (layout !== 'none') {
       updateLayoutOverride(layout)
-      return () => updateLayoutOverride('none')
+      // Only reset to none if we are NOT an admin, to allow layout persistence for admins
+      return () => {
+        const isAdminSession = ADMIN_ROLES.includes((normalizeAuthUser(user)?.role as Roles) || Roles.USER)
+        if (!isAdminSession) {
+          updateLayoutOverride('none')
+        }
+      }
     }
-  }, [layout, updateLayoutOverride])
+  }, [layout, updateLayoutOverride, user])
 
   if (isLoading) {
     return (

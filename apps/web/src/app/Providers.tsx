@@ -130,12 +130,12 @@ const Providers: React.FC<
 
   return (
     <SettingsProvider settingsCookie={settingsCookie} mode={mode} demoName={demoName}>
-      <ForbiddenListener />
       <QueryClientProvider client={queryClient}>
         <I18nextProvider i18n={i18next}>
           <ThemeProvider direction={direction} systemMode={systemMode}>
             <GlobalZIndexStyles />
             <BrowserRouter>
+              <ForbiddenListener />
               <TourProvider steps={tourConfig} defaultOpen={false} rtl={false} styles={tourStyles}>
                 {children}
               </TourProvider>

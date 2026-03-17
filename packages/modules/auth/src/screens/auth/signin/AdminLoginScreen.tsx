@@ -1,243 +1,164 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Typography,
-  Container,
-  Paper,
   TextField,
   Button,
   InputAdornment,
   IconButton,
   Stack,
+  Alert,
+  Avatar,
+  CircularProgress,
   alpha,
+  useTheme,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { useForm } from 'react-hook-form'
-import { AdminPanelSettings, Visibility, VisibilityOff, Security } from '@mui/icons-material'
+import { AdminPanelSettings, Visibility, VisibilityOff, ArrowForward, Security } from '@mui/icons-material'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import Path from '../path'
+import {
+  AuthPageLayout,
+  AuthScreenIcon,
+  AuthInputLabel,
+  AuthActionButton,
+} from '../../../components/shared/auth'
 
 const AdminLoginScreen = () => {
   const { t } = useTranslation('auth')
+  const theme = useTheme()
   const navigate = useNavigate()
-  const [showPassword, setShowPassword] = React.useState(false)
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm()
 
-  const onSubmit = async (data: any) => {
-    // TODO: Implement admin login logic
-    console.log('Admin login:', data)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    navigate('/')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    if (!email || !password) {
+      setError(t('admin.errorIncomplete', 'Please enter both email and password.'))
+      return
+    }
+    setIsLoading(true)
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      navigate('/')
+    } catch (err: any) {
+      setError(err.message || t('admin.errorGeneric', 'An error occurred. Please try again.'))
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <Box
-      sx={{
-        background: (theme) =>
-          theme.palette.mode === 'dark'
-            ? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${alpha(
-                theme.palette.info.dark,
-                0.15,
-              )} 50%, ${theme.palette.background.paper} 100%)`
-            : `linear-gradient(135deg, #f6f7f8 0%, ${alpha(
-                theme.palette.info.light,
-                0.1,
-              )} 50%, #ffffff 100%)`,
-        minHeight: '100dvh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'text.primary',
-        fontFamily: "'Inter', sans-serif",
-      }}
-    >
-      <Container maxWidth='xs'>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
+    <AuthPageLayout>
+      <Box sx={{ mb: 4, textAlign: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <AuthScreenIcon icon={<AdminPanelSettings sx={{ fontSize: 32 }} />} />
+        </Box>
+        <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+          {t('admin.loginTitle', 'Admin Console')}
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
+          {t('admin.loginDesc', 'Authorized personnel access only')}
+        </Typography>
+      </Box>
+
+      {error && (
+        <Alert
+          severity="error"
+          sx={{ mb: 4, borderRadius: 2, '& .MuiAlert-message': { fontWeight: 600 } }}
         >
-          <Stack spacing={3} alignItems='center'>
-            <Box
-              sx={{
-                p: 2,
-                borderRadius: '16px',
-                bgcolor: (theme) => alpha(theme.palette.info.main, 0.1),
-                border: '1px solid',
-                borderColor: (theme) => alpha(theme.palette.info.main, 0.2),
-                mb: 1,
-                transform: 'rotate(-5deg)',
+          {error}
+        </Alert>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={3}>
+          <Box>
+            <AuthInputLabel>{t('common.email', 'Email Address')}</AuthInputLabel>
+            <TextField
+              fullWidth
+              type="email"
+              placeholder="admin@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+              autoComplete="email"
+              autoFocus
+              slotProps={{
+                input: {
+                  sx: { borderRadius: 3, bgcolor: alpha(theme.palette.background.paper, 0.6) },
+                },
               }}
-            >
-              <AdminPanelSettings sx={{ fontSize: 48, color: 'info.main' }} />
-            </Box>
-            <Box textAlign='center' sx={{ mb: 2 }}>
-              <Typography
-                variant='h4'
-                component='h1'
-                sx={{
-                  fontWeight: 800,
-                  letterSpacing: '-0.025em',
-                  mb: 1,
-                  color: 'text.primary',
-                  fontFamily: 'inherit',
-                }}
-              >
-                {t('auth.admin.loginTitle', 'Admin Console')}
-              </Typography>
-              <Typography
-                variant='body2'
-                sx={{ color: 'text.secondary', opacity: 0.8, fontFamily: 'inherit' }}
-              >
-                {t('auth.admin.loginDesc', 'Authorized personnel access only')}
-              </Typography>
-            </Box>
+            />
+          </Box>
 
-            <Paper
-              elevation={0}
-              sx={{
-                p: 4,
-                width: '100%',
-                borderRadius: '20px',
-                bgcolor: 'background.paper',
-                backdropFilter: 'blur(25px)',
-                border: '1px solid',
-                borderColor: 'divider',
-                position: 'relative',
-                overflow: 'hidden',
-                boxShadow: (theme) =>
-                  `0 25px 50px -12px ${alpha(theme.palette.common.black, 0.25)}`,
+          <Box>
+            <AuthInputLabel>{t('common.password', 'Master Password')}</AuthInputLabel>
+            <TextField
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              autoComplete="current-password"
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                        size="small"
+                        aria-label="Toggle password visibility"
+                      >
+                        {showPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 3, bgcolor: alpha(theme.palette.background.paper, 0.6) },
+                },
               }}
-            >
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: 4,
-                  background: (theme) =>
-                    `linear-gradient(to right, ${alpha(theme.palette.info.main, 0.6)}, ${theme.palette.info.main})`,
-                }}
-              />
+            />
+          </Box>
 
-              <Box component='form' onSubmit={handleSubmit(onSubmit)} noValidate>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label={t('auth.common.email', 'Email Address')}
-                  autoComplete="email"
-                  autoFocus
-                  {...register('email', { required: true })}
-                  error={!!errors.email}
-                  sx={{
-                    mb: 2,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '12px',
-                      '& fieldset': { borderColor: 'divider' },
-                      '&:hover fieldset': { borderColor: 'info.main' },
-                      '&.Mui-focused fieldset': { borderColor: 'info.main' },
-                    },
-                    '& .MuiInputLabel-root': { fontFamily: 'inherit' },
-                  }}
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label={t('auth.common.password', 'Master Password')}
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  autoComplete="current-password"
-                  {...register('password', { required: true })}
-                  error={!!errors.password}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                            sx={{ color: 'text.secondary', opacity: 0.5 }}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                  sx={{
-                    mb: 3,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '12px',
-                      '& fieldset': { borderColor: 'divider' },
-                      '&:hover fieldset': { borderColor: 'info.main' },
-                      '&.Mui-focused fieldset': { borderColor: 'info.main' },
-                    },
-                    '& .MuiInputLabel-root': { fontFamily: 'inherit' },
-                  }}
-                />
-                <Button
-                  type='submit'
-                  fullWidth
-                  variant='contained'
-                  color='info'
-                  disabled={isSubmitting}
-                  sx={{
-                    py: 1.8,
-                    mb: 2,
-                    borderRadius: '12px',
-                    textTransform: 'none',
-                    fontWeight: 700,
-                    boxShadow: (theme) =>
-                      `0 4px 14px 0 ${alpha(theme.palette.info.main, 0.35)}`,
-                    fontFamily: 'inherit',
-                    '&:hover': {
-                      bgcolor: 'info.dark',
-                      boxShadow: (theme) =>
-                        `0 6px 20px 0 ${alpha(theme.palette.info.main, 0.45)}`,
-                    },
-                  }}
-                >
-                  {t('auth.admin.signin', 'Elevate Access')}
-                </Button>
-                <Button
-                  fullWidth
-                  variant='text'
-                  size='small'
-                  color='secondary'
-                  onClick={() => navigate(Path.signin)}
-                  sx={{
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    color: 'text.secondary',
-                    fontFamily: 'inherit',
-                    '&:hover': { color: 'info.main', bgcolor: 'transparent' },
-                  }}
-                >
-                  {t('auth.admin.backToUser', 'Standard User Login?')}
-                </Button>
-              </Box>
-            </Paper>
+          <AuthActionButton
+            type="submit"
+            isLoading={isLoading}
+            label={isLoading ? t('admin.signingIn', 'Signing In...') : t('admin.signin', 'Elevate Access')}
+            disabled={isLoading || !email || !password}
+            sx={{ mt: 2 }}
+          />
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, opacity: 0.6 }}>
-              <Security sx={{ fontSize: 16, color: 'info.main' }} />
-              <Typography variant='caption' sx={{ fontFamily: 'inherit', fontWeight: 500 }}>
-                {t('auth.admin.secureSession', 'Identity encrypted session active')}
-              </Typography>
-            </Box>
-          </Stack>
-        </motion.div>
-      </Container>
-    </Box>
+          <Button
+            fullWidth
+            variant="text"
+            onClick={() => navigate(Path.signin)}
+            sx={{
+              textTransform: 'none',
+              fontWeight: 600,
+              color: 'text.secondary',
+              '&:hover': { color: 'info.main', bgcolor: 'transparent' },
+            }}
+          >
+            {t('admin.backToUser', 'Standard User Login?')}
+          </Button>
+        </Stack>
+      </form>
+
+      <Box sx={{ mt: 5, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, opacity: 0.6 }}>
+        <Security sx={{ fontSize: 14, color: 'info.main' }} />
+        <Typography variant="caption" sx={{ fontWeight: 500 }}>
+          {t('admin.secureSession', 'Identity encrypted session active')}
+        </Typography>
+      </Box>
+    </AuthPageLayout>
   )
 }
 

@@ -1,210 +1,94 @@
 import { useCallback, useState } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  alpha,
-  Link as MuiLink,
-  Snackbar,
+  Box, Button, Typography, Alert, Avatar, Stack,
+  Link as MuiLink, CircularProgress, alpha, useTheme,
 } from '@mui/material'
 import { History, ArrowBack, Send } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Alert as MAlert, themeConfig } from '@cap/platform-core'
 import Path from '../path'
 
 export default function VerificationLinkExpired() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('auth')
+  const theme = useTheme()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const email = searchParams.get('email') || ''
 
   const [sending, setSending] = useState(false)
-  const [status, setStatus] = useState({
-    open: false,
-    msg: '',
-    type: 'success' as 'success' | 'error',
-  })
+  const [successMsg, setSuccessMsg] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const handleRequestNewLink = useCallback(async () => {
     setSending(true)
+    setError(null)
+    setSuccessMsg(null)
     try {
-      // Simulated request logic
       await new Promise((resolve) => setTimeout(resolve, 1500))
-      setStatus({
-        open: true,
-        msg: t('auth.email.new_link_sent', 'A new verification link has been sent to your email.'),
-        type: 'success',
-      })
-      // Optionally redirect to CheckEmailConfirmation with the email
+      setSuccessMsg(t('email.newLinkSent', 'A new verification link has been sent to your email.'))
       setTimeout(() => navigate(`${Path.checkEmail}?email=${encodeURIComponent(email)}`), 2000)
-    } catch (error) {
-      setStatus({
-        open: true,
-        msg: t('auth.email.new_link_error', 'Failed to send new link. Please try again later.'),
-        type: 'error',
-      })
+    } catch {
+      setError(t('email.newLinkError', 'Failed to send new link. Please try again later.'))
     } finally {
       setSending(false)
     }
   }, [t, navigate, email])
 
-  const handleCloseStatus = () => setStatus((prev) => ({ ...prev, open: false }))
-
   return (
-    <>
-      <title>
-        {t('auth.email.expired_title', 'Link Expired')} - {themeConfig.templateName}
-      </title>
+    <Box
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 440, mx: 'auto', p: { xs: 3, md: 5 }, textAlign: 'center' }}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+        <Avatar variant="square"
+          sx={{ width: 56, height: 56, bgcolor: 'transparent', color: 'warning.main', borderRadius: '24px', border: '2px solid', borderColor: alpha(theme.palette.warning.main, 0.2) }}>
+          <History sx={{ fontSize: 32 }} />
+        </Avatar>
+      </Box>
 
-      <Container
-        component='main'
-        maxWidth={false}
-        disableGutters
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100dvh',
-          justifyContent: 'center',
-          alignItems: 'center',
-          bgcolor: 'background.default',
-          py: { xs: 4, sm: 8 },
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={status.open}
-          autoHideDuration={6000}
-          onClose={handleCloseStatus}
-        >
-          <MAlert onClose={handleCloseStatus} severity={status.type} sx={{ width: '100%' }}>
-            {status.msg}
-          </MAlert>
-        </Snackbar>
+      <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+        {t('email.expiredHeading', 'Verification link expired')}
+      </Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, mb: 4, lineHeight: 1.6 }}>
+        {t('email.expiredDescription', "For security reasons, verification links expire after a short period. Request a new one below.")}
+      </Typography>
 
-        <Card
-          sx={{
-            width: '100%',
-            maxWidth: '500px',
-            borderRadius: '24px',
-            boxShadow: (theme) => `0 20px 40px ${alpha(theme.palette.common.black, 0.1)}`,
-            border: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'background.paper',
-            mx: 2,
-            overflow: 'hidden',
-          }}
-        >
-          <CardContent sx={{ p: { xs: 4, sm: 6 }, textAlign: 'center' }}>
-            <Box
-              sx={{
-                width: 80,
-                height: 80,
-                borderRadius: '50%',
-                bgcolor: (theme) => alpha(theme.palette.warning.main, 0.1),
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mx: 'auto',
-                mb: 4,
-              }}
-            >
-              <History sx={{ color: 'warning.main', fontSize: 40 }} />
-            </Box>
+      {successMsg && (
+        <Alert severity="success" sx={{ mb: 4, borderRadius: 2, textAlign: 'left', '& .MuiAlert-message': { fontWeight: 600 } }}>
+          {successMsg}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 4, borderRadius: 2, textAlign: 'left', '& .MuiAlert-message': { fontWeight: 600 } }}>
+          {error}
+        </Alert>
+      )}
 
-            <Typography variant='h4' sx={{ fontWeight: 800, mb: 2, letterSpacing: '-0.025em' }}>
-              {t('auth.email.expired_heading', 'Verification link expired')}
-            </Typography>
+      <Stack spacing={2}>
+        <Button variant="contained" size="large" fullWidth disabled={sending} onClick={handleRequestNewLink}
+          startIcon={sending ? <CircularProgress size={18} color="inherit" /> : <Send />}
+          sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)' } }}>
+          {sending ? t('email.sending', 'Sending...') : t('email.requestNewLink', 'Request a new link')}
+        </Button>
 
-            <Typography variant='body1' color='text.secondary' sx={{ mb: 5, lineHeight: 1.6 }}>
-              {t(
-                'auth.email.expired_description',
-                "For security reasons, verification links expire after a short period. Don't worry, you can easily request a new one.",
-              )}
-            </Typography>
+        <Button component={Link} to={Path.signin} variant="text" fullWidth
+          sx={{ py: 1.2, borderRadius: 3, fontWeight: 600, color: 'text.secondary', textTransform: 'none', '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) } }}>
+          {t('common.backToLogin', 'Back to log in')}
+        </Button>
+      </Stack>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Button
-                variant='contained'
-                size='large'
-                fullWidth
-                disabled={sending}
-                onClick={handleRequestNewLink}
-                startIcon={<Send />}
-                sx={{
-                  height: 56,
-                  borderRadius: '14px',
-                  fontWeight: 700,
-                  textTransform: 'none',
-                  fontSize: '1rem',
-                  boxShadow: (theme) => `0 8px 16px ${alpha(theme.palette.primary.main, 0.25)}`,
-                }}
-              >
-                {sending
-                  ? t('auth.email.sending', 'Sending...')
-                  : t('auth.email.request_new_link', 'Request a new link')}
-              </Button>
-
-              <Button
-                component={Link}
-                to={Path.signin}
-                variant='text'
-                fullWidth
-                sx={{
-                  height: 48,
-                  borderRadius: '14px',
-                  fontWeight: 600,
-                  color: 'text.secondary',
-                  textTransform: 'none',
-                }}
-              >
-                {t('auth.common.backToLogin', 'Back to log in')}
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
-
-        {/* Footer */}
-        <Box sx={{ mt: 5, display: 'flex', gap: 3 }}>
-          <MuiLink
-            href='#'
-            sx={{
-              color: 'text.secondary',
-              fontSize: '0.875rem',
-              textDecoration: 'none',
-              '&:hover': { color: 'text.primary' },
-            }}
-          >
-            {t('auth.common.terms', 'Terms')}
+      <Box sx={{ mt: 5, display: 'flex', justifyContent: 'center', gap: 3 }}>
+        {[{ label: t('common.terms', 'Terms'), href: '#' }, { label: t('common.privacy', 'Privacy'), href: '#' }, { label: t('common.contact', 'Contact'), href: '#' }].map(({ label, href }) => (
+          <MuiLink key={label} href={href} sx={{ color: 'text.secondary', fontSize: '0.875rem', textDecoration: 'none', '&:hover': { color: 'text.primary' } }}>
+            {label}
           </MuiLink>
-          <MuiLink
-            href='#'
-            sx={{
-              color: 'text.secondary',
-              fontSize: '0.875rem',
-              textDecoration: 'none',
-              '&:hover': { color: 'text.primary' },
-            }}
-          >
-            {t('auth.common.privacy', 'Privacy')}
-          </MuiLink>
-          <MuiLink
-            href='#'
-            sx={{
-              color: 'text.secondary',
-              fontSize: '0.875rem',
-              textDecoration: 'none',
-              '&:hover': { color: 'text.primary' },
-            }}
-          >
-            {t('auth.common.contact', 'Contact')}
-          </MuiLink>
-        </Box>
-      </Container>
-    </>
+        ))}
+      </Box>
+    </Box>
   )
 }

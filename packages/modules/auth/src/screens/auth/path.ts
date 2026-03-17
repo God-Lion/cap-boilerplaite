@@ -45,9 +45,7 @@ const Path = {
   samlWait: '/auth/sso/saml/wait',
   samlSSOInitiation: '/auth/sso/login',
 
-  emailTestingDashboard: '/monitoring/email-testing',
-  emailTemplatePreview: '/monitoring/email-templates/:id',
-  loginHistory: '/auth/login-history',
+  
 
   unauthorized401: '/auth/system/unauthorized',
   maintenance: '/auth/system/maintenance',
@@ -58,8 +56,18 @@ const Path = {
   deviceCode: '/auth/device/code',
   adminLogin: '/auth/admin/login',
 
-  team: '/team',
   joinOrganization: '/auth/join-organization',
+
+
+  
+  emailTestingDashboard: '/monitoring/email-testing',
+  emailTemplatePreview: '/monitoring/email-templates/:id',
+
+  loginHistory: '/auth/login-history',
+  team: '/team',
+
+
+
 }
 
 export default Path

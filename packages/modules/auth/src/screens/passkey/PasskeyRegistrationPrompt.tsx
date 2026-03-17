@@ -1,33 +1,20 @@
 import { useState } from 'react'
 import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Link,
-  Avatar,
+  Box, Button, Typography, Avatar, List, ListItem, ListItemIcon, ListItemText,
+  Alert, Stack, Link, alpha, useTheme,
 } from '@mui/material'
 import {
-  Fingerprint,
-  Bolt,
-  VerifiedUser,
-  Devices,
-  CheckCircle,
-  OpenInNew,
+  Fingerprint, Bolt, VerifiedUser, Devices, CheckCircle, OpenInNew, ArrowForward,
 } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { startRegistration } from '@simplewebauthn/browser'
 import authService from '../../services/auth.service'
 
 export default function PasskeyRegistrationPrompt() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('auth')
+  const theme = useTheme()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -35,221 +22,93 @@ export default function PasskeyRegistrationPrompt() {
   const handleCreatePasskey = async () => {
     setLoading(true)
     setError(null)
-
     try {
-      // Get registration options from server
       const optionsRes = await authService.passkeys.getRegistrationOptions()
-      const options = optionsRes.data
-
-      // Start WebAuthn registration
-      const regResp = await startRegistration(options)
-
-      // Verify registration with server
+      const regResp = await startRegistration(optionsRes.data)
       await authService.passkeys.verifyRegistration(regResp)
-
-      // Navigate to success or dashboard
       navigate('/dashboard')
     } catch (err: any) {
-      console.error('Passkey registration error:', err)
-      setError(err.message || 'Passkey registration cancelled or failed')
+      setError(err.message || t('passkey.registrationFailed', 'Passkey registration cancelled or failed'))
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSkip = () => {
-    navigate(-1)
-  }
-
   const benefits = [
-    {
-      icon: <Bolt />,
-      title: t('auth.passkey.benefit_instant_title'),
-      description: t('auth.passkey.benefit_instant_desc'),
-    },
-    {
-      icon: <VerifiedUser />,
-      title: t('auth.passkey.benefit_safety_title'),
-      description: t('auth.passkey.benefit_safety_desc'),
-    },
-    {
-      icon: <Devices />,
-      title: t('auth.passkey.benefit_sync_title'),
-      description: t('auth.passkey.benefit_sync_desc'),
-    },
+    { icon: <Bolt />, title: t('passkey.benefitInstantTitle', 'Instant sign-in'), description: t('passkey.benefitInstantDesc', 'No passwords to remember or type.') },
+    { icon: <VerifiedUser />, title: t('passkey.benefitSafetyTitle', 'Phishing-resistant'), description: t('passkey.benefitSafetyDesc', 'Tied to your device, not a password.') },
+    { icon: <Devices />, title: t('passkey.benefitSyncTitle', 'Syncs across devices'), description: t('passkey.benefitSyncDesc', 'Works on all your trusted devices.') },
   ]
 
   return (
     <Box
-      sx={{
-        minHeight: '100vh',
-        bgcolor: 'background.default',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 480, mx: 'auto', p: { xs: 3, md: 5 } }}
     >
-      <Container
-        maxWidth='sm'
-        sx={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          py: { xs: 5, sm: 10 },
-        }}
-      >
-        <Card
-          sx={{
-            width: '100%',
-            maxWidth: 480,
-            borderRadius: 1,
-            boxShadow: 4,
-          }}
-        >
-          <CardContent sx={{ p: 0 }}>
-            {/* Card Header with Illustration */}
-            <Box sx={{ textAlign: 'center', pt: 5, pb: 3, px: 4 }}>
-              <Avatar
-                sx={{
-                  width: 80,
-                  height: 80,
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
-                  mx: 'auto',
-                  mb: 3,
-                }}
-              >
-                <Fingerprint sx={{ fontSize: 40 }} />
-              </Avatar>
-              <Typography variant='h5' fontWeight={700} gutterBottom>
-                {t('auth.passkey.registration_title')}
-              </Typography>
-              <Typography variant='body2' color='text.secondary' sx={{ maxWidth: 360, mx: 'auto' }}>
-                {t('auth.passkey.registration_desc')}
-              </Typography>
-            </Box>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <Avatar variant="square"
+            sx={{ width: 56, height: 56, bgcolor: 'transparent', color: 'primary.main', borderRadius: '24px', border: '2px solid', borderColor: alpha(theme.palette.primary.main, 0.2) }}>
+            <Fingerprint sx={{ fontSize: 32 }} />
+          </Avatar>
+        </Box>
+        <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+          {t('passkey.registrationTitle', 'Add a passkey')}
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, maxWidth: 360, mx: 'auto' }}>
+          {t('passkey.registrationDesc', 'Passkeys replace passwords with your device biometrics for a faster, safer sign-in.')}
+        </Typography>
+      </Box>
 
-            {/* Benefits List */}
-            <Box sx={{ px: 4, pb: 4 }}>
-              <List disablePadding>
-                {benefits.map((benefit, index) => (
-                  <ListItem
-                    key={index}
-                    sx={{
-                      px: 1.5,
-                      py: 1.5,
-                      borderRadius: 2,
-                      mb: 1,
-                      '&:hover': {
-                        bgcolor: 'action.hover',
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ color: 'primary.main', minWidth: 40 }}>
-                      {benefit.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={benefit.title}
-                      secondary={benefit.description}
-                      primaryTypographyProps={{
-                        fontWeight: 700,
-                        fontSize: 16,
-                      }}
-                      secondaryTypographyProps={{
-                        fontSize: 14,
-                      }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
+      <List disablePadding sx={{ mb: 4 }}>
+        {benefits.map((benefit, index) => (
+          <ListItem key={index} sx={{ px: 1.5, py: 1.5, borderRadius: 2, mb: 1, '&:hover': { bgcolor: 'action.hover' } }}>
+            <ListItemIcon sx={{ color: 'primary.main', minWidth: 40 }}>{benefit.icon}</ListItemIcon>
+            <ListItemText
+              primary={benefit.title} secondary={benefit.description}
+              primaryTypographyProps={{ fontWeight: 700, fontSize: 15 }}
+              secondaryTypographyProps={{ fontSize: 13 }}
+            />
+          </ListItem>
+        ))}
+      </List>
 
-              {/* Compatibility Badge */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 1,
-                  // bgcolor: 'action.hover',
-                  borderRadius: 1,
-                  py: 1,
-                  px: 2,
-                  my: 3,
-                }}
-              >
-                <CheckCircle color='primary' sx={{ fontSize: 16 }} />
-                <Typography variant='caption' color='text.secondary' fontWeight={500}>
-                  {t('auth.passkey.supported_on')}
-                </Typography>
-              </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 3 }}>
+        <CheckCircle color="primary" sx={{ fontSize: 16 }} />
+        <Typography variant="caption" color="text.secondary" fontWeight={500}>
+          {t('passkey.supportedOn', 'Supported on Touch ID, Face ID, Windows Hello, and hardware keys')}
+        </Typography>
+      </Box>
 
-              {/* Error Display */}
-              {error && (
-                <Typography variant='body2' color='error' sx={{ mb: 2, textAlign: 'center' }}>
-                  {error}
-                </Typography>
-              )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3, borderRadius: 2, '& .MuiAlert-message': { fontWeight: 600 } }}>
+          {error}
+        </Alert>
+      )}
 
-              {/* Actions */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                <Button
-                  fullWidth
-                  variant='contained'
-                  size='large'
-                  onClick={handleCreatePasskey}
-                  disabled={loading}
-                  sx={{
-                    py: 1.5,
-                    fontWeight: 700,
-                    borderRadius: 1,
-                    boxShadow: 2,
-                    '&:hover': {
-                      boxShadow: 4,
-                    },
-                  }}
-                >
-                  {t('auth.passkey.create_button')}
-                </Button>
-                <Button
-                  fullWidth
-                  variant='text'
-                  onClick={handleSkip}
-                  disabled={loading}
-                  sx={{
-                    py: 1.25,
-                    fontWeight: 500,
-                    background: 'none',
-                    '&:hover': {
-                      background: 'none',
-                    },
-                  }}
-                >
-                  {t('auth.mfa.skip_now')}
-                </Button>
-              </Box>
+      <Stack spacing={2}>
+        <Button fullWidth variant="contained" size="large" onClick={handleCreatePasskey} disabled={loading}
+          endIcon={<ArrowForward />}
+          sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)', boxShadow: (t) => `0 6px 20px ${alpha(t.palette.info.main, 0.23)}` } }}>
+          {t('passkey.createButton', 'Create a passkey')}
+        </Button>
+        <Button fullWidth variant="text" onClick={() => navigate(-1)} disabled={loading}
+          sx={{ py: 1.2, fontWeight: 500, color: 'text.secondary', textTransform: 'none', '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) } }}>
+          {t('mfa.skipNow', 'Skip for now')}
+        </Button>
+      </Stack>
 
-              {/* Learn More Link */}
-              <Box sx={{ mt: 2, textAlign: 'center' }}>
-                <Link
-                  href='https://webauthn.guide'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    fontSize: 12,
-                    fontWeight: 500,
-                  }}
-                >
-                  {t('auth.passkey.what_is_passkey')}
-                  <OpenInNew sx={{ fontSize: 12 }} />
-                </Link>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-      </Container>
+      <Box sx={{ mt: 3, textAlign: 'center' }}>
+        <Link href="https://webauthn.guide" target="_blank" rel="noopener noreferrer"
+          sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, fontSize: 12, fontWeight: 500 }}>
+          {t('passkey.whatIsPasskey', 'What is a passkey?')}
+          <OpenInNew sx={{ fontSize: 12 }} />
+        </Link>
+      </Box>
     </Box>
   )
 }

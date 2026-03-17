@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Container, Typography, Card, CardContent, CardMedia, Stack } from '@mui/material'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { themeConfig } from '@cap/platform-core'
 
 // Team member interface

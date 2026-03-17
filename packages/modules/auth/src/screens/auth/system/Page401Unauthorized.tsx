@@ -1,151 +1,60 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  alpha,
-  IconButton,
+  Box, Button, Typography, Avatar, alpha, useTheme, Stack,
 } from '@mui/material'
-import { LockOutlined, Home, ArrowBack } from '@mui/icons-material'
+import { LockOutlined, Home, ArrowBack, ArrowForward } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { themeConfig } from '@cap/platform-core'
 import Path from '../path'
 
 export default function Page401Unauthorized() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('auth')
+  const theme = useTheme()
   const navigate = useNavigate()
 
   return (
-    <>
-      <title>
-        401 {t('auth.system.unauthorized_title', 'Unauthorized')} - {themeConfig.templateName}
-      </title>
+    <Box
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 480, mx: 'auto', p: { xs: 3, md: 5 }, textAlign: 'center' }}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+        <Avatar variant="square"
+          sx={{ width: 56, height: 56, bgcolor: 'transparent', color: 'text.secondary', borderRadius: '24px', border: '2px solid', borderColor: alpha(theme.palette.text.secondary, 0.2) }}>
+          <LockOutlined sx={{ fontSize: 32 }} />
+        </Avatar>
+      </Box>
 
-      <Container
-        component='main'
-        maxWidth={false}
-        disableGutters
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100dvh',
-          justifyContent: 'center',
-          alignItems: 'center',
-          bgcolor: 'background.default',
-          p: 3,
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
-        <Card
-          sx={{
-            width: '100%',
-            maxWidth: '500px',
-            borderRadius: '24px',
-            boxShadow: (theme) => `0 32px 64px ${alpha(theme.palette.common.black, 0.1)}`,
-            border: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'background.paper',
-            textAlign: 'center',
-            overflow: 'hidden',
-          }}
-        >
-          <Box
-            sx={{
-              height: 160,
-              bgcolor: 'action.hover',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-            }}
-          >
-            <Box
-              sx={{
-                width: 80,
-                height: 80,
-                borderRadius: '24px',
-                bgcolor: 'background.paper',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 16px rgba(0,0,0,0.05)',
-              }}
-            >
-              <LockOutlined sx={{ fontSize: 40, color: 'text.secondary' }} />
-            </Box>
-            <IconButton
-              onClick={() => navigate(-1)}
-              sx={{
-                position: 'absolute',
-                top: 16,
-                left: 16,
-                bgcolor: 'background.paper',
-                '&:hover': { bgcolor: 'background.paper', opacity: 0.8 },
-              }}
-            >
-              <ArrowBack />
-            </IconButton>
-          </Box>
+      <Typography variant="overline" sx={{ fontWeight: 800, color: 'primary.main', letterSpacing: '0.1em', display: 'block', mb: 1 }}>
+        401 {t('system.error', 'Error')}
+      </Typography>
+      <Typography variant="h4" sx={{ fontWeight: 900, mb: 2, letterSpacing: '-0.027em' }}>
+        {t('system.unauthorizedHeading', 'Access denied')}
+      </Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, mb: 5, lineHeight: 1.6 }}>
+        {t('system.unauthorizedDescription', "You don't have permission to access this page. Please make sure you're signed in with the correct account.")}
+      </Typography>
 
-          <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
-            <Typography
-              variant='overline'
-              sx={{
-                fontWeight: 800,
-                color: 'primary.main',
-                letterSpacing: '0.1em',
-                mb: 1,
-                display: 'block',
-              }}
-            >
-              401 {t('auth.system.error', 'Error')}
-            </Typography>
+      <Stack direction="row" spacing={2}>
+        <Button variant="outlined" size="large" fullWidth onClick={() => navigate('/')} startIcon={<Home />}
+          sx={{ py: 1.5, borderRadius: 3, fontWeight: 700, textTransform: 'none', borderColor: alpha(theme.palette.divider, 0.8), color: 'text.primary', '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) } }}>
+          {t('system.backHome', 'Back Home')}
+        </Button>
+        <Button variant="contained" size="large" fullWidth onClick={() => navigate(Path.signin)} endIcon={<ArrowForward />}
+          sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)' } }}>
+          {t('common.loginButton', 'Log In')}
+        </Button>
+      </Stack>
 
-            <Typography variant='h4' sx={{ fontWeight: 800, mb: 2, letterSpacing: '-0.025em' }}>
-              {t('auth.system.unauthorized_heading', 'Access denied')}
-            </Typography>
-
-            <Typography variant='body1' color='text.secondary' sx={{ mb: 5, lineHeight: 1.6 }}>
-              {t(
-                'auth.system.unauthorized_description',
-                "You don't have permission to access this page. Please make sure you're logged in with the correct account.",
-              )}
-            </Typography>
-
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant='outlined'
-                size='large'
-                fullWidth
-                onClick={() => navigate('/')}
-                startIcon={<Home />}
-                sx={{ height: 52, borderRadius: '12px', fontWeight: 600, textTransform: 'none' }}
-              >
-                {t('auth.system.back_home', 'Back Home')}
-              </Button>
-              <Button
-                variant='contained'
-                size='large'
-                fullWidth
-                onClick={() => navigate(Path.signin)}
-                sx={{ height: 52, borderRadius: '12px', fontWeight: 700, textTransform: 'none' }}
-              >
-                {t('auth.common.loginButton', 'Log In')}
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
-
-        <Typography variant='caption' sx={{ mt: 4, color: 'text.disabled', fontWeight: 500 }}>
-          {t('auth.system.incident_id', 'Incident ID')}:{' '}
-          <Box component='span' sx={{ fontFamily: 'monospace' }}>
-            UNAUTH-{new Date().getFullYear()}-REF-4829
-          </Box>
-        </Typography>
-      </Container>
-    </>
+      <Typography variant="caption" sx={{ mt: 4, display: 'block', color: 'text.disabled', fontWeight: 500 }}>
+        {t('system.incidentId', 'Incident ID')}:{' '}
+        <Box component="span" sx={{ fontFamily: 'monospace' }}>
+          UNAUTH-{new Date().getFullYear()}-REF-4829
+        </Box>
+      </Typography>
+    </Box>
   )
 }

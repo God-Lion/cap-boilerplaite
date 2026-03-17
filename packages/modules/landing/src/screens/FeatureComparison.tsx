@@ -24,7 +24,7 @@ import {
   CardContent,
   Divider,
 } from '@mui/material'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 import LockOpenIcon from '@mui/icons-material/LockOpen'

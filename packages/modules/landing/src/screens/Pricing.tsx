@@ -27,7 +27,7 @@ import {
   AccordionDetails,
   Divider,
 } from '@mui/material'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { CheckCircle, ExpandMore } from '@mui/icons-material'
 import { themeConfig } from '@cap/platform-core'
 

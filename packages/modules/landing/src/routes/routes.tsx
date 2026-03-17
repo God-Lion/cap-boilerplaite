@@ -17,9 +17,8 @@ export const landingRoutes: React.FC<RoutesProps> = ({ location }) => {
       <Route path='/terms-of-service' element={<TermsOfService />} />
       <Route path='/contact' element={<ContactUs />} />
       <Route path='/about' element={<AboutUs />} />
-      <Route path='/pricing' element={<Pricing />} />+{' '}
-      {/* Catch-all route to suppress "No routes matched" warning when other modules match */}
-      + <Route path='*' element={null} />
+      <Route path='/pricing' element={<Pricing />} />
+      <Route path='*' element={null} />
     </Routes>
   )
 }

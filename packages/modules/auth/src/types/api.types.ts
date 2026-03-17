@@ -106,9 +106,9 @@ export interface UpdatePhotoRequest {
 
 // Change Password
 export interface ChangePasswordRequest {
-  current_password: string
-  new_password: string
-  confirm_password: string
+  currentPassword: string
+  password: string
+  confirmPassword: string
 }
 
 // MFA (Multi-Factor Authentication)
@@ -159,6 +159,29 @@ export interface UpdatePreferencesRequest {
   isEnabledMiniPlayer?: boolean
   isEnabledAutoplayNext?: boolean
   isEnabledMentions?: boolean
+  emailOnComment?: boolean
+  emailOnCommentReply?: boolean
+  emailOnAchievement?: boolean
+  emailOnNewDeviceLogin?: boolean
+  emailOnWatchlist?: boolean
+  emailOnMention?: boolean
+  language?: string
+  timezone?: string
+  dateFormat?: string
+}
+
+export interface UpdateMeRequest {
+  firstname?: string
+  lastname?: string
+  phone?: string
+  email?: string
+  biography?: string
+  location?: string
+  website?: string
+  company?: string
+  language?: string
+  timezone?: string
+  dateFormat?: string
   emailOnComment?: boolean
   emailOnCommentReply?: boolean
   emailOnAchievement?: boolean
@@ -351,10 +374,7 @@ export interface SecurityLogParams {
   [key: string]: string | number | boolean | undefined
 }
 
-// ============================================================================
-// OIDC Client Types - NEW
-// ============================================================================
-
+// OIDC Client types
 export interface CreateOIDCClientRequest {
   name: string
   redirectUris: string[]
@@ -371,3 +391,35 @@ export interface UpdateOIDCClientRequest {
   is_active?: boolean
   branding?: any
 }
+
+// Security & Activity
+export interface SecurityStatusResponse {
+  mfaEnabled: boolean
+  emailVerified: boolean
+  passwordLastChangedAt: string
+  activeSessions: number
+  passkeys: number
+}
+
+export interface AuditLog {
+  id: number
+  actor_id: number
+  action: string
+  resource_type: string
+  resource_id: number
+  metadata: any
+  created_at: string
+}
+
+export interface ActivityTimelineResponse {
+  logs: AuditLog[]
+}
+export interface EmailChangeRequest {
+  id: number
+  oldEmail: string
+  newEmail: string
+  status: 'pending_authorization' | 'completed' | 'expired'
+  date: string
+}
+
+export type EmailChangesResponse = EmailChangeRequest[]

@@ -656,8 +656,11 @@ export class AdminService {
   /**
    * Verify a domain
    */
-  async verifyDomain(domain: string): Promise<FetchResponse<MessageResponse>> {
-    return apiClient.post<MessageResponse>('/api/admin/domains/verify', { domain })
+  async verifyDomain(
+    domain: string,
+    organizationId?: number,
+  ): Promise<FetchResponse<MessageResponse>> {
+    return apiClient.post<MessageResponse>('/api/admin/domains/verify', { domain, organizationId })
   }
 
   /**

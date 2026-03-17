@@ -1,11 +1,12 @@
-import React from 'react'
 import { Box, Typography, Button, useTheme } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import { VerifiedUser } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 
 const AuthHeader = () => {
   const { t } = useTranslation()
   const theme = useTheme()
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -57,6 +58,7 @@ const AuthHeader = () => {
 
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Button
+          onClick={() => navigate('/contact')}
           sx={{
             textTransform: 'none',
             fontSize: '0.875rem',

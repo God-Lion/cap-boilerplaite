@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Button, Typography, Card, CardContent, CircularProgress } from '@mui/material'
-import { Lock, LinkOff } from '@mui/icons-material'
+import {
+  Box, Button, Typography, Avatar, CircularProgress, Stack,
+  LinearProgress, alpha, useTheme,
+} from '@mui/material'
+import { Lock, LinkOff, ArrowForward } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/material/styles'
 
 type VerificationState = 'loading' | 'expired'
 
 const PasswordlessVerification = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const theme = useTheme()
   const [state, setState] = useState<VerificationState>('loading')
   const [progress, setProgress] = useState(0)
@@ -25,287 +28,68 @@ const PasswordlessVerification = () => {
         return prev + 5
       })
     }, 100)
-
     return () => clearInterval(timer)
   }, [])
 
   return (
     <Box
-      sx={{
-        minHeight: '100vh',
-        // bgcolor: theme.palette.mode === 'dark' ? '#101922' : '#f6f7f8',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 440, mx: 'auto', p: { xs: 3, md: 5 }, textAlign: 'center' }}
     >
-      {/* Main Content */}
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
-          alignItems: { xs: 'center', lg: 'flex-start' },
-          justifyContent: 'center',
-          gap: 6,
-          py: { xs: 5, lg: 10 },
-          px: 2,
-        }}
-      >
-        {state === 'loading' && (
-          <Card
-            sx={{
-              width: '100%',
-              maxWidth: 420,
-              borderRadius: '12px',
-              boxShadow:
-                theme.palette.mode === 'dark'
-                  ? '0 10px 25px rgba(0,0,0,0.2)'
-                  : '0 10px 25px rgba(0,0,0,0.05)',
-              // border: '1px solid',
-              // borderColor: theme.palette.mode === 'dark' ? '#2d3b4a' : '#e5e7eb',
-              // bgcolor: theme.palette.mode === 'dark' ? '#16202a' : '#ffffff',
-            }}
-          >
-            <CardContent
-              sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            >
-              <Box sx={{ position: 'relative', width: 80, height: 80, mb: 3 }}>
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    inset: 0,
-                    borderRadius: '50%',
-                    border: '6px solid',
-                    // borderColor: theme.palette.mode === 'dark' ? '#2d3b4a' : '#f1f5f9',
-                  }}
-                />
-                <CircularProgress
-                  size={80}
-                  thickness={6}
-                  sx={{
-                    position: 'absolute',
-                    color: 'primary.main',
-                    '& .MuiCircularProgress-circle': {
-                      strokeLinecap: 'round',
-                    },
-                  }}
-                />
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    inset: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Lock sx={{ fontSize: 30, color: 'primary.main' }} />
-                </Box>
-              </Box>
-
-              <Typography
-                sx={{
-                  fontSize: '24px',
-                  fontWeight: 700,
-                  color: 'text.primary',
-                  textAlign: 'center',
-                  mb: 1,
-                }}
-              >
-                {t('auth.passwordless.verifying_title')}
-              </Typography>
-
-              <Typography
-                sx={{
-                  fontSize: '16px',
-                  color: 'text.secondary',
-                  textAlign: 'center',
-                  mb: 4,
-                  lineHeight: 1.6,
-                }}
-              >
-                {t('auth.passwordless.verifying_desc')}
-              </Typography>
-
-              <Box sx={{ width: '100%' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography
-                    sx={{
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
-                      color: 'text.secondary',
-                    }}
-                  >
-                    {t('auth.passwordless.securing_session')}
-                  </Typography>
-                  <Typography sx={{ fontSize: '14px', fontWeight: 700, color: 'primary.main' }}>
-                    {progress}%
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    height: 8,
-                    bgcolor: 'text.secondary',
-                    borderRadius: '999px',
-                    overflow: 'hidden',
-                    position: 'relative',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      height: '100%',
-                      width: `${progress}%`,
-                      bgcolor: 'primary.main',
-                      borderRadius: '999px',
-                      transition: 'width 0.2s ease',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        inset: 0,
-                        background:
-                          'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
-                        animation: 'shimmer 1.5s infinite',
-                      },
-                      '@keyframes shimmer': {
-                        '0%': { transform: 'translateX(-100%)' },
-                        '100%': { transform: 'translateX(100%)' },
-                      },
-                    }}
-                  />
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        )}
-
-        {state === 'expired' && (
-          <Card
-            sx={{
-              width: '100%',
-              maxWidth: 420,
-              borderRadius: '12px',
-              boxShadow:
-                theme.palette.mode === 'dark'
-                  ? '0 10px 25px rgba(0,0,0,0.2)'
-                  : '0 10px 25px rgba(0,0,0,0.05)',
-              // border: '1px solid',
-              // borderColor: theme.palette.mode === 'dark' ? '#2d3b4a' : '#e5e7eb',
-              // bgcolor: theme.palette.mode === 'dark' ? '#16202a' : '#ffffff',
-              overflow: 'hidden',
-            }}
-          >
-            <Box
-              sx={{
-                height: 128,
-                // bgcolor: theme.palette.mode === 'dark' ? 'rgba(51, 65, 85, 0.5)' : '#f8fafc',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-            >
-              <Box
-                sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  opacity: 0.1,
-                  backgroundImage: 'radial-gradient(#64748b 1px, transparent 1px)',
-                  backgroundSize: '16px 16px',
-                }}
-              />
-              <Box
-                sx={{
-                  position: 'relative',
-                  zIndex: 1,
-                  width: 64,
-                  height: 64,
-                  // bgcolor: theme.palette.mode === 'dark' ? '#16202a' : '#ffffff',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                  border: '1px solid',
-                  // borderColor: theme.palette.mode === 'dark' ? '#334155' : '#f1f5f9',
-                }}
-              >
-                <LinkOff sx={{ fontSize: 32, color: 'error.main' }} />
-              </Box>
-            </Box>
-
-            <CardContent sx={{ p: 4 }}>
-              <Box sx={{ textAlign: 'center', mb: 3 }}>
-                <Typography
-                  sx={{
-                    fontSize: '20px',
-                    fontWeight: 700,
-                    color: 'text.primary',
-                    mb: 1,
-                  }}
-                >
-                  {t('auth.passwordless.link_expired')}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: '14px',
-                    color: 'text.primary',
-                    // color: theme.palette.mode === 'dark' ? '#94a3b8' : '#64748b',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {t('auth.passwordless.link_expired_desc')}
-                </Typography>
-              </Box>
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                <Button
-                  fullWidth
-                  // variant='contained'
-                  sx={{
-                    height: 44,
-                    // bgcolor: 'primary.main',
-                    textTransform: 'none',
-                    fontSize: '14px',
-                    fontWeight: 700,
-                    borderRadius: '8px',
-                    boxShadow: '0 1px 2px rgba(19, 127, 236, 0.2)',
-                    '&:hover': {
-                      bgcolor: 'primary.main',
-                    },
-                  }}
-                >
-                  {t('auth.passwordless.resend_link')}
-                </Button>
-                <Button
-                  fullWidth
-                  onAbort={() => navigate(-1)}
-                  sx={{
-                    mx: '10px',
-                    height: 44,
-                    borderColor: 'transparent',
-                    textTransform: 'none',
-                    fontSize: '14px',
-                    fontWeight: 700,
-                    borderRadius: '8px',
-                    color: 'text.primary',
-                    // '&:hover': {
-                    //   bgcolor: theme.palette.mode === 'dark' ? '#1e293b' : '#f8fafc',
-                    //   borderColor: theme.palette.mode === 'dark' ? '#334155' : '#e2e8f0',
-                    // },
-                  }}
-                >
-                  {t('auth.common.backToLogin')}
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        )}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+        <Avatar variant="square"
+          sx={{ width: 56, height: 56, bgcolor: 'transparent', borderRadius: '24px', border: '2px solid',
+            color: state === 'expired' ? 'error.main' : 'primary.main',
+            borderColor: alpha(state === 'expired' ? theme.palette.error.main : theme.palette.primary.main, 0.2) }}>
+          {state === 'expired' ? <LinkOff sx={{ fontSize: 32 }} /> : <Lock sx={{ fontSize: 32 }} />}
+        </Avatar>
       </Box>
+
+      {state === 'loading' && (
+        <>
+          <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+            {t('auth.passwordless.verifying_title')}
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, mb: 4, lineHeight: 1.6 }}>
+            {t('auth.passwordless.verifying_desc')}
+          </Typography>
+          <Box sx={{ width: '100%', mb: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+              <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'text.secondary' }}>
+                {t('auth.passwordless.securing_session')}
+              </Typography>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: 'primary.main' }}>{progress}%</Typography>
+            </Box>
+            <LinearProgress variant="determinate" value={progress}
+              sx={{ height: 8, borderRadius: '999px', bgcolor: 'action.hover', '& .MuiLinearProgress-bar': { borderRadius: '999px' } }} />
+          </Box>
+        </>
+      )}
+
+      {state === 'expired' && (
+        <>
+          <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+            {t('auth.passwordless.link_expired')}
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, mb: 4, lineHeight: 1.6 }}>
+            {t('auth.passwordless.link_expired_desc')}
+          </Typography>
+          <Stack spacing={2}>
+            <Button fullWidth variant="contained" endIcon={<ArrowForward />}
+              sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)' } }}>
+              {t('auth.passwordless.resend_link')}
+            </Button>
+            <Button fullWidth variant="text" onClick={() => navigate(-1)}
+              sx={{ py: 1.2, fontWeight: 600, color: 'text.secondary', textTransform: 'none', '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) } }}>
+              {t('common.backToLogin')}
+            </Button>
+          </Stack>
+        </>
+      )}
     </Box>
   )
 }

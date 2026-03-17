@@ -3,7 +3,9 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*",
+    "packages/layout",
+    "packages/platform-core",
+    "packages/shared-types",
     "packages/modules/*"
   ],
   "scripts": {

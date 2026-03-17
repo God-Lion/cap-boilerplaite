@@ -24,6 +24,7 @@ import {
   LockPerson,
   ArrowForward,
   Timer,
+  VerifiedUser,
 } from '@mui/icons-material'
 import { useForm, Controller, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -41,6 +42,12 @@ import { usePasskeyAutofill } from '../../../hooks/usePasskeyAutofill'
 import { LoginRequest } from '../../../types/api.types'
 import authService from '../../../services/auth.service'
 import Path from '../../path'
+import {
+  AuthPageLayout,
+  AuthScreenIcon,
+  AuthInputLabel,
+  AuthActionButton,
+} from '../../../components/shared/auth'
 
 const DEFAULT_FORM_VALUES: LoginRequest = {
   email: 'admin@example.com',
@@ -51,7 +58,7 @@ const DEFAULT_FORM_VALUES: LoginRequest = {
 }
 
 export default function SignInV2() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const navigate = useNavigate()
 
   const { control, handleSubmit, getValues } = useForm<LoginRequest>({
@@ -411,23 +418,7 @@ export default function SignInV2() {
         content={t('auth.login.keywords', { appName: themeConfig.templateName })}
       />
 
-      <Container
-        component='main'
-        maxWidth={false}
-        disableGutters
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100dvh',
-          justifyContent: 'center',
-          alignItems: 'center',
-          bgcolor: 'background.default',
-          py: { xs: 4, sm: 8 },
-          position: 'relative',
-          overflow: 'hidden',
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
+      <AuthPageLayout>
         {/* Background Gradient Decoration */}
         <Box
           sx={{
@@ -464,19 +455,7 @@ export default function SignInV2() {
           </MAlert>
         </Snackbar>
 
-        <Card
-          sx={{
-            width: '100%',
-            maxWidth: '480px',
-            borderRadius: { xs: 0, sm: '12px' },
-            boxShadow: (theme) => theme.shadows[4],
-            border: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'background.paper',
-            mx: { xs: 0, sm: 2 },
-          }}
-        >
-          <CardContent sx={{ padding: 0 }}>
+        <Box sx={{ width: '100%', maxWidth: '480px', mx: 'auto' }}>
             {isLockedMode ? (
               <Box
                 sx={{
@@ -518,30 +497,18 @@ export default function SignInV2() {
                     gap: 2,
                   }}
                 >
-                  <Box
-                    sx={{
-                      width: 64,
-                      height: 64,
-                      borderRadius: '50%',
-                      bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
-                      display: 'grid',
-                      placeItems: 'center',
-                      boxShadow: (theme) => `inset 0 2px 4px ${alpha(theme.palette.common.black, theme.palette.mode === 'dark' ? 0.2 : 0.05)}`,
-                    }}
-                  >
-                    <LockPerson sx={{ color: 'primary.main', fontSize: 32 }} />
+                  <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                    <AuthScreenIcon icon={<LockPerson sx={{ fontSize: 32 }} />} />
                   </Box>
                   <Box>
                     <Typography
                       variant='h5'
                       sx={{ fontWeight: 800, letterSpacing: '-0.02em', mb: 1 }}
                     >
-                      {t('auth.mfa.title')}
+                      {t('auth.twoFactor.title')}
                     </Typography>
                     <Typography variant='body2' color='text.secondary' sx={{ lineHeight: 1.6 }}>
-                      {t('auth.mfa.prompt', {
-                        email: '',
-                      })}
+                      {t('auth.twoFactor.subtitle')}
                       <br />
                       <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
                         {pendingMfaUser?.email || 'your email'}
@@ -619,7 +586,7 @@ export default function SignInV2() {
                 >
                   <Timer sx={{ fontSize: 18, color: 'text.secondary' }} />
                   <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                    {t('auth.mfa.expires_in')}{' '}
+                    {t('auth.twoFactor.expiresIn')}{' '}
                     <Box
                       component='span'
                       sx={{ color: 'primary.main', fontVariantNumeric: 'tabular-nums' }}
@@ -629,32 +596,17 @@ export default function SignInV2() {
                   </Typography>
                 </Box>
 
-                <Button
-                  fullWidth
-                  variant='contained'
+                <AuthActionButton
+                  label={mfaVerifyMutation.isPending
+                    ? t('auth.twoFactor.verifying')
+                    : t('auth.twoFactor.verifyButton')}
                   disabled={mfaCode.length !== 6 || mfaVerifyMutation.isPending}
                   onClick={handleMfaSubmit}
-                  endIcon={<ArrowForward />}
-                  sx={{
-                    height: 52,
-                    borderRadius: '12px',
-                    textTransform: 'none',
-                    fontWeight: 700,
-                    fontSize: '1rem',
-                    boxShadow: (theme) => `0 10px 20px ${alpha(theme.palette.primary.main, 0.2)}`,
-                    '&:hover': {
-                      boxShadow: (theme) => `0 12px 24px ${alpha(theme.palette.primary.main, 0.3)}`,
-                    },
-                  }}
-                >
-                  {mfaVerifyMutation.isPending
-                    ? t('auth.mfa.verifying')
-                    : t('auth.mfa.verify_button')}
-                </Button>
+                />
 
                 <Box sx={{ textAlign: 'center' }}>
                   <Typography variant='body2' color='text.secondary' sx={{ mb: 1.5 }}>
-                    {t('auth.mfa.no_email')}{' '}
+                    {t('auth.twoFactor.noEmail')}{' '}
                     <Button
                       variant='text'
                       onClick={handleResendCode}
@@ -668,7 +620,7 @@ export default function SignInV2() {
                         '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' },
                       }}
                     >
-                      {t('auth.mfa.resend_code')}
+                      {t('auth.twoFactor.resendCode')}
                     </Button>
                   </Typography>
                   <Box sx={{ height: '1px', bgcolor: 'divider', my: 2 }} />
@@ -695,24 +647,22 @@ export default function SignInV2() {
                     >
                       <ArrowForward sx={{ fontSize: 16 }} />
                     </Box>
-                    {t('auth.mfa.back_to_login')}
+                    {t('auth.twoFactor.backToLogin')}
                   </MuiLink>
                 </Box>
               </Box>
             ) : (
               <>
                 {/* Header Section */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                    px: { xs: 3, sm: 4 },
-                    pt: 4,
-                    pb: 0,
-                  }}
-                ></Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+                  <AuthScreenIcon icon={<VerifiedUser sx={{ fontSize: 32 }} />} />
+                </Box>
+                <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em', textAlign: 'center' }}>
+                  {t('signIn.title', 'Welcome back')}
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, mb: 4, textAlign: 'center' }}>
+                  {t('signIn.subtitle', 'Please enter your details to sign in')}
+                </Typography>
 
                 {/* Form Section */}
                 <Box
@@ -730,36 +680,26 @@ export default function SignInV2() {
                   >
                     {/* Email Field */}
                     <Box>
-                      <Typography
-                        component='label'
-                        sx={{
-                          display: 'block',
-                          fontSize: '0.875rem',
-                          fontWeight: 500,
-                          color: 'text.primary',
-                          mb: 1,
-                          fontFamily: 'inherit',
-                        }}
-                      >
-                        {t('auth.login.email_label')}
-                      </Typography>
+                      <AuthInputLabel>
+                        {t('signIn.emailLabel', 'EMAIL ADDRESS')}
+                      </AuthInputLabel>
                       <Controller
                         name='email'
                         control={control}
-                        rules={{
-                          required: t('auth.login.email_required'),
-                          pattern: {
-                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: t('auth.login.invalid_email'),
-                          },
-                        }}
+                            rules={{
+                              required: t('signIn.errorIncomplete', 'Email is required'),
+                              pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: t('signIn.errorInvalid', 'Invalid email address'),
+                              },
+                            }}
                         render={({ field, fieldState }) => (
                           <TextField
                             {...field}
                             type='email'
                             fullWidth
                             autoComplete='username webauthn'
-                            placeholder={t('auth.login.email_placeholder_v2')}
+                            placeholder="name@example.com"
                             InputProps={{
                               endAdornment: isPasskeyAutofillAvailable && (
                                 <InputAdornment position='end'>
@@ -804,24 +744,14 @@ export default function SignInV2() {
                     {/* Password Field */}
                     {showPasswordField && (
                       <Box>
-                        <Typography
-                          component='label'
-                          sx={{
-                            display: 'block',
-                            fontSize: '0.875rem',
-                            fontWeight: 500,
-                            color: 'text.primary',
-                            mb: 1,
-                            fontFamily: 'inherit',
-                          }}
-                        >
-                          {t('auth.login.password_label')}
-                        </Typography>
+                          <AuthInputLabel>
+                            {t('signIn.passwordLabel', 'PASSWORD')}
+                          </AuthInputLabel>
                         <Controller
                           name='password'
                           control={control}
                           rules={{
-                            required: t('auth.login.password_required'),
+                            required: t('signIn.errorIncomplete', 'Password is required'),
                           }}
                           render={({ field, fieldState }) => (
                             <TextField
@@ -898,39 +828,24 @@ export default function SignInV2() {
                             },
                           }}
                         >
-                          {t('auth.login.forgot_password')}
+                          {t('signIn.forgotPassword', 'Forgot password?')}
                         </MuiLink>
                       </Box>
                     )}
 
                     {/* Primary Actions */}
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                      <Button
+                      <AuthActionButton
                         type='submit'
-                        fullWidth
-                        variant='contained'
-                        disabled={loginMutation.isPending}
-                        sx={{
-                          height: 48,
-                          borderRadius: '8px',
-                          textTransform: 'none',
-                          fontWeight: 700,
-                          fontSize: '0.875rem',
-                          fontFamily: 'inherit',
-                          '&:focus': {
-                            boxShadow: (theme) =>
-                              `0 0 0 4px ${alpha(theme.palette.primary.main, 0.2)}`,
-                          },
-                        }}
-                      >
-                        {loginMutation.isPending || isDiscovering
+                        isLoading={loginMutation.isPending || isDiscovering}
+                        label={loginMutation.isPending || isDiscovering
                           ? isDiscovering
-                            ? t('auth.login.button_loading_sso', 'Checking...')
-                            : t('auth.login.button_signing_in')
+                            ? t('signIn.checking', 'Checking...')
+                            : t('signIn.submitting', 'Signing In...')
                           : isSsoProvider
-                            ? t('auth.login.button_sso_continue', 'Continue with SSO')
-                            : t('auth.login.button_login')}
-                      </Button>
+                            ? t('signIn.continueSso', 'Continue with SSO')
+                            : t('signIn.submit', 'Sign In')}
+                      />
 
                       <Button
                         fullWidth
@@ -1088,7 +1003,7 @@ export default function SignInV2() {
                           },
                         }}
                       >
-                        {t('auth.login.github')}
+                        {t('signIn.github', 'GitHub')}
                       </Button>
                     </Grid>
                   </Grid>
@@ -1104,7 +1019,7 @@ export default function SignInV2() {
                         fontFamily: 'inherit',
                       }}
                     >
-                      {t('auth.login.no_account_prompt')}{' '}
+                      {t('signIn.noAccount', "Don't have an account?")}{' '}
                     </Typography>
                     <MuiLink
                       component={Link}
@@ -1121,15 +1036,14 @@ export default function SignInV2() {
                         },
                       }}
                     >
-                      {t('auth.login.sign_up_link')}
+                      {t('signIn.signUpHere', 'Sign up here')}
                     </MuiLink>
                   </Box>
                 </Box>
               </>
             )}
-          </CardContent>
-        </Card>
-      </Container>
+        </Box>
+      </AuthPageLayout>
     </>
   )
 }

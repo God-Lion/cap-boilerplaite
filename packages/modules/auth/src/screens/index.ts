@@ -35,7 +35,6 @@ export { default as CsrfErrorScreen } from './auth/system/CsrfErrorScreen'
 export { default as JoinOrganization } from './auth/organization/JoinOrganization'
 
 // Email & Verification Flow
-export { default as RequestEmailChange } from './auth/email/RequestEmailChange'
 export { default as InitiateEmailChange } from './auth/email/InitiateEmailChange'
 export { default as EmailChangeVerificationPending } from './auth/email/EmailChangeVerificationPending'
 export { default as EmailChangeVerification } from './auth/email/EmailChangeVerification'
@@ -47,21 +46,8 @@ export { default as MFAVerificationScreen } from './auth/email/MFAVerificationSc
 export { default as ExportVerification } from './auth/email/ExportVerification'
 export { default as PasswordlessVerification } from './auth/email/PasswordlessVerification'
 export { default as PasswordlessInitiation } from './passwordless/PasswordlessInitiation'
-
-// MFA Screens
-export { default as MFASetupInitiation } from './mfa/MFASetupInitiation'
-export { default as MFAVerificationTest } from './mfa/MFAVerificationTest'
-export { default as MFABackupCodes } from './mfa/MFABackupCodes'
-export { default as MFAVerificationSuccess } from './mfa/MFAVerificationSuccess'
-export { default as MFAManagement } from './mfa/MFAManagement'
-export { default as MFADashboard } from './mfa/MFADashboard'
-export { default as MFABackupCodeEntry } from './mfa/MFABackupCodeEntry'
-export { default as AddMFAMethod } from './mfa/AddMFAMethod'
-export { default as SecurityKeyManagement } from './mfa/SecurityKeyManagement'
-
-// Email Verification Screens
-export { default as EmailVerification } from './EmailVerification/EmailVerification'
-export { default as VerificationEmail } from './EmailVerification/VerificationEmail'
+export { default as ResendEmailVerification } from './auth/email/ResendEmailVerification'
+export { default as VerificationEmail } from './auth/email/VerificationEmail'
 
 // Passkey Screens
 export { default as PasskeyRegistrationPrompt } from './passkey/PasskeyRegistrationPrompt'
@@ -78,15 +64,19 @@ export { default as PlatformAuthLogin } from './passkey/PlatformAuthLogin'
 export { default as PlatformAuthRegister } from './passkey/PlatformAuthRegister'
 export { default as DeviceCodeDisplay } from './auth/device/DeviceCodeDisplay'
 
-// Monitoring Screens
-export { default as RealTimeAuthEventsMonitor } from './monitoring/RealTimeAuthEventsMonitor'
-export { default as RealTimeAuthEventsMonitorV2 } from './monitoring/RealTimeAuthEventsMonitorV2'
-export { default as SystemHealthDashboard } from './monitoring/SystemHealthDashboard'
-export { default as SecurityHealthCheck } from './monitoring/SecurityHealthCheck'
-export { default as MFAUsageAnalytics } from './monitoring/MFAUsageAnalytics'
-export * from './passwordless'
-export * from './monitoring'
+// Monitoring and Administration
+export * from './mfa'
 export * from './admin'
+export {
+  SystemHealthDashboard as AdminSystemHealthDashboard,
+  EmailTestingDashboard as AdminEmailTestingDashboard,
+  EmailTemplatePreview as AdminEmailTemplatePreview,
+  AuthEventsMonitor as AdminAuthEventsMonitor,
+  MFAUsageAnalytics as AdminMFAUsageAnalytics,
+} from './admin/monitoring'
+
+// Component Aliases
+export { default as EmailVerification } from './auth/signup/EmailVerificationScreen'
 
 // SSO & Protocol Screens
 export { default as PermissionConsentScreen } from './auth/sso/PermissionConsentScreen'

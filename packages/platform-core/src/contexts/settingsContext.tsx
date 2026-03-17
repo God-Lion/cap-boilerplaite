@@ -12,7 +12,7 @@ import type { Mode, Skin, Layout, LayoutComponentWidth } from '../types'
 import { useSettings as useZustandSettings } from '../store'
 import themeConfig from '../configs/themeConfig'
 import primaryColorConfig from '../configs/primaryColorConfig'
-import { useObjectCookie } from '../services/hooks'
+import { getJsonCookie, setJsonCookie } from '../utils/cookieUtils'
 import demoConfigs from '../configs/demoConfigs'
 import { DemoName } from '../types/core-types'
 
@@ -78,13 +78,26 @@ export const SettingsProvider: React.FC<{
     [initialSettings, props.mode, demoName, demoConfigurations],
   )
 
-  // Cookies
-  const [settingsCookie, updateSettingsCookie] = useObjectCookie<Settings>(
-    demoName
-      ? themeConfig.settingsCookieName.replace('demo-1', demoName)
-      : themeConfig.settingsCookieName,
-    JSON.stringify(props.settingsCookie) !== '{}' ? props.settingsCookie : updatedInitialSettings,
-  )
+  // Manual cookie/storage handling to avoid potential react-use hook issues during initialization
+  const cookieName = demoName
+    ? themeConfig.settingsCookieName.replace('demo-1', demoName)
+    : themeConfig.settingsCookieName
+
+  const [settingsCookie, _setSettingsCookie] = React.useState<Settings>(() => {
+    try {
+      if (props.settingsCookie && JSON.stringify(props.settingsCookie) !== '{}') {
+        return props.settingsCookie
+      }
+      return getJsonCookie<Settings>(cookieName, updatedInitialSettings)
+    } catch {
+      return updatedInitialSettings
+    }
+  })
+
+  const updateSettingsCookie = (newVal: Settings) => {
+    _setSettingsCookie(newVal)
+    setJsonCookie(cookieName, newVal)
+  }
 
   // State
   const [_settingsState, _updateSettingsState] = React.useState<Settings>(
@@ -147,10 +160,11 @@ export const SettingsProvider: React.FC<{
 /**
  * @deprecated Use `import { useSettings } from '../store'` instead
  *
- * This hook now uses Zustand internally for backward compatibility
+ * This hook now uses Zustand internally for backward compatibility.
+ * Renamed to avoid conflict with the primary useSettings hook.
  */
 // eslint-disable-next-line react-refresh/only-export-components
-export const useSettings = () => {
+export const useSettingsLegacy = () => {
   // Use Zustand store directly
   const zustandSettings = useZustandSettings()
 

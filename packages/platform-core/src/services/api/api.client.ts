@@ -9,8 +9,8 @@ const getBaseURL = (): string => {
 
   if (!envApiUrl) {
     if (isDev) {
-      console.warn('VITE_API_URL not set, using default: http://localhost:3333')
-      return 'http://localhost:3333'
+      console.warn('VITE_API_URL not set, using default: ""')
+      return ''
     }
     console.error('VITE_API_URL not configured for production')
     throw new Error('VITE_API_URL must be configured in production')
@@ -721,7 +721,8 @@ export class FetchClient {
         if (
           response.status === 401 &&
           !config._retry &&
-          !endpoint.includes(ENDPOINTS.auth.refresh)
+          !endpoint.includes(ENDPOINTS.auth.refresh) &&
+          !endpoint.includes(ENDPOINTS.auth.login)
         ) {
           config._retry = true
           try {

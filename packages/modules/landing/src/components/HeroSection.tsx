@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Container, Typography, Button, alpha, useTheme } from '@mui/material'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { useNavigate } from 'react-router-dom'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 

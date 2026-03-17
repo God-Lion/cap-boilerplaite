@@ -1,280 +1,66 @@
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Button, Container, Typography, Card, CardContent, Divider, alpha } from '@mui/material'
-import { CheckCircle, AppShortcut } from '@mui/icons-material'
+import { Box, Button, Typography, Avatar, Stack, Divider, alpha, useTheme } from '@mui/material'
+import { CheckCircle, ArrowForward, Settings } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { themeConfig } from '@cap/platform-core'
 
 interface RegistrationSuccessProps {
   userName?: string
   redirectPath?: string
 }
 
-export default function RegistrationSuccess({
-  userName,
-  redirectPath = '/dashboard',
-}: RegistrationSuccessProps) {
-  const { t } = useTranslation()
+export default function RegistrationSuccess({ userName, redirectPath = '/dashboard' }: RegistrationSuccessProps) {
+  const { t } = useTranslation('auth')
+  const theme = useTheme()
   const navigate = useNavigate()
 
-  const handleGoToDashboard = useCallback(() => {
-    navigate(redirectPath)
-  }, [navigate, redirectPath])
-
-  const handleCompleteLater = useCallback(() => {
-    navigate('/profile/settings')
-  }, [navigate])
+  const handleGoToDashboard = useCallback(() => navigate(redirectPath), [navigate, redirectPath])
+  const handleCompleteLater = useCallback(() => navigate('/profile/settings'), [navigate])
 
   return (
-    <>
-      <title>
-        {t('auth.success.registration_title')} - {themeConfig.templateName}
-      </title>
+    <Box
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 440, mx: 'auto', p: { xs: 3, md: 5 }, textAlign: 'center' }}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+        <Avatar variant="square"
+          sx={{ width: 56, height: 56, bgcolor: 'transparent', color: 'success.main', borderRadius: '24px', border: '2px solid', borderColor: alpha(theme.palette.success.main, 0.2) }}>
+          <CheckCircle sx={{ fontSize: 32 }} />
+        </Avatar>
+      </Box>
 
-      <Container
-        component='main'
-        maxWidth={false}
-        disableGutters
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100dvh',
-          bgcolor: 'background.default',
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
-        {/* Header */}
-        <Box
-          component='header'
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'background.paper',
-            px: 5,
-            py: 2,
-            boxShadow: (theme) => `0 1px 2px 0 ${alpha(theme.palette.common.black, 0.05)}`,
-            zIndex: 10,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box
-              sx={{
-                width: 32,
-                height: 32,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'primary.main',
-              }}
-            >
-              <AppShortcut sx={{ fontSize: 24 }} />
-            </Box>
-            <Typography
-              variant='h6'
-              sx={{ fontWeight: 700, fontSize: '1.125rem', color: 'text.primary' }}
-            >
-              {themeConfig.templateName || 'App Name'}
-            </Typography>
-          </Box>
-          <Box>
-            <Button
-              variant='text'
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: 'text.secondary',
-                textTransform: 'none',
-                '&:hover': {
-                  color: 'primary.main',
-                  bgcolor: 'transparent',
-                },
-              }}
-            >
-              Help
-            </Button>
-          </Box>
-        </Box>
+      <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+        {t('success.registrationHeading', 'Welcome aboard!')}
+      </Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, mb: 5, lineHeight: 1.6 }}>
+        {userName
+          ? t('success.welcomeMessage', { name: userName, defaultValue: `Welcome, ${userName}! Your account is ready.` })
+          : t('success.genericSuccessMessage', 'Your account has been created successfully.')}
+      </Typography>
 
-        {/* Main Content */}
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            px: 2,
-            py: 6,
-          }}
-        >
-          <Box sx={{ width: '100%', maxWidth: '448px' }}>
-            <Card
-              sx={{
-                borderRadius: '12px',
-                boxShadow: (theme) => `0 20px 25px -5px ${alpha(theme.palette.common.black, 0.1)}, 0 8px 10px -6px ${alpha(theme.palette.common.black, 0.1)}`,
-                border: '1px solid',
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                overflow: 'hidden',
-                animation: 'fadeInUp 0.6s ease-out',
-                '@keyframes fadeInUp': {
-                  '0%': {
-                    opacity: 0,
-                    transform: 'translateY(20px)',
-                  },
-                  '100%': {
-                    opacity: 1,
-                    transform: 'translateY(0)',
-                  },
-                },
-              }}
-            >
-              <CardContent
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 3,
-                  p: 4,
-                }}
-              >
-                {/* Success Icon */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: '50%',
-                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
-                    p: 3,
-                  }}
-                >
-                  <CheckCircle
-                    sx={{
-                      color: 'primary.main',
-                      fontSize: 60,
-                    }}
-                  />
-                </Box>
+      <Divider sx={{ mb: 4, opacity: 0.5 }} />
 
-                {/* Text Content */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 1,
-                    textAlign: 'center',
-                  }}
-                >
-                  <Typography
-                    variant='h4'
-                    sx={{
-                      color: 'text.primary',
-                      fontSize: '1.5rem',
-                      fontWeight: 700,
-                      letterSpacing: '-0.015em',
-                    }}
-                  >
-                    {t('auth.success.registration_heading')}
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    sx={{
-                      color: 'text.secondary',
-                      fontSize: '0.875rem',
-                      maxWidth: '320px',
-                      lineHeight: 1.6,
-                    }}
-                  >
-                    {userName
-                      ? t('auth.success.welcome_message', { name: userName })
-                      : t('auth.success.generic_success_message')}
-                  </Typography>
-                </Box>
+      <Stack spacing={2}>
+        <Button fullWidth variant="contained" onClick={handleGoToDashboard}
+          endIcon={<ArrowForward />}
+          sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)', boxShadow: (t) => `0 6px 20px ${alpha(t.palette.info.main, 0.23)}` } }}>
+          {t('success.goToDashboard', 'Go to Dashboard')}
+        </Button>
+        <Button fullWidth variant="outlined" onClick={handleCompleteLater}
+          startIcon={<Settings sx={{ fontSize: 18 }} />}
+          sx={{ py: 1.2, borderRadius: 3, fontWeight: 700, textTransform: 'none', color: 'text.primary', borderColor: alpha(theme.palette.divider, 0.8), '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) } }}>
+          {t('success.completeProfileLater', 'Complete Profile Later')}
+        </Button>
+      </Stack>
 
-                {/* Divider */}
-                <Divider
-                  sx={{
-                    width: '100%',
-                    my: 1,
-                    borderColor: 'divider',
-                  }}
-                />
-
-                {/* Action Buttons */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1.5,
-                    width: '100%',
-                  }}
-                >
-                  <Button
-                    fullWidth
-                    variant='contained'
-                    onClick={handleGoToDashboard}
-                    sx={{
-                      height: 48,
-                      borderRadius: '8px',
-                      textTransform: 'none',
-                      fontWeight: 700,
-                      fontSize: '1rem',
-                      bgcolor: 'primary.main',
-                      color: 'primary.contrastText',
-                      boxShadow: (theme) => `0 4px 6px -1px ${alpha(theme.palette.primary.main, 0.3)}`,
-                      fontFamily: 'inherit',
-                      '&:hover': {
-                        bgcolor: 'primary.dark',
-                        boxShadow: (theme) => `0 6px 8px -1px ${alpha(theme.palette.primary.main, 0.4)}`,
-                      },
-                    }}
-                  >
-                    {t('auth.success.go_to_dashboard')}
-                  </Button>
-                  <Button
-                    fullWidth
-                    variant='outlined'
-                    onClick={handleCompleteLater}
-                    sx={{
-                      height: 48,
-                      borderRadius: '8px',
-                      textTransform: 'none',
-                      fontWeight: 700,
-                      fontSize: '0.875rem',
-                      borderColor: 'divider',
-                      color: 'text.primary',
-                      fontFamily: 'inherit',
-                      '&:hover': {
-                        bgcolor: (theme) => alpha(theme.palette.action.hover, 0.04),
-                        borderColor: 'divider',
-                      },
-                    }}
-                  >
-                    {t('auth.success.complete_profile_later')}
-                  </Button>
-                </Box>
-
-                {/* Footer Note */}
-                <Typography
-                  variant='caption'
-                  sx={{
-                    mt: 2,
-                    fontSize: '0.75rem',
-                    color: 'text.disabled',
-                    textAlign: 'center',
-                  }}
-                >
-                  {t('auth.success.footer_note')}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Box>
-        </Box>
-      </Container>
-    </>
+      <Typography variant="caption" sx={{ mt: 4, display: 'block', color: 'text.disabled', textAlign: 'center' }}>
+        {t('success.footerNote', 'You can always update your profile in settings.')}
+      </Typography>
+    </Box>
   )
 }

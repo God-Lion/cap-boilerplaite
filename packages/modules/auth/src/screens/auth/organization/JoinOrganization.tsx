@@ -1,188 +1,49 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  CircularProgress,
-  Chip,
-  Avatar,
-  Stack,
-  Divider,
-  alpha,
+  Box, Button, Typography, CircularProgress, Chip, Avatar, Stack,
+  Divider, alpha, useTheme,
 } from '@mui/material'
 import {
-  CheckCircle,
-  Groups,
-  BadgeOutlined,
-  TimerOutlined,
-  ErrorOutline,
-  Close,
-  AppShortcut,
+  CheckCircle, Groups, BadgeOutlined, TimerOutlined,
+  ErrorOutline, Close, ArrowForward,
 } from '@mui/icons-material'
-import { themeConfig } from '@cap/platform-core'
+import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { adminService } from '../../../services/adminService'
 
 interface InvitationDetails {
-  id: number
-  email: string
-  role: string
-  status: string
-  expiresAt: string
-  organization: {
-    id: number
-    name: string
-    slug: string
-  }
+  id: number; email: string; role: string; status: string; expiresAt: string
+  organization: { id: number; name: string; slug: string }
 }
-
-type PageState =
-  | 'loading'
-  | 'ready'
-  | 'accepting'
-  | 'declining'
-  | 'accepted'
-  | 'declined'
-  | 'error'
-  | 'expired'
-  | 'already_used'
-
-// ── Shared layout wrapper (top-level to avoid re-creation) ───────────────
-function PageShell({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <title>Join Organization - {themeConfig.templateName}</title>
-      <Container
-        component='main'
-        maxWidth={false}
-        disableGutters
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100dvh',
-          bgcolor: 'background.default',
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
-        {/* Header */}
-        <Box
-          component='header'
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'background.paper',
-            px: 5,
-            py: 2,
-            boxShadow: (theme) => `0 1px 2px 0 ${alpha(theme.palette.common.black, 0.05)}`,
-            zIndex: 10,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box
-              sx={{
-                width: 32,
-                height: 32,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'primary.main',
-              }}
-            >
-              <AppShortcut sx={{ fontSize: 24 }} />
-            </Box>
-            <Typography
-              variant='h6'
-              sx={{ fontWeight: 700, fontSize: '1.125rem', color: 'text.primary' }}
-            >
-              {themeConfig.templateName || 'App Name'}
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Main Content */}
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            px: 2,
-            py: 6,
-          }}
-        >
-          <Box sx={{ width: '100%', maxWidth: '480px' }}>{children}</Box>
-        </Box>
-      </Container>
-    </>
-  )
-}
-
-const fadeInUpSx = {
-  animation: 'fadeInUp 0.6s ease-out',
-  '@keyframes fadeInUp': {
-    '0%': { opacity: 0, transform: 'translateY(20px)' },
-    '100%': { opacity: 1, transform: 'translateY(0)' },
-  },
-}
-
-const cardBaseSx = {
-  borderRadius: '16px',
-  boxShadow: (theme: any) => `0 20px 25px -5px ${alpha(theme.palette.common.black, 0.1)}`,
-  border: '1px solid',
-  borderColor: 'divider',
-  bgcolor: 'background.paper',
-  overflow: 'hidden',
-  ...fadeInUpSx,
-}
+type PageState = 'loading' | 'ready' | 'accepting' | 'declining' | 'accepted' | 'declined' | 'error' | 'expired' | 'already_used'
 
 export default function JoinOrganization() {
+  const { t } = useTranslation('auth')
+  const theme = useTheme()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const token = searchParams.get('token')
   const email = searchParams.get('email')
-
   const hasRequiredParams = useMemo(() => Boolean(token && email), [token, email])
-
   const [state, setState] = useState<PageState>(() => (hasRequiredParams ? 'loading' : 'error'))
   const [invitation, setInvitation] = useState<InvitationDetails | null>(null)
-  const [errorMessage, setErrorMessage] = useState(() =>
-    hasRequiredParams ? '' : 'Invalid invitation link. Token and email are required.',
-  )
+  const [errorMessage, setErrorMessage] = useState(() => hasRequiredParams ? '' : 'Invalid invitation link.')
 
-  // Fetch invitation details on mount
   useEffect(() => {
     if (!token || !email) return
-
     const fetchDetails = async () => {
       try {
         const res = await adminService.getInvitationDetails(token, email)
-        if (res.status >= 200 && res.status < 300) {
-          setInvitation(res.data)
-          setState('ready')
-        } else {
+        if (res.status >= 200 && res.status < 300) { setInvitation(res.data); setState('ready') }
+        else {
           const data = res.data as any
-          if (data?.status === 'expired') {
-            setState('expired')
-          } else if (data?.status === 'accepted' || data?.status === 'revoked') {
-            setState('already_used')
-            setErrorMessage(data?.message || 'This invitation is no longer valid.')
-          } else {
-            setState('error')
-            setErrorMessage(data?.message || 'Could not load invitation details.')
-          }
+          if (data?.status === 'expired') setState('expired')
+          else if (data?.status === 'accepted' || data?.status === 'revoked') { setState('already_used'); setErrorMessage(data?.message || 'This invitation is no longer valid.') }
+          else { setState('error'); setErrorMessage(data?.message || 'Could not load invitation details.') }
         }
-      } catch (_: unknown) {
-        setState('error')
-        setErrorMessage('Failed to load invitation. Please try again later.')
-      }
+      } catch { setState('error'); setErrorMessage('Failed to load invitation.') }
     }
-
     fetchDetails()
   }, [token, email])
 
@@ -191,17 +52,9 @@ export default function JoinOrganization() {
     setState('accepting')
     try {
       const res = await adminService.acceptInvitation(token, email)
-      if (res.status >= 200 && res.status < 300) {
-        setState('accepted')
-      } else {
-        const data = res.data as any
-        setState('error')
-        setErrorMessage(data?.message || 'Failed to accept invitation.')
-      }
-    } catch (_: unknown) {
-      setState('error')
-      setErrorMessage('Failed to accept invitation. Please try again.')
-    }
+      if (res.status >= 200 && res.status < 300) setState('accepted')
+      else { const data = res.data as any; setState('error'); setErrorMessage(data?.message || 'Failed to accept invitation.') }
+    } catch { setState('error'); setErrorMessage('Failed to accept invitation.') }
   }, [token, email])
 
   const handleDecline = useCallback(async () => {
@@ -209,572 +62,104 @@ export default function JoinOrganization() {
     setState('declining')
     try {
       const res = await adminService.declineInvitation(token, email)
-      if (res.status >= 200 && res.status < 300) {
-        setState('declined')
-      } else {
-        const data = res.data as any
-        setState('error')
-        setErrorMessage(data?.message || 'Failed to decline invitation.')
-      }
-    } catch (_: unknown) {
-      setState('error')
-      setErrorMessage('Failed to decline invitation. Please try again.')
-    }
+      if (res.status >= 200 && res.status < 300) setState('declined')
+      else { const data = res.data as any; setState('error'); setErrorMessage(data?.message || 'Failed to decline invitation.') }
+    } catch { setState('error'); setErrorMessage('Failed to decline invitation.') }
   }, [token, email])
 
-  // ── Loading State ──────────────────────────────────────────────────────
-  if (state === 'loading') {
-    return (
-      <PageShell>
-        <Card
-          sx={{
-            ...cardBaseSx,
-            boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-          }}
-        >
-          <CardContent
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 3,
-              p: 5,
-            }}
-          >
-            <CircularProgress size={48} sx={{ color: 'primary.main' }} />
-            <Typography sx={{ color: 'text.secondary', fontWeight: 500 }}>
-              Loading invitation details...
-            </Typography>
-          </CardContent>
-        </Card>
-      </PageShell>
-    )
-  }
+  const wrapBox = (icon: React.ReactNode, color: string, title: string, desc: string, btn: React.ReactNode) => (
+    <Box
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 440, mx: 'auto', p: { xs: 3, md: 5 }, textAlign: 'center' }}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+        <Avatar variant="square"
+          sx={{ width: 56, height: 56, bgcolor: 'transparent', borderRadius: '24px', border: '2px solid', color, borderColor: alpha(color, 0.2) }}>
+          {icon}
+        </Avatar>
+      </Box>
+      <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>{title}</Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, mb: 5, lineHeight: 1.6, maxWidth: 340, mx: 'auto' }}>{desc}</Typography>
+      {btn}
+    </Box>
+  )
 
-  // ── Error State ────────────────────────────────────────────────────────
-  if (state === 'error') {
-    return (
-      <PageShell>
-        <Card sx={cardBaseSx}>
-          <CardContent
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
-          >
-            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: (theme) => alpha(theme.palette.error.main, 0.1) }}>
-              <ErrorOutline sx={{ color: 'error.main', fontSize: 52 }} />
-            </Box>
-            <Typography
-              variant='h5'
-              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
-            >
-              Something went wrong
-            </Typography>
-            <Typography
-              variant='body2'
-              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
-            >
-              {errorMessage}
-            </Typography>
-            <Button
-              fullWidth
-              variant='contained'
-              onClick={() => navigate('/auth/login')}
-              sx={{
-                mt: 1,
-                height: 48,
-                borderRadius: '10px',
-                textTransform: 'none',
-                fontWeight: 700,
-                bgcolor: 'primary.main',
-                '&:hover': { bgcolor: 'primary.dark' },
-              }}
-            >
-              Go to Login
-            </Button>
-          </CardContent>
-        </Card>
-      </PageShell>
-    )
-  }
+  const ctaBtn = (label: string, onClick: () => void) => (
+    <Button fullWidth variant="contained" size="large" onClick={onClick} endIcon={<ArrowForward />}
+      sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)' } }}>
+      {label}
+    </Button>
+  )
 
-  // ── Expired ────────────────────────────────────────────────────────────
-  if (state === 'expired') {
-    return (
-      <PageShell>
-        <Card sx={cardBaseSx}>
-          <CardContent
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
-          >
-            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: (theme) => alpha(theme.palette.warning.main, 0.1) }}>
-              <TimerOutlined sx={{ color: 'warning.main', fontSize: 52 }} />
-            </Box>
-            <Typography
-              variant='h5'
-              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
-            >
-              Invitation Expired
-            </Typography>
-            <Typography
-              variant='body2'
-              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
-            >
-              This invitation has expired. Please contact the organization administrator to receive
-              a new invitation.
-            </Typography>
-            <Button
-              fullWidth
-              variant='contained'
-              onClick={() => navigate('/auth/login')}
-              sx={{
-                mt: 1,
-                height: 48,
-                borderRadius: '10px',
-                textTransform: 'none',
-                fontWeight: 700,
-                bgcolor: 'primary.main',
-                '&:hover': { bgcolor: 'primary.dark' },
-              }}
-            >
-              Go to Login
-            </Button>
-          </CardContent>
-        </Card>
-      </PageShell>
-    )
-  }
+  if (state === 'loading') return wrapBox(<Groups sx={{ fontSize: 32 }} />, theme.palette.primary.main, 'Loading invitation...', 'Please wait while we retrieve your invitation details.', <CircularProgress />)
+  if (state === 'error') return wrapBox(<ErrorOutline sx={{ fontSize: 32 }} />, theme.palette.error.main, 'Something went wrong', errorMessage, ctaBtn('Go to Login', () => navigate('/auth/login')))
+  if (state === 'expired') return wrapBox(<TimerOutlined sx={{ fontSize: 32 }} />, theme.palette.warning.main, 'Invitation Expired', 'This invitation has expired. Please contact the organization administrator.', ctaBtn('Go to Login', () => navigate('/auth/login')))
+  if (state === 'already_used') return wrapBox(<ErrorOutline sx={{ fontSize: 32 }} />, theme.palette.text.disabled, 'Invitation No Longer Valid', errorMessage, ctaBtn('Go to Dashboard', () => navigate('/dashboard')))
+  if (state === 'accepted') return wrapBox(<CheckCircle sx={{ fontSize: 32 }} />, theme.palette.success.main, `Welcome to ${invitation?.organization.name}!`, `You have successfully joined as a ${invitation?.role}.`, ctaBtn('Go to Dashboard', () => navigate('/dashboard')))
+  if (state === 'declined') return wrapBox(<Close sx={{ fontSize: 32 }} />, theme.palette.text.disabled, 'Invitation Declined', `You have declined the invitation to join ${invitation?.organization.name}.`, ctaBtn('Go to Login', () => navigate('/auth/login')))
 
-  // ── Already Used ───────────────────────────────────────────────────────
-  if (state === 'already_used') {
-    return (
-      <PageShell>
-        <Card sx={cardBaseSx}>
-          <CardContent
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
-          >
-            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: (theme) => alpha(theme.palette.action.disabledBackground, 0.1) }}>
-              <ErrorOutline sx={{ color: 'text.disabled', fontSize: 52 }} />
-            </Box>
-            <Typography
-              variant='h5'
-              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
-            >
-              Invitation No Longer Valid
-            </Typography>
-            <Typography
-              variant='body2'
-              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
-            >
-              {errorMessage}
-            </Typography>
-            <Button
-              fullWidth
-              variant='contained'
-              onClick={() => navigate('/dashboard')}
-              sx={{
-                mt: 1,
-                height: 48,
-                borderRadius: '10px',
-                textTransform: 'none',
-                fontWeight: 700,
-                bgcolor: 'primary.main',
-                '&:hover': { bgcolor: 'primary.dark' },
-              }}
-            >
-              Go to Dashboard
-            </Button>
-          </CardContent>
-        </Card>
-      </PageShell>
-    )
-  }
-
-  // ── Accepted State ─────────────────────────────────────────────────────
-  if (state === 'accepted') {
-    return (
-      <PageShell>
-        <Card sx={cardBaseSx}>
-          <CardContent
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
-          >
-            <Box
-              sx={{
-                p: 2.5,
-                borderRadius: '50%',
-                bgcolor: (theme) => alpha(theme.palette.success.main, 0.1),
-                animation: 'scaleIn 0.5s ease-out',
-                '@keyframes scaleIn': {
-                  '0%': { transform: 'scale(0)' },
-                  '60%': { transform: 'scale(1.1)' },
-                  '100%': { transform: 'scale(1)' },
-                },
-              }}
-            >
-              <CheckCircle sx={{ color: 'success.main', fontSize: 52 }} />
-            </Box>
-            <Typography
-              variant='h5'
-              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
-            >
-              Welcome to {invitation?.organization.name}!
-            </Typography>
-            <Typography
-              variant='body2'
-              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
-            >
-              You have successfully joined the organization as a <strong>{invitation?.role}</strong>
-              . You can now collaborate with your team.
-            </Typography>
-            <Button
-              fullWidth
-              variant='contained'
-              onClick={() => navigate('/dashboard')}
-              sx={{
-                mt: 1,
-                height: 48,
-                borderRadius: '10px',
-                textTransform: 'none',
-                fontWeight: 700,
-                fontSize: '1rem',
-                bgcolor: 'success.main',
-                boxShadow: (theme) => `0 4px 6px -1px ${alpha(theme.palette.success.main, 0.3)}`,
-                '&:hover': {
-                  bgcolor: 'success.dark',
-                  boxShadow: (theme) => `0 6px 8px -1px ${alpha(theme.palette.success.main, 0.4)}`,
-                },
-              }}
-            >
-              Go to Dashboard
-            </Button>
-          </CardContent>
-        </Card>
-      </PageShell>
-    )
-  }
-
-  // ── Declined State ─────────────────────────────────────────────────────
-  if (state === 'declined') {
-    return (
-      <PageShell>
-        <Card sx={cardBaseSx}>
-          <CardContent
-            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, p: 5 }}
-          >
-            <Box sx={{ p: 2.5, borderRadius: '50%', bgcolor: (theme) => alpha(theme.palette.action.disabledBackground, 0.1) }}>
-              <Close sx={{ color: 'text.disabled', fontSize: 52 }} />
-            </Box>
-            <Typography
-              variant='h5'
-              sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}
-            >
-              Invitation Declined
-            </Typography>
-            <Typography
-              variant='body2'
-              sx={{ color: 'text.secondary', textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}
-            >
-              You have declined the invitation to join{' '}
-              <strong>{invitation?.organization.name}</strong>. No action was taken on your account.
-            </Typography>
-            <Button
-              fullWidth
-              variant='contained'
-              onClick={() => navigate('/auth/login')}
-              sx={{
-                mt: 1,
-                height: 48,
-                borderRadius: '10px',
-                textTransform: 'none',
-                fontWeight: 700,
-                bgcolor: 'primary.main',
-                '&:hover': { bgcolor: 'primary.dark' },
-              }}
-            >
-              Go to Login
-            </Button>
-          </CardContent>
-        </Card>
-      </PageShell>
-    )
-  }
-
-  // ── Ready State (main invitation card) ─────────────────────────────────
+  // Ready state — main invitation card
   return (
-    <PageShell>
-      <Card
-        sx={{
-          ...cardBaseSx,
-          boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-        }}
-      >
-        <CardContent sx={{ p: 0 }}>
-          {/* Gradient Banner */}
-          <Box
-            sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              p: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 2,
-            }}
-          >
-            <Avatar
-              sx={{
-                width: 64,
-                height: 64,
-                bgcolor: 'rgba(255,255,255,0.2)',
-                backdropFilter: 'blur(10px)',
-                border: '2px solid rgba(255,255,255,0.3)',
-              }}
-            >
-              <Groups sx={{ fontSize: 32, color: '#fff' }} />
-            </Avatar>
-            <Typography
-              variant='h5'
-              sx={{
-                fontWeight: 800,
-                color: '#fff',
-                textAlign: 'center',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              {"You're Invited!"}
-            </Typography>
-            <Typography
-              variant='body2'
-              sx={{
-                color: (theme) => alpha(theme.palette.common.white, 0.85),
-                textAlign: 'center',
-                maxWidth: 320,
-                lineHeight: 1.6,
-              }}
-            >
-              You have been invited to join an organization on {themeConfig.templateName}.
-            </Typography>
+    <Box
+      className="animate-scale-in"
+      component={motion.div}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      sx={{ width: '100%', maxWidth: 480, mx: 'auto', p: { xs: 3, md: 5 } }}
+    >
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <Avatar variant="square"
+            sx={{ width: 56, height: 56, bgcolor: 'transparent', color: 'primary.main', borderRadius: '24px', border: '2px solid', borderColor: alpha(theme.palette.primary.main, 0.2) }}>
+            <Groups sx={{ fontSize: 32 }} />
+          </Avatar>
+        </Box>
+        <Typography variant="h4" sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+          {t('organization.youreInvited', "You're Invited!")}
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
+          {t('organization.invitedToJoin', 'You have been invited to join an organization.')}
+        </Typography>
+      </Box>
+
+      <Stack spacing={2} sx={{ mb: 4 }}>
+        {[
+          { icon: <Groups sx={{ fontSize: 22 }} />, label: t('organization.organization', 'Organization'), value: invitation?.organization.name, color: theme.palette.primary.main },
+          { icon: <BadgeOutlined sx={{ fontSize: 22 }} />, label: t('organization.assignedRole', 'Assigned Role'), value: invitation?.role, color: theme.palette.success.main },
+          { icon: <Box sx={{ fontSize: 18, fontWeight: 900 }}>@</Box>, label: t('organization.invitedEmail', 'Invited Email'), value: invitation?.email, color: theme.palette.info.main },
+        ].map(({ icon, label, value, color }) => (
+          <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 3, bgcolor: alpha(color, 0.04), border: '1px solid', borderColor: alpha(color, 0.1) }}>
+            <Avatar sx={{ width: 44, height: 44, bgcolor: alpha(color, 0.1), color, borderRadius: '12px' }}>{icon}</Avatar>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>{label}</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700 }}>{value}</Typography>
+            </Box>
           </Box>
+        ))}
+      </Stack>
 
-          {/* Invitation Details */}
-          <Box sx={{ p: 4 }}>
-            <Stack spacing={2.5}>
-              {/* Organization */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  p: 2,
-                  borderRadius: '12px',
-                  bgcolor: alpha('#667eea', 0.05),
-                  border: '1px solid',
-                  borderColor: alpha('#667eea', 0.1),
-                }}
-              >
-                <Avatar
-                  sx={{
-                    width: 44,
-                    height: 44,
-                    bgcolor: alpha('#667eea', 0.1),
-                    color: '#667eea',
-                  }}
-                >
-                  <Groups sx={{ fontSize: 22 }} />
-                </Avatar>
-                <Box>
-                  <Typography
-                    variant='caption'
-                    sx={{
-                      color: 'text.secondary',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
-                      fontSize: '0.7rem',
-                    }}
-                  >
-                    Organization
-                  </Typography>
-                  <Typography variant='body1' sx={{ fontWeight: 700, color: 'text.primary' }}>
-                    {invitation?.organization.name}
-                  </Typography>
-                </Box>
-              </Box>
+      <Divider sx={{ mb: 3, opacity: 0.5 }} />
 
-              {/* Role */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  p: 2,
-                  borderRadius: '12px',
-                  bgcolor: alpha('#10b981', 0.05),
-                  border: '1px solid',
-                  borderColor: alpha('#10b981', 0.1),
-                }}
-              >
-                <Avatar
-                  sx={{
-                    width: 44,
-                    height: 44,
-                    bgcolor: alpha('#10b981', 0.1),
-                    color: '#10b981',
-                  }}
-                >
-                  <BadgeOutlined sx={{ fontSize: 22 }} />
-                </Avatar>
-                <Box>
-                  <Typography
-                    variant='caption'
-                    sx={{
-                      color: 'text.secondary',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
-                      fontSize: '0.7rem',
-                    }}
-                  >
-                    Assigned Role
-                  </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography variant='body1' sx={{ fontWeight: 700, color: 'text.primary' }}>
-                      {invitation?.role}
-                    </Typography>
-                    <Chip
-                      size='small'
-                      label={invitation?.role}
-                      sx={{
-                        height: 22,
-                        fontSize: '0.7rem',
-                        fontWeight: 700,
-                        bgcolor: alpha('#10b981', 0.1),
-                        color: '#10b981',
-                      }}
-                    />
-                  </Box>
-                </Box>
-              </Box>
+      <Stack spacing={1.5}>
+        <Button fullWidth variant="contained" size="large" onClick={handleAccept} disabled={state === 'accepting'}
+          startIcon={state === 'accepting' ? <CircularProgress size={18} color="inherit" /> : <CheckCircle />}
+          sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)' } }}>
+          {state === 'accepting' ? t('organization.joining', 'Joining...') : t('organization.acceptJoin', 'Accept & Join Organization')}
+        </Button>
+        <Button fullWidth variant="text" size="large" onClick={handleDecline} disabled={state === 'declining'}
+          sx={{ py: 1.2, borderRadius: 3, fontWeight: 600, color: 'text.secondary', textTransform: 'none', '&:hover': { color: 'error.main', bgcolor: alpha(theme.palette.error.main, 0.04) } }}>
+          {state === 'declining' ? t('organization.declining', 'Declining...') : t('organization.declineInvitation', 'Decline Invitation')}
+        </Button>
+      </Stack>
 
-              {/* Email */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  p: 2,
-                  borderRadius: '12px',
-                  bgcolor: alpha('#6366f1', 0.05),
-                  border: '1px solid',
-                  borderColor: alpha('#6366f1', 0.1),
-                }}
-              >
-                <Avatar
-                  sx={{
-                    width: 44,
-                    height: 44,
-                    bgcolor: alpha('#6366f1', 0.1),
-                    color: '#6366f1',
-                  }}
-                >
-                  @
-                </Avatar>
-                <Box>
-                  <Typography
-                    variant='caption'
-                    sx={{
-                      color: 'text.secondary',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
-                      fontSize: '0.7rem',
-                    }}
-                  >
-                    Invited Email
-                  </Typography>
-                  <Typography variant='body1' sx={{ fontWeight: 700, color: 'text.primary' }}>
-                    {invitation?.email}
-                  </Typography>
-                </Box>
-              </Box>
-            </Stack>
-
-            <Divider sx={{ my: 3, borderColor: 'divider' }} />
-
-            {/* Action Buttons */}
-            <Stack spacing={1.5}>
-              <Button
-                fullWidth
-                variant='contained'
-                size='large'
-                onClick={handleAccept}
-                disabled={state === 'accepting'}
-                startIcon={
-                  state === 'accepting' ? (
-                    <CircularProgress size={18} color='inherit' />
-                  ) : (
-                    <CheckCircle />
-                  )
-                }
-                sx={{
-                  height: 52,
-                  borderRadius: '12px',
-                  textTransform: 'none',
-                  fontWeight: 700,
-                  fontSize: '1rem',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  boxShadow: '0 4px 14px 0 rgba(102, 126, 234, 0.4)',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #5a6fd6 0%, #6a4192 100%)',
-                    boxShadow: '0 6px 18px 0 rgba(102, 126, 234, 0.5)',
-                  },
-                  '&:disabled': {
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    opacity: 0.7,
-                    color: '#fff',
-                  },
-                }}
-              >
-                {state === 'accepting' ? 'Joining...' : 'Accept & Join Organization'}
-              </Button>
-
-              <Button
-                fullWidth
-                variant='text'
-                size='large'
-                onClick={handleDecline}
-                disabled={state === 'declining'}
-                sx={{
-                  height: 48,
-                  borderRadius: '12px',
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  fontSize: '0.875rem',
-                  color: 'text.secondary',
-                  '&:hover': {
-                    bgcolor: (theme) => alpha(theme.palette.action.hover, 0.1),
-                    color: 'error.main',
-                  },
-                }}
-              >
-                {state === 'declining' ? 'Declining...' : 'Decline Invitation'}
-              </Button>
-            </Stack>
-
-            {/* Footer Note */}
-            <Typography
-              variant='caption'
-              sx={{
-                display: 'block',
-                mt: 3,
-                fontSize: '0.7rem',
-                color: 'text.disabled',
-                textAlign: 'center',
-                lineHeight: 1.5,
-              }}
-            >
-              {"By accepting this invitation, you agree to the organization's policies. "}
-              {"If you didn't expect this invitation, you can safely decline."}
-            </Typography>
-          </Box>
-        </CardContent>
-      </Card>
-    </PageShell>
+      <Typography variant="caption" sx={{ display: 'block', mt: 3, color: 'text.disabled', textAlign: 'center', lineHeight: 1.5 }}>
+        {t('organization.agreeNote', "By accepting, you agree to the organization's policies. If you didn't expect this, you can safely decline.")}
+      </Typography>
+    </Box>
   )
 }

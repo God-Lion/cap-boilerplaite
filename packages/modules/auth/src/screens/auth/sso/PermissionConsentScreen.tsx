@@ -41,6 +41,12 @@ import {
   useConfirmOidcInteraction,
   useAbortOidcInteraction,
 } from '../../../hooks/useOidcCompliance'
+import {
+  AuthPageLayout,
+  AuthScreenIcon,
+  AuthInputLabel,
+  AuthActionButton,
+} from '../../../components/shared/auth'
 
 export default function PermissionConsentScreen() {
   const { t } = useTranslation()
@@ -182,138 +188,78 @@ export default function PermissionConsentScreen() {
 
   if (isError) {
     return (
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          bgcolor: 'background.default',
-        }}
-      >
-        <Container maxWidth='sm'>
-          <Card
-            sx={{
-              p: 4,
-              textAlign: 'center',
-              borderRadius: 4,
-              border: '1px solid',
-              borderColor: 'divider',
-              boxShadow: 'none',
-            }}
-          >
-            <Avatar
-              sx={{
-                mx: 'auto',
-                mb: 3,
-                width: 64,
-                height: 64,
-                bgcolor: alpha(theme.palette.error.main, 0.1),
-                color: 'error.main',
-              }}
-            >
-              <ShieldIcon sx={{ fontSize: 32 }} />
-            </Avatar>
-            <Typography variant='h5' sx={{ fontWeight: 900, mb: 1.5, letterSpacing: '-0.027em' }}>
-              {t('auth.sso.interaction_error_title', 'Interaction Failed')}
-            </Typography>
-            <Typography variant='body1' color='text.secondary' sx={{ mb: 4, fontWeight: 500 }}>
-              {t(
-                'auth.sso.interaction_error_desc',
-                'The authentication request is invalid or has expired. Please try initiation login again from the source application.',
-              )}
-            </Typography>
-            <Button
-              variant='contained'
-              onClick={() => navigate(Path.login)}
-              sx={{
-                height: 48,
-                borderRadius: '12px',
-                fontWeight: 700,
-                px: 4,
-                textTransform: 'none',
-              }}
-            >
-              {t('auth.sso.back_to_login', 'Back to Login')}
-            </Button>
-          </Card>
-        </Container>
-      </Box>
+      <AuthPageLayout>
+        <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <AuthScreenIcon icon={<ShieldIcon sx={{ fontSize: 32 }} />} color="error.main" />
+          </Box>
+          <Typography variant='h5' sx={{ fontWeight: 900, mb: 1.5, letterSpacing: '-0.027em' }}>
+            {t('auth.sso.interaction_error_title', 'Interaction Failed')}
+          </Typography>
+          <Typography variant='body1' color='text.secondary' sx={{ mb: 4, fontWeight: 500 }}>
+            {t(
+              'auth.sso.interaction_error_desc',
+              'The authentication request is invalid or has expired. Please try initiation login again from the source application.',
+            )}
+          </Typography>
+          <AuthActionButton
+            label={t('auth.sso.back_to_login', 'Back to Login')}
+            onClick={() => navigate(Path.login)}
+          />
+        </Box>
+      </AuthPageLayout>
     )
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: `radial-gradient(circle at 50% 50%, ${alpha(theme.palette.primary.main, 0.04)} 0%, transparent 70%)`,
-        bgcolor: 'background.default',
-        p: 3,
-      }}
-    >
-      <Container maxWidth='sm'>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
+    <AuthPageLayout maxWidth={520}>
+      <Box sx={{ mb: 2 }}>
+        <IconButton
+          onClick={handleDeny}
+          size='small'
+          aria-label={t('common.back', 'Back')}
+          sx={{ border: '1px solid', borderColor: 'divider' }}
         >
-          <Card
+          <ArrowBackIcon sx={{ fontSize: 16 }} />
+        </IconButton>
+      </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 5 }}>
+        <Box sx={{ position: 'relative', mb: 3 }}>
+          <AuthScreenIcon
+            icon={
+              <Avatar
+                src={client?.logoUri}
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 'inherit',
+                  bgcolor: 'transparent',
+                }}
+              >
+                {client?.name?.charAt(0) || 'A'}
+              </Avatar>
+            }
+          />
+          <Box
             sx={{
-              border: '1px solid',
-              borderColor: 'divider',
-              boxShadow: 'none',
-              borderRadius: 4,
-              overflow: 'visible',
-              bgcolor: 'background.paper',
+              position: 'absolute',
+              bottom: -4,
+              right: -4,
+              bgcolor: 'success.main',
+              borderRadius: '50%',
+              width: 24,
+              height: 24,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '3px solid',
+              borderColor: 'background.paper',
             }}
           >
-            <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-              <Box sx={{ mb: 2 }}>
-                <IconButton
-                  onClick={handleDeny}
-                  size='small'
-                  aria-label={t('common.back', 'Back')}
-                  sx={{ border: '1px solid', borderColor: 'divider' }}
-                >
-                  <ArrowBackIcon sx={{ fontSize: 16 }} />
-                </IconButton>
-              </Box>
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 5 }}>
-                <Box sx={{ position: 'relative', mb: 3 }}>
-                  <Avatar
-                    src={client?.logoUri || '/app-logo.png'}
-                    sx={{
-                      width: 88,
-                      height: 88,
-                      borderRadius: '24px',
-                      boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.15)}`,
-                      border: '2px solid',
-                      borderColor: 'background.paper',
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      bottom: -4,
-                      right: -4,
-                      bgcolor: 'success.main',
-                      borderRadius: '50%',
-                      width: 28,
-                      height: 28,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: '4px solid',
-                      borderColor: 'background.paper',
-                    }}
-                  >
-                    <CheckCircleIcon sx={{ color: 'common.white', fontSize: 16 }} />
-                  </Box>
-                </Box>
+            <CheckCircleIcon sx={{ color: 'common.white', fontSize: 14 }} />
+          </Box>
+        </Box>
                 <Typography
                   variant='h4'
                   sx={{
@@ -338,20 +284,10 @@ export default function PermissionConsentScreen() {
                 </Typography>
               </Box>
 
-              <Box sx={{ mb: 5 }}>
-                <Typography
-                  variant='caption'
-                  sx={{
-                    fontWeight: 800,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    color: 'text.secondary',
-                    mb: 2.5,
-                    display: 'block',
-                  }}
-                >
+              <Box sx={{ mb: 4 }}>
+                <AuthInputLabel>
                   {t('auth.sso.requested_permissions', 'Requested Permissions')}
-                </Typography>
+                </AuthInputLabel>
                 <List disablePadding>
                   {scopeDetails.map((scope) => (
                     <ListItem
@@ -414,28 +350,12 @@ export default function PermissionConsentScreen() {
               </Box>
 
               <Stack spacing={2} sx={{ mb: 5 }}>
-                <Button
-                  fullWidth
-                  variant='contained'
-                  size='large'
+                <AuthActionButton
+                  isLoading={confirmMutation.isPending}
+                  label={t('auth.sso.allow_access', 'Allow Access')}
                   onClick={handleAllow}
                   disabled={confirmMutation.isPending || abortMutation.isPending}
-                  sx={{
-                    fontWeight: 700,
-                    textTransform: 'none',
-                    height: 52,
-                    borderRadius: '12px',
-                    bgcolor: 'info.main',
-                    boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
-                    '&:hover': { bgcolor: 'info.dark' },
-                  }}
-                >
-                  {confirmMutation.isPending ? (
-                    <CircularProgress size={24} color='inherit' />
-                  ) : (
-                    t('auth.sso.allow_access', 'Allow Access')
-                  )}
-                </Button>
+                />
                 <Button
                   fullWidth
                   variant='outlined'
@@ -443,15 +363,15 @@ export default function PermissionConsentScreen() {
                   onClick={handleDeny}
                   disabled={confirmMutation.isPending || abortMutation.isPending}
                   sx={{
-                    fontWeight: 700,
+                    fontWeight: 800,
                     textTransform: 'none',
                     height: 52,
-                    borderRadius: '12px',
+                    borderRadius: 3,
                     borderColor: 'divider',
                     color: 'text.primary',
                     '&:hover': {
                       bgcolor: alpha(theme.palette.action.hover, 0.04),
-                      borderColor: 'text.primary',
+                      borderColor: 'divider',
                     },
                   }}
                 >
@@ -490,40 +410,7 @@ export default function PermissionConsentScreen() {
                 >
                   {t('auth.sso.privacy_link', 'Privacy Policy')}
                 </Link>
-              </Stack>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <Box sx={{ mt: 5, textAlign: 'center' }}>
-          <Box
-            sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 1.5,
-              px: 2.5,
-              py: 1,
-              borderRadius: '50px',
-              bgcolor: alpha(theme.palette.success.main, 0.04),
-              border: '1px solid',
-              borderColor: alpha(theme.palette.success.main, 0.1),
-            }}
-          >
-            <ShieldIcon sx={{ fontSize: 16, color: 'success.main' }} />
-            <Typography
-              variant='caption'
-              sx={{
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                color: 'success.dark',
-              }}
-            >
-              {t('auth.sso.secure_encryption_tag', 'Verified & Protected by Antigravity OS')}
-            </Typography>
-          </Box>
-        </Box>
-      </Container>
-    </Box>
+      </Stack>
+    </AuthPageLayout>
   )
 }

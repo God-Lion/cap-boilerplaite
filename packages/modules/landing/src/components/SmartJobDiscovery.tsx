@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Container, Typography, Paper, alpha, useTheme } from '@mui/material'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ChecklistIcon from '@mui/icons-material/Checklist'
 import TrackChangesIcon from '@mui/icons-material/TrackChanges'

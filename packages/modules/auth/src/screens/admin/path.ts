@@ -30,7 +30,12 @@ const Path = {
   connectorDetail: '/admin/provisioning/connectors/:id',
 
   events: '/admin/events',
+  events_v2: '/admin/events-v2',
   health: '/admin/health',
+  security_health: '/admin/security-health',
+  mfa_analytics: '/admin/mfa-analytics',
+  emailTesting: '/admin/email-testing',
+  emailTemplatePreview: '/admin/email-preview/:id',
 }
 
 export default Path
