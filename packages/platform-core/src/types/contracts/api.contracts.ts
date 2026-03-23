@@ -65,7 +65,8 @@ export type UserStatus = 'active' | 'inactive' | 'suspended' | 'pending'
  * ```typescript
  * // GET /api/users/:id
  * const request: UserApiContract['GetUserRequest'] = { id: '123' };
- * const response: ApiResponse<UserApiContract['GetUserResponse']> = await api.get(...);
+ * const response = await apiClient.get<UserApiContract['GetUserResponse']>(`/api/users/${request.id}`);
+ * const user = response.data;
  * ```
  */
 export interface UserApiContract {

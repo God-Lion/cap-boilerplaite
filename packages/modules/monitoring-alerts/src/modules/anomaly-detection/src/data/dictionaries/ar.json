@@ -1,0 +1,172 @@
+{
+  "anomaly": {
+    "title": "كشف الشذوذ",
+    "table": {
+      "type": "النوع",
+      "score": "النتيجة",
+      "status": "الحالة",
+      "user": "المستخدم",
+      "ip": "عنوان IP",
+      "detectedAt": "وقت الكشف"
+    },
+    "types": {
+      "login_frequency": "تردد تسجيل الدخول",
+      "login_time": "وقت تسجيل الدخول",
+      "login_location": "موقع تسجيل الدخول",
+      "device_fingerprint": "بصمة الجهاز",
+      "request_volume": "حجم الطلبات",
+      "request_pattern": "نمط الطلبات",
+      "permission_usage": "استخدام الأذونات",
+      "data_access_volume": "حجم الوصول للبيانات",
+      "session_duration": "مدة الجلسة",
+      "failure_rate": "معدل الفشل"
+    },
+    "status": {
+      "detected": "تم الكشف",
+      "investigating": "قيد التحقيق",
+      "confirmed": "تم التأكيد",
+      "false_positive": "إيجابي كاذب",
+      "resolved": "تم الحل"
+    },
+    "detail": {
+      "title": "تفاصيل الشذوذ",
+      "type": "نوع الشذوذ",
+      "status": "الحالة الحالية",
+      "user": "المستخدم المتأثر",
+      "ip": "عنوان IP",
+      "baseline": "بيانات خط الأساس",
+      "expected": "القيمة المتوقعة",
+      "sampleSize": "حجم العينة",
+      "observed": "البيانات المرصودة",
+      "observedValue": "القيمة المرصودة",
+      "deviation": "الانحراف",
+      "timeline": "الجدول الزمني",
+      "detectedAt": "وقت الكشف",
+      "resolvedAt": "وقت الحل",
+      "linkedAlerts": "التنبيهات المرتبطة"
+    },
+    "actions": {
+      "investigate": "بدء التحقيق",
+      "confirm": "تأكيد الشذوذ",
+      "falsePositive": "وضع علامة كإيجابي كاذب"
+    },
+    "markResolved": "وضع علامة كحل",
+    "markFalsePositive": "وضع علامة كإيجابي كاذب",
+    "noData": "لم يتم اكتشاف شذوذ"
+  },
+  "alert": {
+    "title": "التنبيهات",
+    "table": {
+      "severity": "الخطورة",
+      "title": "العنوان",
+      "category": "الفئة",
+      "status": "الحالة",
+      "source": "المصدر",
+      "createdAt": "وقت الإنشاء"
+    },
+    "severity": {
+      "critical": "حرج",
+      "high": "عالي",
+      "medium": "متوسط",
+      "low": "منخفض",
+      "info": "معلومات"
+    },
+    "status": {
+      "open": "مفتوح",
+      "acknowledged": "تم الإقرار",
+      "resolved": "تم الحل",
+      "suppressed": "مكبوت",
+      "expired": "منتهي"
+    },
+    "category": {
+      "authentication": "المصادقة",
+      "authorization": "الترخيص",
+      "fraud": "الاحتيال",
+      "anomaly": "الشذوذ",
+      "brute_force": "القوة الغاشمة",
+      "credential_stuffing": "حشو بيانات الاعتماد",
+      "account_takeover": "استيلاء على الحساب",
+      "suspicious_activity": "نشاط مشبوه",
+      "data_exfiltration": "تسرب البيانات",
+      "privilege_escalation": "تصعيد الامتيازات",
+      "impossible_travel": "السفر المستحيل",
+      "bot_activity": "نشاط البوت",
+      "system": "النظام"
+    },
+    "detail": {
+      "category": "الفئة",
+      "source": "المصدر",
+      "rule": "القاعدة",
+      "affectedUser": "المستخدم المتأثر",
+      "affectedIp": "عنوان IP",
+      "timestamps": "الطوابع الزمنية",
+      "created": "تم الإنشاء",
+      "acknowledged": "تم الإقرار",
+      "resolved": "تم الحل",
+      "metadata": "البيانات الوصفية"
+    },
+    "actions": {
+      "acknowledge": "الإقرار",
+      "resolve": "الحل",
+      "suppress": "الكبت"
+    },
+    "noData": "لم يتم العثور على تنبيهات"
+  },
+  "security": {
+    "title": "لوحة الأمان",
+    "noData": "لا توجد بيانات أمنية متاحة",
+    "score": {
+      "excellent": "ممتاز",
+      "good": "جيد",
+      "fair": "مقبول",
+      "poor": "ضعيف",
+      "critical": "حرج"
+    },
+    "categories": {
+      "authentication": "المصادقة",
+      "authorization": "الترخيص",
+      "anomalyDetection": "كشف الشذوذ",
+      "fraudPrevention": "منع الاحتيال",
+      "threatIntelligence": "استخبارات التهديدات"
+    },
+    "computedAt": "تم الحساب في"
+  },
+  "threat": {
+    "category": {
+      "malware": "برمجيات خبيثة",
+      "phishing": "تصيد",
+      "tor_exit": "مخرج Tor",
+      "vpn": "VPN",
+      "proxy": "وكيل",
+      "botnet": "شبكة الروبوت",
+      "scanner": "الماسح",
+      "spam": "البريد المزعج",
+      "cryptominer": "معدن العملات الرقمية",
+      "data_center": "مركز البيانات"
+    },
+    "confidence": {
+      "high": "عالي",
+      "medium": "متوسط",
+      "low": "منخفض"
+    },
+    "riskScore": "نتيجة المخاطر",
+    "country": "الدولة",
+    "lastSeen": "آخر ظهور"
+  },
+  "common": {
+    "actions": "الإجراءات",
+    "view": "عرض",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "search": "بحث",
+    "filter": "تصفية",
+    "export": "تصدير",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجاح",
+    "noData": "لا تتوفر بيانات"
+  }
+}

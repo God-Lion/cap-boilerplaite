@@ -27,8 +27,8 @@ import type { UserApiContract, AuthApiContract, ApiResponse } from './api.contra
  * ```typescript
  * class UserService implements IUserService {
  *   async getUser(request: UserApiContract['GetUserRequest']) {
- *     const response = await api.get(`/users/${request.id}`);
- *     return response.data;
+ *     const response = await apiClient.get<UserApiContract['GetUserResponse']>(`/users/${request.id}`);
+ *     return response; // Assuming it returns ApiResponse wrapper or data directly based on implementation
  *   }
  *   // ... implement other methods
  * }

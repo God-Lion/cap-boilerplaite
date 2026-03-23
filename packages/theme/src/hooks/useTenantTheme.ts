@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { apiClient } from '@cap/platform-core';
 import type { TenantThemeConfig } from '../types';
 import { DEFAULT_TENANT_THEME } from '../types';
 import { applyPreset } from '../utils/mergeTheme';
@@ -67,27 +68,20 @@ export const useTenantTheme = (
   }, [storageKey, storageType]);
 
   const fetchTheme = useCallback(async () => {
-    if (!apiEndpoint) {
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${apiEndpoint}/themes/${organizationId}`);
+      // Use provided apiEndpoint or default to relative path
+      const url = apiEndpoint ? `${apiEndpoint}/themes/${organizationId}` : `/themes/${organizationId}`;
+      const response = await apiClient.get<TenantThemeConfig>(url);
       
-      if (!response.ok) {
-        throw new Error(`Failed to fetch theme: ${response.status}`);
+      if (response.data) {
+        setTheme(response.data);
+        saveToStorage(response.data);
       }
-
-      const data = await response.json();
-      const fetchedTheme = data as TenantThemeConfig;
-      
-      setTheme(fetchedTheme);
-      saveToStorage(fetchedTheme);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch theme');
+    } catch (err: any) {
+      setError(err.message || 'Failed to fetch theme');
     } finally {
       setIsLoading(false);
     }
@@ -139,38 +133,24 @@ export const useTenantTheme = (
   }, [organizationId, saveToStorage]);
 
   const saveTheme = useCallback(async () => {
-    if (!apiEndpoint) {
-      setError('No API endpoint configured');
-      return;
-    }
-
     setIsSaving(true);
     setError(null);
 
     try {
-      const response = await fetch(`${apiEndpoint}/themes/${organizationId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(theme),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to save theme: ${response.status}`);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save theme');
+      const url = apiEndpoint ? `${apiEndpoint}/themes/${organizationId}` : `/themes/${organizationId}`;
+      await apiClient.put(url, theme);
+    } catch (err: any) {
+      setError(err.message || 'Failed to save theme');
     } finally {
       setIsSaving(false);
     }
   }, [apiEndpoint, organizationId, theme]);
 
   useEffect(() => {
-    if (apiEndpoint && !initialTheme) {
+    if (!initialTheme) {
       fetchTheme();
     }
-  }, [apiEndpoint, organizationId, fetchTheme, initialTheme]);
+  }, [organizationId, fetchTheme, initialTheme]);
 
   return useMemo(() => ({
     theme,

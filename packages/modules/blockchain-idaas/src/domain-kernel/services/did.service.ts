@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { apiClient } from '@cap/platform-core';
 
 export const DidSchema = z.string().startsWith('did:');
 
@@ -19,31 +20,16 @@ export class DidService {
    * Generates a unique DID for the current user.
    */
   async generateDid(_userId?: string, method: string = 'key'): Promise<string> {
-    const response = await fetch('/api/v1/blockchain/did/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ method })
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to generate DID');
-    }
-    
-    const data = await response.json();
-    return data.did;
+    const response = await apiClient.post<{ did: string }>('/api/v1/blockchain/did/generate', { method });
+    return response.data.did;
   }
 
   /**
    * Resolves a DID to its DID Document.
    */
   async resolveDid(did: string): Promise<DidDocument> {
-    const response = await fetch(`/api/v1/blockchain/did/resolve/${encodeURIComponent(did)}`);
-    
-    if (!response.ok) {
-      throw new Error('Failed to resolve DID');
-    }
-    
-    return await response.json();
+    const response = await apiClient.get<DidDocument>(`/api/v1/blockchain/did/resolve/${encodeURIComponent(did)}`);
+    return response.data;
   }
 }
 

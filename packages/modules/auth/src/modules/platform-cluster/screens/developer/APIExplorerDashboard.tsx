@@ -36,20 +36,9 @@ import CodeIcon from '@mui/icons-material/Code'
 import LayersIcon from '@mui/icons-material/Layers'
 
 import { useTranslation } from 'react-i18next'
-import { apiClient } from '@cap/platform-core'
+import apiExplorerService, { OpenAPISpec, OpenAPIPathItem } from '../../services/api-explorer.service'
 import { ENDPOINTS } from '@idaas/authentication-core/services/endpoints'
 
-interface OpenAPIPathItem {
-  summary?: string
-  description?: string
-  security?: Array<Record<string, string[]>>
-  tags?: string[]
-  [key: string]: unknown
-}
-
-interface OpenAPISpec {
-  paths?: Record<string, Record<string, OpenAPIPathItem>>
-}
 
 interface APIEndpoint {
   id: string
@@ -73,7 +62,7 @@ function parseOpenAPISpec(spec: OpenAPISpec): APIEndpoint[] {
         const scopes: string[] = []
         if (Array.isArray(op.security)) {
           for (const sec of op.security) {
-            for (const scopeList of Object.values(sec)) {
+            for (const scopeList of Object.values(sec) as string[][]) {
               scopes.push(...scopeList)
             }
           }
@@ -178,7 +167,7 @@ export default function APIExplorerDashboard() {
       setIsLoading(true)
       setError(null)
       try {
-        const response = await apiClient.get<OpenAPISpec>(ENDPOINTS.admin.docs)
+        const response = await apiExplorerService.getSpec()
         if (!cancelled && response.data) {
           const parsed = parseOpenAPISpec(response.data)
           setEndpoints(parsed)
@@ -233,16 +222,13 @@ export default function APIExplorerDashboard() {
 
   const jsSnippet = useCallback((ep: APIEndpoint) => {
     const isRead = ep.method === 'GET'
-    return `fetch("https://api.trustkey.com${ep.path}", {
-  method: "${ep.method}",
-  headers: {
-    "Authorization": "Bearer <TOKEN>",
-    "Content-Type": "application/json",
-    "Accept": "application/json"
-  }${isRead ? '' : ',\n  body: JSON.stringify({ /* data */ })'}
-})
-.then(res => res.json())
-.then(console.log);`
+    const method = ep.method.toLowerCase()
+    return `import { apiClient } from '@cap/platform-core'
+
+apiClient.${method}("${ep.path}"${isRead ? '' : ', { /* data */ }'})
+  .then(response => {
+    console.log(response.data);
+  });`
   }, [])
 
   const pythonSnippet = useCallback((ep: APIEndpoint) => {
@@ -285,7 +271,7 @@ print(response.json())`
       }
 
       setError(null)
-      const response = await apiClient.post(ENDPOINTS.admin.sandboxExecute, {
+      const response = await apiExplorerService.executeSandbox({
         path: selectedEndpoint.path,
         method: selectedEndpoint.method,
         data: parsedData,
@@ -876,7 +862,7 @@ print(response.json())`
 
                       <Grid container spacing={2}>
                         {[
-                          { lang: 'JavaScript (Fetch)', code: jsSnippet(selectedEndpoint) },
+                          { lang: 'JavaScript (apiClient)', code: jsSnippet(selectedEndpoint) },
                           { lang: 'Python (Requests)', code: pythonSnippet(selectedEndpoint) },
                         ].map(({ lang, code }) => (
                           <Grid size={{ xs: 12 }} key={lang}>

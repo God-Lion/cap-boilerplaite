@@ -1,3 +1,4 @@
+import { apiClient } from './api/api.client'
 import type { TenantConfig, UserPreferences } from '../types/tenant'
 import { DEFAULT_TENANT_CONFIG } from '../types/tenant'
 
@@ -375,17 +376,16 @@ export class TenantService {
 
     // 2. Try Backend API (Primary Source of truth for per-tenant branding)
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || ''
-      const response = await fetch(`${apiUrl}/api/guest/tenant?domain=${domain}`)
+      const response = await apiClient.get<TenantConfig>('/api/guest/tenant', { params: { domain } })
       
-      if (response.ok) {
-        const config: TenantConfig = await response.json()
+      if (response.data) {
+        const config = response.data
         console.log('[TenantService] Successfully fetched tenant config from backend:', domain)
         this.setCache(domain, config)
         return config
       }
       
-      console.warn(`[TenantService] Backend returned ${response.status} for ${domain}, checking mocks...`)
+      console.warn(`[TenantService] Backend returned null data for ${domain}, checking mocks...`)
     } catch (error) {
       console.error('[TenantService] Network error fetching tenant config:', error)
     }
@@ -411,14 +411,11 @@ export class TenantService {
     if (!cached) return false
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || '/api'
       const slug = this.getTenantFromHostname()
-      const response = await fetch(`${apiUrl}/tenants/${slug}/version`, {
-        credentials: 'include',
-      })
+      const response = await apiClient.get<any>(`/tenants/${slug}/version`)
       
-      if (response.ok) {
-        const { version } = await response.json()
+      if (response.data) {
+        const { version } = response.data
         if (version !== cached.config.version) {
           console.log('[TenantService] New tenant version available:', version)
           return true

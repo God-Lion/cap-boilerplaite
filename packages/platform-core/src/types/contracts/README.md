@@ -256,13 +256,11 @@ async updateUser(id: string, data: Partial<IUser>) {
   // ✓ TypeScript knows about phoneNumber now
   // ✓ Autocomplete works
   // ✓ Typos are caught
-  const response = await fetch(`/api/users/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({
-      ...data,
-      phoneNumer: data.phoneNumber  // ❌ TypeScript error: typo!
-    })
+  const response = await apiClient.patch<IUser>(`/api/users/${id}`, {
+    ...data,
+    phoneNumer: data.phoneNumber  // ❌ TypeScript error: typo!
   })
+  return response.data
 }
 ```
 
@@ -312,11 +310,11 @@ export const authService: IAuthService = {
 ```typescript
 export const authService: IAuthService = {
   async login(credentials: ILoginCredentials, twoFactorCode?: string) {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ ...credentials, twoFactorCode }),
+    const response = await apiClient.post<IAuthResponse>('/api/auth/login', {
+      ...credentials,
+      twoFactorCode,
     })
-    return response.json()
+    return response.data
   },
 }
 ```

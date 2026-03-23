@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { TenantThemeConfig, TenantThemeContextValue } from '../types';
 import { DEFAULT_TENANT_THEME } from '../types';
 import { applyThemeVariables, resetAllThemeVariables } from '../utils/applyThemeVariables';
+import themeService from '../services/theme.service';
 
 const TenantThemeContext = createContext<TenantThemeContextValue | null>(null);
 
@@ -57,9 +58,7 @@ export const TenantThemeProvider: React.FC<TenantThemeProviderProps> = ({
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/admin/organizations/${orgId}/styles`);
-      if (!response.ok) throw new Error('Failed to fetch tenant theme');
-      const data = await response.json();
+      const data = await themeService.getTheme(orgId);
       setCurrentTheme(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch theme');
@@ -74,13 +73,7 @@ export const TenantThemeProvider: React.FC<TenantThemeProviderProps> = ({
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/admin/organizations/${themeToSave.organizationId}/styles`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(themeToSave),
-      });
-      if (!response.ok) throw new Error('Failed to save tenant theme');
-      
+      await themeService.saveTheme(themeToSave);
       setCurrentTheme(themeToSave);
       onThemeChange?.(themeToSave);
     } catch (err) {

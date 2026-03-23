@@ -1,6 +1,6 @@
 import { didService, DidDocument } from '../../domain-kernel/services/did.service';
 import { vcService, VerifiableCredential } from '../../domain-kernel/services/vc.service';
-import { blockchainClient, AuditEvent } from '../../domain-kernel/clients/blockchain.client';
+import blockchainService, { AuditEvent } from '../../domain-kernel/services/blockchain.service';
 import { smartContractService, SmartContract } from '../../domain-kernel/services/contract.service';
 
 export interface IBlockchainIdaasFacade {
@@ -37,7 +37,7 @@ class BlockchainIdaasFacadeImpl implements IBlockchainIdaasFacade {
   }
 
   audit = {
-    getLogs: (did: string) => blockchainClient.getAuditLogs(did),
+    getLogs: (did: string) => blockchainService.getAuditLogs(did),
   }
 }
 

@@ -2,6 +2,8 @@
  * Web Audio Service
  * Wrapper for the Web Audio API for complex audio processing.
  */
+import { apiClient } from '../api/api.client';
+
 export class AudioService {
   private static instance: AudioService
   private context: AudioContext | null = null
@@ -66,9 +68,8 @@ export class AudioService {
    */
   async loadAudio(url: string): Promise<AudioBuffer> {
     const ctx = this.getContext()
-    const response = await fetch(url)
-    const arrayBuffer = await response.arrayBuffer()
-    return await ctx.decodeAudioData(arrayBuffer)
+    const response = await apiClient.request<ArrayBuffer>(url, { responseType: 'arraybuffer' })
+    return await ctx.decodeAudioData(response.data)
   }
 
   /**

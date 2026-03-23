@@ -1,4 +1,4 @@
-import { blockchainClient } from '../clients/blockchain.client';
+import blockchainService from './blockchain.service';
 
 export interface SmartContract {
   address: string;
@@ -33,7 +33,7 @@ export class SmartContractService {
    */
   async updateContractStatus(address: string, status: SmartContract['status']): Promise<string> {
     console.log(`Updating contract ${address} to ${status}`);
-    return await blockchainClient.anchorData(`update-contract-${address}-${status}`);
+    return await blockchainService.anchorData(`update-contract-${address}-${status}`);
   }
 }
 

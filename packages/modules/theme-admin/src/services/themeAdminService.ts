@@ -1,3 +1,4 @@
+import { apiClient } from '@cap/platform-core';
 import type { TenantThemeConfig } from '@cap/theme';
 import type { ThemePresetId } from '@cap/theme';
 
@@ -31,16 +32,8 @@ class ThemeAdminService {
     }
 
     try {
-      const response = await fetch(`${this.apiEndpoint}/themes/${orgId}`);
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          return null;
-        }
-        throw new Error(`Failed to fetch theme: ${response.status}`);
-      }
-
-      return await response.json();
+      const response = await apiClient.get<TenantThemeConfig>(`${this.apiEndpoint}/themes/${orgId}`);
+      return response.data ?? null;
     } catch (error) {
       console.error('Error fetching theme:', error);
       throw error;
@@ -55,19 +48,9 @@ class ThemeAdminService {
     }
 
     try {
-      const response = await fetch(`${this.apiEndpoint}/themes/${orgId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(theme),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to save theme: ${response.status}`);
-      }
-
-      return await response.json();
+      const response = await apiClient.put<TenantThemeConfig>(`${this.apiEndpoint}/themes/${orgId}`, theme);
+      if (!response.data) throw new Error('Failed to save theme');
+      return response.data;
     } catch (error) {
       console.error('Error saving theme:', error);
       throw error;

@@ -1,3 +1,5 @@
+import { apiClient } from '@cap/platform-core';
+
 export interface VerifiableCredential {
   context: string[];
   id: string;
@@ -27,48 +29,30 @@ export class VcService {
     claims: Record<string, any>,
     type: string = 'VerifiableCredential'
   ): Promise<VerifiableCredential> {
-    const response = await fetch('/api/v1/blockchain/vc/issue', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ issuerDid, subjectDid, claims, type })
+    const response = await apiClient.post<VerifiableCredential>('/api/v1/blockchain/vc/issue', {
+      issuerDid,
+      subjectDid,
+      claims,
+      type,
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to issue credential');
-    }
-
-    return await response.json();
+    return response.data;
   }
 
   /**
    * Verifies a Verifiable Credential.
    */
   async verifyCredential(vc: VerifiableCredential): Promise<boolean> {
-    const response = await fetch('/api/v1/blockchain/vc/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vc })
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to verify credential');
-    }
-
-    const data = await response.json();
-    return data.isValid;
+    const response = await apiClient.post<{ isValid: boolean }>('/api/v1/blockchain/vc/verify', { vc });
+    return response.data.isValid;
   }
 
   /**
    * Retrieves Verifiable Credentials for the current user.
    */
   async getCredentials(): Promise<VerifiableCredential[]> {
-    const response = await fetch('/api/v1/blockchain/credentials');
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch credentials');
-    }
-    
-    return await response.json();
+    const response = await apiClient.get<VerifiableCredential[]>('/api/v1/blockchain/credentials');
+    return response.data;
   }
 }
 

@@ -887,6 +887,10 @@ export const fetchClient = new FetchClient({
 export class ApiClient {
   constructor(private instance: FetchClient = fetchClient) {}
 
+  async request<T = any>(endpoint: string, config: FetchRequestConfig = {}): Promise<FetchResponse<T>> {
+    return this.instance.request<T>(endpoint, config);
+  }
+
   async get<T = any>(url: string, config?: FetchRequestConfig): Promise<FetchResponse<T>> {
     return this.instance.get<T>(url, config)
   }
