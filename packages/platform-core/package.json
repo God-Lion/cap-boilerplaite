@@ -25,6 +25,7 @@
     "react-i18next": "^16.5.0",
     "@tanstack/react-query": "^5.67.1",
     "react-router-dom": "^7.3.0",
+    "react-toastify": "^11.0.3",
     "zustand": "^5.0.9"
   },
   "peerDependencies": {
@@ -43,6 +44,7 @@
     "typescript-eslint": "^8.50.1"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^24.10.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",

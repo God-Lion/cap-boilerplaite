@@ -1,0 +1,52 @@
+{
+  "name": "@cap/module-digital-id",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "build": "tsc",
+    "format": "prettier --write .",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@cap/platform-core": "workspace:*",
+    "@cap/module-auth": "workspace:*",
+    "@cap/module-civil-registry": "workspace:*",
+    "react-router-dom": "^7.13.1",
+    "react-hook-form": "^7.69.0",
+    "@hookform/resolvers": "^5.2.2",
+    "zod": "^4.2.1",
+    "@react-pdf/renderer": "^3.4.4",
+    "qrcode": "^1.5.3",
+    "react-qr-code": "^2.0.12",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/material": "^7.3.6",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@tanstack/react-query": "^5.90.12",
+    "framer-motion": "^12.34.0",
+    "classnames": "^2.5.1",
+    "date-fns": "^4.1.0",
+    "face-api.js": "^0.22.2",
+    "@tensorflow/tfjs": "^4.22.0",
+    "react-webcam": "^7.2.0",
+    "sharp": "^0.33.5",
+    "node-fetch": "^3.3.2"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19",
+    "react-router-dom": ">=6",
+    "typescript": "~5.9.3"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.2",
+    "@types/qrcode": "^1.5.5",
+    "@vitejs/plugin-react": "4.3.4",
+    "vite": "^7.0.0",
+    "vitest": "^4.0.16"
+  }
+}

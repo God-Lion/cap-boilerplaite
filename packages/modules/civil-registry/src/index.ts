@@ -40,3 +40,4 @@ export const CivilRegistryModule: CAPModule = {
 
 export default CivilRegistryModule;
 export { Path as CivilRegistryPath };
+export * from './domain-kernel/src/index';

@@ -93,7 +93,7 @@ export default function UserList() {
 
   const handleExport = () => {
     if (!data?.data?.data) return
-    const users = data.data.data
+    const users = (data?.data?.data as AdminUser[]) || []
     const headers = [
       t('auth.common.id'),
       t('auth.common.email'),
@@ -107,7 +107,7 @@ export default function UserList() {
 
     const csvContent = [
       headers.join(','),
-      ...(users as AdminUser[]).map((user: AdminUser) =>
+      ...users.map((user: AdminUser) =>
         [
           user.id,
           `"${user.email}"`,
@@ -571,7 +571,7 @@ export default function UserList() {
                   </TableCell>
                 </TableRow>
               ) : (
-                (data?.data?.data as AdminUser[]).map((user: AdminUser) => (
+                ((data?.data?.data as AdminUser[]) || []).map((user: AdminUser) => (
                   <TableRow
                     key={user.id}
                     hover
@@ -602,15 +602,15 @@ export default function UserList() {
                             fontSize: '0.95rem',
                           }}
                         >
-                          {user.firstName[0]}
-                          {user.lastName[0]}
+                          {user.firstName?.[0] ?? ''}
+                          {user.lastName?.[0] ?? ''}
                         </Avatar>
                         <Box>
                           <Typography
                             variant='body2'
                             sx={{ fontWeight: 700, color: 'text.primary' }}
                           >
-                            {user.firstName} {user.lastName}
+                            {user.firstName ?? ''} {user.lastName ?? ''}
                           </Typography>
                           <Typography
                             variant='caption'
@@ -657,18 +657,20 @@ export default function UserList() {
                     {/* Role */}
                     <TableCell>
                       <Typography variant='body2' sx={{ fontWeight: 700, color: 'text.secondary' }}>
-                        {getRoleName(user.role)}
+                        {getRoleName(user.role ?? 0)}
                       </Typography>
                     </TableCell>
 
                     {/* Created date */}
                     <TableCell>
                       <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                        {new Date(user.createdAt).toLocaleDateString(undefined, {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
+                        {user.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString(undefined, {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            })
+                          : 'N/A'}
                       </Typography>
                     </TableCell>
 

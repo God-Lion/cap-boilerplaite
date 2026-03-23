@@ -9,7 +9,7 @@ export interface ISession {
   current?: boolean
 }
 
-import { IRole } from '@cap/platform-core'
+import IRole from './IRole'
 
 export interface IUserResponse {
   id: number
