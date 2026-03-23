@@ -9,7 +9,7 @@ export const usePermissions = () => {
    * @param roles Single role enum or array of role enums
    * @param logic 'AND' (default) requires all roles, 'OR' requires at least one
    */
-  const hasRole = (roles: Roles | Roles[], logic: 'AND' | 'OR' = 'OR'): boolean => {
+  const hasRole = (roles: Roles | Roles[] | string | string[], logic: 'AND' | 'OR' = 'OR'): boolean => {
     if (!isAuthenticated || !user) return false
 
     // Safely extract the role from user or user.user (depending on hydration state)
@@ -26,12 +26,12 @@ export const usePermissions = () => {
     }
 
     if (logic === 'OR') {
-      return rolesArray.includes(userRole)
+      return rolesArray.map(String).includes(String(userRole))
     }
 
     // Since a user currently only has ONE role (userRole is a number),
     // AND logic with multiple different roles will always be false unless the array has length 1
-    return rolesArray.every((role) => userRole === role)
+    return rolesArray.every((role) => String(userRole) === String(role))
   }
 
   /**

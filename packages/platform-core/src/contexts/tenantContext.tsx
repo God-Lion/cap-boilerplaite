@@ -2,6 +2,13 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import TenantService from '../services/tenantService'
 import { useSettings } from '../store'
 import type { TenantConfig, UserPreferences, TenantContextValue } from '../types/tenant'
+import { normalizeTenantConfig } from '../types/tenant'
+
+declare global {
+  interface Window {
+    __TENANT_CONFIG__?: TenantConfig | null
+  }
+}
 
 const TenantContext = createContext<TenantContextValue | null>(null)
 
@@ -19,31 +26,41 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
 
   const { updateSettings } = useSettings()
 
+  const applyTenantConfig = useCallback((config: TenantConfig | null) => {
+    if (!config) return
+    
+    const normalized = normalizeTenantConfig(config)
+    setTenant(normalized)
+    updateSettings({
+      primaryColor: normalized.theme?.primaryColor,
+      layout: normalized.layout?.layout as any,
+      mode: normalized.theme?.mode,
+      skin: normalized.theme?.skin,
+      semiDark: normalized.theme?.semiDark
+    })
+  }, [updateSettings])
+
   const loadTenant = useCallback(async () => {
     setIsLoading(true)
     setError(null)
     
     try {
-      const config = await TenantService.fetchTenant()
-      setTenant(config)
-      
-      if (config) {
-        // Correctly map TenantConfig to Settings expected by useSettings
-        updateSettings({
-          primaryColor: config.theme?.primaryColor,
-          layout: config.layout?.layout as any,
-          mode: config.theme?.mode,
-          skin: config.theme?.skin,
-          semiDark: config.theme?.semiDark
-        })
+      const inlineConfig = (window as any).__TENANT_CONFIG__
+      if (inlineConfig) {
+        applyTenantConfig(inlineConfig)
+        setIsLoading(false)
+        return
       }
+      
+      const config = await TenantService.fetchTenant()
+      applyTenantConfig(config)
     } catch (err) {
       console.error('[TenantProvider] Failed to load tenant:', err)
       setError(err instanceof Error ? err.message : 'Failed to load tenant configuration')
     } finally {
       setIsLoading(false)
     }
-  }, [updateSettings])
+  }, [applyTenantConfig])
 
   useEffect(() => {
     const prefs = TenantService.getUserPreferences()
@@ -54,16 +71,17 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!tenant || isLoading) return
 
-    const checkForUpdates = async () => {
-      const hasUpdate = await TenantService.checkForUpdates()
-      if (hasUpdate) {
-        await loadTenant()
+    const refreshTenant = async () => {
+      if (document.visibilityState === 'visible') {
+        const hasUpdate = await TenantService.checkForUpdates()
+        if (hasUpdate) {
+          await loadTenant()
+        }
       }
     }
 
-    const interval = setInterval(checkForUpdates, 60000)
-
-    return () => clearInterval(interval)
+    document.addEventListener('visibilitychange', refreshTenant)
+    return () => document.removeEventListener('visibilitychange', refreshTenant)
   }, [tenant, isLoading, loadTenant])
 
   const updateUserPreferences = useCallback((prefs: Partial<UserPreferences>) => {

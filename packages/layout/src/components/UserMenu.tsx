@@ -10,7 +10,10 @@ import {
   Typography,
   Box,
 } from '@mui/material'
-import { AccountCircle, Settings, Dashboard, LogoutOutlined } from '@mui/icons-material'
+import AccountCircle from '@mui/icons-material/AccountCircle'
+import Settings from '@mui/icons-material/Settings'
+import Dashboard from '@mui/icons-material/Dashboard'
+import LogoutOutlined from '@mui/icons-material/LogoutOutlined'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@cap/platform-core'
 import { useSignOut } from '../hooks/useSignOut'
@@ -119,7 +122,7 @@ export const UserMenu: React.FC = () => {
                 textTransform: 'capitalize',
               }}
             >
-              {user.role}
+              {user.roleName || String(user.role)}
             </Typography>
           )}
         </Box>

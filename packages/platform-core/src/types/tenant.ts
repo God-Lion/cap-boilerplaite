@@ -1,3 +1,72 @@
+export const CURRENT_TENANT_CONFIG_VERSION = 2
+
+export interface TenantConfigV1 {
+  readonly _version: 1
+  id: string
+  slug: string
+  domain: string
+  name: string
+  theme: TenantTheme
+  layout: TenantLayout
+  branding: TenantBranding
+  features: {
+    darkMode: boolean
+    rtl: boolean
+    notifications: boolean
+    chat: boolean
+  }
+  version: number
+}
+
+export type TenantConfig = TenantConfigV1
+
+export function normalizeTenantConfig(raw: unknown): TenantConfig {
+  if (!raw || typeof raw !== 'object') {
+    return DEFAULT_TENANT_CONFIG
+  }
+  
+  const config = raw as any
+  const version = (config._version ?? config.version ?? 1) as number
+  
+  if (version === 1) {
+    const v1 = config as TenantConfigV1
+    return {
+      _version: 1,
+      id: v1.id,
+      slug: v1.slug,
+      domain: v1.domain,
+      name: v1.name,
+      theme: v1.theme,
+      layout: v1.layout,
+      branding: v1.branding || {
+        logo: null,
+        favicon: null,
+        appName: 'App',
+        companyName: 'Company',
+      },
+      features: v1.features,
+      version: CURRENT_TENANT_CONFIG_VERSION,
+    }
+  }
+  
+  return config as TenantConfig
+}
+
+export function validateTenantConfig(config: unknown): config is TenantConfig {
+  if (!config || typeof config !== 'object') return false
+  const c = config as Record<string, unknown>
+  return (
+    typeof c.id === 'string' &&
+    typeof c.slug === 'string' &&
+    typeof c.domain === 'string' &&
+    typeof c.name === 'string' &&
+    typeof c.theme === 'object' &&
+    typeof c.layout === 'object' &&
+    typeof c.branding === 'object' &&
+    typeof c.features === 'object'
+  )
+}
+
 export interface TenantTheme {
   mode: 'light' | 'dark' | 'system'
   skin: 'default' | 'bordered'
@@ -89,28 +158,11 @@ export interface TenantLayout {
 }
 
 export interface TenantBranding {
-  logo?: string
-  favicon?: string
+  logo?: string | null
+  favicon?: string | null
   appName: string
   companyName: string
   welcomeText?: string
-}
-
-export interface TenantConfig {
-  id: string
-  slug: string
-  domain: string
-  name: string
-  theme: TenantTheme
-  layout: TenantLayout
-  branding: TenantBranding
-  features: {
-    darkMode: boolean
-    rtl: boolean
-    notifications: boolean
-    chat: boolean
-  }
-  version: number
 }
 
 export interface TenantContextValue {
@@ -221,6 +273,7 @@ export const DEFAULT_TENANT_LAYOUT: TenantLayout = {
 }
 
 export const DEFAULT_TENANT_CONFIG: TenantConfig = {
+  _version: 1,
   id: 'default',
   slug: 'default',
   domain: 'localhost',
@@ -228,6 +281,8 @@ export const DEFAULT_TENANT_CONFIG: TenantConfig = {
   theme: DEFAULT_TENANT_THEME,
   layout: DEFAULT_TENANT_LAYOUT,
   branding: {
+    logo: null,
+    favicon: null,
     appName: 'My App',
     companyName: 'My Company',
   },
@@ -237,5 +292,5 @@ export const DEFAULT_TENANT_CONFIG: TenantConfig = {
     notifications: true,
     chat: true,
   },
-  version: 1,
+  version: CURRENT_TENANT_CONFIG_VERSION,
 }

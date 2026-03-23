@@ -12,16 +12,20 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@cap/shared-types": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.6",
-    "@mui/material": "^7.3.6",
     "@mui/lab": "^7.0.1-beta.21",
+    "@mui/material": "^7.3.6",
+    "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "i18next": "^25.7.3",
+    "idb": "^8.0.3",
     "react-i18next": "^16.5.0",
-    "zustand": "^5.0.9",
-    "@cap/shared-types": "*"
+    "@tanstack/react-query": "^5.67.1",
+    "react-router-dom": "^7.3.0",
+    "zustand": "^5.0.9"
   },
   "peerDependencies": {
     "eslint": "^9.39.2",
@@ -40,9 +44,10 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.4",
-    "react-use": "^17.6.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "prettier": "3.7.4"
+    "prettier": "3.7.4",
+    "react-use": "^17.6.0",
+    "vite-plugin-pwa": "^0.21.2"
   }
 }

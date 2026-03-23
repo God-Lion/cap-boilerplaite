@@ -1,4 +1,8 @@
-import { TableView, People, Class, ControlPointDuplicate, Merge } from '@mui/icons-material'
+import TableView from '@mui/icons-material/TableView'
+import People from '@mui/icons-material/People'
+import Class from '@mui/icons-material/Class'
+import ControlPointDuplicate from '@mui/icons-material/ControlPointDuplicate'
+import Merge from '@mui/icons-material/Merge'
 import { Roles } from '@cap/platform-core'
 
 type IMenu = {

@@ -9,14 +9,17 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@mui/material": "^7.3.6",
-    "@mui/icons-material": "^7.3.6",
+    "@cap/platform-core": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@floating-ui/react": "^0.27.19",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/material": "^7.3.6",
+    "classnames": "^2.5.1",
+    "date-fns": "^4.1.0",
     "i18next": "^25.7.3",
     "react-i18next": "^16.5.0",
-    "date-fns": "^4.1.0",
-    "@cap/platform-core": "*"
+    "react-perfect-scrollbar": "^1.5.8"
   },
   "peerDependencies": {
     "react": ">=19",

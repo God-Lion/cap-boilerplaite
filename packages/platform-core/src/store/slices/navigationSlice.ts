@@ -1,5 +1,6 @@
 import type { StateCreator } from 'zustand'
 import type { AppStore } from '../index'
+import type { NavItemConfig } from '../../types/module'
 
 export interface VerticalNavState {
   width?: number
@@ -28,6 +29,10 @@ export interface NavigationSlice {
 
   horizontalNav: HorizontalNavState
   updateIsBreakpointReached: (isBreakpointReached: boolean) => void
+
+  navItems: NavItemConfig[]
+  registerModuleNavigation: (items: NavItemConfig[]) => void
+  clearNavigation: () => void
 }
 
 export const createNavigationSlice: StateCreator<
@@ -90,5 +95,17 @@ export const createNavigationSlice: StateCreator<
         isBreakpointReached,
       },
     }))
+  },
+
+  navItems: [],
+  registerModuleNavigation: (items: NavItemConfig[]) => {
+    set((state) => {
+      state.navItems.push(...items)
+    })
+  },
+  clearNavigation: () => {
+    set((state) => {
+      state.navItems = []
+    })
   },
 })

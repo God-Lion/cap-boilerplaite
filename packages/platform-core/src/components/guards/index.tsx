@@ -29,7 +29,7 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
 
 export interface RoleGuardProps {
   /** The specific role(s) required to render children */
-  require: Roles | Roles[]
+  require: Roles | Roles[] | string | string[]
   /** Logic 'AND' requires all, 'OR' requires at least one. Defaults to 'OR' */
   logic?: 'AND' | 'OR'
   /** Optional fallback UI to show when unauthorized */

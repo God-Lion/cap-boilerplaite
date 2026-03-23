@@ -255,6 +255,7 @@ export const ENDPOINTS = {
   // GDPR Compliance
   gdpr: {
     dataExport: '/api/gdpr/data-export',
+    erasure: '/api/gdpr/erasure',
     downloadExport: (exportId: number | string) => `/api/gdpr/export/${exportId}/download`,
     dataDeletion: '/api/gdpr/data-deletion',
     verifyDeletion: (requestId: number | string) => `/api/gdpr/deletion/${requestId}/verify`,
@@ -468,6 +469,7 @@ const notifyForbiddenError = () => {
 
 class TokenRefreshManager {
   private isRefreshing = false
+  private isPaused = false
   private refreshPromise: Promise<string> | null = null
   private failedQueue: Array<{
     resolve: (token: string) => void
@@ -552,6 +554,13 @@ class TokenRefreshManager {
   }
 
   async attemptRefresh(): Promise<string> {
+    if (this.isPaused) {
+      console.log('[TokenRefreshManager] Queue is paused, waiting for online status')
+      return new Promise((resolve, reject) => {
+        this.queueRequest(resolve, reject)
+      })
+    }
+
     // If already refreshing, return the existing promise
     if (this.refreshPromise) {
       return this.refreshPromise
@@ -563,23 +572,59 @@ class TokenRefreshManager {
 
       try {
         const token = await this.refreshTokenRequest()
+        this.isPaused = false
         this.processQueue(null, token)
         return token
-      } catch (error) {
+      } catch (error: any) {
+        // --- ADR-004: Differentiated Error Handling ---
+        
+        // 1. Check for Network Failure (TypeError: Failed to fetch / status 0)
+        const isNetworkError = 
+          (error instanceof TypeError && (error.message === 'Failed to fetch' || error.message.includes('NetworkError'))) ||
+          error.status === 0 ||
+          error.code === 'NETWORK_ERROR'
+
+        if (isNetworkError) {
+          console.warn('[TokenRefreshManager] Network failure detected during refresh. Pausing queue.')
+          this.isPaused = true
+          this.isRefreshing = false
+          this.refreshPromise = null
+          // Do NOT processQueue with error, let them stay queued
+          throw error
+        }
+
+        // 2. Check for Auth Failure (400, 401, 403 on refresh)
+        const isAuthFailure = error.status === 400 || error.status === 401 || error.status === 403
+
+        if (isAuthFailure) {
+          this.handleRefreshFailure()
+          this.processQueue(error, null)
+          throw error
+        }
+
+        // Generic failure
         this.processQueue(error, null)
-        this.handleRefreshFailure()
         throw error
       } finally {
-        this.isRefreshing = false
-        this.refreshPromise = null
+        if (!this.isPaused) {
+          this.isRefreshing = false
+          this.refreshPromise = null
+        }
       }
     })()
 
     return this.refreshPromise
   }
 
+  resume() {
+    if (!this.isPaused) return
+    console.log('[TokenRefreshManager] Resuming queue...')
+    this.isPaused = false
+    this.attemptRefresh()
+  }
+
   isRefreshInProgress(): boolean {
-    return this.isRefreshing
+    return this.isRefreshing || this.isPaused
   }
 
   queueRequest(resolve: (token: string) => void, reject: (error: any) => void) {

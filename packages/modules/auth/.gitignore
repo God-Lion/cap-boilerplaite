@@ -25,3 +25,9 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# TypeScript error logs
+tsc_errors.txt
+type_errors.txt
+final_tsc_errors*.txt
+typecheck.log

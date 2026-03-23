@@ -1,0 +1,10 @@
+{
+  "admin": {
+    "dashboard": "Tableau de bord",
+    "theme_editor": "Éditeur de thème",
+    "users": "Utilisateurs",
+    "databases": "Bases de données",
+    "settings": "Paramètres",
+    "overview": "Aperçu"
+  }
+}

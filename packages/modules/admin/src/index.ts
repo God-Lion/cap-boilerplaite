@@ -1,0 +1,260 @@
+import { CAPModule } from '@cap/platform-core'
+import { adminRouteConfig, adminRoutes } from './routes/routes'
+import { registerDictionary } from './domain-kernel/src/i18n/registry'
+
+import enAdmin from './domain-kernel/src/data/dictionaries/en.json'
+import arAdmin from './domain-kernel/src/data/dictionaries/ar.json'
+import frAdmin from './domain-kernel/src/data/dictionaries/fr.json'
+
+registerDictionary({ en: enAdmin, ar: arAdmin, fr: frAdmin })
+
+import { getMergedDictionary } from './domain-kernel/src/i18n/registry'
+
+const en = getMergedDictionary('en')
+const ar = getMergedDictionary('ar')
+const fr = getMergedDictionary('fr')
+
+export * from './idaas-facade/src'
+export * from './modules/dashboard/src'
+export * from './modules/theme-customizer/src'
+
+import { Path } from '@cap/module-auth'
+
+export const AdminModule: CAPModule = {
+  id: 'admin-module',
+  version: '1.0.0',
+  routes: adminRoutes as any,
+  authRouteConfig: adminRouteConfig as any,
+  i18n: { en, ar, fr },
+  plugins: [],
+  navItems: [
+    // --- OVERVIEW ---
+    {
+      id: 'admin-overview-section',
+      label: 'Overview',
+      section: 'Overview',
+      variant: ['admin'],
+      order: 10,
+    },
+    {
+      id: 'admin-dashboard',
+      label: 'Dashboard',
+      icon: 'tabler-layout-dashboard',
+      path: '/admin',
+      variant: ['admin'],
+      order: 20,
+    },
+    // --- USER MANAGEMENT ---
+    {
+      id: 'admin-user-mgmt-section',
+      label: 'User management',
+      section: 'User management',
+      variant: ['admin'],
+      order: 30,
+    },
+    {
+      id: 'admin-users-all',
+      label: 'navigation.userManagement',
+      icon: 'tabler-users',
+      path: Path.admin.users,
+      variant: ['admin'],
+      order: 40,
+    },
+    {
+      id: 'admin-bans',
+      label: 'Bans & appeals',
+      icon: 'tabler-ban',
+      path: Path.admin.banManagement,
+      variant: ['admin'],
+      order: 50,
+    },
+    {
+      id: 'admin-impersonation',
+      label: 'Impersonation logs',
+      icon: 'tabler-user-search',
+      path: Path.admin.impersonationLogs,
+      variant: ['admin'],
+      order: 60,
+    },
+    {
+      id: 'admin-orgs',
+      label: 'navigation.organizations',
+      icon: 'tabler-building',
+      path: Path.admin.organizations,
+      variant: ['admin'],
+      order: 70,
+    },
+    // --- ACCESS CONTROL ---
+    {
+      id: 'admin-access-section',
+      label: 'Access control',
+      section: 'Access control',
+      variant: ['admin'],
+      order: 80,
+    },
+    {
+      id: 'admin-rbac-submenu',
+      label: 'navigation.rbac',
+      icon: 'tabler-shield-lock',
+      variant: ['admin'],
+      order: 90,
+      children: [
+        { id: 'admin-roles', label: 'Roles', path: Path.admin.roles, order: 10 },
+        { id: 'admin-permissions', label: 'Permissions', path: Path.admin.permissions, order: 20 },
+        { id: 'admin-policies', label: 'Access policies', path: Path.admin.policies, order: 30 },
+      ],
+    },
+    {
+      id: 'admin-api-tokens',
+      label: 'API tokens',
+      icon: 'tabler-key',
+      path: Path.apiTokens.dashboard,
+      variant: ['admin'],
+      order: 100,
+    },
+    // --- IDENTITY & SSO ---
+    {
+      id: 'admin-identity-section',
+      label: 'Identity & SSO',
+      section: 'Identity & SSO',
+      variant: ['admin'],
+      order: 110,
+    },
+    {
+      id: 'admin-sso-protocols',
+      label: 'SSO protocols',
+      icon: 'tabler-topology-star',
+      variant: ['admin'],
+      order: 120,
+      children: [
+        { id: 'admin-oidc', label: 'OIDC clients', path: Path.identity.oidcConfigBrowser, order: 10 },
+        { id: 'admin-saml', label: 'SAML config', path: Path.identity.samlConfigDashboard, order: 20 },
+        { id: 'admin-jwks', label: 'JWKS keys', path: Path.identity.jwksManagement, order: 30 },
+        { id: 'admin-ssf', label: 'SSF config', path: Path.identity.ssfConfiguration, order: 40 },
+      ],
+    },
+    {
+      id: 'admin-sync-submenu',
+      label: 'navigation.provisioning',
+      icon: 'tabler-refresh',
+      variant: ['admin'],
+      order: 130,
+      children: [
+        { id: 'admin-provisioning', label: 'Connectors', path: Path.admin.provisioning, order: 10 },
+        { id: 'admin-scim', label: 'SCIM tokens', path: Path.admin.scim, order: 20 },
+        { id: 'admin-sync-logs', label: 'Sync logs', path: Path.admin.syncLogs, order: 30 },
+      ],
+    },
+    // --- DEVELOPER ---
+    {
+      id: 'admin-dev-section',
+      label: 'Developer',
+      section: 'Developer',
+      variant: ['admin'],
+      order: 140,
+    },
+    {
+      id: 'admin-oauth-apps',
+      label: 'OAuth apps',
+      icon: 'tabler-apps',
+      path: Path.admin.applications,
+      variant: ['admin'],
+      order: 150,
+    },
+    {
+      id: 'admin-scopes',
+      label: 'Scopes',
+      icon: 'tabler-brackets',
+      path: Path.admin.scopes,
+      variant: ['admin'],
+      order: 160,
+    },
+    {
+      id: 'admin-webhooks',
+      label: 'Webhooks',
+      icon: 'tabler-webhook',
+      path: Path.admin.webhooks,
+      variant: ['admin'],
+      order: 170,
+    },
+    {
+      id: 'admin-api-explorer',
+      label: 'API explorer',
+      icon: 'tabler-terminal-2',
+      path: Path.admin.apiExplorer,
+      variant: ['admin'],
+      order: 180,
+    },
+    // --- MONITORING ---
+    {
+      id: 'admin-monitor-section',
+      label: 'Monitoring',
+      section: 'Monitoring',
+      variant: ['admin'],
+      order: 190,
+    },
+    {
+      id: 'admin-health',
+      label: 'navigation.systemHealth',
+      icon: 'tabler-heart-rate-monitor',
+      path: Path.admin.health,
+      variant: ['admin'],
+      order: 200,
+    },
+    {
+      id: 'admin-audit',
+      label: 'navigation.authEvents',
+      icon: 'tabler-activity',
+      path: Path.admin.events,
+      variant: ['admin'],
+      order: 210,
+    },
+    {
+      id: 'admin-mfa-metrics',
+      label: 'navigation.mfaAnalytics',
+      icon: 'tabler-chart-bar',
+      path: Path.monitoring.mfa_analytics,
+      variant: ['admin'],
+      order: 220,
+    },
+    {
+      id: 'admin-email-testing',
+      label: 'Email testing',
+      icon: 'tabler-mail-cog',
+      path: Path.monitoring.emailTesting,
+      variant: ['admin'],
+      order: 230,
+    },
+    {
+      id: 'admin-export-audit',
+      label: 'Export audit trail',
+      icon: 'tabler-file-export',
+      path: Path.admin.exportAudit,
+      variant: ['admin'],
+      order: 240,
+    },
+  ],
+  searchItems: [
+    {
+      id: 'admin-analytics',
+      name: 'Analytics Dashboard',
+      url: Path.admin.overview,
+      icon: 'tabler-chart-pie',
+      section: 'Dashboards',
+    },
+    {
+      id: 'admin-users',
+      name: 'User Management',
+      url: Path.admin.users,
+      icon: 'tabler-users',
+      section: 'Administration',
+    },
+    {
+      id: 'admin-roles',
+      name: 'Roles & Permissions',
+      url: Path.admin.roles,
+      icon: 'tabler-lock',
+      section: 'Security',
+    },
+  ],
+}

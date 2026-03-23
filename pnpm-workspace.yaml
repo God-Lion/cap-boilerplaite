@@ -1,0 +1,7 @@
+packages:
+  - "app"
+  - "packages/layout"
+  - "packages/platform-core"
+  - "packages/shared-types"
+  - "packages/theme"
+  - "packages/modules/*"

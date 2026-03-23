@@ -6,7 +6,6 @@ import { horizontalLayoutClasses } from '../../utils/layoutClasses'
 import StyledHeader from '../../styles/horizontal/StyledHeader'
 import classnames from 'classnames'
 import Navbar from './Navbar'
-import NavbarContent from './NavbarContent'
 import { useHorizontalNav } from '../../menu/contexts/horizontalNavContext'
 
 type Props = ChildrenType & {
@@ -91,7 +90,7 @@ const LayoutHeader = (props: Props) => {
 //   )
 // }
 
-const Header = ({ navigation }: { navigation?: React.ReactNode }) => {
+const Header = ({ navigation, navbarContent }: { navigation?: React.ReactNode; navbarContent?: React.ReactNode }) => {
   // Hooks
   const { isBreakpointReached } = useHorizontalNav()
 
@@ -99,7 +98,7 @@ const Header = ({ navigation }: { navigation?: React.ReactNode }) => {
     <>
       <LayoutHeader>
         <Navbar>
-          <NavbarContent />
+          {navbarContent}
         </Navbar>
         {!isBreakpointReached && navigation}
       </LayoutHeader>

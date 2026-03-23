@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand'
 import { fetchClient, ENDPOINTS } from '../../services/api/api.client'
-import { IAuth, ILogin } from '../../types'
+import { IAuth, ILogin, ADMIN_ROLES } from '../../types'
 import { secureTokenManager, TokenData as AuthTokens } from '../../services/secureTokenManager'
 import { AppStore } from '..'
 
@@ -9,6 +9,7 @@ export type { AuthTokens }
 export interface AuthSlice {
   user: IAuth | null
   isAuthenticated: boolean
+  isAdmin: boolean
   isLoading: boolean
   error: string | null
   tokens: AuthTokens | null
@@ -36,6 +37,7 @@ export const createAuthSlice: StateCreator<
   // Initial State
   user: null,
   isAuthenticated: false,
+  isAdmin: false,
   isLoading: false,
   error: null,
   tokens: null,
@@ -51,10 +53,17 @@ export const createAuthSlice: StateCreator<
       const response = await fetchClient.post<any>(ENDPOINTS.auth.login, credentials)
 
       if (response.status === 200 && response.data) {
-        // Extract user and token from response
-        const userData = response.data.user || response.data
-        const token = response.data.token || response.data.access_token
+        // Set user data - backend might return user data directly or in a 'user' field
+        let userData = response.data.user || response.data
 
+        // Normalize user role if it's an object
+        if (userData && typeof userData.role === 'object' && userData.role !== null) {
+          userData.roleObject = userData.role
+          userData.roleName = userData.role.name
+          userData.role = userData.role.id // Convert to number for compatibility with frontend logic
+        }
+        const token = response.data.accessToken || response.data.token
+        
         // Update user object with token if present but missing in user data
         if (token && userData && !userData.token) {
           userData.token = token
@@ -71,6 +80,7 @@ export const createAuthSlice: StateCreator<
         set((state: AuthSlice) => {
           state.user = userData
           state.isAuthenticated = true
+          state.isAdmin = userData && ADMIN_ROLES.includes(Number(userData.role))
           state.tokens = token ? { accessToken: token, expiresAt: Date.now() + 3600 * 1000 } : null
           state.isLoading = false
           state.error = null
@@ -105,6 +115,7 @@ export const createAuthSlice: StateCreator<
       set((state: AuthSlice) => {
         state.user = null
         state.isAuthenticated = false
+        state.isAdmin = false
         state.tokens = null
         state.error = null
       })
@@ -171,11 +182,19 @@ export const createAuthSlice: StateCreator<
           }
 
           // Set user data - backend might return user data directly or in a 'user' field
-          const userData = response.data.user || response.data
+          let userData = response.data.user || response.data
+
+          // Normalize user role if it's an object
+          if (userData && typeof userData.role === 'object' && userData.role !== null) {
+            userData.roleObject = userData.role
+            userData.roleName = userData.role.name
+            userData.role = userData.role.id // Convert to number for compatibility with frontend logic
+          }
 
           set((state: AuthSlice) => {
             state.user = userData
             state.isAuthenticated = true
+            state.isAdmin = userData && ADMIN_ROLES.includes(Number(userData.role))
             state.isLoading = false
             state.error = null
           })
@@ -277,24 +296,45 @@ export const createAuthSlice: StateCreator<
 
   // Set User (directly set user data, e.g., after login)
   setUser: (user: IAuth | null) => {
+    let normalizedUser = user
+
+    // Normalize user role if it's an object or a numeric string
+    if (normalizedUser) {
+      if (
+        typeof normalizedUser.role === 'object' &&
+        normalizedUser.role !== null &&
+        (normalizedUser as any).role.id !== undefined
+      ) {
+        normalizedUser.roleObject = normalizedUser.role
+        normalizedUser.roleName = (normalizedUser as any).role.name
+        normalizedUser.role = (normalizedUser as any).role.id
+      }
+
+      // Ensure role is a number if it's a numeric string
+      if (typeof normalizedUser.role === 'string' && !isNaN(Number(normalizedUser.role))) {
+        normalizedUser.role = Number(normalizedUser.role)
+      }
+    }
+
     set((state: AuthSlice) => {
-      state.user = user
-      state.isAuthenticated = user !== null
+      state.user = normalizedUser
+      state.isAuthenticated = normalizedUser !== null
+      state.isAdmin = normalizedUser !== null && ADMIN_ROLES.includes(Number(normalizedUser.role))
       state.error = null
 
       // Check if user object contains tokens and persist them
-      if (user && ((user as any).token || (user as any).refreshToken)) {
+      if (normalizedUser && ((normalizedUser as any).token || (normalizedUser as any).refreshToken)) {
         const tokens: AuthTokens = {
-          accessToken: (user as any).token || '',
-          refreshToken: (user as any).refreshToken || '',
+          accessToken: (normalizedUser as any).token || '',
+          refreshToken: (normalizedUser as any).refreshToken || '',
           expiresAt: Date.now() + 3600 * 1000, // Default 1h
         }
         state.tokens = tokens
 
         // Use persist preference if available in user object or default to true
-        const persist = (user as any).rememberMe !== false
+        const persist = (normalizedUser as any).rememberMe !== false
         secureTokenManager.setTokens(tokens, persist)
-      } else if (!user) {
+      } else if (!normalizedUser) {
         state.tokens = null
         secureTokenManager.clearTokens()
       }

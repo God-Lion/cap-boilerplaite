@@ -11,6 +11,8 @@ export enum Roles {
   SUPERADMIN = 8,
 }
 
+export const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE]
+
 export const RoleWeights = [
   Roles.USER,
   Roles.PARTICIPANT,

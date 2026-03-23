@@ -1,5 +1,0 @@
-export { default as MFAManagement } from './MFAManagement'
-export { default as MFADashboard } from './MFADashboard'
-export { default as MFAPriorityConfig } from './MFAPriorityConfig'
-export { default as MFAResetConfirmation } from './MFAResetConfirmation'
-export { default as SecurityKeyManagement } from './SecurityKeyManagement'

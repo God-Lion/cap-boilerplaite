@@ -1,4 +1,5 @@
 import type { TenantConfig, UserPreferences } from '../types/tenant'
+import { DEFAULT_TENANT_CONFIG } from '../types/tenant'
 
 const TENANT_CACHE_KEY = 'tenant-config-cache'
 const TENANT_VERSION_KEY = 'tenant-version'
@@ -17,6 +18,7 @@ interface TenantCache {
 
 const mockTenants: Record<string, TenantConfig> = {
   'tenant1.localhost': {
+    _version: 1,
     id: 'tenant1',
     slug: 'tenant1',
     domain: 'tenant1.localhost',
@@ -108,6 +110,7 @@ const mockTenants: Record<string, TenantConfig> = {
     version: 1,
   },
   'tenant2.localhost': {
+    _version: 1,
     id: 'tenant2',
     slug: 'tenant2',
     domain: 'tenant2.localhost',
@@ -199,6 +202,7 @@ const mockTenants: Record<string, TenantConfig> = {
     version: 1,
   },
   'tenant3.localhost': {
+    _version: 1,
     id: 'tenant3',
     slug: 'tenant3',
     domain: 'tenant3.localhost',
@@ -362,12 +366,31 @@ export class TenantService {
     const domain = this.getCurrentHostname()
     const slug = tenantSlug || this.getTenantFromHostname()
     
+    // 1. Try Cache
     const cached = this.getCachedTenant(domain)
     if (cached) {
       console.log('[TenantService] Using cached tenant config for:', domain)
       return cached
     }
 
+    // 2. Try Backend API (Primary Source of truth for per-tenant branding)
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || ''
+      const response = await fetch(`${apiUrl}/api/guest/tenant?domain=${domain}`)
+      
+      if (response.ok) {
+        const config: TenantConfig = await response.json()
+        console.log('[TenantService] Successfully fetched tenant config from backend:', domain)
+        this.setCache(domain, config)
+        return config
+      }
+      
+      console.warn(`[TenantService] Backend returned ${response.status} for ${domain}, checking mocks...`)
+    } catch (error) {
+      console.error('[TenantService] Network error fetching tenant config:', error)
+    }
+
+    // 3. Fallback to Mocks (Development only)
     if (this.isDevelopment() && mockTenants[domain]) {
       console.log('[TenantService] Using mock tenant config for:', domain)
       const mockConfig = mockTenants[domain]
@@ -375,67 +398,9 @@ export class TenantService {
       return mockConfig
     }
 
-    try {
-      const response = await fetch(`/api/guest/tenant?domain=${domain}`)
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch tenant: ${response.statusText}`)
-      }
-      
-      const config: TenantConfig = await response.json()
-      this.setCache(domain, config)
-      return config
-    } catch (error) {
-      console.warn('[TenantService] Failed to fetch tenant, using default:', error)
-      
-      // Default fallback config
-      return {
-        id: 'default',
-        slug: 'default',
-        domain: 'localhost',
-        name: 'Default',
-        theme: {
-          mode: 'light',
-          skin: 'default',
-          semiDark: false,
-          primaryColor: '#1976D2',
-          secondaryColor: '#455A64',
-          colors: {
-            primary: {
-              main: '#1976D2',
-              light: '#42A5F5',
-              dark: '#1565C0',
-              contrastText: '#FFF',
-            },
-            secondary: {
-              main: '#455A64',
-              light: '#607D8B',
-              dark: '#37474F',
-              contrastText: '#FFF',
-            },
-          },
-        },
-        layout: {
-          layout: 'vertical',
-          layoutPadding: 24,
-          compactContentWidth: 1440,
-          navbar: {
-            type: 'fixed',
-            contentWidth: 'compact',
-            floating: true,
-            detached: true,
-            blur: true,
-          },
-          footer: { type: 'static', contentWidth: 'compact', detached: true },
-          contentWidth: 'compact',
-          disableRipple: false,
-          toastPosition: 'top-right',
-        },
-        branding: { appName: 'My App', companyName: 'My Company' },
-        features: { darkMode: true, rtl: false, notifications: true, chat: true },
-        version: 1,
-      } as TenantConfig
-    }
+    // 4. Ultimate Fallback
+    console.warn('[TenantService] No backend or mock config available, using default')
+    return DEFAULT_TENANT_CONFIG
   }
 
   static async checkForUpdates(): Promise<boolean> {

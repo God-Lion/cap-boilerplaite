@@ -1,5 +1,6 @@
 // Re-export all types from a single location
 export * from './IAuth'
+export * from './auth-plugin.types'
 export * from './Response'
 export type { default as IPermission } from './IPermission'
 export type { default as IRole } from './IRole'
@@ -22,3 +23,4 @@ export * from '../store'
 export * from '../configs/themeConfig'
 export * from './app-types'
 export * from './tenant'
+export * from './nfc'

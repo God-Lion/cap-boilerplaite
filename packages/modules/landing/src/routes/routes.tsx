@@ -1,5 +1,6 @@
 import React from 'react'
-import { Routes, Route, type RoutesProps } from 'react-router-dom'
+import { Route, type RoutesProps } from 'react-router-dom'
+import { AuthRouteConfig } from '@cap/platform-core'
 import FeatureComparison from '../screens/FeatureComparison'
 import PrivacyPolicy from '../screens/PrivacyPolicy'
 import TermsOfService from '../screens/TermsOfService'
@@ -8,19 +9,23 @@ import AboutUs from '../screens/AboutUs'
 import Pricing from '../screens/Pricing'
 import Home from '../screens/Home'
 
-export const landingRoutes: React.FC<RoutesProps> = ({ location }) => {
-  return (
-    <Routes location={location}>
-      <Route path='/' element={<Home />} />
-      <Route path='/features' element={<FeatureComparison />} />
-      <Route path='/privacy-policy' element={<PrivacyPolicy />} />
-      <Route path='/terms-of-service' element={<TermsOfService />} />
-      <Route path='/contact' element={<ContactUs />} />
-      <Route path='/about' element={<AboutUs />} />
-      <Route path='/pricing' element={<Pricing />} />
-      <Route path='*' element={null} />
-    </Routes>
-  )
-}
+export const landingRouteConfig: AuthRouteConfig[] = [
+  { path: '/', element: <Home /> },
+  { path: '/features', element: <FeatureComparison /> },
+  { path: '/privacy-policy', element: <PrivacyPolicy /> },
+  { path: '/terms-of-service', element: <TermsOfService /> },
+  { path: '/contact', element: <ContactUs /> },
+  { path: '/about', element: <AboutUs /> },
+  { path: '/pricing', element: <Pricing /> },
+]
+
+// Returns Route elements only - assembleApp wraps in <Routes> for proper React Router matching
+export const landingRoutes: React.FC<RoutesProps> = () => (
+  <>
+    {landingRouteConfig.map((route) => (
+      <Route key={route.path} path={route.path} element={route.element} />
+    ))}
+  </>
+)
 
 export default landingRoutes

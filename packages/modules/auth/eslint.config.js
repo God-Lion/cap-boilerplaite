@@ -22,6 +22,19 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ['src/domain-kernel/**'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [
+          {
+            group: ['@cap/*'],
+            message: 'domain-kernel must not import from @cap/* packages. Use only zero-dependency code or peer dependencies.',
+          },
+        ],
+      }],
+    },
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     plugins: {
       react: reactPlugin,

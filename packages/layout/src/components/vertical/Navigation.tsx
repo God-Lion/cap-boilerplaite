@@ -7,7 +7,9 @@ import Logo from '../../assets/svg/Logo'
 import { useVerticalNav } from '../../menu/contexts/verticalNavContext'
 import { useSettings } from '@cap/platform-core'
 import navigationCustomStyles from '../../styles/core/vertical/navigationCustomStyles'
-import { Close, RadioButtonChecked, RadioButtonUnchecked } from '@mui/icons-material'
+import Close from '@mui/icons-material/Close'
+import RadioButtonChecked from '@mui/icons-material/RadioButtonChecked'
+import RadioButtonUnchecked from '@mui/icons-material/RadioButtonUnchecked'
 
 const StyledBoxForShadow = styled('div')(({ theme }) => ({
   top: 60,

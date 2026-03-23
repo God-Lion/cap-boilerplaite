@@ -1,0 +1,10 @@
+{
+  "admin": {
+    "dashboard": "Dashboard",
+    "theme_editor": "Theme Editor",
+    "users": "Users",
+    "databases": "Databases",
+    "settings": "Settings",
+    "overview": "Overview"
+  }
+}

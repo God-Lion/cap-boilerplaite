@@ -1,0 +1,253 @@
+import { useState, useCallback } from 'react'
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Alert,
+  CircularProgress,
+  useTheme,
+  alpha,
+  Link as MuiLink,
+} from '@mui/material'
+import { Warning, Info } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { useDeactivateAccount, useUserProfile } from "../../hooks/useUserQuery"
+import logger from "@idaas/authentication-core/utils/logger"
+import { Path } from "@cap/module-auth/routes/path"
+
+export default function DeactivateAccount() {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const theme = useTheme()
+  const [confirmText, setConfirmText] = useState('')
+
+  const deactivateAccountMutation = useDeactivateAccount()
+
+  const { data: userProfile } = useUserProfile()
+  const user = userProfile?.data
+
+  const handleDeactivate = useCallback(async () => {
+    if (confirmText !== 'DELETE') {
+      return
+    }
+
+    if (!user?.id) return
+
+    try {
+      await deactivateAccountMutation.mutateAsync(user.id)
+      navigate(Path.auth.signin)
+    } catch (err: unknown) {
+      logger.error('Deactivation error', { error: err })
+    }
+  }, [confirmText, deactivateAccountMutation, navigate, user])
+
+  const handleCancel = useCallback(() => {
+    navigate(Path.account.settings)
+  }, [navigate])
+
+  return (
+    <Box
+      component='main'
+      className='animate-scale-in'
+      sx={{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: { xs: 2, sm: 3, lg: 4 },
+        width: '100%',
+        overflowY: 'auto',
+        bgcolor: 'background.default',
+      }}
+    >
+      <Box
+        className='glass-effect'
+        sx={{
+          width: '100%',
+          maxWidth: 560,
+          bgcolor: 'background.paper',
+          borderRadius: 3,
+          boxShadow: 2,
+          border: '1px solid',
+          borderColor: 'divider',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            pt: 5,
+            pb: 1,
+            px: { xs: 3, sm: 6 },
+            textAlign: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: 64,
+              height: 64,
+              borderRadius: '50%',
+              bgcolor: 'error.light',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 3,
+            }}
+          >
+            <Warning sx={{ color: 'error.main', fontSize: 40 }} />
+          </Box>
+
+          <Typography
+            variant='h4'
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: '1.5rem', sm: '1.875rem' },
+              letterSpacing: '-0.02em',
+              pb: 1,
+            }}
+          >
+            {t('auth.account.deactivate_title')}
+          </Typography>
+
+          <Typography
+            variant='body1'
+            sx={{
+              color: 'text.secondary',
+              fontSize: '1rem',
+              lineHeight: 1.6,
+            }}
+          >
+            {t('auth.account.deactivate_description')}
+          </Typography>
+        </Box>
+
+        {/* Form Content */}
+        <Box sx={{ px: { xs: 3, sm: 6 }, py: 3 }}>
+          {deactivateAccountMutation.isError && (
+            <Alert severity='error' sx={{ mb: 3 }}>
+              {(deactivateAccountMutation.error as any)?.message ||
+                t('auth.common.errorOccurred')}
+            </Alert>
+          )}
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+
+
+            {/* Confirmation Input */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography
+                component='label'
+                htmlFor='confirm-delete'
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                }}
+              >
+                {t('auth.account.deactivate_confirm_instruction')}
+              </Typography>
+              <TextField
+                id='confirm-delete'
+                fullWidth
+                placeholder='DELETE'
+                value={confirmText}
+                onChange={(e) => setConfirmText(e.target.value)}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    height: 48,
+                    borderRadius: 2,
+                  },
+                }}
+              />
+            </Box>
+
+            {/* Action Buttons */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column-reverse', sm: 'row' },
+                gap: 1.5,
+                pt: 1,
+              }}
+            >
+              <Button
+                fullWidth
+                variant='outlined'
+                onClick={handleCancel}
+                sx={{
+                  height: 44,
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                }}
+              >
+                {t('auth.account.cancel')}
+              </Button>
+              <Button
+                fullWidth
+                variant='contained'
+                color='error'
+                onClick={handleDeactivate}
+                disabled={confirmText !== 'DELETE' || deactivateAccountMutation.isPending}
+                sx={{
+                  height: 44,
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  boxShadow: 1,
+                }}
+              >
+                {deactivateAccountMutation.isPending ? (
+                  <CircularProgress size={24} color='inherit' />
+                ) : (
+                  t('auth.account.deactivate_submit_button')
+                )}
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Footer */}
+        <Box
+          sx={{
+            bgcolor: 'action.hover',
+            px: 3,
+            py: 2,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant='caption' sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
+            {t('auth.account.support_prefix')}{' '}
+            <MuiLink
+              href='#'
+              onClick={(e) => {
+                e.preventDefault()
+                // Navigate to support
+              }}
+              sx={{
+                color: 'primary.main',
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+            >
+              {t('auth.account.customer_support')}
+            </MuiLink>{' '}
+            {t('auth.account.support_suffix')}
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  )
+}
+
+
+
+

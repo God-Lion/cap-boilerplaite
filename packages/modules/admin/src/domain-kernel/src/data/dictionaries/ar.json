@@ -1,0 +1,10 @@
+{
+  "admin": {
+    "dashboard": "لوحة القيادة",
+    "theme_editor": "محرر المظهر",
+    "users": "المستخدمين",
+    "databases": "قواعد البيانات",
+    "settings": "الإعدادات",
+    "overview": "نظرة عامة"
+  }
+}

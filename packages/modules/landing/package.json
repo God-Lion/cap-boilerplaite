@@ -9,7 +9,7 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@cap/platform-core": "*",
+        "@cap/platform-core": "workspace:*",
         "@mui/material": "^7.0.0",
         "@mui/icons-material": "^7.0.0",
         "react-router-dom": "^7.1.1"

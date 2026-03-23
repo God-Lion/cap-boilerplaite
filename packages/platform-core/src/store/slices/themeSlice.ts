@@ -11,7 +11,7 @@ export interface ThemeSlice {
 
 export const createThemeSlice: StateCreator<
   AppStore,
-  [['zustand/immer', never], ['zustand/devtools', never], ['zustand/persist', unknown]],
+  [['zustand/immer', never]],
   [],
   ThemeSlice
 > = (set) => ({

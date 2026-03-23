@@ -5,7 +5,7 @@
  */
 
 // Routes
-export { default as CommonRoutes } from './routes/routes'
+export { default as CommonRoutes, landingRouteConfig } from './routes/routes'
 
 // Screens
 export { default as FeatureComparison } from './screens/FeatureComparison'
@@ -31,10 +31,11 @@ export {
 } from './context'
 
 import { CAPModule } from '@cap/platform-core'
-import { landingRoutes } from './routes/routes'
+import { landingRoutes, landingRouteConfig } from './routes/routes'
 
 export const LandingModule: CAPModule = {
   id: 'landing-module',
   version: '1.0.0',
   routes: landingRoutes,
+  authRouteConfig: landingRouteConfig,
 }

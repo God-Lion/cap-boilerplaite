@@ -14,6 +14,8 @@ import { createPreferencesSlice, PreferencesSlice } from './slices/preferences/p
 import { createSettingsSlice, SettingsSlice, LayoutOverride } from './slices/settingsSlice'
 import { createNavigationSlice, NavigationSlice } from './slices/navigationSlice'
 import { createThemeSlice, ThemeSlice } from './slices/themeSlice'
+import { createNetworkSlice, NetworkSlice } from './slices/networkSlice'
+import { createOfflineQueueSlice, OfflineQueueSlice } from './slices/offlineQueueSlice'
 
 export type { LayoutOverride }
 
@@ -25,7 +27,9 @@ export type AppStore = AuthSlice &
   PreferencesSlice &
   SettingsSlice &
   NavigationSlice &
-  ThemeSlice
+  ThemeSlice &
+  NetworkSlice &
+  OfflineQueueSlice
 
 // Hydration tracking
 let hasHydrated = false
@@ -143,6 +147,8 @@ export const useAppStore = create<AppStore>()(
         ...createSettingsSlice(...args),
         ...createNavigationSlice(...args),
         ...createThemeSlice(...args),
+        ...createNetworkSlice(...args),
+        ...createOfflineQueueSlice(...args),
       })),
       {
         name: 'god-lion-seeker-optimizer-storage',
@@ -197,18 +203,21 @@ export const useAppStore = create<AppStore>()(
               ...(persistedState.settings || {}),
             },
             mode: persistedState.theme?.mode || currentState.mode, // Flatten theme
+            offlineQueue: persistedState.offlineQueue || currentState.offlineQueue,
           }
         },
         partialize: (state) => ({
           auth: {
             user: state.user,
             isAuthenticated: state.isAuthenticated,
+            isAdmin: state.isAdmin,
           },
           preferences: state.preferences,
           settings: state.settings,
           theme: {
             mode: state.mode,
           },
+          offlineQueue: state.offlineQueue,
         }),
       },
     ),
@@ -233,6 +242,7 @@ onTerminalError(() => {
     useAppStore.setState((state) => {
       state.user = null
       state.isAuthenticated = false
+      state.isAdmin = false
       state.tokens = null
     })
   }
@@ -241,6 +251,7 @@ onTerminalError(() => {
 export const useAuth = () => {
   const user = useAppStore((state) => state.user)
   const isAuthenticated = useAppStore((state) => state.isAuthenticated)
+  const isAdmin = useAppStore((state) => state.isAdmin)
   const isLoading = useAppStore((state) => state.isLoading)
   const error = useAppStore((state) => state.error)
   const tokens = useAppStore((state) => state.tokens)
@@ -256,6 +267,7 @@ export const useAuth = () => {
   return {
     user,
     isAuthenticated,
+    isAdmin,
     isLoading,
     error,
     tokens,
@@ -429,5 +441,33 @@ export const useTheme = () => {
     mode,
     toggleColorMode,
     setMode,
+  }
+}
+
+export const useNetwork = () => {
+  const isOnline = useAppStore((state) => state.isOnline)
+  const setOnline = useAppStore((state) => state.setOnline)
+  const setOffline = useAppStore((state) => state.setOffline)
+
+  return {
+    isOnline,
+    setOnline,
+    setOffline,
+  }
+}
+
+export const useOfflineQueue = () => {
+  const offlineQueue = useAppStore((state) => state.offlineQueue)
+  const addToOfflineQueue = useAppStore((state) => state.addToOfflineQueue)
+  const removeFromOfflineQueue = useAppStore((state) => state.removeFromOfflineQueue)
+  const incrementOfflineRetry = useAppStore((state) => state.incrementOfflineRetry)
+  const clearOfflineQueue = useAppStore((state) => state.clearOfflineQueue)
+
+  return {
+    offlineQueue,
+    addToOfflineQueue,
+    removeFromOfflineQueue,
+    incrementOfflineRetry,
+    clearOfflineQueue,
   }
 }

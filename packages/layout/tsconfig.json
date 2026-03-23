@@ -2,19 +2,54 @@
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
-  },
-  "include": ["src", "../../apps/web/src/app/Menu/vertical/NavbarContent.tsx", "../../apps/web/src/app/Menu/vertical/Navbar.tsx", "../../apps/web/src/app/Menu/auth/AuthProfile.tsx", "../../apps/web/src/app/Menu/auth/AuthButtons.tsx"]
+    "jsx": "react-jsx",
+    "types": [
+      "node",
+      "vite/client",
+      "react",
+      "react-dom"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "../../app/src/*"
+      ],
+      "@auth/*": [
+        "../modules/auth/src/*",
+        "../modules/auth/src/modules/*"
+      ],
+      "@idaas/*": [
+        "../modules/auth/src/modules/*"
+      ],
+      "@cap/module-auth": [
+        "../modules/auth/src"
+      ],
+      "@cap/module-auth/*": [
+        "../modules/auth/src/*"
+      ],
+      "@cap/platform-core": [
+        "../platform-core/src"
+      ],
+      "@cap/platform-core/*": [
+        "../platform-core/src/*"
+      ]
+    }
+  }
 }

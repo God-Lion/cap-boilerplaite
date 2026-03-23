@@ -1,21 +1,30 @@
 {
   "name": "cap-monorepo",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "apps/*",
+    "app",
     "packages/layout",
     "packages/platform-core",
     "packages/shared-types",
+    "packages/theme",
     "packages/modules/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=@cap/web",
+    "dev": "npm run dev --workspace=@cap/app",
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspaces",
-    "test:e2e": "npm run test:e2e --workspace=@cap/web",
+    "test:e2e": "npm run test:e2e --workspace=@cap/app",
     "cspell": "cspell --no-progress --show-suggestions --relative --dot --gitignore \"**\""
   },
   "dependencies": {
+    "@mui/utils": "^7.3.9",
     "undici": "^7.22.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "vite-plugin-pwa": "^0.21.2"
   }
 }
