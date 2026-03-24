@@ -7,6 +7,7 @@ export * from './designTokens';
 export * from './effects';
 export * from './componentStyles';
 export * from './presets';
+export * from './menu';
 
 export interface TenantThemeConfig {
   id?: string;
@@ -53,7 +54,7 @@ export interface AppliedThemeVariables {
   components: CSSVariableMap;
 }
 
-export const DEFAULT_TENANT_THEME: TenantThemeConfig = {
+export const DEFAULT_THEME_CONFIG: TenantThemeConfig = {
   organizationId: 'default',
   name: 'Default Theme',
   tokens: {

@@ -18,9 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "app/*": ["./src/*"],
       "src/*": ["./src/*"],
-      "core/*": ["./src/core/*"],
-      "app/*": ["./src/app/*"],
       "@/routes": ["../packages/modules/auth/src/routes"],
       "@/routes/*": ["../packages/modules/auth/src/routes/*"],
       "@/modules": ["../packages/modules/auth/src/modules"],
@@ -65,9 +64,7 @@
       "@idaas/*": ["../packages/modules/auth/src/modules/*"],
       "src/configs/*": ["../packages/platform-core/src/configs/*"],
       "src/store/*": ["../packages/platform-core/src/store/*"],
-      "src/core/contexts/*": ["../packages/platform-core/src/contexts/*"],
       "src/types/*": ["../packages/platform-core/src/types/*"],
-      "src/core/types/*": ["../packages/platform-core/src/types/*"],
       "src/theme/*": ["../packages/platform-core/src/theme/*"],
       "@/store/*": ["../packages/platform-core/src/store/*"]
     },

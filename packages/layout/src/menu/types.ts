@@ -1,34 +1,21 @@
 import type { CSSObject } from '@emotion/react'
 import type { ReactNode, ReactElement } from 'react'
+import type {
+  MenuItemStylesParams,
+  MenuItemStyles,
+  RenderExpandIconParams,
+  RenderExpandIcon,
+  RenderExpandedMenuItemIcon,
+  MenuProps as ThemeMenuProps,
+} from '@cap/theme'
 
-export interface MenuItemStylesParams {
-  level: number
-  disabled?: boolean
-  active?: boolean
-  isSubmenu?: boolean
-  open?: boolean
+export type {
+  MenuItemStylesParams,
+  MenuItemStyles,
+  RenderExpandIconParams,
+  RenderExpandIcon,
+  RenderExpandedMenuItemIcon,
 }
-
-export interface MenuItemStyles {
-  root?: ((params: MenuItemStylesParams) => CSSObject) | CSSObject
-  button?: ((params: MenuItemStylesParams) => CSSObject) | CSSObject
-  icon?: ((params: MenuItemStylesParams) => CSSObject) | CSSObject
-  label?: ((params: MenuItemStylesParams) => CSSObject) | CSSObject
-  prefix?: CSSObject
-  suffix?: CSSObject
-  subMenuStyles?: CSSObject
-  subMenuExpandIcon?: CSSObject
-  subMenuContent?: ((params: MenuItemStylesParams) => CSSObject) | CSSObject
-}
-
-export interface RenderExpandIconParams {
-  level: number
-  active?: boolean
-  open?: boolean
-  disabled?: boolean
-}
-
-export type RenderExpandIcon = (params: RenderExpandIconParams) => ReactNode
 
 export interface MenuItemElement {
   type?: 'item' | 'submenu' | 'section'
@@ -47,14 +34,6 @@ export type MenuItemElementKey = keyof MenuItemStyles
 
 export interface ChildrenType {
   children?: ReactNode
-}
-
-export interface RenderExpandedMenuItemIcon {
-  icon?:
-    | ReactElement
-    | ((params: { level?: number; active?: boolean; disabled?: boolean }) => ReactElement | null)
-    | null
-  level?: number
 }
 
 // Common menu props
@@ -81,18 +60,8 @@ export interface SubMenuProps extends MenuItemProps {
   verticalMenuProps?: Record<string, unknown>
 }
 
-export interface MenuProps {
-  children?: ReactNode
-  className?: string
-  rootStyles?: CSSObject
-  menuItemStyles?: MenuItemStyles
-  renderExpandIcon?: RenderExpandIcon
-  renderExpandedMenuItemIcon?: RenderExpandedMenuItemIcon
-  triggerPopout?: 'hover' | 'click'
-  popoutMenuOffset?: { mainAxis?: number; alignmentAxis?: number }
-  textTruncate?: boolean
-  transitionDuration?: number
-  browserScroll?: boolean
+export interface MenuProps extends ThemeMenuProps {
+  // Any layout-specific overrides for MenuProps can go here
 }
 
 export interface NavHeaderProps {

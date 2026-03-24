@@ -49,6 +49,12 @@
       ],
       "@cap/platform-core/*": [
         "../platform-core/src/*"
+      ],
+      "@cap/theme": [
+        "../theme/src"
+      ],
+      "@cap/theme/*": [
+        "../theme/src/*"
       ]
     }
   }

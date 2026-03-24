@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { apiClient } from '@cap/platform-core';
 import type { TenantThemeConfig } from '../types';
-import { DEFAULT_TENANT_THEME } from '../types';
+import { DEFAULT_THEME_CONFIG } from '../types';
 import { applyPreset } from '../utils/mergeTheme';
 import type { ThemePresetId } from '../types/presets';
 
@@ -52,7 +52,7 @@ export const useTenantTheme = (
       // Ignore storage errors
     }
 
-    return DEFAULT_TENANT_THEME;
+    return DEFAULT_THEME_CONFIG;
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -123,11 +123,11 @@ export const useTenantTheme = (
 
   const resetToDefault = useCallback(() => {
     setTheme({
-      ...DEFAULT_TENANT_THEME,
+      ...DEFAULT_THEME_CONFIG,
       organizationId,
     });
     saveToStorage({
-      ...DEFAULT_TENANT_THEME,
+      ...DEFAULT_THEME_CONFIG,
       organizationId,
     });
   }, [organizationId, saveToStorage]);

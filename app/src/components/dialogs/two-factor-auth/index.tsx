@@ -27,8 +27,7 @@ import {
   Dialog,
   Grid,
 } from '@mui/material'
-import CustomInputHorizontal from '../../../../core/components/custom-inputs/Horizontal'
-import { CustomInputHorizontalData } from '../../../../core/components/custom-inputs/types'
+import { CustomInputHorizontal, type CustomInputHorizontalData } from '@cap/theme'
 
 type TwoFactorAuthProps = {
   open: boolean

@@ -70,3 +70,6 @@ export { default as VerticalNavContent } from './components/horizontal/VerticalN
 // Shared Components (still imported by apps/web components)
 export { default as UserMenu } from './components/UserMenu'
 export { default as Logo } from './assets/svg/Logo'
+
+// Header Styles
+export { default as StyledHeader } from './styles/vertical/StyledHeader'

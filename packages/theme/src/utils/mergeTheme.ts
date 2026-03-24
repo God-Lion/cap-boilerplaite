@@ -5,7 +5,7 @@ import type {
   EffectConfig,
   ComponentStyles,
 } from '../types';
-import { DEFAULT_TENANT_THEME } from '../types';
+import { DEFAULT_THEME_CONFIG } from '../types';
 import { THEME_PRESETS } from '../types/presets';
 import type { ThemePresetId } from '../types/presets';
 
@@ -39,10 +39,10 @@ export const applyPreset = (
 ): TenantThemeConfig => {
   const preset = THEME_PRESETS[presetId];
   if (!preset) {
-    return DEFAULT_TENANT_THEME;
+    return DEFAULT_THEME_CONFIG;
   }
   
-  const baseTheme = produce(DEFAULT_TENANT_THEME, (draft) => {
+  const baseTheme = produce(DEFAULT_THEME_CONFIG, (draft: TenantThemeConfig) => {
     draft.preset = presetId;
     draft.name = preset.name;
     
@@ -110,7 +110,7 @@ export const createThemeFromPartial = (
   partial: Partial<TenantThemeConfig>,
   organizationId: string
 ): TenantThemeConfig => {
-  return produce(DEFAULT_TENANT_THEME, (draft) => {
+  return produce(DEFAULT_THEME_CONFIG, (draft: TenantThemeConfig) => {
     draft.organizationId = organizationId;
     
     if (partial.name) draft.name = partial.name;

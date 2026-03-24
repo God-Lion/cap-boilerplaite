@@ -1,8 +1,6 @@
 import React from 'react'
 import classnames from 'classnames'
-import type { CustomInputVerticalData } from '../../../../core/components/custom-inputs/types'
-// Component Imports
-// import CustomInputVertical from '../../../../core/components/custom-inputs/Vertical'
+import { CustomInputVertical, type CustomInputVerticalData } from '@cap/theme'
 import DialogCloseButton from '../DialogCloseButton'
 import {
   Dialog,
@@ -18,7 +16,7 @@ import {
   TextField,
 } from '@mui/material'
 
-import CustomInputVertical from '../../../../core/components/custom-inputs/Vertical'
+
 
 type AddEditAddressData = {
   firstName?: string

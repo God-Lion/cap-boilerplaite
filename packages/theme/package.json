@@ -12,12 +12,26 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@cap/layout": "workspace:*",
+    "@cap/module-auth": "workspace:*",
+    "@cap/platform-core": "workspace:*",
+    "@cap/shared-types": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/lab": "^7.0.1-beta.20",
     "@mui/material": "^7.3.6",
+    "classnames": "^2.5.1",
     "immer": "^11.0.1",
+    "kbar": "^0.1.0-beta.45",
     "react": ">=19",
-    "react-dom": ">=19"
+    "react-dom": ">=19",
+    "react-perfect-scrollbar": "^1.5.8",
+    "react-router-dom": "^7.13.1",
+    "react-toastify": "^11.0.5",
+    "react-use": "^17.6.0",
+    "@emotion/cache": "^11.14.0",
+    "stylis-plugin-rtl": "^2.1.1"
   },
   "peerDependencies": {
     "@cap/platform-core": "workspace:*",
@@ -27,6 +41,7 @@
     "typescript": "~5.9.3"
   },
   "devDependencies": {
+    "@types/classnames": "^2.3.1",
     "@types/node": "^24.10.4",
     "prettier": "^3.7.4"
   }

@@ -14,7 +14,7 @@ import React from 'react'
 // Third-party Imports
 import classnames from 'classnames'
 import { themeConfig } from '@cap/platform-core'
-import CustomAvatar from '../../../../core/components/mui/Avatar'
+import { Avatar as CustomAvatar } from '@cap/theme'
 import DialogCloseButton from '../DialogCloseButton'
 import Keyboard from 'app/assets/svg/Keyboard'
 import Paper from 'app/assets/svg/Paper'

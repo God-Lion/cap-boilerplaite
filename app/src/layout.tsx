@@ -13,20 +13,25 @@ import {
   HorizontalFooter,
   Footer as PublicFooter,
 } from '@cap/layout'
+// import { Avatar as CustomAvatar } from '@cap/theme'
 // import Customizer from 'src/core/components/customizer'
 import Button from '@mui/material/Button'
 import ArrowUpward from '@mui/icons-material/ArrowUpward'
-import PublicNavbar from './menu/Navbars/Navbar'
-import GuestNavbar from './menu/Navbars/GuestNavbar'
+import { 
+  VerticalNavbar as Navbar, 
+  HorizontalNavbarContent,
+  ScrollToTop 
+} from '@cap/theme'
+import {
+  PublicNavbar,
+  GuestNavbar,
+  VerticalMenu,
+  AdminMenu,
+  HorizontalMenu
+} from './menu'
 import { useAppStore, Locale, getMode, getSystemMode, type AppStore, useAuth } from '@cap/platform-core'
 import { useTranslation } from 'react-i18next'
 import { useLang, getDictionary } from './utils/getDictionary'
-import VerticalMenu from './menu/vertical/VerticalMenu'
-import AdminMenu from './menu/vertical/AdminMenu'
-import HorizontalMenu from './menu/HorizontalMenu'
-import Navbar from './menu/vertical/Navbar'
-import HorizontalNavbarContent from './menu/horizontal/NavbarContent'
-import ScrollToTop from './core/components/scroll-to-top'
 
 const NavbarWrapper = React.memo(function NavbarWrapper() {
   const isAuthenticated = useAppStore((state: AppStore) => state.isAuthenticated)

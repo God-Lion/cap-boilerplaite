@@ -2,7 +2,7 @@ import React from 'react'
 import { themeConfig } from '@cap/platform-core'
 import { TextField, Typography, Radio, Button } from '@mui/material'
 import DirectionalIcon from 'app/components/DirectionalIcon'
-import CustomAvatar from '../../../../core/components/mui/Avatar'
+import { Avatar as CustomAvatar } from '@cap/theme'
 
 type Props = {
   activeStep: number

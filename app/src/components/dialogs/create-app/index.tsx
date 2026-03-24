@@ -7,7 +7,7 @@ import classnames from 'classnames'
 
 // Component Imports
 import Billing from './Billing'
-import CustomAvatar from '../../../../core/components/mui/Avatar'
+import { Avatar as CustomAvatar } from '@cap/theme'
 import Details from './Details'
 import DialogCloseButton from '../DialogCloseButton'
 import Database from './Database'
@@ -15,7 +15,7 @@ import FrameWork from './FrameWork'
 import Submit from './Submit'
 
 // Styled Component Imports
-import StepperWrapper from 'src/core/styles/stepper'
+import { StepperWrapper } from '@cap/theme'
 import {
   StepProps,
   Dialog,

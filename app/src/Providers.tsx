@@ -24,8 +24,7 @@ import { toast } from 'react-toastify'
 import common_us from './data/dictionaries/en.json'
 import common_fr from './data/dictionaries/fr.json'
 import common_ar from './data/dictionaries/ar.json'
-import { DesignSystemProvider } from '@cap/theme'
-import AppReactToastify from './lib/styles/AppReactToastify'
+import { DesignSystemProvider, AppReactToastify } from '@cap/theme'
 
 const queryClient = new QueryClient({
   defaultOptions: {

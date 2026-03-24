@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, useEffect, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { TenantThemeConfig, TenantThemeContextValue } from '../types';
-import { DEFAULT_TENANT_THEME } from '../types';
+import { DEFAULT_THEME_CONFIG } from '../types';
 import { applyThemeVariables, resetAllThemeVariables } from '../utils/applyThemeVariables';
 import themeService from '../services/theme.service';
 
@@ -21,7 +21,7 @@ export const TenantThemeProvider: React.FC<TenantThemeProviderProps> = ({
   autoApply = true,
 }) => {
   const [currentTheme, setCurrentTheme] = useState<TenantThemeConfig | null>(
-    theme || DEFAULT_TENANT_THEME
+    theme || DEFAULT_THEME_CONFIG
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -138,7 +138,7 @@ export const useTenantThemeContext = (): TenantThemeContextValue => {
   
   if (!context) {
     return {
-      theme: DEFAULT_TENANT_THEME,
+      theme: DEFAULT_THEME_CONFIG,
       isLoading: false,
       error: null,
       refetch: async () => {},

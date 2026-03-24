@@ -1,5 +1,5 @@
 import React from 'react'
-import CustomAvatar from '../../../../core/components/mui/Avatar'
+import { Avatar as CustomAvatar } from '@cap/theme'
 import DirectionalIcon from 'app/components/DirectionalIcon'
 import { themeConfig } from '@cap/platform-core'
 import { TextField, Typography, Radio, Button } from '@mui/material'

@@ -1,20 +1,8 @@
 import React from 'react'
 import { useVerticalNav as useZustandVerticalNav } from '@cap/platform-core'
+import type { VerticalNavState } from '@cap/theme'
+export type { VerticalNavState }
 import { VerticalMenuContext, type VerticalMenuContextProps } from './verticalMenuContext'
-
-export interface VerticalNavState {
-  width?: number
-  collapsedWidth?: number
-  isCollapsed?: boolean
-  isHovered?: boolean
-  isToggled?: boolean
-  isScrollWithContent?: boolean
-  isBreakpointReached?: boolean
-  isPopoutWhenCollapsed?: boolean
-  collapsing?: boolean
-  expanding?: boolean
-  transitionDuration?: number
-}
 
 export interface VerticalNavContextProps extends VerticalNavState {
   updateVerticalNavState: (values: Partial<VerticalNavState>) => void

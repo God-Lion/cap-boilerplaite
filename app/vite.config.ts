@@ -78,7 +78,7 @@ export default defineConfig({
       // ── App-local catch-alls (LAST — least specific) ──────────────────────────
       '@': path.resolve(__dirname, './src'),
       src: path.resolve(__dirname, './src'),
-      app: path.resolve(__dirname, './src/app'),
+      app: path.resolve(__dirname, './src'),
     },
     dedupe: [
       'react',

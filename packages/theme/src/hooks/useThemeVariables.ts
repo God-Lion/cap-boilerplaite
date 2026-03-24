@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { TenantThemeConfig } from '../types';
-import { DEFAULT_TENANT_THEME } from '../types';
+import { DEFAULT_THEME_CONFIG, type AppliedThemeVariables } from '../types';
 import { applyThemeVariables, resetAllThemeVariables } from '../utils/applyThemeVariables';
 
 interface UseThemeVariablesOptions {
