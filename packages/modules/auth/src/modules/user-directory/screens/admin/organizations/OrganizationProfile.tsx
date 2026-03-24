@@ -963,16 +963,23 @@ export default function OrganizationProfile() {
                       'Manage IP restrictions, MFA enforcement logic, and granular access rules.'}
                   </Typography>
                 </Box>
-                <Button
-                  variant='outlined'
-                  color='info'
-                  size='small'
-                  startIcon={<Security />}
-                  onClick={() => navigate(Path.admin.policies.replace(':id', id!))}
-                  sx={{ fontWeight: 700, borderRadius: 2 }}
-                >
-                  {t('auth.admin.managePolicies') || 'Manage Policies'}
-                </Button>
+                  <Button
+                    variant='outlined'
+                    color='info'
+                    size='small'
+                    startIcon={<Security />}
+                    onClick={() => {
+                      const numericId = Number(id)
+                      if (!id || id === 'NaN' || isNaN(numericId) || numericId <= 0) {
+                        enqueueSnackbar(t('auth.admin.invalidOrgId', 'Invalid organization ID for navigation'), { variant: 'error' })
+                        return
+                      }
+                      navigate(Path.admin.policies.replace(':id', id))
+                    }}
+                    sx={{ fontWeight: 700, borderRadius: 2 }}
+                  >
+                    {t('auth.admin.managePolicies') || 'Manage Policies'}
+                  </Button>
               </Box>
             </Stack>
           </CardContent>

@@ -37,7 +37,6 @@ import StyledHorizontalNavExpandIcon, {
   StyledHorizontalNavExpandIconWrapper,
 } from '../../styles/horizontal/StyledHorizontalNavExpandIcon'
 import StyledSubMenuContentWrapper from '../../styles/horizontal/StyledHorizontalSubMenuContentWrapper'
-import ulStyles from '../../styles/horizontal/horizontalUl.module.css'
 import ChevronRight from '../../svg/ChevronRight'
 
 export type SubMenuProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'prefix'> &
@@ -85,11 +84,11 @@ const StyledSubMenu = styled.li<StyledSubMenuProps>`
 
   > .${menuClasses.button} {
     ${({ level, disabled, children }) =>
-      menuButtonStyles({
-        level,
-        disabled,
-        children,
-      })};
+    menuButtonStyles({
+      level,
+      disabled,
+      children,
+    })};
     ${({ buttonStyles }) => buttonStyles};
   }
 `
@@ -312,7 +311,6 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (pr
           { [menuClasses.active]: active },
           { [menuClasses.disabled]: disabled },
           { [menuClasses.open]: open },
-          ulStyles.li,
           className,
         )}
         menuItemStyles={getSubMenuItemStyles('root')}

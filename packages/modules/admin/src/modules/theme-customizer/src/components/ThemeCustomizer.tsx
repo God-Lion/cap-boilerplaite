@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Stack, 
-  Grid, 
-  Slider, 
-  Switch, 
-  FormControlLabel, 
+import {
+  Box,
+  Typography,
+  Stack,
+  Grid,
+  Slider,
+  Switch,
+  FormControlLabel,
   Button,
   Tabs,
   Tab,
@@ -16,37 +16,37 @@ import {
   Divider,
   Alert
 } from '@mui/material';
-import { 
-  ColorLens as ColorIcon, 
-  SelectAll as PresetIcon, 
-  BlurOn as EffectsIcon, 
+import {
+  ColorLens as ColorIcon,
+  SelectAll as PresetIcon,
+  BlurOn as EffectsIcon,
   Widgets as ComponentsIcon,
   Save as SaveIcon,
   RestartAlt as ResetIcon,
   CheckCircle as CheckIcon
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  useTenantThemeContext, 
-  THEME_PRESETS, 
-  GlassCard, 
-  GlassButton, 
-  type TenantThemeConfig 
+import {
+  useTenantThemeContext,
+  THEME_PRESETS,
+  GlassCard,
+  GlassButton,
+  type TenantThemeConfig
 } from '@cap/theme';
 
 const ColorPicker = ({ label, value, onChange }: { label: string, value: string, onChange: (val: string) => void }) => (
   <Box sx={{ mb: 2 }}>
     <Typography variant="caption" sx={{ color: 'var(--color-text-muted)', display: 'block', mb: 1 }}>{label}</Typography>
     <Stack direction="row" spacing={2} alignItems="center">
-      <Box 
-        sx={{ 
-          width: 36, 
-          height: 36, 
-          borderRadius: '8px', 
-          background: value, 
+      <Box
+        sx={{
+          width: 36,
+          height: 36,
+          borderRadius: '8px',
+          background: value,
           border: '2px solid rgba(255,255,255,0.1)',
           cursor: 'pointer'
-        }} 
+        }}
         component="input"
         type="color"
         value={value}
@@ -71,10 +71,25 @@ export const ThemeCustomizer: React.FC = () => {
 
   if (!localTheme) return <Typography>Loading theme configuration...</Typography>;
 
-  const handleUpdate = (updates: Partial<TenantThemeConfig>) => {
-    const newTheme = { ...localTheme, ...updates };
-    setLocalTheme(newTheme);
-    updateTheme(newTheme); // Real-time preview
+  const handleUpdate = (updates: any) => {
+    // Perform a deep merge to prevent overwriting nested objects like colors or effects
+    const deepMerge = (target: any, source: any): any => {
+      const output = { ...target };
+      if (source && typeof source === 'object') {
+        Object.keys(source).forEach(key => {
+          if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key]) && target && key in target) {
+            output[key] = deepMerge(target[key], source[key]);
+          } else {
+            output[key] = source[key];
+          }
+        });
+      }
+      return output;
+    };
+
+    const newTheme = deepMerge(localTheme, updates);
+    setLocalTheme(newTheme as TenantThemeConfig);
+    updateTheme(newTheme as TenantThemeConfig); // Real-time preview
     setIsSaved(false);
   };
 
@@ -111,12 +126,12 @@ export const ThemeCustomizer: React.FC = () => {
           <IconButton onClick={() => handlePresetSelect('godlio-obsidian')} title="Reset to default">
             <ResetIcon sx={{ color: 'var(--color-text-muted)' }} />
           </IconButton>
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             startIcon={isSaved ? <CheckIcon /> : <SaveIcon />}
             onClick={handleSave}
             disabled={isLoading}
-            sx={{ 
+            sx={{
               background: isSaved ? 'var(--color-success, #4caf50)' : 'var(--color-primary, #635bff)',
               '&:hover': { background: isSaved ? '#43a047' : '#534bae' }
             }}
@@ -132,11 +147,11 @@ export const ThemeCustomizer: React.FC = () => {
         {/* Controls Panel */}
         <Grid size={{ xs: 12, md: 5 }}>
           <GlassCard padding="0">
-            <Tabs 
-              value={activeTab} 
+            <Tabs
+              value={activeTab}
               onChange={(_, v) => setActiveTab(v)}
               variant="fullWidth"
-              sx={{ 
+              sx={{
                 borderBottom: '1px solid var(--color-border)',
                 '& .MuiTab-root': { color: 'var(--color-text-muted)', minHeight: 64 },
                 '& .Mui-selected': { color: 'var(--color-primary) !important' },
@@ -152,10 +167,10 @@ export const ThemeCustomizer: React.FC = () => {
             <Box sx={{ p: 4, maxHeight: '60vh', overflowY: 'auto' }}>
               <AnimatePresence mode="wait">
                 {activeTab === 0 && (
-                  <Stack 
-                    component={motion.div} 
-                    initial={{ opacity: 0, x: -20 }} 
-                    animate={{ opacity: 1, x: 0 }} 
+                  <Stack
+                    component={motion.div}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                     spacing={2}
                   >
@@ -175,9 +190,9 @@ export const ThemeCustomizer: React.FC = () => {
                       >
                         <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{preset.metadata?.name || key}</Typography>
                         <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: preset.tokens.colors.primary }} />
-                          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: preset.tokens.colors.secondary }} />
-                          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: preset.tokens.colors.background }} />
+                          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: preset.preview.primaryColor }} />
+                          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: preset.preview.secondaryColor }} />
+                          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: preset.preview.backgroundColor }} />
                         </Stack>
                       </Paper>
                     ))}
@@ -185,72 +200,71 @@ export const ThemeCustomizer: React.FC = () => {
                 )}
 
                 {activeTab === 1 && (
-                  <Box 
-                    component={motion.div} 
-                    initial={{ opacity: 0, x: -20 }} 
+                  <Box
+                    component={motion.div}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                   >
-                    <ColorPicker 
-                      label="Primary Color" 
-                      value={localTheme.tokens.colors.primary.value} 
-                      onChange={(v) => handleUpdate({ tokens: { ...localTheme.tokens, colors: { ...localTheme.tokens.colors, primary: { value: v } } } })}
+                    <ColorPicker
+                      label="Primary Color"
+                      value={localTheme.tokens?.colors?.primary?.value || '#000000'}
+                      onChange={(v) => handleUpdate({ tokens: { colors: { primary: { value: v } } } })}
                     />
-                    <ColorPicker 
-                      label="Secondary Color" 
-                      value={localTheme.tokens.colors.secondary.value} 
-                      onChange={(v) => handleUpdate({ tokens: { ...localTheme.tokens, colors: { ...localTheme.tokens.colors, secondary: { value: v } } } })}
+                    <ColorPicker
+                      label="Secondary Color"
+                      value={localTheme.tokens?.colors?.secondary?.value || '#000000'}
+                      onChange={(v) => handleUpdate({ tokens: { colors: { secondary: { value: v } } } })}
                     />
                     <Divider sx={{ my: 3, borderColor: 'var(--color-border)' }} />
-                    <ColorPicker 
-                      label="Background" 
-                      value={localTheme.tokens.colors.background.value} 
-                      onChange={(v) => handleUpdate({ tokens: { ...localTheme.tokens, colors: { ...localTheme.tokens.colors, background: { value: v } } } })}
+                    <ColorPicker
+                      label="Background"
+                      value={localTheme.tokens?.colors?.background?.value || '#000000'}
+                      onChange={(v) => handleUpdate({ tokens: { colors: { background: { value: v } } } })}
                     />
-                    <ColorPicker 
-                      label="Surface Accent" 
-                      value={localTheme.tokens.colors.surface.value} 
-                      onChange={(v) => handleUpdate({ tokens: { ...localTheme.tokens, colors: { ...localTheme.tokens.colors, surface: { value: v } } } })}
+                    <ColorPicker
+                      label="Surface Accent"
+                      value={localTheme.tokens?.colors?.surface?.value || '#000000'}
+                      onChange={(v) => handleUpdate({ tokens: { colors: { surface: { value: v } } } })}
                     />
                   </Box>
                 )}
 
                 {activeTab === 2 && (
-                  <Box 
-                    component={motion.div} 
-                    initial={{ opacity: 0, x: -20 }} 
+                  <Box
+                    component={motion.div}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                   >
                     <Box sx={{ mb: 4 }}>
                       <FormControlLabel
                         control={
-                          <Switch 
-                            checked={localTheme.effects.glassmorphism.enabled} 
-                            onChange={(e) => handleUpdate({ 
-                              effects: { 
-                                ...localTheme.effects, 
-                                glassmorphism: { ...localTheme.effects.glassmorphism, enabled: e.target.checked } 
-                              } 
+                          <Switch
+                            checked={localTheme.effects.glassmorphism?.enabled || false}
+                            onChange={(e) => handleUpdate({
+                              effects: {
+                                glassmorphism: { enabled: e.target.checked }
+                              }
                             })}
                           />
                         }
                         label="Enable Glassmorphism"
                       />
-                      {localTheme.effects.glassmorphism.enabled && (
+                      {localTheme.effects.glassmorphism?.enabled && (
                         <Stack spacing={2} sx={{ mt: 2, pl: 2 }}>
                           <Box>
                             <Typography variant="caption">Blur Intensity</Typography>
-                            <Slider 
-                              value={parseInt(localTheme.effects.glassmorphism.blur)} 
-                              min={0} max={40} 
-                              onChange={(_, v) => handleUpdate({ effects: { ...localTheme.effects, glassmorphism: { ...localTheme.effects.glassmorphism, blur: `${v}px` } } })}
+                            <Slider
+                              value={parseInt(localTheme.effects.glassmorphism?.blur || '0')}
+                              min={0} max={40}
+                              onChange={(_, v) => handleUpdate({ effects: { glassmorphism: { blur: `${v}px` } } })}
                             />
                           </Box>
                           <Box>
                             <Typography variant="caption">Opacity</Typography>
-                            <Slider 
-                              value={localTheme.effects.glassmorphism.opacity * 100} 
-                              min={0} max={100} 
-                              onChange={(_, v) => handleUpdate({ effects: { ...localTheme.effects, glassmorphism: { ...localTheme.effects.glassmorphism, opacity: (v as number) / 100 } } })}
+                            <Slider
+                              value={(localTheme.effects.glassmorphism?.opacity || 0) * 100}
+                              min={0} max={100}
+                              onChange={(_, v) => handleUpdate({ effects: { glassmorphism: { opacity: (v as number) / 100 } } })}
                             />
                           </Box>
                         </Stack>
@@ -260,13 +274,12 @@ export const ThemeCustomizer: React.FC = () => {
                     <Box>
                       <FormControlLabel
                         control={
-                          <Switch 
-                            checked={localTheme.effects.neumorphism.enabled} 
-                            onChange={(e) => handleUpdate({ 
-                              effects: { 
-                                ...localTheme.effects, 
-                                neumorphism: { ...localTheme.effects.neumorphism, enabled: e.target.checked } 
-                              } 
+                          <Switch
+                            checked={localTheme.effects.neumorphism?.enabled || false}
+                            onChange={(e) => handleUpdate({
+                              effects: {
+                                neumorphism: { enabled: e.target.checked }
+                              }
                             })}
                           />
                         }
@@ -277,9 +290,9 @@ export const ThemeCustomizer: React.FC = () => {
                 )}
 
                 {activeTab === 3 && (
-                  <Box 
-                    component={motion.div} 
-                    initial={{ opacity: 0, x: -20 }} 
+                  <Box
+                    component={motion.div}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                   >
                     <Typography variant="subtitle2" sx={{ mb: 2 }}>Border Radius</Typography>
@@ -287,20 +300,20 @@ export const ThemeCustomizer: React.FC = () => {
                       <Grid size={{ xs: 6 }}>
                         <Box>
                           <Typography variant="caption">Small</Typography>
-                          <Slider 
-                            value={parseInt(localTheme.tokens.borderRadius.sm)} 
-                            min={0} max={20} 
-                            onChange={(_, v) => handleUpdate({ tokens: { ...localTheme.tokens, borderRadius: { ...localTheme.tokens.borderRadius, sm: `${v}px` } } })}
+                          <Slider
+                            value={parseInt(localTheme.tokens?.borderRadius?.sm || '0')}
+                            min={0} max={20}
+                            onChange={(_, v) => handleUpdate({ tokens: { borderRadius: { sm: `${v}px` } } })}
                           />
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 6 }}>
                         <Box>
                           <Typography variant="caption">Large</Typography>
-                          <Slider 
-                            value={parseInt(localTheme.tokens.borderRadius.lg)} 
-                            min={0} max={40} 
-                            onChange={(_, v) => handleUpdate({ tokens: { ...localTheme.tokens, borderRadius: { ...localTheme.tokens.borderRadius, lg: `${v}px` } } })}
+                          <Slider
+                            value={parseInt(localTheme.tokens?.borderRadius?.lg || '0')}
+                            min={0} max={40}
+                            onChange={(_, v) => handleUpdate({ tokens: { borderRadius: { lg: `${v}px` } } })}
                           />
                         </Box>
                       </Grid>
@@ -314,11 +327,11 @@ export const ThemeCustomizer: React.FC = () => {
 
         {/* Preview Panel */}
         <Grid size={{ xs: 12, md: 7 }}>
-          <Box sx={{ 
-            height: '100%', 
+          <Box sx={{
+            height: '100%',
             minHeight: 500,
-            borderRadius: '24px', 
-            background: localTheme.tokens.colors.background.value,
+            borderRadius: '24px',
+            background: localTheme.tokens?.colors?.background?.value || 'transparent',
             border: '8px solid rgba(255,255,255,0.05)',
             p: 6,
             display: 'flex',
@@ -327,41 +340,41 @@ export const ThemeCustomizer: React.FC = () => {
             overflow: 'hidden',
             position: 'relative'
           }}>
-             <Typography variant="overline" sx={{ color: 'var(--color-primary)', fontWeight: 700 }}>Live Preview</Typography>
-             
-             <Stack spacing={3}>
-                <Typography variant="h5" sx={{ color: 'var(--color-text)' }}>Welcome to our Platform</Typography>
-                
-                <Grid container spacing={3}>
-                  <Grid size={{ xs: 12, sm: 6 }}>
-                    <GlassCard>
-                      <Typography variant="subtitle2">Analytics Card</Typography>
-                      <Typography variant="h4" sx={{ mt: 1, color: 'var(--color-primary)' }}>12.4k</Typography>
-                      <Typography variant="caption" sx={{ color: 'var(--color-text-muted)' }}>+14% from last month</Typography>
-                    </GlassCard>
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 6 }}>
-                    <GlassCard>
-                       <Typography variant="subtitle2">System Health</Typography>
-                       <Box sx={{ mt: 2, height: 4, width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: 2 }}>
-                          <Box sx={{ height: '100%', width: '70%', background: 'var(--color-secondary)', borderRadius: 2 }} />
-                       </Box>
-                    </GlassCard>
-                  </Grid>
+            <Typography variant="overline" sx={{ color: 'var(--color-primary)', fontWeight: 700 }}>Live Preview</Typography>
+
+            <Stack spacing={3}>
+              <Typography variant="h5" sx={{ color: 'var(--color-text)' }}>Welcome to our Platform</Typography>
+
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <GlassCard>
+                    <Typography variant="subtitle2">Analytics Card</Typography>
+                    <Typography variant="h4" sx={{ mt: 1, color: 'var(--color-primary)' }}>12.4k</Typography>
+                    <Typography variant="caption" sx={{ color: 'var(--color-text-muted)' }}>+14% from last month</Typography>
+                  </GlassCard>
                 </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <GlassCard>
+                    <Typography variant="subtitle2">System Health</Typography>
+                    <Box sx={{ mt: 2, height: 4, width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: 2 }}>
+                      <Box sx={{ height: '100%', width: '70%', background: 'var(--color-secondary)', borderRadius: 2 }} />
+                    </Box>
+                  </GlassCard>
+                </Grid>
+              </Grid>
 
-                <Stack direction="row" spacing={2}>
-                  <GlassButton variant="primary">Primary Action</GlassButton>
-                  <GlassButton variant="secondary">Secondary</GlassButton>
-                  <GlassButton variant="outline">Outline</GlassButton>
-                </Stack>
-             </Stack>
+              <Stack direction="row" spacing={2}>
+                <GlassButton variant="primary">Primary Action</GlassButton>
+                <GlassButton variant="secondary">Secondary</GlassButton>
+                <GlassButton variant="outline">Outline</GlassButton>
+              </Stack>
+            </Stack>
 
-             {/* Dynamic Branding Name */}
-             <Box sx={{ mt: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--color-primary)' }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>Godlio Enterprise</Typography>
-             </Box>
+            {/* Dynamic Branding Name */}
+            <Box sx={{ mt: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--color-primary)' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>Godlio Enterprise</Typography>
+            </Box>
           </Box>
         </Grid>
       </Grid>

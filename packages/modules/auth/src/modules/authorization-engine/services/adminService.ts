@@ -167,8 +167,8 @@ export interface InviteToOrganizationRequest {
 export interface Connector {
   id: number
   name: string
-  type: 'scim' | 'ldap' | 'azure_ad' | 'okta' | 'google'
-  status: 'active' | 'inactive' | 'error'
+  type: 'scim' | 'ldap' | 'azure_ad' | 'okta' | 'google' | string
+  status: 'active' | 'inactive' | 'error' | string
   last_sync_at: string | null
   sync_count: number
   error_message: string | null
@@ -181,10 +181,12 @@ export interface ConnectorLog {
   id: number
   connector_id: number
   action: string
-  status: 'success' | 'error' | 'warning'
+  event?: string
+  status: 'success' | 'error' | 'warning' | string
   details: string
   records_processed: number
   created_at: string
+  createdAt?: string
 }
 
 export interface SCIMToken {
@@ -932,6 +934,9 @@ export class AdminService {
    * Get access policies
    */
   async getAccessPolicies(orgId: number): Promise<FetchResponse<AccessPolicy[]>> {
+    if (isNaN(orgId) || orgId <= 0) {
+      throw new Error('Valid organization context required for access policies.')
+    }
     return apiClient.get<AccessPolicy[]>(ENDPOINTS.rbac.accessPolicies, {
       headers: { 'x-organization-id': String(orgId) },
     })
@@ -944,6 +949,9 @@ export class AdminService {
     orgId: number,
     policies: AccessPolicy[],
   ): Promise<FetchResponse<MessageResponse>> {
+    if (isNaN(orgId) || orgId <= 0) {
+      throw new Error('Valid organization context required for access policies.')
+    }
     return apiClient.post<MessageResponse>(
       ENDPOINTS.rbac.accessPolicies,
       { policies },

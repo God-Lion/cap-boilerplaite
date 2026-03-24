@@ -85,13 +85,25 @@ export const TenantThemeProvider: React.FC<TenantThemeProviderProps> = ({
   }, [onThemeChange]);
 
   const updateTheme = useCallback(async (updates: Partial<TenantThemeConfig>) => {
-    const updated = {
-      ...currentTheme!,
-      ...updates,
-      metadata: {
-        ...currentTheme!.metadata,
-        updatedAt: new Date().toISOString(),
-      },
+    const deepMerge = (target: any, source: any): any => {
+      const output = { ...target };
+      if (source && typeof source === 'object') {
+        Object.keys(source).forEach(key => {
+          if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key]) && target && key in target) {
+            output[key] = deepMerge(target[key], source[key]);
+          } else {
+            output[key] = source[key];
+          }
+        });
+      }
+      return output;
+    };
+
+    const updated = deepMerge(currentTheme!, updates);
+    updated.metadata = {
+      ...currentTheme!.metadata,
+      ...updates.metadata,
+      updatedAt: new Date().toISOString(),
     };
     
     setCurrentTheme(updated);

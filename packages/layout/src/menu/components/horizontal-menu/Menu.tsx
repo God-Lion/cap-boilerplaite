@@ -5,7 +5,6 @@ import type { ChildrenType, RootStylesType } from '../../types'
 import { menuClasses } from '../../utils/menuClasses'
 import StyledHorizontalMenu from '../../styles/horizontal/StyledHorizontalMenu'
 import { horizontalSubMenuToggleDuration } from '../../defaultConfigs'
-import styles from '../../styles/horizontal/horizontalUl.module.css'
 import {
   HorizontalMenuContext,
   HorizontalMenuContextProps,
@@ -67,7 +66,7 @@ const Menu: React.ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = (props,
           rootStyles={rootStyles}
           {...rest}
         >
-          <ul className={styles.root}>{children}</ul>
+          <ul className='horizontal-nav-ul'>{children}</ul>
         </StyledHorizontalMenu>
       </FloatingTree>
     </HorizontalMenuContext.Provider>

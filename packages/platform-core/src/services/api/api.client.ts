@@ -141,6 +141,7 @@ export const ENDPOINTS = {
     matchAnonymous: '/api/guest/match-anonymous',
     getSession: (sessionId: string) => `/api/guest/session/${sessionId}`,
     deleteSession: (sessionId: string) => `/api/guest/session/${sessionId}`,
+    tenantConfig: '/api/auth/tenant',
   },
 
   // Statistics

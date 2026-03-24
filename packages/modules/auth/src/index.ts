@@ -89,6 +89,7 @@ export {
   AuthorizationEnginePath,
   AdminRoute,
 } from './modules/authorization-engine'
+export type { CreateJWKSKeyRequest } from './modules/authorization-engine'
 export { AuthRoute, GuestRoute } from './modules/authentication-core'
 export * from './modules/mfa-orchestrator'
 export * from './modules/identity-broker'

@@ -15,7 +15,6 @@ import StyledMenuLabel from '../../styles/StyledMenuLabel'
 import StyledMenuPrefix from '../../styles/StyledMenuPrefix'
 import StyledMenuSuffix from '../../styles/StyledMenuSuffix'
 import StyledHorizontalMenuItem from '../../styles/horizontal/StyledHorizontalMenuItem'
-import styles from '../../styles/horizontal/horizontalUl.module.css'
 
 export type MenuItemProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'prefix'> &
   RootStylesType &
@@ -118,7 +117,6 @@ const MenuItem: React.ForwardRefRenderFunction<HTMLLIElement, MenuItemProps> = (
         { [menuClasses.menuItemRoot]: level === 0 },
         { [menuClasses.active]: active },
         { [menuClasses.disabled]: disabled },
-        styles.li,
         className,
       )}
       level={level}

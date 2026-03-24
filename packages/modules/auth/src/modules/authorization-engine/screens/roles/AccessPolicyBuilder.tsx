@@ -50,16 +50,30 @@ import {
   Add as AddIcon,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { AccessPolicy, AccessPolicyRule } from '../../../platform-cluster'
 import { useSnackbar } from 'notistack'
+import { useOrganizations } from '../../hooks/useAdminQuery'
+import { useSessionGuard } from '@auth/session-manager/middlewares/useSessionGuard'
+import { Roles } from '@cap/platform-core'
+import { normalizeAuthUser } from '@idaas/authentication-core/utils/normalizeAuthUser'
+import Path from '../../screens/path'
 
 export default function AccessPolicyBuilder() {
   const { t } = useTranslation('common')
   const theme = useTheme()
+  const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
-  const { id: orgIdParam } = useParams()
+  const { id: orgIdParam } = useParams<{ id: string }>()
   const orgId = orgIdParam ? Number(orgIdParam) : 0
+  const isInvalidOrgId = isNaN(orgId) || orgId <= 0
+
+  const { user } = useSessionGuard()
+  const userData = useMemo(() => normalizeAuthUser(user), [user])
+  const isSuperAdmin = useMemo(() => (userData?.role as Roles) === Roles.SUPERADMIN, [userData])
+
+  const { data: organizationsResponse, isLoading: loadingOrgs } = useOrganizations({ limit: 100 })
+  const organizations = useMemo(() => organizationsResponse?.data?.data || [], [organizationsResponse])
 
   const [policies, setPolicies] = useState<AccessPolicy[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -69,7 +83,16 @@ export default function AccessPolicyBuilder() {
 
   useEffect(() => {
     const fetchPolicies = async () => {
-      if (!orgId) return
+      if (isInvalidOrgId) {
+        if (!isSuperAdmin) {
+          enqueueSnackbar(t('auth.admin.invalidOrgId', 'Invalid organization context detected'), { variant: 'error' })
+          const timer = setTimeout(() => {
+            navigate('/admin/organizations')
+          }, 3000)
+          return () => clearTimeout(timer)
+        }
+        return
+      }
       setIsLoading(true)
       try {
         const response = await adminService.getAccessPolicies(orgId)
@@ -84,7 +107,7 @@ export default function AccessPolicyBuilder() {
       }
     }
     fetchPolicies()
-  }, [orgId, t])
+  }, [orgId, isInvalidOrgId, t, enqueueSnackbar, isSuperAdmin, navigate])
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingPolicy, setEditingPolicy] = useState<AccessPolicy | null>(null)
@@ -116,6 +139,10 @@ export default function AccessPolicyBuilder() {
   }
 
   const handleSave = useCallback(async () => {
+    if (isInvalidOrgId) {
+      enqueueSnackbar(t('auth.admin.invalidOrgId', 'Invalid organization ID'), { variant: 'error' })
+      return
+    }
     setIsSaving(true)
     setError(null)
     setSaveSuccess(false)
@@ -151,6 +178,10 @@ export default function AccessPolicyBuilder() {
   }, [orgId, policies, editingPolicy, formData, enqueueSnackbar, t])
 
   const handleDelete = async (policyId: string) => {
+    if (isInvalidOrgId) {
+      enqueueSnackbar(t('auth.admin.invalidOrgId', 'Invalid organization ID'), { variant: 'error' })
+      return
+    }
     setIsSaving(true)
     setError(null)
     setSaveSuccess(false)
@@ -171,6 +202,10 @@ export default function AccessPolicyBuilder() {
   }
 
   const handleToggleStatus = async (policy: AccessPolicy) => {
+    if (isInvalidOrgId) {
+      enqueueSnackbar(t('auth.admin.invalidOrgId', 'Invalid organization ID'), { variant: 'error' })
+      return
+    }
     setIsSaving(true)
     setError(null)
     setSaveSuccess(false)
@@ -218,6 +253,16 @@ export default function AccessPolicyBuilder() {
         </Box>
       ) : (
         <>
+          {isInvalidOrgId && !isSuperAdmin && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {t('auth.admin.invalidOrgIdMessage', 'Invalid organization context. You will be redirected shortly.')}
+            </Alert>
+          )}
+          {isInvalidOrgId && isSuperAdmin && (
+            <Alert severity="info" sx={{ mb: 3 }}>
+              {t('auth.admin.selectOrgRequired', 'Please select an organization to manage its access policies.')}
+            </Alert>
+          )}
           {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
           {saveSuccess && <Alert severity="success" sx={{ mb: 3 }}>{t('auth.admin.policiesSavedSuccess', 'Policies saved successfully!')}</Alert>}
 
@@ -232,20 +277,55 @@ export default function AccessPolicyBuilder() {
               mb: 4,
             }}
           >
-            <Box>
-              {/* â”€â”€ SYSTEM PATTERN: h4 titles (OrganizationProfile L62) â”€â”€ */}
-              <Typography variant='h4' sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
-                {t('auth.admin.accessPolicies', 'Access Policies')}
-              </Typography>
-              <Typography variant='body1' color='text.secondary' sx={{ fontWeight: 500 }}>
-                {t('auth.admin.accessPolicies_subtitle', 'Manage security rules and conditionals')}
-              </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+              <Box>
+                {/* â”€â”€ SYSTEM PATTERN: h4 titles (OrganizationProfile L62) â”€â”€ */}
+                <Typography variant='h4' sx={{ fontWeight: 900, mb: 1, letterSpacing: '-0.027em' }}>
+                  {t('auth.admin.accessPolicies', 'Access Policies')}
+                </Typography>
+                <Typography variant='body1' color='text.secondary' sx={{ fontWeight: 500 }}>
+                  {t('auth.admin.accessPolicies_subtitle', 'Manage security rules and conditionals')}
+                </Typography>
+              </Box>
+
+              {isSuperAdmin && (
+                <FormControl size='small' sx={{ minWidth: 220, ml: 2 }}>
+                  <InputLabel id='org-selector-label'>{t('auth.admin.organization', 'Organization')}</InputLabel>
+                  <Select
+                    labelId='org-selector-label'
+                    value={orgId || ''}
+                    label={t('auth.admin.organization', 'Organization')}
+                    onChange={(e) => {
+                      const newId = e.target.value as number
+                      if (newId) {
+                        navigate(Path.policies.replace(':id', String(newId)))
+                      }
+                    }}
+                    disabled={loadingOrgs}
+                    sx={{
+                      bgcolor: 'background.paper',
+                      borderRadius: 2,
+                      '& .MuiSelect-select': { py: 1.2 },
+                    }}
+                  >
+                    <MenuItem value='' disabled>
+                      <em>{t('auth.admin.choose_org', 'Switch Organization')}</em>
+                    </MenuItem>
+                    {organizations.map((org: any) => (
+                      <MenuItem key={org.id} value={org.id}>
+                        {org.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
             </Box>
             {/* â”€â”€ SYSTEM PATTERN: CTA buttons (OrganizationProfile L58) â”€â”€ */}
             <Button
               variant='contained'
               startIcon={<Add />}
               onClick={() => handleOpenDialog()}
+              disabled={isInvalidOrgId}
               sx={{
                 px: 3,
                 py: 1.2,

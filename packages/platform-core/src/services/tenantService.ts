@@ -1,4 +1,4 @@
-import { apiClient } from './api/api.client'
+import { apiClient, ENDPOINTS } from './api/api.client'
 import type { TenantConfig, UserPreferences } from '../types/tenant'
 import { DEFAULT_TENANT_CONFIG } from '../types/tenant'
 
@@ -376,7 +376,7 @@ export class TenantService {
 
     // 2. Try Backend API (Primary Source of truth for per-tenant branding)
     try {
-      const response = await apiClient.get<TenantConfig>('/api/guest/tenant', { params: { domain } })
+      const response = await apiClient.get<TenantConfig>(ENDPOINTS.guest.tenantConfig, { params: { domain } })
       
       if (response.data) {
         const config = response.data

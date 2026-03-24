@@ -10,7 +10,6 @@ import {
   getDemoName,
   getMode,
   getSettingsFromCookie,
-  getSystemMode,
   SettingsProvider,
   themeConfig,
   GlobalZIndexStyles,
@@ -19,13 +18,13 @@ import {
   useNetworkSync,
   getModules,
 } from '@cap/platform-core'
-import type { ChildrenType, Direction } from '@cap/platform-core'
+import type { ChildrenType } from '@cap/platform-core'
 import { TourProvider } from '@reactour/tour'
 import { toast } from 'react-toastify'
 import common_us from './data/dictionaries/en.json'
 import common_fr from './data/dictionaries/fr.json'
 import common_ar from './data/dictionaries/ar.json'
-import ThemeProvider from './theme/index'
+import { DesignSystemProvider } from '@cap/theme'
 import AppReactToastify from './lib/styles/AppReactToastify'
 
 const queryClient = new QueryClient({
@@ -130,21 +129,16 @@ const NetworkSync = () => {
   return null
 }
 
-const Providers: React.FC<
-  ChildrenType & {
-    direction: Direction
-  }
-> = ({ children, direction }) => {
+const Providers: React.FC<ChildrenType> = ({ children }) => {
   const mode = getMode()
   const settingsCookie = getSettingsFromCookie()
   const demoName = getDemoName()
-  const systemMode = getSystemMode()
 
   return (
     <SettingsProvider settingsCookie={settingsCookie} mode={mode} demoName={demoName}>
       <QueryClientProvider client={queryClient}>
         <I18nextProvider i18n={i18next}>
-          <ThemeProvider direction={direction} systemMode={systemMode}>
+          <DesignSystemProvider organizationId={demoName || undefined} initialTheme={null}>
             <GlobalZIndexStyles />
             <BrowserRouter>
               <ForbiddenListener />
@@ -155,7 +149,7 @@ const Providers: React.FC<
             </BrowserRouter>
             <AppReactToastify position={themeConfig.toastPosition} hideProgressBar />
             <ReactQueryDevtools initialIsOpen={false} />
-          </ThemeProvider>
+          </DesignSystemProvider>
         </I18nextProvider>
       </QueryClientProvider>
     </SettingsProvider>

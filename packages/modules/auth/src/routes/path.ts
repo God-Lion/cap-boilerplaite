@@ -35,7 +35,7 @@ export const Path = {
     roles: '/admin/roles',
     roleDetail: '/admin/roles/:id',
     permissions: '/admin/permissions',
-    policies: '/admin/policies',
+    policies: '/admin/organizations/:id/policies',
     applications: '/admin/applications',
     appDetail: '/admin/applications/:id',
     scopes: '/admin/scopes',

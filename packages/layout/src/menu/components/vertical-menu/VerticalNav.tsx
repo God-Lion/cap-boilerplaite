@@ -11,7 +11,6 @@ import StyledBackdrop from '../../styles/StyledBackdrop'
 import StyledVerticalNav from '../../styles/vertical/StyledVerticalNav'
 import StyledVerticalNavContainer from '../../styles/vertical/StyledVerticalNavContainer'
 import StyledVerticalNavBgColorContainer from '../../styles/vertical/StyledVerticalNavBgColorContainer'
-import styles from '../../styles/vertical/verticalNavBgImage.module.css'
 import { defaultBreakpoints, verticalNavToggleDuration } from '../../defaultConfigs'
 // import { Drawer } from '@mui/material'
 
@@ -205,7 +204,7 @@ const VerticalNav = (props: VerticalNavProps) => {
         {backgroundImage && (
           /* VerticalNav Background Image */
           <img
-            className={classnames(verticalNavClasses.image, styles.root)}
+            className={classnames(verticalNavClasses.image, 'vertical-nav-bg-image')}
             src={backgroundImage}
             alt='verticalNav background'
           />

@@ -19,7 +19,9 @@
     "date-fns": "^4.1.0",
     "i18next": "^25.7.3",
     "react-i18next": "^16.5.0",
-    "react-perfect-scrollbar": "^1.5.8"
+    "react-perfect-scrollbar": "^1.5.8",
+    "react-router-dom": "^7.13.1",
+    "react-use": "^17.6.0"
   },
   "peerDependencies": {
     "react": ">=19",

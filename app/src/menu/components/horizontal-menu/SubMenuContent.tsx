@@ -2,7 +2,7 @@ import React from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import type { ChildrenType, RootStylesType } from '../../types'
 import StyledHorizontalSubMenuContent from '../../styles/horizontal/StyledHorizontalSubMenuContent'
-import styles from '../../styles/styles.module.css'
+
 
 export type SubMenuContentProps = React.HTMLAttributes<HTMLDivElement> &
   Partial<ChildrenType> & {
@@ -34,10 +34,10 @@ const SubMenuContent: React.ForwardRefRenderFunction<HTMLDivElement, SubMenuCont
           options={{ wheelPropagation: false, suppressScrollX: true }}
           style={{ maxBlockSize: `calc((var(--vh, 1vh) * 100) - ${top}px)` }}
         >
-          <ul className={styles.ul}>{children}</ul>
+          <ul className='menu-ul'>{children}</ul>
         </PerfectScrollbar>
       ) : (
-        <ul className={styles.ul}>{children}</ul>
+        <ul className='menu-ul'>{children}</ul>
       )}
     </StyledHorizontalSubMenuContent>
   )

@@ -98,21 +98,21 @@ export const applyThemeVariables = (theme: TenantThemeConfig): AppliedThemeVaria
     borderRadius[`--radius-${key}`] = value;
   }
   
-  if (theme.effects.glassmorphism.enabled) {
+  if (theme.effects.glassmorphism?.enabled) {
     const glass = theme.effects.glassmorphism;
-    effects['--glass-blur'] = glass.blur;
-    effects['--glass-bg'] = glass.background;
-    effects['--glass-border'] = glass.borderColor;
-    effects['--glass-opacity'] = glass.opacity;
+    effects['--glass-blur'] = glass.blur || '0px';
+    effects['--glass-bg'] = glass.background || 'transparent';
+    effects['--glass-border'] = glass.borderColor || 'transparent';
+    effects['--glass-opacity'] = glass.opacity || 0;
   }
   
-  if (theme.effects.neumorphism.enabled) {
+  if (theme.effects.neumorphism?.enabled) {
     const neu = theme.effects.neumorphism;
-    effects['--neu-bg'] = neu.backgroundColor;
-    effects['--neu-intensity'] = neu.intensity;
-    effects['--neu-distance'] = neu.distance;
-    effects['--neu-altitude'] = neu.altitude;
-    effects['--neu-radius'] = neu.borderRadius;
+    effects['--neu-bg'] = neu.backgroundColor || 'transparent';
+    effects['--neu-intensity'] = neu.intensity || 0;
+    effects['--neu-distance'] = neu.distance || 0;
+    effects['--neu-altitude'] = neu.altitude || 0;
+    effects['--neu-radius'] = neu.borderRadius || '0px';
   }
 
   const components: CSSVariableMap = {};
