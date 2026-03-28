@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { computeNeumorphismBoxShadow } from '../utils/computeEffects';
 import type { NeumorphismConfig } from '../types';
 import type { CSSProperties, ReactNode } from 'react';
+import { useComponentEffectConfig } from '../hooks/useComponentEffectConfig';
 
 export interface NeuCardProps {
   children: ReactNode;
@@ -52,8 +53,11 @@ export const NeuCard: React.FC<NeuCardProps> = ({
   config,
   ...props
 }) => {
+  const effectConfig = useComponentEffectConfig();
+  const activeConfig = config || effectConfig.neumorphism;
+
   return (
-    <StyledNeuCard config={config} {...props}>
+    <StyledNeuCard config={activeConfig} {...props}>
       {children}
     </StyledNeuCard>
   );

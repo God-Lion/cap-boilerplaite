@@ -10,7 +10,7 @@ import {
 import {
   FetchResponse,
   HttpError,
-  Session,
+  sessionStorageManager,
   secureTokenManager,
   API_CONFIG,
   useAppStore,
@@ -120,8 +120,7 @@ export function useSignin(
         }
 
         try {
-          const session = new Session()
-          session.write('user', response.data.user)
+          sessionStorageManager.set('user', response.data.user)
         } catch (err) {
           // Session write failure is non-critical during login flow
           console.error('Failed to write session data:', err)

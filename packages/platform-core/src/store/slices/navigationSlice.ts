@@ -2,23 +2,7 @@ import type { StateCreator } from 'zustand'
 import type { AppStore } from '../index'
 import type { NavItemConfig } from '../../types/module'
 
-export interface VerticalNavState {
-  width?: number
-  collapsedWidth?: number
-  isCollapsed?: boolean
-  isHovered?: boolean
-  isToggled?: boolean
-  isScrollWithContent?: boolean
-  isBreakpointReached?: boolean
-  isPopoutWhenCollapsed?: boolean
-  collapsing?: boolean
-  expanding?: boolean
-  transitionDuration?: number
-}
-
-export interface HorizontalNavState {
-  isBreakpointReached?: boolean
-}
+import { VerticalNavState, HorizontalNavState } from '@cap/shared-types'
 
 export interface NavigationSlice {
   verticalNav: VerticalNavState

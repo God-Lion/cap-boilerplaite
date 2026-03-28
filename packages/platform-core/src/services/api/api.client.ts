@@ -197,35 +197,6 @@ export const ENDPOINTS = {
     analysisProgress: (analysisId: number) => `/api/sse/analysis/${analysisId}`,
   },
 
-  // Admin Panel
-  admin: {
-    dashboard: '/api/admin/dashboard',
-    users: {
-      list: '/api/admin/users',
-      byId: (id: number) => `/api/admin/users/${id}`,
-      update: (id: number) => `/api/admin/users/${id}`,
-      bulkAction: '/api/admin/users/bulk',
-    },
-    securityLogs: '/api/admin/security-logs',
-  },
-
-  // RBAC & Permissions
-  rbac: {
-    permissions: {
-      list: '/api/admin/rbac/permissions',
-      byId: (id: number) => `/api/admin/rbac/permissions/${id}`,
-      grant: '/api/admin/rbac/permissions/grant',
-      revoke: '/api/admin/rbac/permissions/revoke',
-    },
-    roles: {
-      permissions: (role: string) => `/api/admin/rbac/roles/${role}/permissions`,
-      assignPermission: '/api/admin/rbac/roles/assign-permission',
-    },
-    users: {
-      assignRole: '/api/admin/rbac/users/assign-role',
-    },
-  },
-
   // Security
   security: {
     cspReport: '/api/security/csp-report',
@@ -333,30 +304,6 @@ export const QUERY_KEYS = {
     list: (params: string) => ['notifications', 'list', params] as const,
     unreadCount: ['notifications', 'unread-count'] as const,
     preferences: ['notifications', 'preferences'] as const,
-  },
-
-  // Admin
-  admin: {
-    all: ['admin'] as const,
-    dashboard: ['admin', 'dashboard'] as const,
-    users: {
-      all: ['admin', 'users'] as const,
-      byId: (id: number) => ['admin', 'users', id] as const,
-      list: (params: string) => ['admin', 'users', 'list', params] as const,
-    },
-    securityLogs: (params: string) => ['admin', 'security-logs', params] as const,
-  },
-
-  // RBAC
-  rbac: {
-    all: ['rbac'] as const,
-    permissions: {
-      all: ['rbac', 'permissions'] as const,
-      byId: (id: number) => ['rbac', 'permissions', id] as const,
-    },
-    roles: {
-      permissions: (role: string) => ['rbac', 'roles', role, 'permissions'] as const,
-    },
   },
 
   // Audit
@@ -539,10 +486,13 @@ class TokenRefreshManager {
 
     // Clear any stored state
     try {
-      localStorage.removeItem('god-lion-seeker-optimizer-storage')
+      const storageKey = (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
+      localStorage.removeItem(storageKey)
       sessionStorage.clear()
     } catch (error) {
-      console.log(`exception: ${error}`)
+      if (import.meta.env.DEV) {
+        console.log(`exception: ${error}`)
+      }
     }
 
     // Log the failure - let React Router handle navigation
@@ -556,7 +506,9 @@ class TokenRefreshManager {
 
   async attemptRefresh(): Promise<string> {
     if (this.isPaused) {
-      console.log('[TokenRefreshManager] Queue is paused, waiting for online status')
+      if (import.meta.env.DEV) {
+        console.log('[TokenRefreshManager] Queue is paused, waiting for online status')
+      }
       return new Promise((resolve, reject) => {
         this.queueRequest(resolve, reject)
       })
@@ -619,7 +571,9 @@ class TokenRefreshManager {
 
   resume() {
     if (!this.isPaused) return
-    console.log('[TokenRefreshManager] Resuming queue...')
+    if (import.meta.env.DEV) {
+      console.log('[TokenRefreshManager] Resuming queue...')
+    }
     this.isPaused = false
     this.attemptRefresh()
   }
@@ -659,9 +613,11 @@ export class FetchClient {
     endpoint: string,
     config: FetchRequestConfig = {},
   ): Promise<FetchResponse<T>> {
-    console.log('FetchClient request')
-    console.log('endpoint', endpoint)
-    console.log('config', config)
+    if (import.meta.env.DEV) {
+      console.log('FetchClient request')
+      console.log('endpoint', endpoint)
+      console.log('config', config)
+    }
     let url = endpoint.startsWith('http') ? endpoint : `${this.baseURL}${endpoint}`
 
     // Append params to URL
@@ -744,12 +700,16 @@ export class FetchClient {
     }
 
     try {
-      console.log('FetchClient fetch')
-      console.log('url', url)
-      console.log('fetchConfig', fetchConfig)
+      if (import.meta.env.DEV) {
+        console.log('FetchClient fetch')
+        console.log('url', url)
+        console.log('fetchConfig', fetchConfig)
+      }
       const response = await fetch(url, fetchConfig)
       clearTimeout(id)
-      console.log('response', response)
+      if (import.meta.env.DEV) {
+        console.log('response', response)
+      }
 
       const responseData = await this.parseResponse(response, config.responseType)
 
@@ -855,10 +815,12 @@ export class FetchClient {
   }
 
   post<T = any>(url: string, data?: any, config?: FetchRequestConfig) {
-    console.log('FetchClient post')
-    console.log('url', url)
-    console.log('data', data)
-    console.log('config', config)
+    if (import.meta.env.DEV) {
+      console.log('FetchClient post')
+      console.log('url', url)
+      console.log('data', data)
+      console.log('config', config)
+    }
     return this.request<T>(url, { ...config, method: 'POST', data })
   }
 
@@ -901,10 +863,12 @@ export class ApiClient {
     data?: any,
     config?: FetchRequestConfig,
   ): Promise<FetchResponse<T>> {
-    console.log('ApiClient post')
-    console.log('url', url)
-    console.log('data', data)
-    console.log('config', config)
+    if (import.meta.env.DEV) {
+      console.log('ApiClient post')
+      console.log('url', url)
+      console.log('data', data)
+      console.log('config', config)
+    }
     return this.instance.post<T>(url, data, config)
   }
 

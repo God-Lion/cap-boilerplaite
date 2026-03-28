@@ -1,6 +1,11 @@
 import type { TenantThemeConfig, CSSVariableMap, AppliedThemeVariables } from '../types';
-import type { GlassmorphismConfig, NeumorphismConfig } from '../types';
+import { computeNeumorphismBoxShadow, getGlassmorphismStyles, getBrutalismStyles, getBentoStyles } from './computeEffects';
 
+/**
+ * @deprecated Internal package styling now reads from the shared MUI theme.
+ * These helpers remain exported only for compatibility with external consumers
+ * that still mirror tenant tokens onto CSS custom properties.
+ */
 export const hexToRgba = (hex: string, alpha: number = 1): string => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return `rgba(0, 0, 0, ${alpha})`;
@@ -49,7 +54,6 @@ export const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
   };
 };
 
-
 export const flattenVariables = (
   obj: Record<string, unknown>,
   prefix = ''
@@ -69,12 +73,14 @@ export const flattenVariables = (
   return result;
 };
 
-export const applyThemeVariables = (theme: TenantThemeConfig): AppliedThemeVariables => {
-  const root = document.documentElement;
-  
+export const toKebabCase = (str: string): string =>
+  str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+
+export const generateThemeVariables = (theme: TenantThemeConfig): AppliedThemeVariables => {
   const colors: CSSVariableMap = {};
   const spacing: CSSVariableMap = {};
   const borderRadius: CSSVariableMap = {};
+  const typography: CSSVariableMap = {};
   const effects: CSSVariableMap = {};
   
   for (const [key, token] of Object.entries(theme.tokens.colors)) {
@@ -89,7 +95,6 @@ export const applyThemeVariables = (theme: TenantThemeConfig): AppliedThemeVaria
     }
   }
 
-  
   for (const [key, value] of Object.entries(theme.tokens.spacing)) {
     spacing[`--spacing-${key}`] = value;
   }
@@ -98,21 +103,144 @@ export const applyThemeVariables = (theme: TenantThemeConfig): AppliedThemeVaria
     borderRadius[`--radius-${key}`] = value;
   }
   
-  if (theme.effects.glassmorphism?.enabled) {
+  if (theme.tokens.typography) {
+    for (const [key, value] of Object.entries(theme.tokens.typography.fontFamily || {})) {
+      typography[`--font-family-${key}`] = value;
+    }
+    for (const [key, value] of Object.entries(theme.tokens.typography.fontSize || {})) {
+      typography[`--font-size-${key}`] = value;
+    }
+    for (const [key, value] of Object.entries(theme.tokens.typography.fontWeight || {})) {
+      typography[`--font-weight-${key}`] = String(value);
+    }
+    for (const [key, value] of Object.entries(theme.tokens.typography.lineHeight || {})) {
+      typography[`--line-height-${key}`] = value;
+    }
+  }
+  
+  if (theme.effects?.glassmorphism?.enabled) {
     const glass = theme.effects.glassmorphism;
+    const glassStyles = getGlassmorphismStyles(glass);
+    
+    effects['--glass-enabled'] = '1';
     effects['--glass-blur'] = glass.blur || '0px';
     effects['--glass-bg'] = glass.background || 'transparent';
     effects['--glass-border'] = glass.borderColor || 'transparent';
-    effects['--glass-opacity'] = glass.opacity || 0;
+    effects['--glass-border-width'] = glass.borderWidth || '0px';
+    effects['--glass-opacity'] = glass.opacity ?? 0;
+    
+    // Computed glass variables
+    effects['--effect-bg'] = glassStyles.background;
+    effects['--effect-backdrop'] = glassStyles.backdropFilter;
+    effects['--effect-border'] = glassStyles.border;
+  } else {
+    effects['--glass-enabled'] = '0';
   }
   
-  if (theme.effects.neumorphism?.enabled) {
+  if (theme.effects?.neumorphism?.enabled) {
     const neu = theme.effects.neumorphism;
+    effects['--neu-enabled'] = '1';
     effects['--neu-bg'] = neu.backgroundColor || 'transparent';
-    effects['--neu-intensity'] = neu.intensity || 0;
-    effects['--neu-distance'] = neu.distance || 0;
-    effects['--neu-altitude'] = neu.altitude || 0;
+    effects['--neu-intensity'] = neu.intensity ?? 0;
+    effects['--neu-distance'] = neu.distance ?? 0;
+    effects['--neu-altitude'] = neu.altitude ?? 0;
     effects['--neu-radius'] = neu.borderRadius || '0px';
+    
+    // Computed neumorphism variables
+    const neuShadow = computeNeumorphismBoxShadow(neu);
+    effects['--neu-shadow'] = neuShadow;
+    effects['--effect-shadow'] = neuShadow;
+  } else {
+    effects['--neu-enabled'] = '0';
+    // Fallback for effect shadow if neumorphism is disabled
+    effects['--effect-shadow'] = '0 2px 8px rgba(0, 0, 0, 0.1)';
+  }
+
+  if (theme.effects?.brutalism?.enabled) {
+    const brutal = theme.effects.brutalism;
+    const brutalStyles = getBrutalismStyles(brutal);
+    
+    effects['--brutal-enabled'] = '1';
+    effects['--brutal-border-width'] = brutal.borderWidth || '0px';
+    effects['--brutal-border-color'] = brutal.borderColor || 'transparent';
+    effects['--brutal-shadow-offset'] = brutal.shadowOffset || '0px';
+    effects['--brutal-shadow-color'] = brutal.shadowColor || 'transparent';
+    effects['--brutal-bg'] = brutal.backgroundColor || 'transparent';
+    
+    // Computed brutalism variables
+    effects['--brutal-shadow'] = brutalStyles.boxShadow;
+    effects['--brutal-border'] = brutalStyles.border;
+    
+    if (theme.effects.globalType === 'brutalism') {
+      effects['--effect-bg'] = brutal.backgroundColor;
+      effects['--effect-border'] = brutalStyles.border;
+      effects['--effect-shadow'] = brutalStyles.boxShadow;
+    }
+  } else {
+    effects['--brutal-enabled'] = '0';
+  }
+
+  if (theme.effects?.bento?.enabled) {
+    const bento = theme.effects.bento;
+    const bentoStyles = getBentoStyles(bento);
+    
+    effects['--bento-enabled'] = '1';
+    effects['--bento-radius'] = bento.borderRadius || '0px';
+    effects['--bento-spacing'] = bento.spacing || '0px';
+    effects['--bento-bg'] = bento.background || 'transparent';
+    effects['--bento-border-width'] = bento.borderWidth || '0px';
+    effects['--bento-border-color'] = bento.borderColor || 'transparent';
+    effects['--bento-shadow'] = bento.shadow || 'none';
+    
+    // Computed bento variables
+    effects['--bento-border'] = bentoStyles.border;
+    
+    if (theme.effects.globalType === 'bento') {
+      effects['--effect-bg'] = bento.background;
+      effects['--effect-border'] = bentoStyles.border;
+      effects['--effect-shadow'] = bento.shadow;
+      effects['--effect-radius'] = bento.borderRadius;
+    }
+  } else {
+    effects['--bento-enabled'] = '0';
+  }
+
+  if (theme.effects?.organic?.enabled) {
+    const organic = theme.effects.organic;
+    effects['--organic-enabled'] = '1';
+    effects['--organic-curvature'] = `${organic.curvature ?? 80}`;
+    effects['--organic-fluidity'] = `${organic.fluidity ?? 50}`;
+    effects['--organic-bg'] = organic.backgroundColor || 'transparent';
+    effects['--organic-border-color'] = organic.borderColor || 'transparent';
+    effects['--organic-border-width'] = organic.borderWidth || '0px';
+
+    if (theme.effects.globalType === 'organic') {
+      const radius = (organic.curvature ?? 80) > 50 
+        ? `${organic.curvature}% ${100 - (organic.curvature ?? 80)}%` 
+        : `${organic.curvature}px`;
+      effects['--effect-bg'] = organic.backgroundColor;
+      effects['--effect-radius'] = radius;
+      effects['--effect-border'] = `${organic.borderWidth} solid ${organic.borderColor}`;
+    }
+  } else {
+    effects['--organic-enabled'] = '0';
+  }
+
+  if (theme.effects?.immersive?.enabled) {
+    const immersive = theme.effects.immersive;
+    effects['--immersive-enabled'] = '1';
+    effects['--immersive-perspective'] = immersive.perspective || '1000px';
+    effects['--immersive-rotate-x'] = immersive.rotationX || '0deg';
+    effects['--immersive-rotate-y'] = immersive.rotationY || '0deg';
+    effects['--immersive-depth'] = `${immersive.depth ?? 20}`;
+    effects['--immersive-shadow-color'] = immersive.shadowColor || 'rgba(0,0,0,0.2)';
+
+    if (theme.effects.globalType === 'immersive') {
+      effects['--effect-perspective'] = immersive.perspective;
+      effects['--effect-shadow'] = `0 ${immersive.depth / 4}px ${immersive.depth / 2}px ${immersive.shadowColor}`;
+    }
+  } else {
+    effects['--immersive-enabled'] = '0';
   }
 
   const components: CSSVariableMap = {};
@@ -123,67 +251,90 @@ export const applyThemeVariables = (theme: TenantThemeConfig): AppliedThemeVaria
       }
       if (config.customProperties) {
         for (const [prop, value] of Object.entries(config.customProperties)) {
-          components[`--comp-${compName}-${prop}`] = String(value);
+          const kebabProp = toKebabCase(prop);
+          components[`--comp-${compName}-${kebabProp}`] = String(value);
         }
       }
     }
   }
   
+  return { colors, spacing, borderRadius, typography, effects, components };
+};
+
+let lastAppliedVariables: Record<string, string | number> = {};
+
+export const applyThemeVariables = (theme: TenantThemeConfig): AppliedThemeVariables => {
+  const vars = generateThemeVariables(theme);
+  const root = document.documentElement;
+  
+  const flattenedNew: Record<string, string | number> = {
+    ...vars.colors,
+    ...vars.spacing,
+    ...vars.borderRadius,
+    ...vars.typography,
+    ...vars.effects,
+    ...vars.components,
+  };
+  
   requestAnimationFrame(() => {
-    for (const [variable, value] of Object.entries(colors)) {
-      root.style.setProperty(variable, String(value));
-    }
-    for (const [variable, value] of Object.entries(spacing)) {
-      root.style.setProperty(variable, String(value));
-    }
-    for (const [variable, value] of Object.entries(borderRadius)) {
-      root.style.setProperty(variable, String(value));
-    }
-    for (const [variable, value] of Object.entries(effects)) {
-      root.style.setProperty(variable, String(value));
-    }
-    for (const [variable, value] of Object.entries(components)) {
-      root.style.setProperty(variable, String(value));
+    for (const [key, value] of Object.entries(flattenedNew)) {
+      if (lastAppliedVariables[key] !== value) {
+        root.style.setProperty(key, String(value));
+        lastAppliedVariables[key] = value;
+      }
     }
   });
   
-  return { colors, spacing, borderRadius, effects, components };
+  return vars;
+};
+
+export const applyThemeVariablesSync = (theme: TenantThemeConfig): AppliedThemeVariables => {
+  const vars = generateThemeVariables(theme);
+  const root = document.documentElement;
+  
+  const flattenedNew: Record<string, string | number> = {
+    ...vars.colors,
+    ...vars.spacing,
+    ...vars.borderRadius,
+    ...vars.typography,
+    ...vars.effects,
+    ...vars.components,
+  };
+
+  for (const [key, value] of Object.entries(flattenedNew)) {
+    if (lastAppliedVariables[key] !== value) {
+      root.style.setProperty(key, String(value));
+      lastAppliedVariables[key] = value;
+    }
+  }
+  
+  return vars;
 };
 
 export const removeThemeVariables = (...prefixes: string[]) => {
   const root = document.documentElement;
   
   for (const prefix of prefixes) {
-    root.style.removeProperty(`--color-${prefix}`);
-    root.style.removeProperty(`--spacing-${prefix}`);
-    root.style.removeProperty(`--radius-${prefix}`);
-    root.style.removeProperty(`--glass-${prefix}`);
-    root.style.removeProperty(`--neu-${prefix}`);
+    const keysToRemove = Object.keys(lastAppliedVariables).filter(k => 
+      k.startsWith(`--${prefix}-`) || 
+      k.startsWith(`--color-${prefix}`) || 
+      k.startsWith(`--radius-${prefix}`) ||
+      k.startsWith(`--spacing-${prefix}`) ||
+      k.startsWith(`--font-${prefix}`)
+    );
+    for (const key of keysToRemove) {
+      root.style.removeProperty(key);
+      delete lastAppliedVariables[key];
+    }
   }
 };
 
 export const resetAllThemeVariables = () => {
   const root = document.documentElement;
-  const styles = root.style;
-  
-  const propsToRemove: string[] = [];
-  
-  for (let i = styles.length - 1; i >= 0; i--) {
-    const prop = styles[i];
-    if (
-      prop.startsWith('--color-') ||
-      prop.startsWith('--spacing-') ||
-      prop.startsWith('--radius-') ||
-      prop.startsWith('--glass-') ||
-      prop.startsWith('--neu-')
-    ) {
-      propsToRemove.push(prop);
-    }
+  for (const key of Object.keys(lastAppliedVariables)) {
+    root.style.removeProperty(key);
   }
-  
-  for (const prop of propsToRemove) {
-    root.style.removeProperty(prop);
-  }
+  lastAppliedVariables = {};
 };
 
 export const getContrastColor = (hexColor: string): string => {

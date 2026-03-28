@@ -9,7 +9,7 @@ import {
   Avatar,
   Typography,
   Box,
-} from '@mui/material'
+} from '@cap/theme'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import Settings from '@mui/icons-material/Settings'
 import Dashboard from '@mui/icons-material/Dashboard'

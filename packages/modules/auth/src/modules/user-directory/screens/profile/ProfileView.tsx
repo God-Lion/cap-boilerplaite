@@ -29,7 +29,8 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Path } from "@cap/module-auth/routes/path"
 import { useUserProfile } from "../../hooks/useUserQuery"
-import { useAuth, zIndexScale } from '@cap/platform-core'
+import { useAuth } from '@cap/platform-core'
+import { zIndexScale } from '@cap/theme'
 
 const avatarPlaceHolder =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuC4W5RRAYigwLIDhLEuhu9VmA04sosIuLA2wEgoKMlE4Yzh3xR7T6bg4g1AEiMxukr5jzTFqXnC6zJ9Hc4f_sChyHqrKLIy18UHddF2WVE-tQoBbXHG6Yq35VVQhhsEZkhVZTblhOu-QWVUtFN-3UGZTKMK6dDf_-tYtrTOLnKjb3uvm83b47AjPiRqopfR9onkbIlHxoJ1aiuY6d29bBbRyDSN73MAk3Hc7e56GwIVW485omnHQCYbfQk4vYHsbpd9iBNuFGaCXMA'

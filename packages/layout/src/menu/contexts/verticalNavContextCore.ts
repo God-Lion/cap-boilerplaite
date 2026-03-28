@@ -1,6 +1,5 @@
 import React from 'react'
-import { useVerticalNav as useZustandVerticalNav } from '@cap/platform-core'
-import type { VerticalNavState } from '@cap/theme'
+import { VerticalNavState } from '@cap/shared-types'
 export type { VerticalNavState }
 import { VerticalMenuContext, type VerticalMenuContextProps } from './verticalMenuContext'
 
@@ -13,8 +12,10 @@ export interface VerticalNavContextProps extends VerticalNavState {
 
 export const VerticalNavContext = React.createContext<VerticalNavContextProps | null>(null)
 
+import { useVerticalNav as useLocalVerticalNav } from '../../hooks/useVerticalNav'
+
 export const useVerticalNav = (): VerticalNavContextProps => {
-  return useZustandVerticalNav()
+  return useLocalVerticalNav() as any // Cast for now, will refine types later
 }
 
 export const useVerticalMenu = (): VerticalMenuContextProps => {

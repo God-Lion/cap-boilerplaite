@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { TenantThemeConfig } from '../types';
-import { DEFAULT_THEME_CONFIG, type AppliedThemeVariables } from '../types';
-import { applyThemeVariables, resetAllThemeVariables } from '../utils/applyThemeVariables';
+import { applyThemeVariables } from '../utils/applyThemeVariables';
 
 interface UseThemeVariablesOptions {
   theme: TenantThemeConfig | null;
@@ -14,6 +13,11 @@ interface UseThemeVariablesReturn {
   error: Error | null;
 }
 
+/**
+ * @deprecated Internal theme rendering now reads from the MUI theme object.
+ * This hook is kept only as a compatibility shim for external consumers that
+ * still expect CSS-variable side effects.
+ */
 export const useThemeVariables = ({
   theme,
   enabled = true,
@@ -49,14 +53,6 @@ export const useThemeVariables = ({
       }
     }
   }, [theme, enabled]);
-
-  const reset = useCallback(() => {
-    resetAllThemeVariables();
-    if (mountedRef.current) {
-      setIsApplied(false);
-      setLastAppliedTheme(null);
-    }
-  }, []);
 
   return {
     isApplied,

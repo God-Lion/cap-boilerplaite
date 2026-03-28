@@ -5,7 +5,8 @@ import classnames from 'classnames'
 // import { useHorizontalNav } from 'src/menu/contexts/horizontalNavContext'
 // import { useSettings } from 'src/core/contexts/settingsContext'
 import { verticalLayoutClasses } from '../../utils/layoutClasses'
-import { themeConfig } from '@cap/platform-core'
+// themeConfig.templateName hardcoded to avoid circular import
+const TEMPLATE_NAME = 'GLDeveloper'
 
 const FooterContent = () => {
   // const { settings } = useSettings()
@@ -60,7 +61,7 @@ const FooterContent = () => {
             textDecoration: 'none',
           }}
         >
-          {themeConfig.templateName}
+          {TEMPLATE_NAME}
         </Link>
       </p>
       {/* {!isBreakpointReached && (

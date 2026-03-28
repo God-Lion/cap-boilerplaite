@@ -3,7 +3,7 @@ import type { ChildrenType } from '@cap/platform-core'
 import LayoutContent from './components/vertical/LayoutContent'
 import { verticalLayoutClasses } from './utils/layoutClasses'
 import classnames from 'classnames'
-import { Box } from '@mui/material'
+import { Box } from '@cap/theme'
 
 const VerticalLayout: React.FC<
   ChildrenType & {

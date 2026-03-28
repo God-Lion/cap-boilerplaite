@@ -38,7 +38,7 @@ interface AppDB extends DBSchema {
 }
 
 class StorageManager {
-  private static dbName = 'god-lion-seeker-optimizer--scraper-db'
+  private static dbName = 'cap-platform-scraper-db'
   private static dbVersion = 1
   private static db: IDBPDatabase<AppDB> | null = null
 
@@ -305,7 +305,7 @@ class StorageManager {
   private static async encryptData(data: string): Promise<string> {
     // In a real application, this should be a stable key derived from a user secret or environment
     const masterKey =
-      (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'god-lion-default-secure-key-2025'
+      (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'cap-platform-default-secure-key'
     return encryption.encryptData(data, masterKey)
   }
 
@@ -314,7 +314,7 @@ class StorageManager {
    */
   private static async decryptData(data: string): Promise<string> {
     const masterKey =
-      (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'god-lion-default-secure-key-2025'
+      (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'cap-platform-default-secure-key'
     try {
       return await encryption.decryptData(data, masterKey)
     } catch (error) {
@@ -375,7 +375,7 @@ export default StorageManager
 
 // Storage keys
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'god-lion-auth-tokens',
+  AUTH_TOKEN: 'cap-platform-auth-tokens',
   REFRESH_TOKEN: 'refresh_token',
   USER_DATA: 'user_data',
   USER_PREFERENCES: 'user_preferences',

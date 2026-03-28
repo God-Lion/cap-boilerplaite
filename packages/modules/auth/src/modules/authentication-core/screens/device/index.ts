@@ -1,1 +1,1 @@
-export * from './DeviceCodeDisplay'
+export { default as DeviceCodeDisplay } from './DeviceCodeDisplay'

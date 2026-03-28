@@ -47,6 +47,8 @@ type ShapeConfig = {
   }
 }
 
+import { colors } from '@cap/theme';
+
 export type Config = {
   templateName: string
   settingsCookieName: string
@@ -66,8 +68,8 @@ export type Config = {
 }
 
 const themeConfig: Config = {
-  templateName: 'GLDeveloper',
-  settingsCookieName: 'GLDeveloper-1',
+  templateName: 'CapPlatform',
+  settingsCookieName: 'cap-platform-settings',
   mode: 'light',
   skin: 'default',
   semiDark: false,
@@ -90,46 +92,16 @@ const themeConfig: Config = {
   disableRipple: false,
   toastPosition: 'top-right',
   colors: {
-    primary: {
-      main: '#D4AF37',
-      light: '#E0C55B',
-      dark: '#B8982F',
-      contrastText: '#1A1A1A',
-    },
-    secondary: {
-      main: '#8B4513',
-      light: '#A0522D',
-      dark: '#6B3410',
-      contrastText: '#FDFDFD',
-    },
-    error: {
-      main: '#DC3545',
-      light: '#E35D6A',
-      dark: '#C82333',
-      contrastText: '#FFF',
-    },
-    success: {
-      main: '#28A745',
-      light: '#48B461',
-      dark: '#1E7E34',
-      contrastText: '#FFF',
-    },
-    warning: {
-      main: '#FF9F43',
-      light: '#FFB269',
-      dark: '#E68F3C',
-      contrastText: '#1A1A1A',
-    },
-    info: {
-      main: '#2F4F4F',
-      light: '#4A6A6A',
-      dark: '#1F3333',
-      contrastText: '#FFF',
-    },
-    brandGold: '#D4AF37',
-    brandBrown: '#8B4513',
-    brandSlate: '#2F4F4F',
-    brandCream: '#F5F5DC',
+    primary: colors.primary,
+    secondary: colors.secondary,
+    error: colors.error,
+    success: colors.success,
+    warning: colors.warning,
+    info: colors.info,
+    brandGold: colors.brand.gold,
+    brandBrown: colors.brand.brown,
+    brandSlate: colors.brand.slate,
+    brandCream: colors.brand.cream,
   },
   shape: {
     borderRadius: 6,

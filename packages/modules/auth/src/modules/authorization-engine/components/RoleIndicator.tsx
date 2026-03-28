@@ -26,14 +26,12 @@ export const RoleIndicator: React.FC<RoleIndicatorProps> = ({
   showLabel = true,
   size = 'small',
 }) => {
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, isAdmin } = useAuth()
   const { isGuest } = useGuest()
 
   // Determine role
   const getRole = () => {
-    if (isAuthenticated && user) {
-      // Check if admin (you'll need to adjust this based on your user object structure)
-      const isAdmin = user.user?.role === 1 || user.role === 1
+    if (isAuthenticated) {
       if (isAdmin) {
         return {
           label: 'Admin',

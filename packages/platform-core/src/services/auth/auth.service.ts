@@ -16,7 +16,7 @@ export const authService = {
    * returning the tokens from URL query params.
    */
   handleCallback: async (urlParams: URLSearchParams): Promise<UserDto> => {
-    const accessToken = urlParams.get('token')
+    const accessToken = urlParams.get('accessToken') || urlParams.get('token')
     // const refreshToken = urlParams.get('refresh_token') // Only if backend sends it in query (not Recommended with Cookies)
     const expiresIn = urlParams.get('expires_in')
 

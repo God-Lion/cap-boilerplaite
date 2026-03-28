@@ -1,41 +1,7 @@
-export interface ISession {
-  id: string
-  userId: string
-  device: string
-  browser: string
-  ip: string
-  location: string
-  lastActive: string
-  current?: boolean
-}
+import { UserDto, UserRole, UserSessionDto } from '@cap/shared-types'
 
-import IRole from './IRole'
-
-export interface IUserResponse {
-  id: number
-  email: string
-  role: number
-  firstName: string
-  lastName: string
-  fullName?: string
-  status?: string
-  emailVerified?: boolean
-  isVerified?: boolean
-  phone?: string | null
-  mfaEnabled: boolean
-  isEnabledProfile?: boolean
-  isEnabledMiniPlayer?: boolean
-  isEnabledAutoplayNext?: boolean
-  isEnabledMentions?: boolean
-  lastLoginAt?: string | null
-  createdAt: string
-  updatedAt: string
-  avatar?: string | null
-  sessions?: Array<ISession>
-  permissions?: string[]
-  roleName?: string | null
-  roleObject?: IRole
-}
+export type ISession = UserSessionDto
+export type IUserResponse = UserDto
 
 export interface IAuth extends IUserResponse {
   user: IUserResponse | null
@@ -43,12 +9,8 @@ export interface IAuth extends IUserResponse {
     accessToken: string
     refreshToken: string
   } | null
-  permissions: string[]
-  roleName: string | null
-  email: string
   rememberMe?: boolean
   isAdmin?: boolean
-  roleObject?: IRole
 }
 
 export interface ILogin {
@@ -63,10 +25,10 @@ export interface ISignup {
   sexe?: string
   phone?: string | null
   email: string
-  role: number
+  role: UserRole | number
   roleName: string
   permissions?: string[]
-  roleObject?: IRole
+  roleObject?: IUserResponse['roleObject']
 }
 
 export interface IForgetPassword {

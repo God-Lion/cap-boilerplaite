@@ -6,7 +6,7 @@ const Dashboard = React.lazy(() => import('./components/Dashboard'))
 
 export const dashboardRouteConfig: AuthRouteConfig[] = [
   {
-    path: Path.Admin,
+    path: Path.Dashboard,
     element: <Dashboard />,
     layout: 'admin',
   },

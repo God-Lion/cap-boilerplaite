@@ -20,15 +20,13 @@ import ArrowUpward from '@mui/icons-material/ArrowUpward'
 import { 
   VerticalNavbar as Navbar, 
   HorizontalNavbarContent,
-  ScrollToTop 
-} from '@cap/theme'
-import {
+  ScrollToTop,
   PublicNavbar,
   GuestNavbar,
   VerticalMenu,
   AdminMenu,
   HorizontalMenu
-} from './menu'
+} from '@cap/layout'
 import { useAppStore, Locale, getMode, getSystemMode, type AppStore, useAuth } from '@cap/platform-core'
 import { useTranslation } from 'react-i18next'
 import { useLang, getDictionary } from './utils/getDictionary'

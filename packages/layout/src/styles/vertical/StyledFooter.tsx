@@ -1,24 +1,25 @@
 import type { Theme } from '@mui/material/styles'
 import styled from '@emotion/styled'
 import type { CSSObject } from '@emotion/styled'
-import { themeConfig } from '@cap/platform-core'
 import { verticalLayoutClasses } from '../../utils/layoutClasses'
 
 type StyledFooterProps = {
   theme: Theme
   overrideStyles?: CSSObject
+  layoutPadding: string
+  compactContentWidth: number
 }
 
 const StyledFooter = styled.footer<StyledFooterProps>`
   &.${verticalLayoutClasses.footerContentCompact} {
     &.${verticalLayoutClasses.footerDetached} {
       margin-inline: auto;
-      max-inline-size: ${themeConfig.compactContentWidth}px;
+      max-inline-size: ${({ compactContentWidth }) => compactContentWidth}px;
     }
 
     &.${verticalLayoutClasses.footerAttached} .${verticalLayoutClasses.footerContentWrapper} {
       margin-inline: auto;
-      max-inline-size: ${themeConfig.compactContentWidth}px;
+      max-inline-size: ${({ compactContentWidth }) => compactContentWidth}px;
     }
   }
 
@@ -35,7 +36,7 @@ const StyledFooter = styled.footer<StyledFooterProps>`
 
     &.${verticalLayoutClasses.footerDetached} {
       pointer-events: none;
-      padding-inline: ${themeConfig.layoutPadding}px;
+      padding-inline: ${({ layoutPadding }) => layoutPadding};
 
       & .${verticalLayoutClasses.footerContentWrapper} {
         pointer-events: auto;
@@ -67,7 +68,7 @@ const StyledFooter = styled.footer<StyledFooterProps>`
 
   & .${verticalLayoutClasses.footerContentWrapper} {
     padding-block: 16px;
-    padding-inline: ${themeConfig.layoutPadding}px;
+    padding-inline: ${({ layoutPadding }) => layoutPadding};
   }
 
   ${({ overrideStyles }) => overrideStyles}

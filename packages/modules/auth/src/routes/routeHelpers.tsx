@@ -1,5 +1,5 @@
 import React from 'react'
-import { AuthRouteConfig } from '@cap/platform-core/src/assembly'
+import { AuthRouteConfig } from '@cap/platform-core'
 import { Roles, useAppStore } from '@cap/platform-core'
 import AdminRoute from '../modules/authorization-engine/middlewares/AdminRoute'
 import AuthRoute from '../modules/authentication-core/middlewares/AuthRoute'
@@ -13,7 +13,11 @@ export const createAdminRoute = (
   element: React.ReactNode,
 ): AuthRouteConfig => ({
   path,
-  element: <AdminRoute element={element} minimumRole={Roles.ADMIN} layout='admin' />,
+  // Use a getter so Roles is resolved lazily at render time, not at module evaluation time.
+  // This prevents the "Cannot read properties of undefined" error caused by circular imports.
+  get element() {
+    return <AdminRoute element={element} minimumRole={Roles.ADMIN} layout='admin' />
+  },
 })
 
 export const createAuthRoute = (

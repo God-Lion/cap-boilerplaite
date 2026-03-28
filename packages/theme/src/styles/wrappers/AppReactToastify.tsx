@@ -5,45 +5,46 @@ import type { BoxProps } from '@mui/material/Box'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import type { ToastContainerProps } from 'react-toastify'
-import { useSettings } from '@cap/platform-core'
+import type { Skin } from '@cap/shared-types'
+import { useThemeSettings } from '../../context/ThemeSettingsContext'
 
 type Props = ToastContainerProps & {
   boxProps?: BoxProps
 }
 
-const ToastifyWrapper = styled(Box)<BoxProps>(({ theme }) => {
-  const { settings } = useSettings()
-
+const ToastifyWrapper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'ownerSkin',
+})<BoxProps & { ownerSkin: Skin }>(({ theme, ownerSkin }) => {
   return {
     '& .Toastify__toast': {
       minBlockSize: 46,
-      borderRadius: 'var(--mui-shape-borderRadius)',
+      borderRadius: theme.shape.borderRadius,
       padding: theme.spacing(1.5, 2.5),
-      backgroundColor: 'var(--mui-palette-background-paper)',
-      boxShadow: settings.skin === 'bordered' ? 'none' : 'var(--mui-customShadows-md)',
-      border: settings.skin === 'bordered' && `1px solid ${theme.palette.divider}`,
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: ownerSkin === 'bordered' ? 'none' : ((theme as any).customShadows?.md || theme.shadows[6]),
+      border: ownerSkin === 'bordered' ? `1px solid ${theme.palette.divider}` : 'none',
       '&:not(.custom-toast)': {
         '& .Toastify__toast-body': {
-          color: 'var(--mui-palette-text-primary)',
+          color: theme.palette.text.primary,
         },
         '&.Toastify__toast--success': {
           '& .Toastify__toast-icon svg': {
-            fill: 'var(--mui-palette-success-main)',
+            fill: theme.palette.success.main,
           },
         },
         '&.Toastify__toast--error': {
           '& .Toastify__toast-icon svg': {
-            fill: 'var(--mui-palette-error-main)',
+            fill: theme.palette.error.main,
           },
         },
         '&.Toastify__toast--warning': {
           '& .Toastify__toast-icon svg': {
-            fill: 'var(--mui-palette-warning-main)',
+            fill: theme.palette.warning.main,
           },
         },
         '&.Toastify__toast--info': {
           '& .Toastify__toast-icon svg': {
-            fill: 'var(--mui-palette-info-main)',
+            fill: theme.palette.info.main,
           },
         },
       },
@@ -64,16 +65,17 @@ const ToastifyWrapper = styled(Box)<BoxProps>(({ theme }) => {
       },
     },
     '& .Toastify__close-button': {
-      color: 'var(--mui-palette-text-primary)',
+      color: theme.palette.text.primary,
     },
   }
 })
 
 const AppReactToastify = (props: Props) => {
   const { boxProps, ...rest } = props
+  const settings = useThemeSettings()
 
   return (
-    <ToastifyWrapper {...boxProps}>
+    <ToastifyWrapper ownerSkin={settings.skin} {...boxProps}>
       <ToastContainer {...rest} />
     </ToastifyWrapper>
   )

@@ -1,23 +1,27 @@
 import { GlobalStyles as MuiGlobalStyles } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
+import { zIndexScale } from '../assets/themes/definitions/zIndex';
 
 const GlobalStyles = () => {
   return (
     <MuiGlobalStyles
       styles={(theme: Theme) => ({
-        ':root': {
-          '--glass-bg': theme.palette.mode === 'light' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.02)',
-          '--glass-border': theme.palette.mode === 'light' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.08)',
-          '--premium-shadow': theme.palette.mode === 'light' ? '0 8px 32px 0 rgba(31, 38, 135, 0.15)' : '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
-          '--premium-gradient': 'linear-gradient(135deg, hsla(240, 100%, 70%, 0.1) 0%, hsla(280, 100%, 70%, 0.1) 100%)',
-        },
         '.glass-effect': {
           backdropFilter: 'blur(24px) saturate(200%) !important',
           WebkitBackdropFilter: 'blur(24px) saturate(200%) !important',
-          backgroundColor: 'var(--glass-bg) !important',
+          backgroundColor:
+            theme.palette.mode === 'light'
+              ? `${alpha('#ffffff', 0.7)} !important`
+              : `${alpha('#ffffff', 0.02)} !important`,
           backgroundImage: 'none !important',
-          border: '1px solid var(--glass-border) !important',
-          boxShadow: 'var(--premium-shadow) !important',
+          border: `1px solid ${
+            theme.palette.mode === 'light' ? alpha('#ffffff', 0.3) : alpha('#ffffff', 0.08)
+          } !important`,
+          boxShadow:
+            theme.palette.mode === 'light'
+              ? '0 8px 32px 0 rgba(31, 38, 135, 0.15) !important'
+              : '0 8px 32px 0 rgba(0, 0, 0, 0.5) !important',
         },
         '@keyframes scaleIn': {
           '0%': { transform: 'scale(0.95)', opacity: 0 },
@@ -36,8 +40,8 @@ const GlobalStyles = () => {
         '.premium-menu-item': {
           transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important',
           '&:hover': {
-            background: 'var(--premium-gradient) !important',
-            transform: 'translateX(4px)',
+            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.secondary.main, 0.1)} 100%) !important`,
+            transform: `translateX(${theme.spacing(0.5)})`,
             '& .tabler-icon, & i': {
               transform: 'scale(1.1)',
               color: theme.palette.primary.main + ' !important',
@@ -49,7 +53,9 @@ const GlobalStyles = () => {
             backdropFilter: 'blur(12px) saturate(150%) !important',
             WebkitBackdropFilter: 'blur(12px) saturate(150%) !important',
             boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.08) !important',
-            border: '1px solid var(--glass-border) !important',
+            border: `1px solid ${
+              theme.palette.mode === 'light' ? alpha('#ffffff', 0.3) : alpha('#ffffff', 0.08)
+            } !important`,
             transition: 'all 0.2s ease-in-out !important',
             '&:hover': {
               transform: 'translateY(-2px)',
@@ -92,6 +98,28 @@ const GlobalStyles = () => {
               background: `rgba(${theme.palette.success.mainChannel || '40 167 69'} / 0.25) !important`,
             },
           },
+        },
+      })}
+    />
+  );
+};
+
+export const GlobalZIndexStyles = () => {
+  return (
+    <MuiGlobalStyles
+      styles={() => ({
+        ':root': {
+          // Z-Index variables
+          '--z-behind': zIndexScale.local.behind,
+          '--z-base': zIndexScale.local.base,
+          '--z-above': zIndexScale.local.above,
+          '--z-highlight': zIndexScale.local.highlight,
+          '--z-overlay': zIndexScale.local.overlay,
+          '--header-z-index': zIndexScale.layout.header,
+          '--footer-z-index': zIndexScale.layout.footer,
+          '--drawer-z-index': zIndexScale.layout.navigation,
+          '--backdrop-z-index': zIndexScale.layout.backdrop,
+          '--modal-z-index': zIndexScale.layout.modal,
         },
       })}
     />

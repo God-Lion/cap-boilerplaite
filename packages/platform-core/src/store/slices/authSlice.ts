@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand'
 import { fetchClient, ENDPOINTS } from '../../services/api/api.client'
-import { IAuth, ILogin, ADMIN_ROLES } from '../../types'
+import { IAuth, ILogin, hasAdminRole, normalizeRole } from '../../types'
 import { secureTokenManager, TokenData as AuthTokens } from '../../services/secureTokenManager'
 import { AppStore } from '..'
 
@@ -28,6 +28,41 @@ export interface AuthSlice {
 // Singleton promise to prevent duplicate refreshAuth calls
 let refreshAuthPromise: Promise<void> | null = null
 
+const normalizeUserData = (userData: any) => {
+  if (!userData || typeof userData !== 'object') return userData
+
+  const normalized = { ...userData }
+
+  if (normalized.role && typeof normalized.role === 'object') {
+    normalized.roleObject = normalized.roleObject || normalized.role
+    normalized.roleName =
+      normalized.roleName || normalized.role.slug || normalized.role.name || normalized.role.value
+  }
+
+  const resolvedRole =
+    normalizeRole(normalized.role) ||
+    normalizeRole(normalized.roleObject) ||
+    normalizeRole(normalized.roleName)
+
+  if (resolvedRole) {
+    normalized.role = resolvedRole
+  }
+
+  if (normalized.avatar && !normalized.avatarUrl) {
+    normalized.avatarUrl = normalized.avatar
+  }
+
+  if (normalized.avatarUrl && !normalized.avatar) {
+    normalized.avatar = normalized.avatarUrl
+  }
+
+  if (!Array.isArray(normalized.permissions)) {
+    normalized.permissions = []
+  }
+
+  return normalized
+}
+
 export const createAuthSlice: StateCreator<
   AppStore,
   [['zustand/immer', never], ['zustand/persist', unknown]],
@@ -54,14 +89,7 @@ export const createAuthSlice: StateCreator<
 
       if (response.status === 200 && response.data) {
         // Set user data - backend might return user data directly or in a 'user' field
-        let userData = response.data.user || response.data
-
-        // Normalize user role if it's an object
-        if (userData && typeof userData.role === 'object' && userData.role !== null) {
-          userData.roleObject = userData.role
-          userData.roleName = userData.role.name
-          userData.role = userData.role.id // Convert to number for compatibility with frontend logic
-        }
+        let userData = normalizeUserData(response.data.user || response.data)
         const token = response.data.accessToken || response.data.token
         
         // Update user object with token if present but missing in user data
@@ -80,7 +108,7 @@ export const createAuthSlice: StateCreator<
         set((state: AuthSlice) => {
           state.user = userData
           state.isAuthenticated = true
-          state.isAdmin = userData && ADMIN_ROLES.includes(Number(userData.role))
+          state.isAdmin = hasAdminRole(userData?.role) || hasAdminRole(userData?.roleObject) || hasAdminRole(userData?.roleName)
           state.tokens = token ? { accessToken: token, expiresAt: Date.now() + 3600 * 1000 } : null
           state.isLoading = false
           state.error = null
@@ -182,19 +210,12 @@ export const createAuthSlice: StateCreator<
           }
 
           // Set user data - backend might return user data directly or in a 'user' field
-          let userData = response.data.user || response.data
-
-          // Normalize user role if it's an object
-          if (userData && typeof userData.role === 'object' && userData.role !== null) {
-            userData.roleObject = userData.role
-            userData.roleName = userData.role.name
-            userData.role = userData.role.id // Convert to number for compatibility with frontend logic
-          }
+          let userData = normalizeUserData(response.data.user || response.data)
 
           set((state: AuthSlice) => {
             state.user = userData
             state.isAuthenticated = true
-            state.isAdmin = userData && ADMIN_ROLES.includes(Number(userData.role))
+            state.isAdmin = hasAdminRole(userData?.role) || hasAdminRole(userData?.roleObject) || hasAdminRole(userData?.roleName)
             state.isLoading = false
             state.error = null
           })
@@ -296,30 +317,16 @@ export const createAuthSlice: StateCreator<
 
   // Set User (directly set user data, e.g., after login)
   setUser: (user: IAuth | null) => {
-    let normalizedUser = user
-
-    // Normalize user role if it's an object or a numeric string
-    if (normalizedUser) {
-      if (
-        typeof normalizedUser.role === 'object' &&
-        normalizedUser.role !== null &&
-        (normalizedUser as any).role.id !== undefined
-      ) {
-        normalizedUser.roleObject = normalizedUser.role
-        normalizedUser.roleName = (normalizedUser as any).role.name
-        normalizedUser.role = (normalizedUser as any).role.id
-      }
-
-      // Ensure role is a number if it's a numeric string
-      if (typeof normalizedUser.role === 'string' && !isNaN(Number(normalizedUser.role))) {
-        normalizedUser.role = Number(normalizedUser.role)
-      }
-    }
+    const normalizedUser = normalizeUserData(user)
 
     set((state: AuthSlice) => {
       state.user = normalizedUser
       state.isAuthenticated = normalizedUser !== null
-      state.isAdmin = normalizedUser !== null && ADMIN_ROLES.includes(Number(normalizedUser.role))
+      state.isAdmin =
+        normalizedUser !== null &&
+        (hasAdminRole(normalizedUser.role) ||
+          hasAdminRole(normalizedUser.roleObject) ||
+          hasAdminRole(normalizedUser.roleName))
       state.error = null
 
       // Check if user object contains tokens and persist them

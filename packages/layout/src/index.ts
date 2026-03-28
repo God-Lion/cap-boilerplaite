@@ -8,15 +8,16 @@ export { default as LayoutWrapper } from './LayoutWrapper'
 export { default as VerticalNavigation } from './components/vertical/Navigation'
 export { default as HorizontalNavigation } from './components/horizontal/Navigation'
 export { default as Navigation } from './components/vertical/Navigation'
-// export { default as Navbar } from './components/vertical/Navbar'
+export { default as VerticalNavbar } from './menu/layouts/VerticalNavbar'
 export { default as VerticalNavToggle } from './components/vertical/NavToggle'
 export { default as HorizontalNavToggle } from './components/horizontal/NavToggle'
 export { default as VerticalFooter } from './components/vertical/Footer'
 export { default as Header } from './components/horizontal/Header'
 export { default as HorizontalFooter } from './components/horizontal/Footer'
 export { default as Footer } from './Footer'
-// export { default as PublicNavbar } from './Navbars/Navbar'
-// export { default as GuestNavbar } from './Navbars/GuestNavbar'
+export { default as PublicNavbar } from './menu/layouts/Navbars/Navbar'
+export { default as GuestNavbar } from './menu/layouts/Navbars/GuestNavbar'
+export { default as HorizontalNavbarContent } from './menu/layouts/HorizontalNavbarContent'
 
 // Context Types
 export type {
@@ -26,6 +27,8 @@ export type {
 } from './menu/components/vertical-menu/Menu'
 
 // Re-export utils
+export * from './hooks/useVerticalNav'
+export * from './hooks/useHorizontalNav'
 export * from './utils/layoutClasses'
 
 // Types
@@ -44,14 +47,24 @@ export {
 } from './menu/vertical-menu'
 
 export {
-  Menu as HorizontalMenu,
+  Menu as HorizontalMenuBase,
   MenuItem as HorizontalMenuItem,
   SubMenu as HorizontalSubMenu,
 } from './menu/horizontal-menu'
 
+// Layout-specific Menu Components
+export { default as VerticalMenu } from './menu/layouts/VerticalMenu'
+export { default as AdminMenu } from './menu/layouts/AdminMenu'
+export { default as HorizontalMenu } from './menu/layouts/HorizontalMenu'
+export { default as ModuleMenuRenderer } from './menu/layouts/ModuleMenuRenderer'
+
 // Hooks
 export { useVerticalNav, useVerticalMenu } from './menu/contexts/verticalNavContext'
 export { useHorizontalNav, useHorizontalMenu } from './menu/contexts/horizontalNavContext'
+export { useLayoutTokens } from './hooks/useLayoutTokens'
+
+// Utils
+export { buildLayoutSurfaceEffect } from './utils/buildLayoutSurfaceEffect'
 
 // Styles
 export { default as verticalMenuItemStyles } from './styles/core/vertical/menuItemStyles'
@@ -65,11 +78,33 @@ export { default as StyledVerticalNavExpandIcon } from './menu/styles/vertical/S
 export { default as StyledHorizontalNavExpandIcon } from './menu/styles/horizontal/StyledHorizontalNavExpandIcon'
 
 // Internal layout components
-export { default as VerticalNavContent } from './components/horizontal/VerticalNavContent'
+export { default as VerticalNavbarContent } from './menu/layouts/VerticalNavbarContent'
 
 // Shared Components (still imported by apps/web components)
 export { default as UserMenu } from './components/UserMenu'
+export { default as NavSearch } from './menu/search'
 export { default as Logo } from './assets/svg/Logo'
+export { Icon } from '@cap/theme' // Adjust this once we confirm where Icon is in theme
 
 // Header Styles
 export { default as StyledHeader } from './styles/vertical/StyledHeader'
+
+// Moved from app
+export { default as Grid } from './components/Grid'
+export { default as ScrollToTop } from './components/ScrollToTop'
+
+// Shared Components Re-exports
+export {
+  LanguageDropdown,
+  ModeDropdown,
+  NotificationsDropdown,
+  ShortcutsDropdown,
+  UserDropdown,
+  NavToggle as SharedNavToggle
+} from './menu/shared'
+
+// Configurations
+export { default as adminMenu } from './menu/adminMenu'
+
+// Auth & Status Components (Moved from @cap/theme)
+export * from './components/auth'

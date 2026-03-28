@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { computeNeumorphismBoxShadow } from '../utils/computeEffects';
 import type { NeumorphismConfig } from '../types';
 import type { CSSProperties, ReactNode, ButtonHTMLAttributes } from 'react';
+import { useComponentEffectConfig } from '../hooks/useComponentEffectConfig';
 
 export interface NeuButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
   children: ReactNode;
@@ -112,8 +113,11 @@ export const NeuButton: React.FC<NeuButtonProps> = ({
   config,
   ...props
 }) => {
+  const effectConfig = useComponentEffectConfig();
+  const activeConfig = config || effectConfig.neumorphism;
+
   return (
-    <StyledNeuButton config={config} {...props}>
+    <StyledNeuButton config={activeConfig} {...props}>
       {children}
     </StyledNeuButton>
   );

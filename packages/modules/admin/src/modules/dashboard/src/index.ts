@@ -1,2 +1,2 @@
-export { default as Dashboard } from './components/Dashboard'
+export { default } from './components/Dashboard'
 export * from './components/Dashboard'

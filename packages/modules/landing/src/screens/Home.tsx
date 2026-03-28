@@ -20,7 +20,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import SpeedIcon from '@mui/icons-material/Speed'
 import SecurityIcon from '@mui/icons-material/Security'
 import Banner from '../components/Banner'
-import { GuestBanner } from '@cap/platform-core'
+import { GuestBanner } from '@cap/theme'
 import { useGuest } from '@cap/platform-core'
 
 const aboutSection = {
@@ -90,6 +90,9 @@ export default function Home() {
             <GuestBanner
               variant='minimal'
               message='Create a free account to unlock all features and save your job searches!'
+              isGuest={isGuest}
+              onSignIn={() => navigate('/auth/sign-in')}
+              onSignUp={() => navigate('/auth/register')}
             />
           </Box>
         )}

@@ -13,8 +13,7 @@ import Divider from '@mui/material/Divider'
 import { Link } from 'react-router-dom'
 import classnames from 'classnames'
 import type { OptionsMenuType, OptionType, OptionMenuItemType } from './types'
-
-import { useSettings } from '@cap/platform-core'
+import { useThemeSettings } from '../../context/ThemeSettingsContext'
 
 const MenuItemWrapper = ({
   children,
@@ -37,7 +36,7 @@ const OptionMenu = ({
   // States
   const [open, setOpen] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const { settings } = useSettings()
+  const settings = useThemeSettings()
 
   const handleToggle = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)

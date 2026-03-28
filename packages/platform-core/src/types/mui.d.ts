@@ -46,19 +46,7 @@ declare module '@mui/material/styles' {
       }
     }
     zIndex: ZIndex
-    customShadows: {
-      xs: string
-      sm: string
-      md: string
-      lg: string
-      xl: string
-      primary: ShadowSize
-      secondary: ShadowSize
-      info: ShadowSize
-      success: ShadowSize
-      warning: ShadowSize
-      error: ShadowSize
-    }
+    // customShadows has been migrated to @cap/theme
     mainColorChannels: {
       light: string
       dark: string
@@ -77,19 +65,7 @@ declare module '@mui/material/styles' {
       }
     }
     zIndex?: Partial<ZIndex>
-    customShadows?: {
-      xs?: string
-      sm?: string
-      md?: string
-      lg?: string
-      xl?: string
-      primary?: Partial<ShadowSize>
-      secondary?: Partial<ShadowSize>
-      info?: Partial<ShadowSize>
-      success?: Partial<ShadowSize>
-      warning?: Partial<ShadowSize>
-      error?: Partial<ShadowSize>
-    }
+    // customShadows has been migrated to @cap/theme
     mainColorChannels?: {
       light?: string
       dark?: string

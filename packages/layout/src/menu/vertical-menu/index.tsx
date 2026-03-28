@@ -1,3 +1,4 @@
+export { default as VerticalNav } from '../components/vertical-menu/VerticalNav'
 export { default } from '../components/vertical-menu/VerticalNav'
 export {
   Menu,

@@ -30,7 +30,7 @@ export {
   type WorkflowState,
 } from './context'
 
-import { CAPModule } from '@cap/platform-core'
+import type { CAPModule } from '@cap/shared-types'
 import { landingRoutes, landingRouteConfig } from './routes/routes'
 
 export const LandingModule: CAPModule = {

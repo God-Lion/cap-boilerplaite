@@ -1,27 +1,9 @@
 import { StateCreator } from 'zustand'
 import type { AppStore } from '../index'
 
-export type NotificationType =
-  | 'success'
-  | 'error'
-  | 'warning'
-  | 'info'
-  | 'job_match'
-  | 'application_update'
-  | 'scraper_complete'
-  | 'system'
-
-export interface Notification {
-  id: string
-  type: NotificationType
-  title: string
-  message: string
-  timestamp: string
-  read: boolean
-  actionUrl?: string
-  actionLabel?: string
-  metadata?: Record<string, any>
-}
+// Re-export notification types from shared-types for backward compatibility
+export type { NotificationType, Notification, NotificationInput } from '@cap/shared-types'
+import type { NotificationType, Notification } from '@cap/shared-types'
 
 export interface NotificationSlice {
   // State

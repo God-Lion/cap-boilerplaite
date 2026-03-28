@@ -1,5 +1,7 @@
 export interface ColorToken {
   value: string;
+  light?: string;
+  dark?: string;
   hsl?: { h: number; s: number; l: number };
   description?: string;
 }
@@ -27,6 +29,12 @@ export interface PrimitiveTokens {
     fontWeight: Record<string, number>;
     lineHeight: Record<string, string>;
   };
+  shadows?: Record<string, string>;
+  transitions?: {
+    duration: Record<string, string>;
+    easing: Record<string, string>;
+  };
+  zIndex?: Record<string, number>;
 }
 
 export interface SemanticTokens {
@@ -47,9 +55,9 @@ export interface SemanticTokens {
 
 export const DEFAULT_PRIMITIVE_TOKENS: PrimitiveTokens = {
   colors: {
-    primary: { value: '#6366f1', description: 'Primary brand color' },
-    secondary: { value: '#8b5cf6', description: 'Secondary brand color' },
-    background: { value: '#f8fafc', description: 'Page background' },
+    primary: { value: '#D4AF37', description: 'Primary brand color' },
+    secondary: { value: '#8B4513', description: 'Secondary brand color' },
+    background: { value: '#F5F5DC', description: 'Page background' },
     surface: { value: '#ffffff', description: 'Card/surface background' },
     text: { value: '#0f172a', description: 'Primary text color' },
     textMuted: { value: '#64748b', description: 'Muted text color' },
@@ -101,5 +109,36 @@ export const DEFAULT_PRIMITIVE_TOKENS: PrimitiveTokens = {
       normal: '1.5',
       relaxed: '1.75',
     },
+  },
+  shadows: {
+    xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    sm: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+    xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+  },
+  transitions: {
+    duration: {
+      shortest: '150ms',
+      shorter: '200ms',
+      short: '250ms',
+      standard: '300ms',
+      complex: '375ms',
+      enteringScreen: '225ms',
+      leavingScreen: '195ms',
+    },
+    easing: {
+      easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      easeOut: 'cubic-bezier(0.0, 0, 0.2, 1)',
+      easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+      sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
+    },
+  },
+  zIndex: {
+    appBar: 1100,
+    drawer: 1200,
+    modal: 1300,
+    snackbar: 1400,
+    tooltip: 1500,
   },
 };

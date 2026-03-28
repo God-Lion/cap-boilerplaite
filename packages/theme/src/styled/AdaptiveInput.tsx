@@ -1,7 +1,17 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/material/styles';
 import type { ComponentEffectStyle } from '../types';
 import type { EffectType } from '../types';
+import { useComponentEffectConfig } from '../hooks/useComponentEffectConfig';
+import { computeNeumorphismBoxShadow } from '../utils/computeEffects';
+import {
+  getComponentCustomValue,
+  getTenantThemeEffects,
+  getThemeFocusRing,
+  getThemeTextMuted,
+  resolveComponentCustomProperties,
+  resolveGlassThemeStyles,
+} from '../utils/themeObjectStyles';
 
 export interface AdaptiveInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   effectStyle?: ComponentEffectStyle;
@@ -11,125 +21,136 @@ export interface AdaptiveInputProps extends React.InputHTMLAttributes<HTMLInputE
   error?: boolean;
 }
 
-const GlassInputWrapper = styled.div`
-  position: relative;
-`;
+const GlassInputWrapper = styled('div')({
+  position: 'relative',
+});
 
-const GlassInput = styled.input`
-  width: 100%;
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.95);
-  transition: all 0.2s ease;
+const GlassInput = styled('input')(({ theme }) => {
+  const customStyles = resolveComponentCustomProperties(theme, 'input');
+  const glassStyles = resolveGlassThemeStyles(theme);
 
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
+  return {
+    width: '100%',
+    padding: theme.spacing(1.25, 2),
+    fontSize: theme.typography.body2.fontSize,
+    fontWeight: theme.typography.fontWeightRegular,
+    margin: 0,
+    background: glassStyles.background,
+    backdropFilter: glassStyles.backdropFilter,
+    WebkitBackdropFilter: glassStyles.WebkitBackdropFilter,
+    border: glassStyles.border,
+    borderRadius: theme.shape.borderRadius,
+    color: theme.palette.text.primary,
+    boxShadow: 'none',
+    transition: 'all 0.2s ease',
+    ...customStyles,
+    '&::placeholder': {
+      color: getThemeTextMuted(theme),
+    },
+    '&:focus': {
+      outline: 'none',
+      boxShadow: getThemeFocusRing(theme),
+      borderColor: theme.palette.primary.main,
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    },
+  };
+});
 
-  &:focus {
-    outline: none;
-    border-color: rgba(139, 92, 246, 0.8);
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-  }
+const NeuInputWrapper = styled('div')({
+  position: 'relative',
+});
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
+const NeuInput = styled('input')(({ theme }) => {
+  const customStyles = resolveComponentCustomProperties(theme, 'input');
+  const neuConfig = getTenantThemeEffects(theme).neumorphism;
 
-const NeuInputWrapper = styled.div`
-  position: relative;
-`;
+  return {
+    width: '100%',
+    padding: theme.spacing(1.25, 2),
+    fontSize: theme.typography.body2.fontSize,
+    fontWeight: theme.typography.fontWeightRegular,
+    margin: 0,
+    background: neuConfig.backgroundColor,
+    border: 'none',
+    borderRadius: neuConfig.borderRadius || `${theme.shape.borderRadius}px`,
+    color: theme.palette.text.primary,
+    boxShadow: computeNeumorphismBoxShadow(neuConfig),
+    transition: 'all 0.2s ease',
+    ...customStyles,
+    '&::placeholder': {
+      color: getThemeTextMuted(theme),
+    },
+    '&:focus': {
+      outline: 'none',
+      boxShadow: computeNeumorphismBoxShadow(neuConfig, true),
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    },
+  };
+});
 
-const NeuInput = styled.input`
-  width: 100%;
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
-  background: #e0e5ec;
-  border: none;
-  border-radius: 8px;
-  color: #374151;
-  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
-  transition: all 0.2s ease;
+const StandardInputWrapper = styled('div')({
+  position: 'relative',
+});
 
-  &::placeholder {
-    color: #9ca3af;
-  }
+const StandardInput = styled('input')(({ theme }) => ({
+  width: '100%',
+  padding: theme.spacing(1.25, 2),
+  fontSize: theme.typography.body2.fontSize,
+  fontWeight: theme.typography.fontWeightRegular,
+  margin: 0,
+  background: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  color: theme.palette.text.primary,
+  boxShadow: 'none',
+  transition: 'all 0.2s ease',
+  ...resolveComponentCustomProperties(theme, 'input'),
+  '&::placeholder': {
+    color: getThemeTextMuted(theme),
+  },
+  '&:focus': {
+    outline: 'none',
+    borderColor: theme.palette.primary.main,
+    boxShadow: getThemeFocusRing(theme),
+  },
+  '&:disabled': {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+    background: theme.palette.background.default,
+  },
+}));
 
-  &:focus {
-    outline: none;
-    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1), inset -2px -2px 4px rgba(255, 255, 255, 0.8);
-  }
+const Label = styled('label')(({ theme }) => ({
+  display: 'block',
+  fontSize: getComponentCustomValue(theme, 'input', 'labelFontSize') || theme.typography.body2.fontSize,
+  fontWeight: getComponentCustomValue(theme, 'input', 'labelFontWeight') || theme.typography.fontWeightMedium,
+  color: theme.palette.text.primary,
+  marginBottom: getComponentCustomValue(theme, 'input', 'labelMarginBottom') || theme.spacing(1),
+}));
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
+const HelperText = styled('span')(({ theme }) => ({
+  display: 'block',
+  fontSize: getComponentCustomValue(theme, 'input', 'helperFontSize') || theme.typography.caption.fontSize,
+  color: getThemeTextMuted(theme),
+  marginTop: getComponentCustomValue(theme, 'input', 'helperMarginTop') || theme.spacing(0.5),
+}));
 
-const StandardInputWrapper = styled.div`
-  position: relative;
-`;
-
-const StandardInput = styled.input`
-  width: 100%;
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
-  background: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border, #e2e8f0);
-  border-radius: 8px;
-  color: var(--color-text, #0f172a);
-  transition: all 0.2s ease;
-
-  &::placeholder {
-    color: var(--color-text-muted, #64748b);
-  }
-
-  &:focus {
-    outline: none;
-    border-color: var(--color-primary, #6366f1);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: var(--color-background, #f8fafc);
-  }
-`;
-
-const Label = styled.label`
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text, #0f172a);
-  margin-bottom: 0.5rem;
-`;
-
-const HelperText = styled.span`
-  display: block;
-  font-size: 0.75rem;
-  color: var(--color-text-muted, #64748b);
-  margin-top: 0.25rem;
-`;
-
-const ErrorText = styled.span`
-  display: block;
-  font-size: 0.75rem;
-  color: var(--color-error, #ef4444);
-  margin-top: 0.25rem;
-`;
+const ErrorText = styled('span')(({ theme }) => ({
+  display: 'block',
+  fontSize: getComponentCustomValue(theme, 'input', 'errorFontSize') || theme.typography.caption.fontSize,
+  color: theme.palette.error.main,
+  marginTop: getComponentCustomValue(theme, 'input', 'errorMarginTop') || theme.spacing(0.5),
+}));
 
 export const AdaptiveInput: React.FC<AdaptiveInputProps> = ({
-  children,
   effectStyle = 'global',
-  globalEffectType = 'standard',
+  globalEffectType,
   label,
   helperText,
   error,
@@ -137,9 +158,12 @@ export const AdaptiveInput: React.FC<AdaptiveInputProps> = ({
   style,
   ...props
 }) => {
+  const effectConfig = useComponentEffectConfig('input');
+  const activeGlobalType = globalEffectType || effectConfig.globalType;
+
   const getActiveStyle = (): ComponentEffectStyle => {
     if (effectStyle === 'global') {
-      return globalEffectType;
+      return activeGlobalType;
     }
     return effectStyle as EffectType;
   };
@@ -153,8 +177,6 @@ export const AdaptiveInput: React.FC<AdaptiveInputProps> = ({
       {...props}
     />
   );
-
-  const inputProps = { ...props };
 
   const renderContent = () => {
     switch (activeStyle) {
@@ -173,12 +195,12 @@ export const AdaptiveInput: React.FC<AdaptiveInputProps> = ({
       case 'neu':
         return (
           <NeuInputWrapper>
-            {label && <Label style={{ color: '#374151' }}>{label}</Label>}
+            {label && <Label>{label}</Label>}
             {renderInput(NeuInput, style)}
             {error ? (
-              <ErrorText style={{ color: '#ef4444' }}>{helperText}</ErrorText>
+              <ErrorText>{helperText}</ErrorText>
             ) : helperText ? (
-              <HelperText style={{ color: '#6b7280' }}>{helperText}</HelperText>
+              <HelperText>{helperText}</HelperText>
             ) : null}
           </NeuInputWrapper>
         );

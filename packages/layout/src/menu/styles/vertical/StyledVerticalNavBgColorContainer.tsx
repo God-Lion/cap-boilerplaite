@@ -1,9 +1,9 @@
-import styled from '@emotion/styled'
+import { styled } from '@cap/theme'
 import type { VerticalNavProps } from '../../components/vertical-menu/VerticalNav'
 
 type StyledVerticalNavBgColorContainerProps = Pick<VerticalNavProps, 'backgroundColor'>
 
-const StyledVerticalNavBgColorContainer = styled.div<StyledVerticalNavBgColorContainerProps>`
+const StyledVerticalNavBgColorContainer = styled('div')<StyledVerticalNavBgColorContainerProps>`
   position: relative;
   block-size: 100%;
   z-index: 1;
@@ -11,7 +11,7 @@ const StyledVerticalNavBgColorContainer = styled.div<StyledVerticalNavBgColorCon
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  ${({ backgroundColor }) => backgroundColor && `background-color:${backgroundColor};`}
+  ${({ backgroundColor }: StyledVerticalNavBgColorContainerProps) => backgroundColor && `background-color:${backgroundColor};`}
 `
 
 export default StyledVerticalNavBgColorContainer

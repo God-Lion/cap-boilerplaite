@@ -1,15 +1,9 @@
+import type { CSSProperties } from 'react';
 import type { EffectType } from './effects';
 
 export type ComponentEffectStyle = 'global' | EffectType;
 
-export interface ComponentStyleOverrides {
-  borderRadius?: string;
-  padding?: string;
-  margin?: string;
-  shadow?: string;
-  background?: string;
-  borderColor?: string;
-}
+export interface ComponentStyleOverrides extends Partial<CSSProperties>, Record<string, string | number | undefined> {}
 
 export interface ComponentStyleConfig {
   style: ComponentEffectStyle;
@@ -24,6 +18,10 @@ export interface ComponentStyles {
   footer: ComponentStyleConfig;
   modal: ComponentStyleConfig;
   drawer: ComponentStyleConfig;
+  stepper: ComponentStyleConfig;
+  table: ComponentStyleConfig;
+  tabs: ComponentStyleConfig;
+  nav: ComponentStyleConfig;
 }
 
 export const DEFAULT_COMPONENT_STYLES: ComponentStyles = {
@@ -34,4 +32,8 @@ export const DEFAULT_COMPONENT_STYLES: ComponentStyles = {
   footer: { style: 'global' },
   modal: { style: 'global' },
   drawer: { style: 'global' },
+  stepper: { style: 'global' },
+  table: { style: 'global' },
+  tabs: { style: 'global' },
+  nav: { style: 'global' },
 };

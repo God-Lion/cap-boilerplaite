@@ -1,6 +1,7 @@
 import { Box, Divider } from '@mui/material'
-import { GuestBanner } from '@cap/platform-core'
+import { GuestBanner } from '@cap/theme'
 import { useGuest } from '@cap/platform-core'
+import { useNavigate } from 'react-router-dom'
 import {
   HeroSection,
   SmartJobDiscovery,
@@ -14,6 +15,7 @@ import {
 
 export default function Home() {
   const { isGuest } = useGuest()
+  const navigate = useNavigate()
 
   return (
     <Box sx={{ bgcolor: 'background.default' }}>
@@ -23,6 +25,9 @@ export default function Home() {
           <GuestBanner
             variant='minimal'
             message='Create a free account to unlock all features and save your job searches!'
+            isGuest={isGuest}
+            onSignIn={() => navigate('/auth/sign-in')}
+            onSignUp={() => navigate('/auth/register')}
           />
         </Box>
       )}

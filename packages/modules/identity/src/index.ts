@@ -1,4 +1,4 @@
-import { CAPModule } from '@cap/platform-core';
+import type { CAPModule } from '@cap/shared-types';
 import { identityRouteConfig, IdentityRoutes } from './routes/routes';
 import Path from './routes/path';
 

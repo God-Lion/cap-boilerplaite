@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import Filters from './Filters'
-import type { ITableData } from '../components/table/types'
+import type { ITableData } from '@cap/shared-types'
 
 // Minimal dataset used across tests
 const makeData = (): ITableData => ({

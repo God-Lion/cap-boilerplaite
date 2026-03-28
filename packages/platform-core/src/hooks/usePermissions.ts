@@ -1,5 +1,5 @@
 import { useAppStore } from '../store'
-import { Roles } from '../types/app-types'
+import { hasAdminRole, normalizeRole, Roles } from '../types/app-types'
 
 export const usePermissions = () => {
   const { user, isAuthenticated } = useAppStore()
@@ -12,26 +12,24 @@ export const usePermissions = () => {
   const hasRole = (roles: Roles | Roles[] | string | string[], logic: 'AND' | 'OR' = 'OR'): boolean => {
     if (!isAuthenticated || !user) return false
 
-    // Safely extract the role from user or user.user (depending on hydration state)
     const userData = (user as any).user || user
-    const userRole = userData.role as Roles
+    const userRole = normalizeRole(userData.role) || normalizeRole(userData.roleObject) || normalizeRole(userData.roleName)
 
     if (!userRole) return false
 
-    const rolesArray = Array.isArray(roles) ? roles : [roles]
+    const rolesArray = (Array.isArray(roles) ? roles : [roles])
+      .map((role) => normalizeRole(role))
+      .filter(Boolean) as Roles[]
 
-    // SuperAdmin / Admin override (optional, but standard for RBAC)
-    if (userRole === Roles.SUPERADMIN || userRole === Roles.SUPERADMINEMPLOYEE) {
+    if (hasAdminRole(userRole)) {
       return true
     }
 
     if (logic === 'OR') {
-      return rolesArray.map(String).includes(String(userRole))
+      return rolesArray.includes(userRole)
     }
 
-    // Since a user currently only has ONE role (userRole is a number),
-    // AND logic with multiple different roles will always be false unless the array has length 1
-    return rolesArray.every((role) => String(userRole) === String(role))
+    return rolesArray.every((role) => userRole === role)
   }
 
   /**
@@ -51,7 +49,7 @@ export const usePermissions = () => {
 
     if (userPermissions.length === 0) {
       // Allow super-admins implicit access even if their permission array is somehow empty
-      if (userData.role === Roles.SUPERADMIN || userData.role === Roles.SUPERADMINEMPLOYEE)
+      if (hasAdminRole(userData.role) || hasAdminRole(userData.roleObject) || hasAdminRole(userData.roleName))
         return true
       return false
     }

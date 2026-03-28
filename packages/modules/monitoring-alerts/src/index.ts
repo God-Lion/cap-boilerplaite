@@ -1,4 +1,4 @@
-import { CAPModule } from '@cap/platform-core'
+import type { CAPModule } from '@cap/shared-types'
 
 export * from './domain-kernel/src'
 export * from './modules/anomaly-detection/src'

@@ -1,5 +1,6 @@
-export * from './APIExplorerDashboard'
-export * from './ApplicationDashboard'
-export * from './ApplicationDetailView'
-export * from './ScopesRegistry'
-export * from './WebhookManagement'
+export { default as APIExplorerDashboard } from './APIExplorerDashboard'
+export { default as ApplicationDashboard } from './ApplicationDashboard'
+export { default as ApplicationDetailView } from './ApplicationDetailView'
+export { default as ScopesRegistry } from './ScopesRegistry'
+export { default as WebhookManagement } from './WebhookManagement'
+

@@ -1,6 +1,7 @@
-export * from './BrowserNotSupported'
-export * from './CsrfErrorScreen'
-export * from './MaintenanceScreen'
-export * from './Page401Unauthorized'
-export * from './Page403Forbidden'
-export * from './Page429TooManyRequests'
+export { default as BrowserNotSupported } from './BrowserNotSupported'
+export { default as CsrfErrorScreen } from './CsrfErrorScreen'
+export { default as MaintenanceScreen } from './MaintenanceScreen'
+export { default as Page401Unauthorized } from './Page401Unauthorized'
+export { default as Page403Forbidden } from './Page403Forbidden'
+export { default as Page429TooManyRequests } from './Page429TooManyRequests'
+

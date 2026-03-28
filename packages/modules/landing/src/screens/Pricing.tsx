@@ -2,7 +2,7 @@
  * Pricing Page
  *
  * Displays pricing plans and frequently asked questions
- * for God Lion Seeker Optimizer
+ * for the platform
  */
 
 import React, { useState } from 'react'

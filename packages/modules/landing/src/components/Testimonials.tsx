@@ -22,7 +22,7 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     rating: 5,
-    text: 'God Lion Seeker Optimizer transformed my job search. The AI-powered recommendations were incredibly accurate and saved me hours of scrolling.',
+    text: 'This platform transformed my job search. The AI-powered recommendations were incredibly accurate and saved me hours of scrolling.',
     name: 'Alex Johnson',
     role: 'Software Engineer at TechCorp',
   },
@@ -88,8 +88,7 @@ const Testimonials: React.FC = () => {
               mx: 'auto',
             }}
           >
-            Discover why industry leaders and aspiring professionals alike choose God Lion Seeker
-            Optimizer to advance their careers.
+            Discover why industry leaders and aspiring professionals alike choose our platform to advance their careers.
           </Typography>
         </Box>
 

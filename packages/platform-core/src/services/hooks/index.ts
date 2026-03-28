@@ -13,5 +13,4 @@ export { default as useTabSync } from './useTabSync'
 export { default as useDeduplicatedRequest } from './useDeduplicatedRequest'
 export { default as useOptimisticUpdate } from './useOptimisticUpdate'
 
-// Re-export useObjectCookie from hooks
-export { useObjectCookie } from './useObjectCookie'
+

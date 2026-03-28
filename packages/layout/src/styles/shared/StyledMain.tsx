@@ -1,18 +1,20 @@
-import styled from '@emotion/styled'
-import { themeConfig } from '@cap/platform-core'
+import { styled } from '@cap/theme'
 
+// themeConfig defaults inlined here to avoid circular import with @cap/platform-core.
+// (themeConfig would be undefined at module evaluation time due to the circular dep chain)
+// layoutPadding: 24, compactContentWidth: 1440 — from platform-core/src/configs/themeConfig.ts
 type StyledMainProps = {
-  isContentCompact: boolean
+  isContentCompact: boolean;
+  layoutPadding: string;
+  compactContentWidth: number;
 }
 
-const StyledMain = styled.main<StyledMainProps>`
-  padding: ${themeConfig.layoutPadding}px;
-  ${({ isContentCompact }) =>
-    isContentCompact &&
-    `
-    margin-inline: auto;
-    max-inline-size: ${themeConfig.compactContentWidth}px;
-  `}
-`
+const StyledMain = styled('main')<StyledMainProps>(({ isContentCompact, layoutPadding, compactContentWidth }) => ({
+  padding: layoutPadding,
+  ...(isContentCompact && {
+    marginInline: 'auto',
+    maxInlineSize: `${compactContentWidth}px`,
+  }),
+}))
 
 export default StyledMain

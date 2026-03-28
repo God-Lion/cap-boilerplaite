@@ -1,25 +1,31 @@
 import styled from '@emotion/styled'
 import classnames from 'classnames'
-import { themeConfig, useSettings } from '@cap/platform-core'
+import { useSettings } from '@cap/platform-core'
+// themeConfig values inlined to avoid circular import
+const LAYOUT_PADDING = 24
+const COMPACT_CONTENT_WIDTH = 1440
 import { useHorizontalNav } from '../../menu/contexts/horizontalNavContext'
+import { useLayoutTokens } from '../../hooks/useLayoutTokens'
 import { horizontalLayoutClasses } from '../../utils/layoutClasses'
 
 type StyledDivProps = {
   isContentCompact: boolean
   isBreakpointReached?: boolean
+  layoutPadding: string
+  compactContentWidth: number
 }
 
 const StyledDiv = styled.div<StyledDivProps>`
-  ${({ isContentCompact, isBreakpointReached }) =>
+  ${({ isContentCompact, isBreakpointReached, layoutPadding, compactContentWidth }) =>
     !isBreakpointReached &&
     `
-    padding: ${themeConfig.layoutPadding}px;
+    padding: ${layoutPadding};
 
     ${
       isContentCompact &&
       `
       margin-inline: auto;
-      max-inline-size: ${themeConfig.compactContentWidth}px;
+      max-inline-size: ${compactContentWidth}px;
     `
     }
   `}
@@ -29,6 +35,7 @@ const Navigation = ({ menu }: { menu: React.ReactNode }) => {
   const { isBreakpointReached } = useHorizontalNav()
   const { settings } = useSettings()
   const headerContentCompact = settings.navbarContentWidth === 'compact'
+  const { layoutPadding, compactContentWidth } = useLayoutTokens()
 
   return (
     <div
@@ -39,6 +46,8 @@ const Navigation = ({ menu }: { menu: React.ReactNode }) => {
       <StyledDiv
         isContentCompact={headerContentCompact}
         isBreakpointReached={isBreakpointReached}
+        layoutPadding={layoutPadding}
+        compactContentWidth={compactContentWidth}
         {...(!isBreakpointReached && {
           className: classnames(
             horizontalLayoutClasses.navigationContentWrapper,

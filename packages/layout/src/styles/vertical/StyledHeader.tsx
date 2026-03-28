@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { themeConfig } from '@cap/platform-core'
+// themeConfig values inlined to avoid circular import (layoutPadding:24, compactContentWidth:1440)
 import { verticalLayoutClasses } from '../../utils/layoutClasses'
 import type { Theme } from '@mui/material/styles'
 import type { CSSObject } from '@emotion/styled'
@@ -7,6 +7,8 @@ import type { CSSObject } from '@emotion/styled'
 type StyledHeaderProps = {
   theme: Theme
   overrideStyles?: CSSObject
+  layoutPadding: string
+  compactContentWidth: number
 }
 
 const StyledHeader = styled.header<StyledHeaderProps>`
@@ -27,16 +29,16 @@ const StyledHeader = styled.header<StyledHeaderProps>`
       &.${verticalLayoutClasses.headerFixed}.${verticalLayoutClasses.headerDetached}
       .${verticalLayoutClasses.navbar} {
       max-inline-size: calc(
-        ${themeConfig.compactContentWidth}px - ${2 * themeConfig.layoutPadding}px
+        ${({ compactContentWidth }) => compactContentWidth}px - ${({ layoutPadding }) => `calc(${layoutPadding} * 2)`}
       );
     }
 
     .${verticalLayoutClasses.navbar} {
-      max-inline-size: ${themeConfig.compactContentWidth}px;
+      max-inline-size: ${({ compactContentWidth }) => compactContentWidth}px;
     }
 
     .${verticalLayoutClasses.navbar} {
-      max-inline-size: 1440px;
+      max-inline-size: ${({ compactContentWidth }) => compactContentWidth}px;
     }
   }
 
@@ -159,7 +161,7 @@ const StyledHeader = styled.header<StyledHeaderProps>`
     .${verticalLayoutClasses.navbar},
     &.${verticalLayoutClasses.headerFixed}.${verticalLayoutClasses.headerDetached}
     .${verticalLayoutClasses.navbar} {
-    inline-size: calc(100% - ${2 * themeConfig.layoutPadding}px);
+    inline-size: calc(100% - ${({ layoutPadding }) => `calc(${layoutPadding} * 2)`});
   }
 
   &:not(.${verticalLayoutClasses.headerFloating}).${verticalLayoutClasses.headerStatic}

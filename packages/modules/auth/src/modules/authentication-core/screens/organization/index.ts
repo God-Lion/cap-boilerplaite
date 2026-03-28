@@ -1,1 +1,1 @@
-export * from './JoinOrganization'
+export { default as JoinOrganization } from './JoinOrganization'

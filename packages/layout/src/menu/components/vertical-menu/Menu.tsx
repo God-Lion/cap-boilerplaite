@@ -7,7 +7,7 @@ import { useVerticalNav } from '../../contexts/verticalNavContext'
 import { menuClasses } from '../../utils/menuClasses'
 import StyledVerticalMenu from '../../styles/vertical/StyledVerticalMenu'
 import { verticalSubMenuToggleDuration } from '../../defaultConfigs'
-import { Box } from '@mui/material'
+import { Box } from '@cap/theme'
 import { VerticalMenuContext } from '../../contexts/verticalMenuContext'
 import type {
   VerticalMenuContextProps,

@@ -1,7 +1,7 @@
 import React from 'react'
 import { AuthRouteConfig } from '@cap/platform-core/src/assembly'
 import Path from '@cap/module-auth/routes/path'
-import { createAdminRoute, createAuthRoute } from '../../../routes/routeHelpers'
+import { createAuthRoute } from '../../../routes/routeHelpers'
 
 // ---------------------------------------------------------------------------
 // User profile screens
@@ -25,24 +25,6 @@ const DeactivateAccount       = React.lazy(() =>
   import('../screens').then((m) => ({ default: m.DeactivateAccount })),
 )
 
-// ---------------------------------------------------------------------------
-// Admin – users
-// ---------------------------------------------------------------------------
-const UserList        = React.lazy(() => import('../screens/admin/users/UserList'))
-const BanManagement   = React.lazy(() => import('../screens/admin/users/BanManagement'))
-const ImpersonationLogs = React.lazy(() => import('../screens/admin/users/ImpersonationLogs'))
-const AdminUserProfile  = React.lazy(() => import('../screens/admin/users/AdminUserProfile'))
-
-// ---------------------------------------------------------------------------
-// Admin – organisations
-// ---------------------------------------------------------------------------
-const OrganizationListDashboard       = React.lazy(() => import('../screens/admin/organizations/OrganizationListDashboard'))
-const OrganizationProfile             = React.lazy(() => import('../screens/admin/organizations/OrganizationProfile'))
-const OrganizationInvitationDashboard = React.lazy(() => import('../screens/admin/organizations/OrganizationInvitationDashboard'))
-
-// ---------------------------------------------------------------------------
-// Route config
-// ---------------------------------------------------------------------------
 export const userDirectoryRouteConfig: AuthRouteConfig[] = [
   // --- User profile (verified auth) ---
   createAuthRoute(Path.user.view,           <ProfileView />,             { requiresVerification: true, layout: 'admin' }),
@@ -53,16 +35,5 @@ export const userDirectoryRouteConfig: AuthRouteConfig[] = [
   createAuthRoute(Path.user.deactivate,     <DeactivateAccount />,       { requiresVerification: true }),
   createAuthRoute(Path.user.emailChangeStatus,    <ChangeEmail />,       { requiresVerification: true }),
   createAuthRoute(Path.user.initiateEmailChange,  <ChangeEmail />,       { requiresVerification: true, layout: 'noLayout' }),
-
-  // --- Admin users ---
-  createAdminRoute(Path.admin.users,             <UserList />),
-  createAdminRoute(Path.admin.userProfile,       <AdminUserProfile />),
-  createAdminRoute(Path.admin.banManagement,     <BanManagement />),
-  createAdminRoute(Path.admin.impersonationLogs, <ImpersonationLogs />),
-
-  // --- Admin organisations ---
-  createAdminRoute(Path.admin.organizations,       <OrganizationListDashboard />),
-  createAdminRoute(Path.admin.organizationProfile, <OrganizationProfile />),
-  createAdminRoute(Path.admin.invitations,         <OrganizationInvitationDashboard />),
 ]
 

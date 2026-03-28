@@ -1,50 +1,50 @@
-import type { Theme } from '@mui/material/styles'
-import styled from '@emotion/styled'
+import { styled } from '@cap/theme'
 import type { CSSObject } from '@emotion/styled'
-import { themeConfig } from '@cap/platform-core'
 import { horizontalLayoutClasses } from '../../utils/layoutClasses'
 
+// themeConfig values inlined to avoid circular import (layoutPadding:24, compactContentWidth:1440)
 type StyledHeaderProps = {
-  theme: Theme
   overrideStyles?: CSSObject
+  layoutPadding: string
+  compactContentWidth: number
 }
 
-const StyledHeader = styled.header<StyledHeaderProps>`
-  box-shadow: var(--mui-customShadows-sm);
+const StyledHeader = styled('header')<StyledHeaderProps>(({ theme, layoutPadding, compactContentWidth, overrideStyles }) => ({
+  boxShadow: (theme as any).customShadows?.sm || theme.shadows[1],
+  
+  '[data-skin="bordered"] &': {
+    boxShadow: 'none',
+    borderBlockEnd: `1px solid ${theme.palette.divider}`,
+  },
 
-  [data-skin='bordered'] & {
-    box-shadow: none;
-    border-block-end: 1px solid var(--border-color);
-  }
+  [`&:not(.${horizontalLayoutClasses.headerBlur})`]: {
+    backgroundColor: theme.palette.background.paper,
+  },
 
-  &:not(.${horizontalLayoutClasses.headerBlur}) {
-    background-color: var(--mui-palette-background-paper);
-  }
+  [`&.${horizontalLayoutClasses.headerBlur}`]: {
+    backdropFilter: 'blur(6px)',
+    backgroundColor: `rgba(${theme.palette.background.paperChannel || '255, 255, 255'}, 0.88)`,
+  },
 
-  &.${horizontalLayoutClasses.headerBlur} {
-    backdrop-filter: blur(6px);
-    background-color: rgb(var(--background-color-rgb) / 0.88);
-  }
+  [`&.${horizontalLayoutClasses.headerFixed}`]: {
+    position: 'sticky',
+    insetBlockStart: 0,
+    zIndex: theme.zIndex.appBar,
+  },
 
-  &.${horizontalLayoutClasses.headerFixed} {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: var(--header-z-index);
-  }
+  [`&.${horizontalLayoutClasses.headerContentCompact} .${horizontalLayoutClasses.navbar}`]: {
+    marginInline: 'auto',
+    maxInlineSize: `${compactContentWidth}px`,
+  },
 
-  &.${horizontalLayoutClasses.headerContentCompact} .${horizontalLayoutClasses.navbar} {
-    margin-inline: auto;
-    max-inline-size: ${themeConfig.compactContentWidth}px;
-  }
+  [`& .${horizontalLayoutClasses.navbar}`]: {
+    position: 'relative',
+    minBlockSize: '64px', // Standard height or from theme
+    paddingBlock: '8px',
+    paddingInline: layoutPadding,
+  },
 
-  .${horizontalLayoutClasses.navbar} {
-    position: relative;
-    min-block-size: var(--header-height);
-    padding-block: 8px;
-    padding-inline: ${themeConfig.layoutPadding}px;
-  }
-
-  ${({ overrideStyles }) => overrideStyles}
-`
+  ...(overrideStyles as any),
+}))
 
 export default StyledHeader

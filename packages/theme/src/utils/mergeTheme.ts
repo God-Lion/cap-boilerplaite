@@ -42,16 +42,33 @@ export const applyPreset = (
     return DEFAULT_THEME_CONFIG;
   }
   
-  const baseTheme = produce(DEFAULT_THEME_CONFIG, (draft: TenantThemeConfig) => {
+  return produce(DEFAULT_THEME_CONFIG, (draft: TenantThemeConfig) => {
     draft.preset = presetId;
     draft.name = preset.name;
     
     if (preset.tokens) {
       if (preset.tokens.colors) {
-        for (const [key, token] of Object.entries(preset.tokens.colors)) {
-          if (token && key in draft.tokens.colors) {
-            (draft.tokens.colors as Record<string, unknown>)[key] = token;
-          }
+        Object.assign(draft.tokens.colors, preset.tokens.colors);
+      }
+      if (preset.tokens.spacing) {
+        Object.assign(draft.tokens.spacing, preset.tokens.spacing);
+      }
+      if (preset.tokens.borderRadius) {
+        Object.assign(draft.tokens.borderRadius, preset.tokens.borderRadius);
+      }
+      if (preset.tokens.typography) {
+        // Deep merge typography sub-records
+        if (preset.tokens.typography.fontFamily) {
+          Object.assign(draft.tokens.typography.fontFamily, preset.tokens.typography.fontFamily);
+        }
+        if (preset.tokens.typography.fontSize) {
+          Object.assign(draft.tokens.typography.fontSize, preset.tokens.typography.fontSize);
+        }
+        if (preset.tokens.typography.fontWeight) {
+          Object.assign(draft.tokens.typography.fontWeight, preset.tokens.typography.fontWeight);
+        }
+        if (preset.tokens.typography.lineHeight) {
+          Object.assign(draft.tokens.typography.lineHeight, preset.tokens.typography.lineHeight);
         }
       }
     }
@@ -81,8 +98,6 @@ export const applyPreset = (
       };
     }
   });
-  
-  return baseTheme;
 };
 
 export const mergeThemeWithPreset = (
@@ -94,15 +109,29 @@ export const mergeThemeWithPreset = (
   return produce(currentTheme, (draft) => {
     draft.preset = presetId;
     
-    for (const [key, token] of Object.entries(presetTheme.tokens.colors)) {
-      if (token && key in draft.tokens.colors) {
-        (draft.tokens.colors as Record<string, unknown>)[key] = token;
-      }
+    // Merge all tokens from the preset-derived theme
+    Object.assign(draft.tokens.colors, presetTheme.tokens.colors);
+    Object.assign(draft.tokens.spacing, presetTheme.tokens.spacing);
+    Object.assign(draft.tokens.borderRadius, presetTheme.tokens.borderRadius);
+    
+    // Deep merge typography
+    if (presetTheme.tokens.typography) {
+      Object.assign(draft.tokens.typography.fontFamily, presetTheme.tokens.typography.fontFamily);
+      Object.assign(draft.tokens.typography.fontSize, presetTheme.tokens.typography.fontSize);
+      Object.assign(draft.tokens.typography.fontWeight, presetTheme.tokens.typography.fontWeight);
+      Object.assign(draft.tokens.typography.lineHeight, presetTheme.tokens.typography.lineHeight);
     }
     
     draft.effects = {
       ...presetTheme.effects,
     };
+    
+    if (presetTheme.components) {
+      draft.components = {
+        ...draft.components,
+        ...presetTheme.components,
+      };
+    }
   });
 };
 

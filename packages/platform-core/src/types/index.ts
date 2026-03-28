@@ -16,11 +16,12 @@ export type {
   ChildrenType,
   ThemeColor,
   Dictionary,
-} from './core-types'
+} from '@cap/shared-types'
+export type { Settings } from '@cap/shared-types'
 
-export * from './module'
-export * from '../store'
-export * from '../configs/themeConfig'
+// Platform-core specific types
+export type { DemoName } from './core-types'
+
 export * from './app-types'
 export * from './tenant'
 export * from './nfc'

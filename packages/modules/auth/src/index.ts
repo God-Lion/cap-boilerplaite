@@ -1,4 +1,4 @@
-import { CAPModule } from '@cap/platform-core'
+import type { CAPModule } from '@cap/shared-types'
 import { authRouteConfig, authRoutes } from './routes/routes'
 import Path from './routes/path'
 export { authRouteConfig, authRoutes, Path, Path as AuthPath }
@@ -88,9 +88,19 @@ export {
   RoleIndicator,
   AuthorizationEnginePath,
   AdminRoute,
+  // Exporting screens for central admin routing
+  RoleList,
+  RoleDetailView,
+  PermissionRegistry,
+  AccessPolicyBuilder,
+  MachineIdentityManagement,
+  DomainVerification,
 } from './modules/authorization-engine'
 export type { CreateJWKSKeyRequest } from './modules/authorization-engine'
-export { AuthRoute, GuestRoute } from './modules/authentication-core'
+
+// Re-export types from domain-kernel for cross-package use
+export type { SAMLConfig, JWKSKey, JWKSKeyDetail, SSFConfig } from './domain-kernel/src/types'
+export { AuthRoute, GuestRoute, PrivateRoute } from './modules/authentication-core'
 export * from './modules/mfa-orchestrator'
 export * from './modules/identity-broker'
 export * from './modules/passwordless-service'
@@ -113,6 +123,14 @@ export {
   useUserTokens,
   useChangeEmail,
   useChangePassword,
+  // Exporting screens for central admin routing
+  UserList,
+  AdminUserProfile,
+  BanManagement,
+  ImpersonationLogs,
+  OrganizationListDashboard,
+  OrganizationProfile,
+  OrganizationInvitationDashboard,
 } from './modules/user-directory'
 
 // Path registry is exported at the top of the file
@@ -151,24 +169,6 @@ export const AuthModule: CAPModule = {
       ],
     },
     {
-      id: 'auth-user-mgmt',
-      label: 'navigation.userManagement',
-      icon: 'tabler-users',
-      path: Path.admin.users,
-      roles: ['admin', 'superadmin', 'superadminemployee', 'provideradmin'],
-      variant: ['vertical', 'horizontal'],
-      order: 30,
-    },
-    {
-      id: 'auth-orgs',
-      label: 'navigation.organizations',
-      icon: 'tabler-building',
-      path: Path.admin.organizations,
-      roles: ['admin', 'superadmin', 'superadminemployee', 'provideradmin'],
-      variant: ['vertical', 'horizontal'],
-      order: 40,
-    },
-    {
       id: 'auth-security-methods',
       label: 'navigation.security',
       icon: 'tabler-key',
@@ -178,33 +178,6 @@ export const AuthModule: CAPModule = {
         { id: 'auth-mfa', label: 'navigation.twoSteps', path: Path.mfa.dashboard, order: 10 },
         { id: 'auth-passkeys', label: 'navigation.passkeys', path: Path.passkey.management, order: 20 },
         { id: 'auth-passwordless', label: 'navigation.passwordless', path: Path.passwordless.setup, order: 30 },
-      ],
-    },
-    {
-      id: 'auth-sys-admin',
-      label: 'navigation.adminPages',
-      icon: 'tabler-settings',
-      permissions: ['admin.access'],
-      variant: ['vertical'],
-      order: 60,
-      children: [
-        { id: 'auth-rbac', label: 'navigation.rbac', path: Path.admin.roles, order: 10 },
-        { id: 'auth-provisioning', label: 'navigation.provisioning', path: Path.admin.provisioning, order: 20 },
-        { id: 'auth-dev-tools', label: 'navigation.developer', path: Path.admin.applications, order: 30 },
-        { id: 'auth-sso-protocols', label: 'navigation.oidcProtocols', path: Path.auth.oidcConfigBrowser, order: 40 },
-      ],
-    },
-    {
-      id: 'auth-monitoring',
-      label: 'navigation.monitoring',
-      icon: 'tabler-chart-bar',
-      roles: ['admin', 'superadmin', 'superadminemployee'],
-      variant: ['vertical'],
-      order: 70,
-      children: [
-        { id: 'auth-audit', label: 'navigation.authEvents', path: Path.admin.events, order: 10 },
-        { id: 'auth-health', label: 'navigation.systemHealth', path: Path.admin.health, order: 20 },
-        { id: 'auth-metrics', label: 'navigation.mfaAnalytics', path: Path.monitoring.mfa_analytics, order: 30 },
       ],
     },
     // --- DASHBOARD / APPS SECTION ---

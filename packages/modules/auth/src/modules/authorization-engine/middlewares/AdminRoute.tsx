@@ -13,15 +13,7 @@ interface AdminRouteProps {
   layout?: LayoutOverride
 }
 
-const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
-
-const ROLE_RANK: Record<string, number> = {
-  [Roles.USER]: 10,
-  [Roles.ADMIN]: 50,
-  [Roles.SUPERADMINEMPLOYEE]: 80,
-  [Roles.SUPERADMIN]: 100,
-}
-
+// Moved constants inside component to avoid temporal dead zone / circular dependency issues with Roles enum
 const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: AdminRouteProps) => {
   const { isLoading, sessionError, isAuthenticated, user } = useSessionGuard()
   const location = useLocation()
@@ -33,6 +25,7 @@ const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: Ad
       updateLayoutOverride(layout)
       // Only reset to none if we are NOT an admin, to allow layout persistence for admins
       return () => {
+        const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
         const isAdminSession = ADMIN_ROLES.includes(
           (normalizeAuthUser(user)?.role as Roles) || Roles.USER,
         )
@@ -87,14 +80,25 @@ const AdminRoute = ({ element, minimumRole = Roles.ADMIN, layout = 'admin' }: Ad
   const userRole = (userData?.role as Roles) || Roles.USER
 
   // Strict role check using Roles enum values
+  const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
   const isAdmin = ADMIN_ROLES.includes(userRole)
 
   if (!isAdmin) {
     return <Page403Forbidden />
   }
 
-  const userRank = ROLE_RANK[String(userRole)] ?? 0
-  const minRank = ROLE_RANK[String(minimumRole)] ?? 0
+  const getRank = (role: any) => {
+    const ROLE_RANK: Record<string, number> = {
+      [Roles.USER]: 10,
+      [Roles.ADMIN]: 50,
+      [Roles.SUPERADMINEMPLOYEE]: 80,
+      [Roles.SUPERADMIN]: 100,
+    }
+    return ROLE_RANK[String(role)] ?? 0
+  }
+
+  const userRank = getRank(userRole)
+  const minRank = getRank(minimumRole)
 
   if (userRank < minRank) {
     return (

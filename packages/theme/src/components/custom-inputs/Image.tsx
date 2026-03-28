@@ -6,28 +6,28 @@ import { Checkbox, Grid } from '@mui/material'
 const Root = styled('div', {
   name: 'MuiCustomImage',
   slot: 'Root',
-})({
+})(({ theme }) => ({
   blockSize: '100%',
   display: 'flex',
-  borderRadius: 'var(--mui-shape-borderRadius)',
+  borderRadius: theme.shape.borderRadius,
   cursor: 'pointer',
   overflow: 'hidden',
   position: 'relative',
   alignItems: 'center',
   flexDirection: 'column',
   justifyContent: 'center',
-  border: '1px solid var(--mui-palette-divider)',
+  border: `1px solid ${theme.palette.divider}`,
 
   '&:hover': {
-    borderColor: 'var(--mui-palette-action-active)',
+    borderColor: theme.palette.action.active,
   },
   '&.active': {
-    borderColor: 'var(--mui-palette-primary-main)',
+    borderColor: theme.palette.primary.main,
   },
   '&:not(.active):not(:hover) .MuiCheckbox-root': {
     display: 'none',
   },
-})
+}))
 
 const CheckboxInput = styled(Checkbox, {
   name: 'MuiCustomImage',
@@ -46,10 +46,7 @@ const Image = styled('img', {
 })
 
 const CustomCheckboxImg = (props: CustomInputImgProps) => {
-  // Props
   const { type, data, name, selected, gridProps, handleChange, color = 'primary' } = props
-
-  // Vars
   const { alt, img, value } = data
 
   const renderComponent = () => {

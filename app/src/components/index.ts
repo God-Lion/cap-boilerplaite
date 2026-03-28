@@ -1,6 +1,0 @@
-export { Alert, Copyright } from '@cap/platform-core'
-export { default as DashboardItem } from './DashboardItem'
-export { default as DropZone } from './DropZone'
-// export { Footer, PublicNavbar as Navbar, GuestNavbar } from '@cap/layout'
-export { default as PrivateRoute } from './PrivateRoute'
-export { default as Providers } from '../Providers'

@@ -6,7 +6,7 @@ import {
 } from '@simplewebauthn/browser'
 import { mfaService } from '../../services/mfa.service'
 import { useAuthStore } from '@cap/module-auth/modules/authentication-core/store'
-import { secureTokenManager, Session } from '@cap/platform-core'
+import { secureTokenManager, sessionStorageManager } from '@cap/platform-core'
 
 /**
  * Hook to implement WebAuthn Conditional UI (Passkey Autofill)
@@ -80,8 +80,7 @@ export function usePasskeyAutofill(onSuccess?: () => void) {
           }
 
           try {
-            const session = new Session()
-            session.write('user', verifyResponse.data.user)
+            sessionStorageManager.set('user', verifyResponse.data.user)
           } catch (storageErr) {
             console.warn('[usePasskeyAutofill] Storage error:', storageErr)
           }

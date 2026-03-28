@@ -1,5 +1,5 @@
 import React from 'react'
-// import { useTheme } from '@mui/material/styles'
+// import { useTheme } from '@cap/theme'
 import classnames from 'classnames'
 import type { CSSObject } from '@emotion/styled'
 import type { BreakpointType } from '../../types'
@@ -12,7 +12,7 @@ import StyledVerticalNav from '../../styles/vertical/StyledVerticalNav'
 import StyledVerticalNavContainer from '../../styles/vertical/StyledVerticalNavContainer'
 import StyledVerticalNavBgColorContainer from '../../styles/vertical/StyledVerticalNavBgColorContainer'
 import { defaultBreakpoints, verticalNavToggleDuration } from '../../defaultConfigs'
-// import { Drawer } from '@mui/material'
+// import { Drawer } from '@cap/theme'
 
 export type VerticalNavProps = React.HTMLAttributes<HTMLHtmlElement> & {
   width?: VerticalNavState['width']

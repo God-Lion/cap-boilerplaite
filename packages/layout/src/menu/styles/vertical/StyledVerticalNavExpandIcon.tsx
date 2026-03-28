@@ -1,4 +1,4 @@
-import styled from '@emotion/styled'
+import { styled } from '@cap/theme'
 import type { RootStylesType } from '../../types'
 import type { VerticalMenuContextProps } from '../../contexts/verticalMenuContext'
 
@@ -7,19 +7,25 @@ type StyledVerticalNavExpandIconProps = {
   transitionDuration?: VerticalMenuContextProps['transitionDuration']
 }
 
-export const StyledVerticalNavExpandIconWrapper = styled.span<RootStylesType>`
+export const StyledVerticalNavExpandIconWrapper = styled('span')<RootStylesType>`
   display: flex;
   margin-inline-start: 5px;
-  ${({ rootStyles }) => rootStyles};
+  ${({ rootStyles }: RootStylesType) => rootStyles}
 `
 
-const StyledVerticalNavExpandIcon = styled.span<StyledVerticalNavExpandIconProps>`
+export const StyledVerticalNavExpandIcon = styled('span')<
+StyledVerticalNavExpandIconProps>`
   display: flex;
 
   & > i,
   & > svg {
-    transition: ${({ transitionDuration }) => `transform ${transitionDuration}ms ease-in-out`};
-    ${({ open }) => open && 'transform: rotate(90deg);'}
+    transition: ${({ transitionDuration }: StyledVerticalNavExpandIconProps) =>
+    `transform ${transitionDuration}ms ease-in-out`};
+  ${({ open }: StyledVerticalNavExpandIconProps) =>
+    open &&
+    `
+    transform: rotate(90deg);
+  `}
   }
 
   [dir='rtl'] & > i,

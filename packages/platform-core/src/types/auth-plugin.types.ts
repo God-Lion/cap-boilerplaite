@@ -1,5 +1,5 @@
 import { ReactNode, ComponentType } from 'react'
-import { Dictionary } from './core-types'
+import type { Dictionary } from '@cap/shared-types'
 
 /**
  * Interface for Identity Extensions (MFA, Passwordless, etc.)

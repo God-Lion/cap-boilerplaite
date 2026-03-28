@@ -10,24 +10,24 @@ const Root = styled('div', {
   blockSize: '100%',
   display: 'flex',
   gap: theme.spacing(1),
-  borderRadius: 'var(--mui-shape-borderRadius)',
+  borderRadius: theme.shape.borderRadius,
   cursor: 'pointer',
   position: 'relative',
   alignItems: 'flex-start',
-  border: '1px solid var(--mui-palette-customColors-inputBorder)',
+  border: `1px solid ${theme.palette.customColors.inputBorder}`,
   padding: theme.spacing(4),
-  color: 'var(--mui-palette-text-primary)',
+  color: theme.palette.text.primary,
   transition: theme.transitions.create(['border-color'], {
     duration: theme.transitions.duration.shorter,
   }),
 
   '&:hover': {
-    borderColor: 'var(--mui-palette-action-active)',
+    borderColor: theme.palette.action.active,
   },
   '&.active': {
-    borderColor: 'var(--mui-palette-primary-main)',
+    borderColor: theme.palette.primary.main,
     '& i, & svg': {
-      color: 'var(--mui-palette-primary-main) !important',
+      color: `${theme.palette.primary.main} !important`,
     },
   },
 }))
@@ -37,7 +37,7 @@ const Title = styled(Typography, {
   slot: 'title',
 })(({ theme }) => ({
   fontWeight: theme.typography.fontWeightMedium,
-  color: 'var(--mui-palette-text-primary) !important',
+  color: `${theme.palette.text.primary} !important`,
 }))
 
 const Meta = styled(Typography, {
@@ -45,7 +45,7 @@ const Meta = styled(Typography, {
   slot: 'meta',
 })(({ theme }) => ({
   ...theme.typography.body2,
-  color: 'var(--mui-palette-text-disabled) !important',
+  color: `${theme.palette.text.disabled} !important`,
 }))
 
 const Content = styled(Typography, {
@@ -72,10 +72,7 @@ const CheckboxInput = styled(Checkbox, {
 }))
 
 const CustomInputHorizontal = (props: CustomInputHorizontalProps) => {
-  // Props
   const { type, data, name, selected, gridProps, handleChange, color = 'primary' } = props
-
-  // Vars
   const { meta, title, value, content } = data
 
   const renderData = () => {

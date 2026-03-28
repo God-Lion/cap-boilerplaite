@@ -1,4 +1,4 @@
-import type { IQuery, ITableData } from '../components/table/types'
+import { type IQuery, type ITableData } from '@cap/shared-types'
 
 export default class Filters {
   static search(data: ITableData, query: string | IQuery): ITableData {

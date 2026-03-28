@@ -2,54 +2,25 @@ import type { Theme } from '@mui/material/styles'
 import type {} from '@mui/lab/themeAugmentation'
 import '../types/mui.d.ts'
 
-import type { Settings } from '../contexts/settingsContext'
-import type { SystemMode, Skin } from '../types'
+import type { SystemMode, Skin, Settings } from '../types'
 
 // Theme Options Imports
-import overrides from './overrides'
-import colorSchemes from './colorSchemes'
+import { coreOverrides } from '@cap/theme'
+// colorSchemes removed — not used in static theme mode (MUI v6 processes this
+// key by calling alpha() internally for CSS variable generation, which crashes)
 import spacing from './spacing'
 import shadows from './shadows'
 import customShadows from './customShadows'
-import { zIndexScale } from './zIndex'
+import { zIndexScale } from '@cap/theme'
 
-// import typography from './typography'
-
-// const public_sans = Public_Sans({
-//   subsets: ['latin'],
-//   weight: ['300', '400', '500', '600', '700', '800', '900'],
-// })
-
-// const defaultCoreTheme = (
-//   settings: Settings,
-//   mode: SystemMode,
-//   direction: Theme['direction'],
-// ): Theme => {
-//   return {
-//     direction,
-//     components: overrides(settings.skin as Skin),
-//     colorSchemes: colorSchemes(settings.skin as Skin),
-//     ...spacing,
-//     shape: themeConfig.shape,
-//     shadows: shadows(mode),
-//     // typography: typography(public_sans.style.fontFamily),
-//     customShadows: customShadows(mode),
-//     mainColorChannels: {
-//       light: '47 43 61',
-//       dark: '225 222 245',
-//       lightShadow: '47 43 61',
-//       darkShadow: '19 17 32',
-//     },
-//   } as unknown as Theme
-// }
-
-// export default defaultCoreTheme
 
 const theme = (settings: Settings, mode: SystemMode, direction: Theme['direction']): Theme => {
   return {
     direction,
-    components: overrides(settings.skin as Skin),
-    colorSchemes: colorSchemes(settings.skin as Skin),
+    components: coreOverrides(settings.skin as Skin),
+    // NOTE: colorSchemes intentionally omitted — MUI v6 processes that key by running
+    // alpha() on palette entries for CSS variable generation, which crashes in static
+    // (non-cssVariables) mode. Palette opacity tokens are added via composeMuiTheme.
     ...spacing,
     shape: {
       borderRadius: 6,

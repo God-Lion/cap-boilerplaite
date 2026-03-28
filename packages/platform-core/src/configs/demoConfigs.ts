@@ -1,4 +1,4 @@
-import type { Settings } from '../contexts/settingsContext'
+import type { Settings } from '@cap/shared-types'
 
 const demoConfigs: { [key: string]: Settings } = {
   'demo-1': {

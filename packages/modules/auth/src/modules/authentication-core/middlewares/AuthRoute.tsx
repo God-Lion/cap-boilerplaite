@@ -2,7 +2,7 @@ import React, { Suspense, type ReactNode } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Backdrop, CircularProgress, Alert, Box, Button } from '@mui/material'
 import { Roles, useAppStore, type LayoutOverride } from '@cap/platform-core'
-import { useSessionGuard } from '@idaas/session-manager/middlewares/useSessionGuard'
+import { useSessionGuard } from '../../session-manager/middlewares/useSessionGuard'
 import { Path } from '@auth/routes/path'
 import { normalizeAuthUser } from '../utils/normalizeAuthUser'
 

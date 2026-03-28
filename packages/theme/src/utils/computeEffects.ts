@@ -58,6 +58,105 @@ export const getGlassmorphismStyles = (config: {
   };
 };
 
+export const getBrutalismStyles = (config: {
+  borderWidth?: string;
+  borderColor?: string;
+  shadowOffset?: string;
+  shadowColor?: string;
+  backgroundColor?: string;
+}) => {
+  const {
+    borderWidth = '2px',
+    borderColor = '#000000',
+    shadowOffset = '4px',
+    shadowColor = '#000000',
+    backgroundColor = '#ffffff',
+  } = config;
+
+  return {
+    border: `${borderWidth} solid ${borderColor}`,
+    boxShadow: `${shadowOffset} ${shadowOffset} 0px 0px ${shadowColor}`,
+    backgroundColor: backgroundColor,
+  };
+};
+
+export const getBentoStyles = (config: {
+  borderRadius?: string;
+  background?: string;
+  borderWidth?: string;
+  borderColor?: string;
+  shadow?: string;
+}) => {
+  const {
+    borderRadius = '24px',
+    background = 'rgba(255, 255, 255, 0.8)',
+    borderWidth = '1px',
+    borderColor = 'rgba(0, 0, 0, 0.05)',
+    shadow = '0 4px 12px rgba(0, 0, 0, 0.05)',
+  } = config;
+
+  return {
+    borderRadius: borderRadius,
+    background: background,
+    border: `${borderWidth} solid ${borderColor}`,
+    boxShadow: shadow,
+  };
+};
+
+export const getOrganicStyles = (config: {
+  curvature?: number;
+  fluidity?: number;
+  backgroundColor?: string;
+  borderColor?: string;
+  borderWidth?: string;
+}) => {
+  const {
+    curvature = 80,
+    fluidity = 50,
+    backgroundColor = '#ffffff',
+    borderColor = 'transparent',
+    borderWidth = '0px',
+  } = config;
+
+  // Ultra-rounded, curvy, fluid look using border-radius and smooth easing
+  const radius = curvature > 50 ? `${curvature}% ${100 - curvature}%` : `${curvature}px`;
+  
+  return {
+    borderRadius: radius,
+    background: backgroundColor,
+    border: `${borderWidth} solid ${borderColor}`,
+    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    filter: fluidity > 0 ? `blur(${fluidity / 50}px)` : 'none',
+  };
+};
+
+export const getImmersiveStyles = (config: {
+  perspective?: string;
+  rotationX?: string;
+  rotationY?: string;
+  depth?: number;
+  shadowColor?: string;
+}) => {
+  const {
+    perspective = '1000px',
+    rotationX = '0deg',
+    rotationY = '0deg',
+    depth = 20,
+    shadowColor = 'rgba(0,0,0,0.2)',
+  } = config;
+
+  // Deep 3D perspective and layered shadows
+  return {
+    perspective: perspective,
+    transform: `rotateX(${rotationX}) rotateY(${rotationY})`,
+    boxShadow: `
+      0 ${depth / 4}px ${depth / 2}px ${shadowColor},
+      0 ${depth}px ${depth * 1.5}px ${shadowColor}
+    `,
+    transition: 'transform 0.3s ease-out, box-shadow 0.3s ease-out',
+  };
+};
+
 export const interpolateColor = (color1: string, color2: string, factor: number): string => {
   const hex1 = color1.replace('#', '');
   const hex2 = color2.replace('#', '');

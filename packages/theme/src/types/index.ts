@@ -1,5 +1,5 @@
-import type { PrimitiveTokens, SemanticTokens } from './designTokens';
-import type { EffectConfig, ComputedNeumorphismShadow } from './effects';
+import type { PrimitiveTokens } from './designTokens';
+import type { EffectConfig } from './effects';
 import type { ComponentStyles } from './componentStyles';
 import type { ThemePresetId } from './presets';
 
@@ -8,6 +8,10 @@ export * from './effects';
 export * from './componentStyles';
 export * from './presets';
 export * from './menu';
+
+// Styled component prop types are re-exported from './styled' module
+// Import them from '@cap/theme' or './styled' directly
+// The styledProps.ts file is kept for documentation and internal use
 
 export interface TenantThemeConfig {
   id?: string;
@@ -26,20 +30,31 @@ export interface TenantThemeConfig {
   };
 }
 
-export interface TenantThemeContextValue {
+export interface TenantThemeState {
   theme: TenantThemeConfig | null;
+}
+
+export interface TenantThemeStatus {
   isLoading: boolean;
   error: string | null;
+}
+
+export interface TenantThemeActions {
   refetch: () => Promise<void>;
   updateTheme: (updates: Partial<TenantThemeConfig>) => Promise<void>;
   saveTheme: (theme: TenantThemeConfig) => Promise<void>;
 }
 
+export interface TenantThemeContextValue extends TenantThemeState, TenantThemeStatus, TenantThemeActions {}
+
 export interface TenantThemeProviderProps {
   children: React.ReactNode;
-  organizationId?: string;
-  initialTheme?: TenantThemeConfig | null;
-  apiEndpoint?: string;
+  theme?: TenantThemeConfig | null;
+  isLoading?: boolean;
+  error?: string | null;
+  refetch?: () => Promise<void>;
+  updateTheme?: (updates: Partial<TenantThemeConfig>) => Promise<void>;
+  saveTheme?: (theme: TenantThemeConfig) => Promise<void>;
 }
 
 export interface CSSVariableMap {
@@ -50,18 +65,63 @@ export interface AppliedThemeVariables {
   colors: CSSVariableMap;
   spacing: CSSVariableMap;
   borderRadius: CSSVariableMap;
+  typography: CSSVariableMap;
   effects: CSSVariableMap;
   components: CSSVariableMap;
 }
+
+declare module '@mui/material/styles' {
+  interface Theme {
+    customShadows: {
+      z1?: string;
+      z8?: string;
+      z16?: string;
+      z20?: string;
+      z24?: string;
+      xs?: string;
+      sm?: string;
+      md?: string;
+      lg?: string;
+      xl?: string;
+      primary?: string | { sm?: string; md?: string; lg?: string };
+      secondary?: string | { sm?: string; md?: string; lg?: string };
+      error?: string | { sm?: string; md?: string; lg?: string };
+      warning?: string | { sm?: string; md?: string; lg?: string };
+      info?: string | { sm?: string; md?: string; lg?: string };
+      success?: string | { sm?: string; md?: string; lg?: string };
+    };
+  }
+  interface ThemeOptions {
+    customShadows?: {
+      z1?: string;
+      z8?: string;
+      z16?: string;
+      z20?: string;
+      z24?: string;
+      xs?: string;
+      sm?: string;
+      md?: string;
+      lg?: string;
+      xl?: string;
+      primary?: string | { sm?: string; md?: string; lg?: string };
+      secondary?: string | { sm?: string; md?: string; lg?: string };
+      error?: string | { sm?: string; md?: string; lg?: string };
+      warning?: string | { sm?: string; md?: string; lg?: string };
+      info?: string | { sm?: string; md?: string; lg?: string };
+      success?: string | { sm?: string; md?: string; lg?: string };
+    };
+  }
+}
+
 
 export const DEFAULT_THEME_CONFIG: TenantThemeConfig = {
   organizationId: 'default',
   name: 'Default Theme',
   tokens: {
     colors: {
-      primary: { value: '#6366f1' },
-      secondary: { value: '#8b5cf6' },
-      background: { value: '#f8fafc' },
+      primary: { value: '#D4AF37' },
+      secondary: { value: '#8B4513' },
+      background: { value: '#F5F5DC' },
       surface: { value: '#ffffff' },
       text: { value: '#0f172a' },
       textMuted: { value: '#64748b' },
@@ -114,6 +174,37 @@ export const DEFAULT_THEME_CONFIG: TenantThemeConfig = {
         relaxed: '1.75',
       },
     },
+    shadows: {
+      xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      sm: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+      md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+      lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+    },
+    transitions: {
+      duration: {
+        shortest: '150ms',
+        shorter: '200ms',
+        short: '250ms',
+        standard: '300ms',
+        complex: '375ms',
+        enteringScreen: '225ms',
+        leavingScreen: '195ms',
+      },
+      easing: {
+        easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        easeOut: 'cubic-bezier(0.0, 0, 0.2, 1)',
+        easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+        sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
+      },
+    },
+    zIndex: {
+      appBar: 1100,
+      drawer: 1200,
+      modal: 1300,
+      snackbar: 1400,
+      tooltip: 1500,
+    },
   },
   effects: {
     globalType: 'standard',
@@ -142,6 +233,13 @@ export const DEFAULT_THEME_CONFIG: TenantThemeConfig = {
     footer: { style: 'global' },
     modal: { style: 'global' },
     drawer: { style: 'global' },
+    stepper: { style: 'global' },
+    table: { style: 'global' },
+    tabs: { style: 'global' },
+    nav: { style: 'global' },
   },
   version: '1.0.0',
 };
+
+// Backward-compatible alias for existing consumers that still import the old name.
+export const DEFAULT_TENANT_THEME = DEFAULT_THEME_CONFIG;

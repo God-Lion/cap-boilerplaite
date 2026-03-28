@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import i18next from 'i18next'
-import { CAPModule, NavItemConfig, SearchItemConfig } from '../types'
+import { CAPModule, SearchItemConfig } from '../types'
 import { useAppStore } from '../store'
 
 interface AssembleAppProps {
@@ -41,9 +41,11 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   // Reset registries on every call (useful for HMR or multiple assemblies)
   _modules.length = 0
   _modules.push(...modules)
+  _searchItems.length = 0
 
   // Sync with reactive store
   useAppStore.getState().clearNavigation()
+  const seenSearchIds = new Set<string>()
 
   // Register module i18n resources
   modules.forEach((module) => {
@@ -56,6 +58,15 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
 
     if (module.navItems) {
       useAppStore.getState().registerModuleNavigation(module.navItems)
+    }
+
+    if (module.searchItems) {
+      module.searchItems.forEach((item) => {
+        if (!seenSearchIds.has(item.id)) {
+          seenSearchIds.add(item.id)
+          _searchItems.push(item)
+        }
+      })
     }
   })
 

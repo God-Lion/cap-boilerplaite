@@ -1,4 +1,4 @@
-import { CAPModule } from '@cap/platform-core'
+import type { CAPModule } from '@cap/shared-types'
 import { userRouteConfig, UserRoutes } from './routes/routes'
 import Path from './routes/path'
 import { registerDictionary, getMergedDictionary } from './domain-kernel/src/i18n/registry'

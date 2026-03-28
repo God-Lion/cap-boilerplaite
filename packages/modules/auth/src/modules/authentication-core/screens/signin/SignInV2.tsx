@@ -131,10 +131,10 @@ export default function SignInV2() {
 
       // Determine redirect path based on role
       const userData = response?.data?.user || response?.data
-      const userRole = userData?.role as Roles
+      const userRole = userData?.role as unknown as Roles | undefined
 
       let redirectPath = '/auth/account'
-      const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+      const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
 
       if (userRole && ADMIN_ROLES.includes(userRole)) {
         redirectPath = Path.admin.users
@@ -200,7 +200,7 @@ export default function SignInV2() {
         const userRole = userData?.role || userData?.user?.role
 
         let redirectPath = '/auth/account'
-        const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+        const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
 
         if (ADMIN_ROLES.includes(userRole as any)) {
           redirectPath = Path.admin.users
@@ -237,7 +237,7 @@ export default function SignInV2() {
         const userRole = (userData?.role || userData?.user?.role) as Roles
 
         let redirectPath = '/auth/account'
-        const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+        const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
 
         if (userRole && ADMIN_ROLES.includes(userRole)) {
           redirectPath = Path.admin.users
@@ -273,7 +273,7 @@ export default function SignInV2() {
       const userRole = (userData?.role || userData?.user?.role) as Roles
 
       let redirectPath = '/auth/account'
-      const ADMIN_ROLES = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
+      const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
 
       if (userRole && ADMIN_ROLES.includes(userRole)) {
         redirectPath = Path.admin.users

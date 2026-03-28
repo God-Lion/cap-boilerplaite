@@ -40,6 +40,8 @@
       "@cap/platform-core/*": ["../packages/platform-core/src/*"],
       "@cap/module-civil-registry": ["../packages/modules/civil-registry/src"],
       "@cap/module-civil-registry/*": ["../packages/modules/civil-registry/src/*"],
+      "@cap/shared-types": ["../packages/shared-types/src"],
+      "@cap/shared-types/*": ["../packages/shared-types/src/*"],
       "@auth/authentication-core": ["../packages/modules/auth/src/modules/authentication-core"],
       "@auth/authentication-core/*": ["../packages/modules/auth/src/modules/authentication-core/*"],
       "@auth/authorization-engine": ["../packages/modules/auth/src/modules/authorization-engine"],

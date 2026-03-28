@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@cap/platform-core": "workspace:*",
+    "@cap/theme": "workspace:*",
     "@cap/module-auth": "workspace:*",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",

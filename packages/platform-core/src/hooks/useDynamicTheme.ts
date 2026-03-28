@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { useTenant } from '../contexts/tenantContext'
-import type { TenantTheme, TenantLayout } from '../types/tenant'
+import type { TenantThemeConfig } from '@cap/theme'
+import type { TenantLayout } from '../types/tenant'
 
 export interface DynamicThemeConfig {
-  theme: TenantTheme
+  theme: TenantThemeConfig
   layout: TenantLayout
   userTheme?: 'light' | 'dark' | 'system'
 }
@@ -14,31 +15,29 @@ export const useDynamicTheme = (): DynamicThemeConfig | null => {
   return useMemo(() => {
     if (!tenant) return null
     
-    const effectiveTheme = {
-      ...tenant.theme,
-      mode: userPreferences.theme || tenant.theme.mode,
-    }
-    
     return {
-      theme: effectiveTheme,
+      theme: tenant.theme as TenantThemeConfig,
       layout: tenant.layout,
       userTheme: userPreferences.theme,
     }
   }, [tenant, userPreferences.theme])
 }
 
-export const getThemeColors = (theme: TenantTheme) => {
+export const getThemeColors = (theme: TenantThemeConfig) => {
+  const colors = theme.tokens?.colors;
+  if (!colors) return {}
   return {
-    primary: theme.colors.primary,
-    secondary: theme.colors.secondary,
-    error: theme.colors.error,
-    success: theme.colors.success,
-    warning: theme.colors.warning,
-    info: theme.colors.info,
-    brandGold: theme.colors.brandGold,
-    brandBrown: theme.colors.brandBrown,
-    brandSlate: theme.colors.brandSlate,
-    brandCream: theme.colors.brandCream,
+    primary: colors.primary?.value,
+    secondary: colors.secondary?.value,
+    error: colors.error?.value,
+    success: colors.success?.value,
+    warning: colors.warning?.value,
+    info: colors.info?.value,
+    // Add legacy fallbacks for apps still expecting specific brand colors
+    brandGold: colors.primary?.value,
+    brandBrown: colors.secondary?.value,
+    brandSlate: colors.textMuted?.value,
+    brandCream: colors.background?.value,
   }
 }
 
@@ -55,10 +54,10 @@ export const getLayoutConfig = (layout: TenantLayout) => {
   }
 }
 
-export const getTypographyConfig = (theme: TenantTheme) => {
-  return theme.typography
+export const getTypographyConfig = (theme: TenantThemeConfig) => {
+  return theme.tokens?.typography
 }
 
-export const getShapeConfig = (theme: TenantTheme) => {
-  return theme.shape
+export const getShapeConfig = (theme: TenantThemeConfig) => {
+  return theme.tokens?.borderRadius
 }

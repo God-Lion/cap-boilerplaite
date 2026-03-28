@@ -1,5 +1,4 @@
-import { Box } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { Box, styled } from '@cap/theme'
 import type { BoxProps } from '@mui/material/Box'
 
 const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
@@ -26,24 +25,24 @@ const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
       '& .step-number': {
         ...theme.typography.h4,
         marginRight: theme.spacing(2),
-        color: 'var(--mui-palette-text-primary) !important',
+        color: `${theme.palette.text.primary} !important`,
       },
       '& .step-title': {
         ...theme.typography.body1,
         fontWeight: 500,
-        color: 'var(--mui-palette-text-primary)',
+        color: theme.palette.text.primary,
       },
       '& .step-subtitle': {
         ...theme.typography.body2,
       },
       '& .MuiStepLabel-root.Mui-disabled': {
         '& .step-number': {
-          color: 'var(--mui-palette-text-disabled)',
+          color: theme.palette.text.disabled,
         },
       },
       '& .Mui-error': {
         '& .MuiStepLabel-labelContainer, & .step-number, & .step-title, & .step-subtitle': {
-          color: 'var(--mui-palette-error-main) !important',
+          color: `${theme.palette.error.main} !important`,
         },
       },
     },
@@ -54,11 +53,11 @@ const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
       },
       '&.Mui-active, &.Mui-completed': {
         '& .MuiStepConnector-line': {
-          borderColor: 'var(--mui-palette-primary-main)',
+          borderColor: theme.palette.primary.main,
         },
       },
       '&.Mui-disabled .MuiStepConnector-line': {
-        borderColor: 'var(--mui-palette-primary-lightOpacity)',
+        borderColor: theme.palette.primary.light, // Using light as a fallback for lightOpacity if not explicitly defined in palette
       },
     },
     '& .MuiStepper-alternativeLabel': {
@@ -82,13 +81,13 @@ const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
         '& .MuiStepContent-root': {
           borderInlineStartWidth: 3,
           marginLeft: theme.spacing(2.25),
-          borderColor: 'var(--mui-palette-primary-main)',
+          borderColor: theme.palette.primary.main,
         },
         '& .button-wrapper': {
           marginTop: theme.spacing(4),
         },
         '&.active + .MuiStepConnector-root .MuiStepConnector-line': {
-          borderColor: 'var(--mui-palette-primary-main)',
+          borderColor: theme.palette.primary.main,
         },
       },
       '& .MuiStepConnector-root': {

@@ -1,4 +1,4 @@
-import { Box, Container, Typography, IconButton, Link as HLInk } from '@mui/material'
+import { Box, Container, Typography, IconButton, Link as HLInk } from '@cap/theme'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import FacebookIcon from '@mui/icons-material/Facebook'
@@ -132,6 +132,11 @@ export default function Footer() {
           </IconButton>
         </Box>
 
+        {/* Branding & Description */}
+        <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 480 }}>
+          Enterprise Platform - Build and scale your applications with speed and confidence.
+        </Typography>
+
         {/* Copyright */}
         <Typography
           variant='body2'
@@ -140,8 +145,9 @@ export default function Footer() {
             color: 'text.secondary',
           }}
         >
-          © {new Date().getFullYear()} God Lion Seeker Optimizer. All rights reserved.
+          © {new Date().getFullYear()} Enterprise Platform. All rights reserved.
         </Typography>
+
       </Container>
     </Box>
   )

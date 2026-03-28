@@ -7,13 +7,11 @@ import encryption from '../services/encryption'
 import { createAuthSlice, AuthSlice } from './slices/authSlice'
 import { onTerminalError } from '../services/api/api.client'
 import { createGuestSlice, GuestSlice } from './slices/guestSlice'
-import { createJobsSlice, JobsSlice } from './slices/jobsSlice'
 import { createProfileSlice, ProfileSlice } from './slices/profileSlice'
 import { createNotificationSlice, NotificationSlice } from './slices/notificationSlice'
 import { createPreferencesSlice, PreferencesSlice } from './slices/preferences/preferences'
 import { createSettingsSlice, SettingsSlice, LayoutOverride } from './slices/settingsSlice'
 import { createNavigationSlice, NavigationSlice } from './slices/navigationSlice'
-import { createThemeSlice, ThemeSlice } from './slices/themeSlice'
 import { createNetworkSlice, NetworkSlice } from './slices/networkSlice'
 import { createOfflineQueueSlice, OfflineQueueSlice } from './slices/offlineQueueSlice'
 
@@ -21,13 +19,11 @@ export type { LayoutOverride }
 
 export type AppStore = AuthSlice &
   GuestSlice &
-  JobsSlice &
   ProfileSlice &
   NotificationSlice &
   PreferencesSlice &
   SettingsSlice &
   NavigationSlice &
-  ThemeSlice &
   NetworkSlice &
   OfflineQueueSlice
 
@@ -86,12 +82,13 @@ const secureStorage = {
     if (!value) return null
 
     // Check if this is a key we want to decrypt
-    if (name === 'god-lion-seeker-optimizer-storage') {
+    const storageKey = (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
+    if (name === storageKey) {
       try {
         // Attempt to decrypt
         const masterKey =
           (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY ||
-          'god-lion-default-secure-key-2025'
+          'cap-platform-default-secure-key'
         const decrypted = await encryption.decryptData(value, masterKey)
         console.log(
           '[secureStorage] decryption success. Content:',
@@ -108,10 +105,11 @@ const secureStorage = {
   },
   setItem: async (name: string, value: string): Promise<void> => {
     console.log('[secureStorage] setItem called for:', name)
-    if (name === 'god-lion-seeker-optimizer-storage') {
+    const storageKey = (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
+    if (name === storageKey) {
       console.log('[secureStorage] payload to encrypt:', value.substring(0, 100) + '...')
       const masterKey =
-        (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'god-lion-default-secure-key-2025'
+        (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'cap-platform-default-secure-key'
       const encrypted = await encryption.encryptData(value, masterKey)
       localStorage.setItem(name, encrypted)
     } else {
@@ -140,18 +138,16 @@ export const useAppStore = create<AppStore>()(
       immer((...args) => ({
         ...createAuthSlice(...args),
         ...createGuestSlice(...args),
-        ...createJobsSlice(...args),
         ...createProfileSlice(...args),
         ...createNotificationSlice(...args),
         ...createPreferencesSlice(...args),
         ...createSettingsSlice(...args),
         ...createNavigationSlice(...args),
-        ...createThemeSlice(...args),
         ...createNetworkSlice(...args),
         ...createOfflineQueueSlice(...args),
       })),
       {
-        name: 'god-lion-seeker-optimizer-storage',
+        name: (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage',
         storage: createJSONStorage(() => secureStorage as any),
         onRehydrateStorage: (_state) => {
           console.log('[useAppStore] hydration started')
@@ -190,19 +186,21 @@ export const useAppStore = create<AppStore>()(
           // But partialize returns { auth: { user, isAuthenticated } }.
           // So we MUST flatten it back.
 
+          const settings = {
+            ...(currentState.settings || {}),
+            ...(persistedState.settings || {}),
+          };
+
           return {
             ...currentState,
-            ...persistedState, // If there are any top level keys
-            ...(persistedState.auth || {}), // Flatten auth
+            ...persistedState,
+            ...(persistedState.auth || {}),
             preferences: {
               ...(currentState.preferences || {}),
               ...(persistedState.preferences || {}),
             },
-            settings: {
-              ...(currentState.settings || {}),
-              ...(persistedState.settings || {}),
-            },
-            mode: persistedState.theme?.mode || currentState.mode, // Flatten theme
+            settings,
+            mode: settings.mode || persistedState.theme?.mode || currentState.mode,
             offlineQueue: persistedState.offlineQueue || currentState.offlineQueue,
           }
         },
@@ -214,15 +212,12 @@ export const useAppStore = create<AppStore>()(
           },
           preferences: state.preferences,
           settings: state.settings,
-          theme: {
-            mode: state.mode,
-          },
           offlineQueue: state.offlineQueue,
         }),
       },
     ),
     {
-      name: 'God Lion Seeker Optimizer Store',
+      name: (import.meta as any).env?.VITE_APP_NAME || 'cap-platform-store',
       enabled: process.env.NODE_ENV === 'development',
       anonymousActionType: 'zustand/action',
       serialize: { options: true },
@@ -248,7 +243,7 @@ onTerminalError(() => {
   }
 })
 
-export const useAuth = () => {
+export const useAuthStore = () => {
   const user = useAppStore((state) => state.user)
   const isAuthenticated = useAppStore((state) => state.isAuthenticated)
   const isAdmin = useAppStore((state) => state.isAdmin)
@@ -304,41 +299,6 @@ export const useGuest = () => {
   }
 }
 
-export const useJobs = () => {
-  const jobs = useAppStore((state) => state.jobs)
-  const savedJobs = useAppStore((state) => state.savedJobs)
-  const applications = useAppStore((state) => state.applications)
-  const searchFilters = useAppStore((state) => state.searchFilters)
-  const pagination = useAppStore((state) => state.pagination)
-  const setJobs = useAppStore((state) => state.setJobs)
-  const addJob = useAppStore((state) => state.addJob)
-  const updateJob = useAppStore((state) => state.updateJob)
-  const deleteJob = useAppStore((state) => state.deleteJob)
-  const saveJob = useAppStore((state) => state.saveJob)
-  const unsaveJob = useAppStore((state) => state.unsaveJob)
-  const addApplication = useAppStore((state) => state.addApplication)
-  const updateApplication = useAppStore((state) => state.updateApplication)
-  const setSearchFilters = useAppStore((state) => state.setSearchFilters)
-  const resetSearchFilters = useAppStore((state) => state.resetSearchFilters)
-
-  return {
-    jobs,
-    savedJobs,
-    applications,
-    searchFilters,
-    pagination,
-    setJobs,
-    addJob,
-    updateJob,
-    deleteJob,
-    saveJob,
-    unsaveJob,
-    addApplication,
-    updateApplication,
-    setSearchFilters,
-    resetSearchFilters,
-  }
-}
 
 export const useProfile = () => {
   const profiles = useAppStore((state) => state.profiles)
@@ -406,7 +366,8 @@ export const useSettings = () => {
   }
 }
 
-export const useVerticalNav = () => {
+/** @deprecated Use useVerticalNav from @cap/layout */
+export const useVerticalNavStore = () => {
   const verticalNav = useAppStore((state) => state.verticalNav)
   const updateVerticalNavState = useAppStore((state) => state.updateVerticalNavState)
   const collapseVerticalNav = useAppStore((state) => state.collapseVerticalNav)
@@ -422,7 +383,8 @@ export const useVerticalNav = () => {
   }
 }
 
-export const useHorizontalNav = () => {
+/** @deprecated Use useHorizontalNav from @cap/layout */
+export const useHorizontalNavStore = () => {
   const horizontalNav = useAppStore((state) => state.horizontalNav)
   const updateIsBreakpointReached = useAppStore((state) => state.updateIsBreakpointReached)
 
@@ -433,7 +395,7 @@ export const useHorizontalNav = () => {
 }
 
 export const useTheme = () => {
-  const mode = useAppStore((state) => state.mode)
+  const mode = useAppStore((state) => state.settings.mode)
   const toggleColorMode = useAppStore((state) => state.toggleColorMode)
   const setMode = useAppStore((state) => state.setMode)
 

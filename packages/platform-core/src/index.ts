@@ -3,9 +3,7 @@ import './types/pwa.d.ts'
 import './types/mui.d.ts'
 
 export { default as defaultCoreTheme } from './theme'
-export { zIndexScale } from './theme/zIndex'
-export { default as GlobalZIndexStyles } from './theme/GlobalZIndexStyles'
-export { SettingsProvider, useSettingsLegacy, type Settings } from './contexts/settingsContext'
+export type { Settings } from '@cap/shared-types'
 export * from './types'
 export * from './services'
 export * from './i18n/i18n'
@@ -15,6 +13,7 @@ export * from './components'
 
 export * from './utils'
 export * from './assembly'
+export { default as useObjectCookie } from './hooks/useObjectCookie'
 export * from './hooks/usePermissions'
 export { TenantProvider, useTenant } from './contexts/tenantContext'
 export * from './contexts/tenantContext'
@@ -22,4 +21,9 @@ export * from './hooks/useDynamicTheme'
 export * from './services/tenantService'
 export * from './types/tenant'
 export * from './hooks/useNetworkSync'
+export * from './hooks/useAuth'
 export * from './hooks/useNavigation'
+
+// Plugin Registry
+export * from './registry/PluginRegistry'
+

@@ -14,8 +14,8 @@ export default function AdaptiveLogo({ width = 80, height = 80, sx }: AdaptiveLo
   return (
     <Box
       component='img'
-      src='/godlion_seeker_logo.svg'
-      alt='God Lion Seeker Logo'
+      src='/platform_logo.svg'
+      alt='Platform Logo'
       sx={{
         width,
         height,

@@ -1,6 +1,6 @@
 import { apiClient, ENDPOINTS } from './api/api.client'
 import type { TenantConfig, UserPreferences } from '../types/tenant'
-import { DEFAULT_TENANT_CONFIG } from '../types/tenant'
+import { DEFAULT_TENANT_CONFIG, DEFAULT_TENANT_THEME } from '../types/tenant'
 
 const TENANT_CACHE_KEY = 'tenant-config-cache'
 const TENANT_VERSION_KEY = 'tenant-version'
@@ -25,66 +25,12 @@ const mockTenants: Record<string, TenantConfig> = {
     domain: 'tenant1.localhost',
     name: 'Acme Corp',
     theme: {
+      ...DEFAULT_TENANT_THEME,
       mode: 'light',
       skin: 'default',
       semiDark: false,
       primaryColor: '#1976D2',
       secondaryColor: '#455A64',
-      colors: {
-        primary: {
-          main: '#1976D2',
-          light: '#42A5F5',
-          dark: '#1565C0',
-          contrastText: '#FFF',
-        },
-        secondary: {
-          main: '#455A64',
-          light: '#607D8B',
-          dark: '#37474F',
-          contrastText: '#FFF',
-        },
-        error: {
-          main: '#D32F2F',
-          light: '#EF5350',
-          dark: '#C62828',
-          contrastText: '#FFF',
-        },
-        success: {
-          main: '#388E3C',
-          light: '#66BB6A',
-          dark: '#2E7D32',
-          contrastText: '#FFF',
-        },
-        warning: {
-          main: '#F57C00',
-          light: '#FFB74D',
-          dark: '#EF6C00',
-          contrastText: '#FFF',
-        },
-        info: {
-          main: '#0288D1',
-          light: '#03A9F4',
-          dark: '#0277BD',
-          contrastText: '#FFF',
-        },
-        brandGold: '#FFC107',
-        brandBrown: '#795548',
-        brandSlate: '#607D8B',
-        brandCream: '#FFF8E1',
-      },
-      shape: {
-        borderRadius: 8,
-        customBorderRadius: { xs: 4, sm: 6, md: 8, lg: 10, xl: 12 },
-      },
-      typography: {
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        h1: { fontWeight: 700 },
-        h2: { fontWeight: 700 },
-        h3: { fontWeight: 600 },
-        h4: { fontWeight: 600 },
-        h5: { fontWeight: 600 },
-        h6: { fontWeight: 600 },
-      },
     },
     layout: {
       layout: 'vertical',
@@ -117,66 +63,12 @@ const mockTenants: Record<string, TenantConfig> = {
     domain: 'tenant2.localhost',
     name: 'TechStart Inc',
     theme: {
+      ...DEFAULT_TENANT_THEME,
       mode: 'dark',
       skin: 'bordered',
       semiDark: true,
       primaryColor: '#7C4DFF',
       secondaryColor: '#00BCD4',
-      colors: {
-        primary: {
-          main: '#7C4DFF',
-          light: '#B388FF',
-          dark: '#651FFF',
-          contrastText: '#FFF',
-        },
-        secondary: {
-          main: '#00BCD4',
-          light: '#4DD0E1',
-          dark: '#00ACC1',
-          contrastText: '#000',
-        },
-        error: {
-          main: '#F44336',
-          light: '#EF5350',
-          dark: '#E53935',
-          contrastText: '#FFF',
-        },
-        success: {
-          main: '#4CAF50',
-          light: '#81C784',
-          dark: '#43A047',
-          contrastText: '#FFF',
-        },
-        warning: {
-          main: '#FF9800',
-          light: '#FFB74D',
-          dark: '#F57C00',
-          contrastText: '#000',
-        },
-        info: {
-          main: '#00BCD4',
-          light: '#4DD0E1',
-          dark: '#00ACC1',
-          contrastText: '#000',
-        },
-        brandGold: '#FFD54F',
-        brandBrown: '#8D6E63',
-        brandSlate: '#78909C',
-        brandCream: '#263238',
-      },
-      shape: {
-        borderRadius: 12,
-        customBorderRadius: { xs: 6, sm: 8, md: 12, lg: 16, xl: 20 },
-      },
-      typography: {
-        fontFamily: '"Inter", "Segoe UI", sans-serif',
-        h1: { fontWeight: 800 },
-        h2: { fontWeight: 700 },
-        h3: { fontWeight: 700 },
-        h4: { fontWeight: 600 },
-        h5: { fontWeight: 600 },
-        h6: { fontWeight: 600 },
-      },
     },
     layout: {
       layout: 'horizontal',
@@ -209,66 +101,12 @@ const mockTenants: Record<string, TenantConfig> = {
     domain: 'tenant3.localhost',
     name: 'Green Eco',
     theme: {
+      ...DEFAULT_TENANT_THEME,
       mode: 'light',
       skin: 'default',
       semiDark: false,
       primaryColor: '#2E7D32',
       secondaryColor: '#00897B',
-      colors: {
-        primary: {
-          main: '#2E7D32',
-          light: '#4CAF50',
-          dark: '#1B5E20',
-          contrastText: '#FFF',
-        },
-        secondary: {
-          main: '#00897B',
-          light: '#26A69A',
-          dark: '#00695C',
-          contrastText: '#FFF',
-        },
-        error: {
-          main: '#C62828',
-          light: '#EF5350',
-          dark: '#B71C1C',
-          contrastText: '#FFF',
-        },
-        success: {
-          main: '#2E7D32',
-          light: '#4CAF50',
-          dark: '#1B5E20',
-          contrastText: '#FFF',
-        },
-        warning: {
-          main: '#F9A825',
-          light: '#FFD54F',
-          dark: '#F57F17',
-          contrastText: '#000',
-        },
-        info: {
-          main: '#0277BD',
-          light: '#29B6F6',
-          dark: '#01579B',
-          contrastText: '#FFF',
-        },
-        brandGold: '#AED581',
-        brandBrown: '#5D4037',
-        brandSlate: '#455A64',
-        brandCream: '#F1F8E9',
-      },
-      shape: {
-        borderRadius: 4,
-        customBorderRadius: { xs: 2, sm: 4, md: 6, lg: 8, xl: 10 },
-      },
-      typography: {
-        fontFamily: '"Nunito", "Verdana", sans-serif',
-        h1: { fontWeight: 700 },
-        h2: { fontWeight: 600 },
-        h3: { fontWeight: 600 },
-        h4: { fontWeight: 600 },
-        h5: { fontWeight: 500 },
-        h6: { fontWeight: 500 },
-      },
     },
     layout: {
       layout: 'collapsed',

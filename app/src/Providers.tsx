@@ -7,16 +7,14 @@ import i18next from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { BrowserRouter } from 'react-router-dom'
 import {
-  getDemoName,
-  getMode,
-  getSettingsFromCookie,
-  SettingsProvider,
+  TenantProvider,
   themeConfig,
-  GlobalZIndexStyles,
   i18n,
   onForbiddenError,
   useNetworkSync,
   getModules,
+  useTenant,
+  useSettings,
 } from '@cap/platform-core'
 import type { ChildrenType } from '@cap/platform-core'
 import { TourProvider } from '@reactour/tour'
@@ -24,7 +22,7 @@ import { toast } from 'react-toastify'
 import common_us from './data/dictionaries/en.json'
 import common_fr from './data/dictionaries/fr.json'
 import common_ar from './data/dictionaries/ar.json'
-import { DesignSystemProvider, AppReactToastify } from '@cap/theme'
+import { DesignSystemProvider, AppReactToastify, GlobalZIndexStyles } from '@cap/theme'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -88,18 +86,6 @@ const tourConfig = [
   },
 ]
 
-const tourStyles = {
-  close: (base: React.CSSProperties) => ({
-    ...base,
-    color: '#FFF',
-  }),
-  popover: (base: React.CSSProperties) => ({
-    ...base,
-    boxShadow: '0 0 3em rgba(0, 0, 0, 0.5)',
-    backgroundColor: 'var(--mui-palette-background-paper)',
-    color: 'text.primary',
-  }),
-}
 
 const ForbiddenListener = () => {
   React.useEffect(() => {
@@ -128,30 +114,89 @@ const NetworkSync = () => {
   return null
 }
 
-const Providers: React.FC<ChildrenType> = ({ children }) => {
-  const mode = getMode()
-  const settingsCookie = getSettingsFromCookie()
-  const demoName = getDemoName()
+import { useTheme } from '@mui/material/styles'
+
+const ThemedTourProvider: React.FC<ChildrenType> = ({ children }) => {
+  const theme = useTheme()
+
+  const tourStyles = {
+    close: (base: React.CSSProperties) => ({
+      ...base,
+      color: theme.palette.text.primary,
+    }),
+    popover: (base: React.CSSProperties) => ({
+      ...base,
+      boxShadow: '0 0 3em rgba(0, 0, 0, 0.5)',
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
+    }),
+  }
 
   return (
-    <SettingsProvider settingsCookie={settingsCookie} mode={mode} demoName={demoName}>
-      <QueryClientProvider client={queryClient}>
-        <I18nextProvider i18n={i18next}>
-          <DesignSystemProvider organizationId={demoName || undefined} initialTheme={null}>
-            <GlobalZIndexStyles />
-            <BrowserRouter>
-              <ForbiddenListener />
-              <NetworkSync />
-              <TourProvider steps={tourConfig} defaultOpen={false} rtl={false} styles={tourStyles}>
-                {children}
-              </TourProvider>
-            </BrowserRouter>
-            <AppReactToastify position={themeConfig.toastPosition} hideProgressBar />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </DesignSystemProvider>
-        </I18nextProvider>
-      </QueryClientProvider>
-    </SettingsProvider>
+    <TourProvider steps={tourConfig} defaultOpen={false} rtl={theme.direction === 'rtl'} styles={tourStyles}>
+      {children}
+    </TourProvider>
+  )
+}
+
+const TenantAwareDesignSystemProvider: React.FC<
+  ChildrenType
+> = ({ children }) => {
+  const { 
+    theme, 
+    isLoadingTheme, 
+    errorTheme, 
+    refetchTheme, 
+    updateTheme, 
+    saveTheme 
+  } = useTenant()
+  const { settings } = useSettings()
+
+  return (
+    <DesignSystemProvider
+      theme={theme}
+      isLoading={isLoadingTheme}
+      error={errorTheme}
+      refetch={refetchTheme}
+      updateTheme={async (updates) => {
+        if (theme) {
+          await updateTheme({ ...theme, ...updates })
+        } else {
+          await updateTheme(updates as any)
+        }
+      }}
+      saveTheme={async (updatedConfig) => {
+        if (theme) {
+          await saveTheme({ ...theme, ...updatedConfig })
+        } else {
+          await saveTheme(updatedConfig as any)
+        }
+      }}
+      settings={settings}
+    >
+      <GlobalZIndexStyles />
+      <BrowserRouter>
+        <ForbiddenListener />
+        <NetworkSync />
+        <ThemedTourProvider>{children}</ThemedTourProvider>
+      </BrowserRouter>
+      <AppReactToastify position={themeConfig.toastPosition} hideProgressBar />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </DesignSystemProvider>
+  )
+}
+
+const Providers: React.FC<ChildrenType> = ({ children }) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <I18nextProvider i18n={i18next}>
+        <TenantProvider>
+          <TenantAwareDesignSystemProvider>
+            {children}
+          </TenantAwareDesignSystemProvider>
+        </TenantProvider>
+      </I18nextProvider>
+    </QueryClientProvider>
   )
 }
 

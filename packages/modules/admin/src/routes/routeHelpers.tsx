@@ -17,7 +17,10 @@ export const LayoutRouteWrapper = ({
 export const adminRoute = (path: string, element: React.ReactNode, options: any = {}) => {
   return {
     path,
-    element: <AdminRoute element={element} minimumRole={Roles.SUPERADMIN} layout="admin" />,
+    // Lazy getter so Roles is resolved at render time, not module evaluation time.
+    get element() {
+      return <AdminRoute element={element} minimumRole={Roles.SUPERADMIN} layout="admin" />
+    },
     ...options,
   }
 }

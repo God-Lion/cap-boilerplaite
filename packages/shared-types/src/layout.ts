@@ -1,0 +1,46 @@
+import type { ReactNode } from 'react';
+
+export type Layout = 'vertical' | 'horizontal' | 'collapsed';
+
+export interface VerticalNavState {
+  width?: number;
+  collapsedWidth?: number;
+  isCollapsed?: boolean;
+  isHovered?: boolean;
+  isToggled?: boolean;
+  isScrollWithContent?: boolean;
+  isBreakpointReached?: boolean;
+  isPopoutWhenCollapsed?: boolean;
+  collapsing?: boolean;
+  expanding?: boolean;
+  transitionDuration?: number;
+}
+
+export interface HorizontalNavState {
+  isBreakpointReached?: boolean;
+}
+export type Skin = 'default' | 'bordered';
+export type Mode = 'system' | 'light' | 'dark';
+export type SystemMode = 'light' | 'dark';
+export type Direction = 'ltr' | 'rtl';
+export type LayoutComponentWidth = 'compact' | 'wide' | 'full';
+export type LayoutComponentPosition = 'fixed' | 'static';
+
+export interface ChildrenType {
+  children: ReactNode;
+}
+
+export type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success';
+
+export type Dictionary = Record<string, any>;
+
+export interface Settings {
+  mode?: Mode;
+  skin?: Skin;
+  semiDark?: boolean;
+  layout?: Layout;
+  navbarContentWidth?: LayoutComponentWidth;
+  contentWidth?: LayoutComponentWidth;
+  footerContentWidth?: LayoutComponentWidth;
+  primaryColor?: string;
+}

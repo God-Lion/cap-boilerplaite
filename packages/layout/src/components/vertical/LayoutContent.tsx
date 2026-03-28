@@ -3,6 +3,7 @@ import { useSettings } from '@cap/platform-core'
 import { verticalLayoutClasses } from '../../utils/layoutClasses'
 import StyledMain from '../../styles/shared/StyledMain'
 import classnames from 'classnames'
+import { useLayoutTokens } from '../../hooks/useLayoutTokens'
 
 const LayoutContent = ({ children }: ChildrenType) => {
   const { settings } = useSettings()
@@ -10,9 +11,13 @@ const LayoutContent = ({ children }: ChildrenType) => {
   const contentCompact = settings.contentWidth === 'compact'
   const contentWide = settings.contentWidth === 'full'
 
+  const { layoutPadding, compactContentWidth } = useLayoutTokens()
+
   return (
     <StyledMain
       isContentCompact={contentCompact}
+      layoutPadding={layoutPadding}
+      compactContentWidth={compactContentWidth}
       className={classnames(
         verticalLayoutClasses.content,
         // 'flex-auto',

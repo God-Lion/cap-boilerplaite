@@ -1,6 +1,12 @@
-import { CAPModule } from '@cap/platform-core'
+import type { CAPModule } from '@cap/shared-types'
 import { adminRouteConfig, adminRoutes } from './routes/routes'
 import { registerDictionary } from './domain-kernel/src/i18n/registry'
+import { Path as AdminPath } from './routes/path'
+import { AdminDashboardPlugin } from './plugins/AdminDashboardPlugin'
+import { ENDPOINTS } from './services/endpoints'
+import { QUERY_KEYS } from './services/query'
+
+export { ENDPOINTS, QUERY_KEYS }
 
 import enAdmin from './domain-kernel/src/data/dictionaries/en.json'
 import arAdmin from './domain-kernel/src/data/dictionaries/ar.json'
@@ -14,11 +20,14 @@ const en = getMergedDictionary('en')
 const ar = getMergedDictionary('ar')
 const fr = getMergedDictionary('fr')
 
-export * from './idaas-facade/src'
 export * from './modules/dashboard/src'
 export * from './modules/theme-customizer/src'
+export * from './plugins/AdminDashboardPlugin'
 
-import { Path } from '@cap/module-auth'
+// Dialog Components
+export * from './components/dialogs'
+
+// No longer importing Path from @cap/module-auth for navigation
 
 export const AdminModule: CAPModule = {
   id: 'admin-module',
@@ -26,7 +35,7 @@ export const AdminModule: CAPModule = {
   routes: adminRoutes as any,
   authRouteConfig: adminRouteConfig as any,
   i18n: { en, ar, fr },
-  plugins: [],
+  plugins: [AdminDashboardPlugin],
   navItems: [
     // --- OVERVIEW ---
     {
@@ -40,7 +49,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-dashboard',
       label: 'Dashboard',
       icon: 'tabler-layout-dashboard',
-      path: '/admin',
+      path: AdminPath.Dashboard,
       variant: ['admin'],
       order: 20,
     },
@@ -56,7 +65,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-users-all',
       label: 'navigation.userManagement',
       icon: 'tabler-users',
-      path: Path.admin.users,
+      path: AdminPath.admin.users,
       variant: ['admin'],
       order: 40,
     },
@@ -64,7 +73,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-bans',
       label: 'Bans & appeals',
       icon: 'tabler-ban',
-      path: Path.admin.banManagement,
+      path: AdminPath.admin.banManagement,
       variant: ['admin'],
       order: 50,
     },
@@ -72,7 +81,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-impersonation',
       label: 'Impersonation logs',
       icon: 'tabler-user-search',
-      path: Path.admin.impersonationLogs,
+      path: AdminPath.admin.impersonationLogs,
       variant: ['admin'],
       order: 60,
     },
@@ -80,7 +89,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-orgs',
       label: 'navigation.organizations',
       icon: 'tabler-building',
-      path: Path.admin.organizations,
+      path: AdminPath.admin.organizations,
       variant: ['admin'],
       order: 70,
     },
@@ -99,16 +108,16 @@ export const AdminModule: CAPModule = {
       variant: ['admin'],
       order: 90,
       children: [
-        { id: 'admin-roles', label: 'Roles', path: Path.admin.roles, order: 10 },
-        { id: 'admin-permissions', label: 'Permissions', path: Path.admin.permissions, order: 20 },
-        { id: 'admin-policies', label: 'Access policies', path: Path.admin.policies, order: 30 },
+        { id: 'admin-roles', label: 'Roles', path: AdminPath.admin.roles, order: 10 },
+        { id: 'admin-permissions', label: 'Permissions', path: AdminPath.admin.permissions, order: 20 },
+        { id: 'admin-policies', label: 'Access policies', path: AdminPath.admin.policies, order: 30 },
       ],
     },
     {
       id: 'admin-api-tokens',
       label: 'API tokens',
       icon: 'tabler-key',
-      path: Path.apiTokens.dashboard,
+      path: AdminPath.admin.apiTokens,
       variant: ['admin'],
       order: 100,
     },
@@ -127,10 +136,10 @@ export const AdminModule: CAPModule = {
       variant: ['admin'],
       order: 120,
       children: [
-        { id: 'admin-oidc', label: 'OIDC clients', path: Path.identity.oidcConfigBrowser, order: 10 },
-        { id: 'admin-saml', label: 'SAML config', path: Path.identity.samlConfigDashboard, order: 20 },
-        { id: 'admin-jwks', label: 'JWKS keys', path: Path.identity.jwksManagement, order: 30 },
-        { id: 'admin-ssf', label: 'SSF config', path: Path.identity.ssfConfiguration, order: 40 },
+        { id: 'admin-oidc', label: 'OIDC clients', path: AdminPath.admin.oidcConfigBrowser, order: 10 },
+        { id: 'admin-saml', label: 'SAML config', path: AdminPath.admin.samlConfigDashboard, order: 20 },
+        { id: 'admin-jwks', label: 'JWKS keys', path: AdminPath.admin.jwksManagement, order: 30 },
+        { id: 'admin-ssf', label: 'SSF config', path: AdminPath.admin.ssfConfiguration, order: 40 },
       ],
     },
     {
@@ -140,9 +149,9 @@ export const AdminModule: CAPModule = {
       variant: ['admin'],
       order: 130,
       children: [
-        { id: 'admin-provisioning', label: 'Connectors', path: Path.admin.provisioning, order: 10 },
-        { id: 'admin-scim', label: 'SCIM tokens', path: Path.admin.scim, order: 20 },
-        { id: 'admin-sync-logs', label: 'Sync logs', path: Path.admin.syncLogs, order: 30 },
+        { id: 'admin-provisioning', label: 'Connectors', path: AdminPath.admin.provisioning, order: 10 },
+        { id: 'admin-scim', label: 'SCIM tokens', path: AdminPath.admin.scim, order: 20 },
+        { id: 'admin-sync-logs', label: 'Sync logs', path: AdminPath.admin.syncLogs, order: 30 },
       ],
     },
     // --- DEVELOPER ---
@@ -157,7 +166,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-oauth-apps',
       label: 'OAuth apps',
       icon: 'tabler-apps',
-      path: Path.admin.applications,
+      path: AdminPath.admin.applications,
       variant: ['admin'],
       order: 150,
     },
@@ -165,7 +174,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-scopes',
       label: 'Scopes',
       icon: 'tabler-brackets',
-      path: Path.admin.scopes,
+      path: AdminPath.admin.scopes,
       variant: ['admin'],
       order: 160,
     },
@@ -173,7 +182,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-webhooks',
       label: 'Webhooks',
       icon: 'tabler-webhook',
-      path: Path.admin.webhooks,
+      path: AdminPath.admin.webhooks,
       variant: ['admin'],
       order: 170,
     },
@@ -181,7 +190,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-api-explorer',
       label: 'API explorer',
       icon: 'tabler-terminal-2',
-      path: Path.admin.apiExplorer,
+      path: AdminPath.admin.apiExplorer,
       variant: ['admin'],
       order: 180,
     },
@@ -197,7 +206,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-health',
       label: 'navigation.systemHealth',
       icon: 'tabler-heart-rate-monitor',
-      path: Path.admin.health,
+      path: AdminPath.admin.health,
       variant: ['admin'],
       order: 200,
     },
@@ -205,7 +214,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-audit',
       label: 'navigation.authEvents',
       icon: 'tabler-activity',
-      path: Path.admin.events,
+      path: AdminPath.admin.events,
       variant: ['admin'],
       order: 210,
     },
@@ -213,7 +222,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-mfa-metrics',
       label: 'navigation.mfaAnalytics',
       icon: 'tabler-chart-bar',
-      path: Path.monitoring.mfa_analytics,
+      path: AdminPath.monitoring.mfa_analytics,
       variant: ['admin'],
       order: 220,
     },
@@ -221,7 +230,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-email-testing',
       label: 'Email testing',
       icon: 'tabler-mail-cog',
-      path: Path.monitoring.emailTesting,
+      path: AdminPath.monitoring.emailTesting,
       variant: ['admin'],
       order: 230,
     },
@@ -229,7 +238,7 @@ export const AdminModule: CAPModule = {
       id: 'admin-export-audit',
       label: 'Export audit trail',
       icon: 'tabler-file-export',
-      path: Path.admin.exportAudit,
+      path: AdminPath.admin.exportAudit,
       variant: ['admin'],
       order: 240,
     },
@@ -238,21 +247,21 @@ export const AdminModule: CAPModule = {
     {
       id: 'admin-analytics',
       name: 'Analytics Dashboard',
-      url: Path.admin.overview,
+      url: AdminPath.Dashboard,
       icon: 'tabler-chart-pie',
       section: 'Dashboards',
     },
     {
       id: 'admin-users',
       name: 'User Management',
-      url: Path.admin.users,
+      url: AdminPath.admin.users,
       icon: 'tabler-users',
       section: 'Administration',
     },
     {
       id: 'admin-roles',
       name: 'Roles & Permissions',
-      url: Path.admin.roles,
+      url: AdminPath.admin.roles,
       icon: 'tabler-lock',
       section: 'Security',
     },

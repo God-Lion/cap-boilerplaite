@@ -2,7 +2,7 @@ import React, { Suspense, type ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { Backdrop, CircularProgress } from '@mui/material'
 import { isObjectEmpty, useAppStore, type LayoutOverride } from '@cap/platform-core'
-import { useSessionGuard } from '@idaas/session-manager/middlewares/useSessionGuard'
+import { useSessionGuard } from '../../session-manager/middlewares/useSessionGuard'
 
 interface GuestRouteProps {
   element: ReactNode

@@ -1,4 +1,4 @@
-import styled from '@emotion/styled'
+import { styled } from '@cap/theme'
 import type { VerticalNavState } from '../../contexts/verticalNavContext'
 import type { VerticalNavProps } from '../../components/vertical-menu/VerticalNav'
 import { horizontalNavClasses, menuClasses, verticalNavClasses } from '../../utils/menuClasses'
@@ -6,8 +6,8 @@ import { horizontalNavClasses, menuClasses, verticalNavClasses } from '../../uti
 type StyledVerticalNavProps = VerticalNavProps &
   Pick<VerticalNavState, 'isBreakpointReached' | 'collapsing' | 'expanding' | 'transitionDuration'>
 
-const StyledVerticalNav = styled.aside<StyledVerticalNavProps>`
-  ${({ scrollWithContent }) =>
+const StyledVerticalNav = styled('aside')<StyledVerticalNavProps>`
+  ${({ scrollWithContent }: StyledVerticalNavProps) =>
     !scrollWithContent &&
     `
     position: sticky;
@@ -18,15 +18,15 @@ const StyledVerticalNav = styled.aside<StyledVerticalNavProps>`
 
   /* Transition */
   transition-property: inline-size, min-inline-size, margin-inline-start, inset-inline-start;
-  transition-duration: ${({ transitionDuration }) => `${transitionDuration}ms`};
+  transition-duration: ${({ transitionDuration }: StyledVerticalNavProps) => `${transitionDuration}ms`};
   transition-timing-function: ease-in-out;
 
   /* Width & Min Width & Margin */
-  inline-size: ${({ width }) => `${width}px`};
-  min-inline-size: ${({ width }) => `${width}px`};
+  inline-size: ${({ width }: StyledVerticalNavProps) => `${width}px`};
+  min-inline-size: ${({ width }: StyledVerticalNavProps) => `${width}px`};
   &.${verticalNavClasses.collapsed} {
-    inline-size: ${({ collapsedWidth }) => `${collapsedWidth}px`};
-    min-inline-size: ${({ collapsedWidth }) => `${collapsedWidth}px`};
+    inline-size: ${({ collapsedWidth }: StyledVerticalNavProps) => `${collapsedWidth}px`};
+    min-inline-size: ${({ collapsedWidth }: StyledVerticalNavProps) => `${collapsedWidth}px`};
   }
 
   &.${verticalNavClasses.collapsing}, &.${verticalNavClasses.expanding} {
@@ -38,18 +38,18 @@ const StyledVerticalNav = styled.aside<StyledVerticalNavProps>`
     position: fixed;
     block-size: 100%;
     inset-block-start: 0;
-    inset-inline-start: ${({ width }) => `-${width}px`};
+    inset-inline-start: ${({ width }: StyledVerticalNavProps) => `-${width}px`};
     z-index: var(--drawer-z-index);
     margin: 0;
     &.${verticalNavClasses.collapsed} {
-      inset-inline-start: -${({ collapsedWidth }) => `${collapsedWidth}px`};
+      inset-inline-start: -${({ collapsedWidth }: StyledVerticalNavProps) => `${collapsedWidth}px`};
     }
     &.${verticalNavClasses.toggled} {
       inset-inline-start: 0;
     }
   }
 
-  ${({ width, isBreakpointReached }) =>
+  ${({ width, isBreakpointReached }: StyledVerticalNavProps) =>
     !isBreakpointReached &&
     `
     &.${verticalNavClasses.toggled} {
@@ -63,7 +63,7 @@ const StyledVerticalNav = styled.aside<StyledVerticalNavProps>`
   }
 
   /* User Styles */
-  ${({ customStyles }) => customStyles}
+  ${({ customStyles }: StyledVerticalNavProps) => customStyles}
 `
 
 export default StyledVerticalNav

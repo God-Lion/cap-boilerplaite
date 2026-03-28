@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from '@mui/material'
+import { Box } from '@cap/theme'
 import LayoutContent from './components/horizontal/LayoutContent'
 import type { ChildrenType } from '@cap/platform-core'
 
@@ -39,9 +39,11 @@ const PublicLayout: React.FC<
       {/* Footer Section - Dark background */}
       <Box
         sx={{
-          backgroundColor: '#1a1a1a',
-          color: 'white',
+          backgroundColor: 'background.paper',
+          color: 'text.primary',
           width: '100%',
+          borderTop: '1px solid',
+          borderColor: 'divider',
         }}
       >
         {footer || null}

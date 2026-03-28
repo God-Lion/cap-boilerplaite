@@ -1,14 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { authService } from '../services/auth/auth.service'
 import { USER_KEYS } from './useUser'
+import { useAuthStore } from '../store'
 
 export const useAuth = () => {
   const queryClient = useQueryClient()
+  const authState = useAuthStore()
 
   const loginMutation = useMutation({
     mutationFn: () => {
       authService.loginWithIdaas()
-      return Promise.resolve() // This never resolves effectively as we redirect
+      return Promise.resolve()
     },
   })
 
@@ -21,6 +23,7 @@ export const useAuth = () => {
   })
 
   return {
+    ...authState,
     login: loginMutation.mutate,
     logout: logoutMutation.mutate,
     isLoggingOut: logoutMutation.isPending,

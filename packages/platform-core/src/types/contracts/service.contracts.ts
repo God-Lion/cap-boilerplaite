@@ -15,7 +15,7 @@
  * @packageDocumentation
  */
 
-import type { UserApiContract, AuthApiContract, ApiResponse } from './api.contracts'
+import type { UserApiContract, AuthApiContract, ApiResponse } from '@cap/shared-types'
 
 /**
  * User Service Contract

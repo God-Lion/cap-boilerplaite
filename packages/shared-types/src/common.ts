@@ -1,24 +1,38 @@
+export interface ApiError {
+  code: string;
+  message: string;
+  field?: string;
+  details?: Record<string, unknown>;
+}
+
+export interface ApiMeta {
+  timestamp: string; // ISO 8601
+  requestId: string;
+  pagination?: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 export interface ApiResponse<T = any> {
   success: boolean;
-  message?: string;
-  data?: T;
-  errors?: any;
+  data: T;
+  error?: ApiError;
+  meta?: ApiMeta;
 }
 
 export interface PaginatedResponse<T> {
   data: T[];
-  meta: {
-    total: number;
-    per_page: number;
-    current_page: number;
-    last_page: number;
-    first_page: number;
+  meta: ApiMeta['pagination'] & {
+    total_pages?: number; // legacy compatibility
   };
 }
 
 export interface ApiErrorResponse {
   message: string;
-  code?: string;
   status: number;
-  errors?: Record<string, string[]>; // Field-specific errors
+  code?: string;
+  errors?: Record<string, string[]>;
 }

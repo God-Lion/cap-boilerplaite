@@ -1,6 +1,6 @@
 // src/index.ts
 
-import { CAPModule } from '@cap/platform-core';
+import type { CAPModule } from '@cap/shared-types';
 import { digitalIdRouteConfig, DigitalIdRoutes } from './routes/routes';
 import Path from './routes/path';
 

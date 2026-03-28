@@ -1,14 +1,9 @@
 import { StateCreator } from 'zustand'
 import { AppStore } from '..'
 
-export interface OfflineQueueEntry {
-  id: string
-  method: 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  url: string
-  body: unknown
-  timestamp: number
-  retryCount: number
-}
+// Re-export queue types from shared-types for backward compatibility
+export type { OfflineQueueEntry, OfflineQueueEntryInput, QueueHttpMethod } from '@cap/shared-types'
+import type { OfflineQueueEntry } from '@cap/shared-types'
 
 export interface OfflineQueueSlice {
   offlineQueue: OfflineQueueEntry[]

@@ -15,20 +15,20 @@ const Root = styled('div', {
   gap: theme.spacing(2),
   flexDirection: 'column',
   padding: theme.spacing(4),
-  borderRadius: 'var(--mui-shape-borderRadius)',
-  border: '1px solid var(--mui-palette-customColors-inputBorder)',
-  color: 'var(--mui-palette-text-primary)',
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${theme.palette.customColors.inputBorder}`,
+  color: theme.palette.text.primary,
   transition: theme.transitions.create(['border-color'], {
     duration: theme.transitions.duration.shorter,
   }),
 
   '&:hover': {
-    borderColor: 'var(--mui-palette-action-active)',
+    borderColor: theme.palette.action.active,
   },
   '&.active': {
-    borderColor: 'var(--mui-palette-primary-main)',
+    borderColor: theme.palette.primary.main,
     '& > svg, & > i': {
-      color: 'var(--mui-palette-primary-main)',
+      color: theme.palette.primary.main,
     },
   },
   '&.radio-only .MuiRadio-root': {
@@ -44,7 +44,7 @@ const Title = styled(Typography, {
   slot: 'title',
 })(({ theme }) => ({
   fontWeight: theme.typography.fontWeightMedium,
-  color: 'var(--mui-palette-text-primary) !important',
+  color: `${theme.palette.text.primary} !important`,
 }))
 
 const Content = styled(Typography, {
@@ -71,7 +71,6 @@ const CheckboxInput = styled(Checkbox, {
 
 const CustomInputVertical = (props: CustomInputVerticalProps) => {
   const { type, data, name, selected, gridProps, handleChange, color = 'primary' } = props
-
   const { title, value, content, asset } = data
 
   const renderComponent = () => {

@@ -1,8 +1,17 @@
 import React from 'react';
+import { styled, alpha, darken } from '@mui/material/styles';
 import { GlassButton } from './GlassButton';
 import { NeuButton } from './NeuButton';
-import type { ComponentEffectStyle } from '../types';
-import type { EffectType } from '../types';
+import { BrutalismButton } from './BrutalismButton';
+import { BentoButton } from './BentoButton';
+import { OrganicButton } from './OrganicButton';
+import { ImmersiveButton } from './ImmersiveButton';
+import type { ComponentEffectStyle, EffectType } from '../types';
+import { useComponentEffectConfig } from '../hooks/useComponentEffectConfig';
+import {
+  getThemeFocusRing,
+  resolveComponentCustomProperties,
+} from '../utils/themeObjectStyles';
 
 export interface AdaptiveButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -10,107 +19,119 @@ export interface AdaptiveButtonProps extends React.ButtonHTMLAttributes<HTMLButt
   globalEffectType?: EffectType;
   glassConfig?: React.ComponentProps<typeof GlassButton>;
   neuConfig?: React.ComponentProps<typeof NeuButton>;
+  brutalismConfig?: React.ComponentProps<typeof BrutalismButton>;
+  bentoConfig?: React.ComponentProps<typeof BentoButton>;
+  organicConfig?: React.ComponentProps<typeof OrganicButton>;
+  immersiveConfig?: React.ComponentProps<typeof ImmersiveButton>;
   variant?: 'primary' | 'secondary' | 'outline' | 'flat';
 }
 
-const StandardButton = styled.button<{
-  variant?: string;
+const StandardButton = styled('button')<{
+  variant?: AdaptiveButtonProps['variant'];
   className?: string;
   style?: React.CSSProperties;
-}>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+}>(({ theme, variant }) => {
+  const customStyles = resolveComponentCustomProperties(theme, 'button');
 
-  ${({ variant }) => {
+  const variantStyles = (() => {
     switch (variant) {
       case 'primary':
-        return `
-          background: var(--color-primary, #6366f1);
-          color: white;
-          border: none;
-          box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
-
-          &:hover:not(:disabled) {
-            background: var(--color-primary, #4f46e5);
-            transform: translateY(-1px);
-          }
-        `;
+        return {
+          background: theme.palette.primary.main,
+          color: theme.palette.primary.contrastText,
+          border: 'none',
+          boxShadow: (typeof theme.customShadows?.primary === 'object' ? theme.customShadows?.primary?.sm : theme.customShadows?.primary) || theme.shadows[2],
+          '&:hover:not(:disabled)': {
+            background: theme.palette.primary.dark || darken(theme.palette.primary.main, 0.12),
+            transform: 'translateY(-1px)',
+          },
+        };
       case 'secondary':
-        return `
-          background: var(--color-secondary, #8b5cf6);
-          color: white;
-          border: none;
-          box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
-
-          &:hover:not(:disabled) {
-            background: var(--color-secondary, #7c3aed);
-            transform: translateY(-1px);
-          }
-        `;
+        return {
+          background: theme.palette.secondary.main,
+          color: theme.palette.secondary.contrastText,
+          border: 'none',
+          boxShadow: (typeof theme.customShadows?.secondary === 'object' ? theme.customShadows?.secondary?.sm : theme.customShadows?.secondary) || theme.shadows[2],
+          '&:hover:not(:disabled)': {
+            background: theme.palette.secondary.dark || darken(theme.palette.secondary.main, 0.12),
+            transform: 'translateY(-1px)',
+          },
+        };
       case 'outline':
-        return `
-          background: transparent;
-          color: var(--color-primary, #6366f1);
-          border: 1px solid var(--color-primary, #6366f1);
-
-          &:hover:not(:disabled) {
-            background: rgba(99, 102, 241, 0.1);
-          }
-        `;
+        return {
+          background: 'transparent',
+          color: theme.palette.primary.main,
+          border: `1px solid ${theme.palette.primary.main}`,
+          '&:hover:not(:disabled)': {
+            background: alpha(theme.palette.primary.main, 0.08),
+          },
+        };
       default:
-        return `
-          background: var(--color-surface, #ffffff);
-          color: var(--color-text, #0f172a);
-          border: 1px solid var(--color-border, #e2e8f0);
-
-          &:hover:not(:disabled) {
-            background: var(--color-background, #f8fafc);
-            border-color: var(--color-primary, #6366f1);
-          }
-        `;
+        return {
+          background: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+          border: `1px solid ${theme.palette.divider}`,
+          '&:hover:not(:disabled)': {
+            background: theme.palette.background.default,
+            borderColor: theme.palette.primary.main,
+          },
+        };
     }
-  }}
+  })();
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-primary, #6366f1);
-    outline-offset: 2px;
-  }
-`;
-
-import styled from '@emotion/styled';
+  return {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.spacing(1),
+    padding: theme.spacing(1.25, 2.5),
+    fontSize: theme.typography.body2.fontSize,
+    fontWeight: theme.typography.fontWeightMedium,
+    margin: 0,
+    boxShadow: 'none',
+    textTransform: 'none',
+    letterSpacing: 'normal',
+    borderRadius: theme.shape.borderRadius,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    whiteSpace: 'nowrap',
+    ...variantStyles,
+    ...customStyles,
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    },
+    '&:active:not(:disabled)': {
+      transform: 'translateY(0)',
+    },
+    '&:focus-visible': {
+      outline: 'none',
+      boxShadow: getThemeFocusRing(theme),
+    },
+  };
+});
 
 export const AdaptiveButton: React.FC<AdaptiveButtonProps> = ({
   children,
   effectStyle = 'global',
-  globalEffectType = 'standard',
+  globalEffectType,
   glassConfig,
   neuConfig,
+  brutalismConfig,
+  bentoConfig,
+  organicConfig,
+  immersiveConfig,
   variant = 'primary',
   className,
   style,
   ...props
 }) => {
+  const effectConfig = useComponentEffectConfig('button');
+  const activeGlobalType = globalEffectType || effectConfig.globalType;
+
   const getActiveStyle = (): ComponentEffectStyle => {
     if (effectStyle === 'global') {
-      return globalEffectType;
+      return activeGlobalType;
     }
     return effectStyle as EffectType;
   };
@@ -119,29 +140,17 @@ export const AdaptiveButton: React.FC<AdaptiveButtonProps> = ({
 
   switch (activeStyle) {
     case 'glass':
-      return (
-        <GlassButton
-          variant={variant as 'primary' | 'secondary' | 'outline'}
-          {...glassConfig}
-          className={className}
-          style={style}
-          {...props}
-        >
-          {children}
-        </GlassButton>
-      );
+      return <GlassButton variant={variant as any} {...glassConfig} className={className} style={style} {...props}>{children}</GlassButton>;
     case 'neu':
-      return (
-        <NeuButton
-          variant={variant as 'primary' | 'secondary' | 'flat'}
-          {...neuConfig}
-          className={className}
-          style={style}
-          {...props}
-        >
-          {children}
-        </NeuButton>
-      );
+      return <NeuButton variant={variant as any} {...neuConfig} className={className} style={style} {...props}>{children}</NeuButton>;
+    case 'brutalism':
+      return <BrutalismButton {...brutalismConfig} className={className} style={style} {...props}>{children}</BrutalismButton>;
+    case 'bento':
+      return <BentoButton {...bentoConfig} className={className} style={style} {...props}>{children}</BentoButton>;
+    case 'organic':
+      return <OrganicButton {...organicConfig} className={className} style={style} {...props}>{children}</OrganicButton>;
+    case 'immersive':
+      return <ImmersiveButton {...immersiveConfig} className={className} style={style} {...props}>{children}</ImmersiveButton>;
     default:
       return (
         <StandardButton

@@ -1,0 +1,25 @@
+﻿Scope: 17 of 18 workspace projects
+packages/platform-core type-check$ tsc --noEmit
+packages/theme type-check$ tsc --noEmit
+packages/platform-core type-check: ../theme/src/assets/themes/Base.ts(78,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/Base.ts(79,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/Base.ts(80,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/Base.ts(81,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/Base.ts(82,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/Base.ts(83,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/dark.ts(70,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/dark.ts(71,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/dark.ts(72,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/dark.ts(73,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/dark.ts(74,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/dark.ts(75,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/light.ts(103,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/light.ts(104,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/light.ts(105,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/light.ts(106,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/light.ts(107,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: ../theme/src/assets/themes/light.ts(108,5): error TS2559: Type 'string' has no properties in common with type '{ sm?: string | undefined; md?: string | undefined; lg?: string | undefined; }'.
+packages/platform-core type-check: Failed
+C:\Node.Js\proj\boilerplate\packages\platform-core:
+ΓÇëERR_PNPM_RECURSIVE_RUN_FIRST_FAILΓÇë @cap/platform-core@1.0.0 type-check: `tsc --noEmit`
+Exit status 2

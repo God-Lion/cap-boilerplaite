@@ -1,255 +1,59 @@
-export const CURRENT_TENANT_CONFIG_VERSION = 2
+/**
+ * Tenant Types - Re-exported from @cap/shared-types
+ * 
+ * This file maintains backward compatibility while centralizing types in shared-types.
+ * For new code, import directly from @cap/shared-types.
+ */
 
-export interface TenantConfigV1 {
-  readonly _version: 1
-  id: string
-  slug: string
-  domain: string
-  name: string
-  theme: TenantTheme
-  layout: TenantLayout
-  branding: TenantBranding
-  features: {
-    darkMode: boolean
-    rtl: boolean
-    notifications: boolean
-    chat: boolean
-  }
-  version: number
-}
-
-export type TenantConfig = TenantConfigV1
-
-export function normalizeTenantConfig(raw: unknown): TenantConfig {
-  if (!raw || typeof raw !== 'object') {
-    return DEFAULT_TENANT_CONFIG
-  }
+// Re-export all types from shared-types
+export type {
+  // Core types
+  TenantThemeBase,
+  TenantTheme,
+  TenantLayout,
+  TenantNavbarConfig,
+  TenantFooterConfig,
+  TenantBranding,
+  TenantFeatures,
+  TenantConfigV1,
+  TenantConfig,
+  TenantContextValue,
+  UserPreferences,
   
-  const config = raw as any
-  const version = (config._version ?? config.version ?? 1) as number
+  // Type aliases
+  LayoutType,
+  ContentWidth,
+  NavbarType,
+  ToastPosition,
   
-  if (version === 1) {
-    const v1 = config as TenantConfigV1
-    return {
-      _version: 1,
-      id: v1.id,
-      slug: v1.slug,
-      domain: v1.domain,
-      name: v1.name,
-      theme: v1.theme,
-      layout: v1.layout,
-      branding: v1.branding || {
-        logo: null,
-        favicon: null,
-        appName: 'App',
-        companyName: 'Company',
-      },
-      features: v1.features,
-      version: CURRENT_TENANT_CONFIG_VERSION,
-    }
-  }
+  // Constants
+  CURRENT_TENANT_CONFIG_VERSION,
   
-  return config as TenantConfig
-}
+  // Type guards
+  isTenantConfig,
+  isTenantTheme,
+  isTenantLayout,
+} from '@cap/shared-types'
 
-export function validateTenantConfig(config: unknown): config is TenantConfig {
-  if (!config || typeof config !== 'object') return false
-  const c = config as Record<string, unknown>
-  return (
-    typeof c.id === 'string' &&
-    typeof c.slug === 'string' &&
-    typeof c.domain === 'string' &&
-    typeof c.name === 'string' &&
-    typeof c.theme === 'object' &&
-    typeof c.layout === 'object' &&
-    typeof c.branding === 'object' &&
-    typeof c.features === 'object'
-  )
-}
+import type { TenantConfig, TenantLayout } from '@cap/shared-types'
+import type { TenantThemeConfig } from '@cap/theme'
+import { DEFAULT_THEME_CONFIG } from '@cap/theme'
 
-export interface TenantTheme {
-  mode: 'light' | 'dark' | 'system'
-  skin: 'default' | 'bordered'
-  semiDark: boolean
-  primaryColor: string
-  secondaryColor: string
-  colors: {
-    primary: {
-      main: string
-      light: string
-      dark: string
-      contrastText: string
-    }
-    secondary: {
-      main: string
-      light: string
-      dark: string
-      contrastText: string
-    }
-    error: {
-      main: string
-      light: string
-      dark: string
-      contrastText: string
-    }
-    success: {
-      main: string
-      light: string
-      dark: string
-      contrastText: string
-    }
-    warning: {
-      main: string
-      light: string
-      dark: string
-      contrastText: string
-    }
-    info: {
-      main: string
-      light: string
-      dark: string
-      contrastText: string
-    }
-    brandGold: string
-    brandBrown: string
-    brandSlate: string
-    brandCream: string
-  }
-  shape: {
-    borderRadius: number
-    customBorderRadius: {
-      xs: number
-      sm: number
-      md: number
-      lg: number
-      xl: number
-    }
-  }
-  typography: {
-    fontFamily: string
-    h1: { fontWeight: number }
-    h2: { fontWeight: number }
-    h3: { fontWeight: number }
-    h4: { fontWeight: number }
-    h5: { fontWeight: number }
-    h6: { fontWeight: number }
-  }
-}
+/**
+ * Re-export TenantThemeConfig from @cap/theme for convenience.
+ * Use this when you need the full theme configuration.
+ */
+export type { TenantThemeConfig } from '@cap/theme'
 
-export interface TenantLayout {
-  layout: 'vertical' | 'horizontal' | 'collapsed'
-  layoutPadding: number
-  compactContentWidth: number
-  navbar: {
-    type: 'fixed' | 'static'
-    contentWidth: 'compact' | 'wide'
-    floating: boolean
-    detached: boolean
-    blur: boolean
-  }
-  footer: {
-    type: 'fixed' | 'static'
-    contentWidth: 'compact' | 'wide'
-    detached: boolean
-  }
-  contentWidth: 'compact' | 'wide'
-  disableRipple: boolean
-  toastPosition: 'top-right' | 'top-center' | 'top-left' | 'bottom-right' | 'bottom-center' | 'bottom-left'
-}
+/**
+ * Extended tenant theme that combines TenantThemeBase with TenantThemeConfig.
+ */
+export type ExtendedTenantTheme = TenantThemeConfig
 
-export interface TenantBranding {
-  logo?: string | null
-  favicon?: string | null
-  appName: string
-  companyName: string
-  welcomeText?: string
-}
-
-export interface TenantContextValue {
-  tenant: TenantConfig | null
-  isLoading: boolean
-  error: string | null
-  userPreferences: UserPreferences
-  updateUserPreferences: (prefs: Partial<UserPreferences>) => void
-  refetchTenant: () => Promise<void>
-}
-
-export interface UserPreferences {
-  theme?: 'light' | 'dark' | 'system'
-  language?: string
-  sidebarCollapsed?: boolean
-  dashboardLayout?: string
-  notifications?: boolean
-}
-
-export const DEFAULT_TENANT_THEME: TenantTheme = {
-  mode: 'light',
-  skin: 'default',
-  semiDark: false,
-  primaryColor: '#D4AF37',
-  secondaryColor: '#8B4513',
-  colors: {
-    primary: {
-      main: '#D4AF37',
-      light: '#E0C55B',
-      dark: '#B8982F',
-      contrastText: '#1A1A1A',
-    },
-    secondary: {
-      main: '#8B4513',
-      light: '#A0522D',
-      dark: '#6B3410',
-      contrastText: '#FDFDFD',
-    },
-    error: {
-      main: '#DC3545',
-      light: '#E35D6A',
-      dark: '#C82333',
-      contrastText: '#FFF',
-    },
-    success: {
-      main: '#28A745',
-      light: '#48B461',
-      dark: '#1E7E34',
-      contrastText: '#FFF',
-    },
-    warning: {
-      main: '#FF9F43',
-      light: '#FFB269',
-      dark: '#E68F3C',
-      contrastText: '#1A1A1A',
-    },
-    info: {
-      main: '#2F4F4F',
-      light: '#4A6A6A',
-      dark: '#1F3333',
-      contrastText: '#FFF',
-    },
-    brandGold: '#D4AF37',
-    brandBrown: '#8B4513',
-    brandSlate: '#2F4F4F',
-    brandCream: '#F5F5DC',
-  },
-  shape: {
-    borderRadius: 6,
-    customBorderRadius: {
-      xs: 2,
-      sm: 4,
-      md: 6,
-      lg: 8,
-      xl: 10,
-    },
-  },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 700 },
-    h3: { fontWeight: 600 },
-    h4: { fontWeight: 600 },
-    h5: { fontWeight: 600 },
-    h6: { fontWeight: 600 },
-  },
-}
+// Default values (require @cap/theme)
+export const DEFAULT_TENANT_THEME: ExtendedTenantTheme = {
+  ...DEFAULT_THEME_CONFIG,
+} as ExtendedTenantTheme
 
 export const DEFAULT_TENANT_LAYOUT: TenantLayout = {
   layout: 'vertical',
@@ -278,7 +82,7 @@ export const DEFAULT_TENANT_CONFIG: TenantConfig = {
   slug: 'default',
   domain: 'localhost',
   name: 'Default Tenant',
-  theme: DEFAULT_TENANT_THEME,
+  theme: DEFAULT_TENANT_THEME as any,
   layout: DEFAULT_TENANT_LAYOUT,
   branding: {
     logo: null,
@@ -292,5 +96,58 @@ export const DEFAULT_TENANT_CONFIG: TenantConfig = {
     notifications: true,
     chat: true,
   },
-  version: CURRENT_TENANT_CONFIG_VERSION,
+  version: 2,
+}
+
+/**
+ * Normalizes a raw tenant config object.
+ */
+export function normalizeTenantConfig(raw: unknown): TenantConfig {
+  if (!raw || typeof raw !== 'object') {
+    return DEFAULT_TENANT_CONFIG
+  }
+  
+  const config = raw as any
+  const version = (config._version ?? config.version ?? 1) as number
+  
+  if (version === 1) {
+    const v1 = config as TenantConfig
+    return {
+      _version: 1,
+      id: v1.id,
+      slug: v1.slug,
+      domain: v1.domain,
+      name: v1.name,
+      theme: v1.theme,
+      layout: v1.layout,
+      branding: v1.branding || {
+        logo: null,
+        favicon: null,
+        appName: 'App',
+        companyName: 'Company',
+      },
+      features: v1.features,
+      version: 2,
+    }
+  }
+  
+  return config as TenantConfig
+}
+
+/**
+ * Validates a tenant config object.
+ */
+export function validateTenantConfig(config: unknown): config is TenantConfig {
+  if (!config || typeof config !== 'object') return false
+  const c = config as Record<string, unknown>
+  return (
+    typeof c.id === 'string' &&
+    typeof c.slug === 'string' &&
+    typeof c.domain === 'string' &&
+    typeof c.name === 'string' &&
+    typeof c.theme === 'object' &&
+    typeof c.layout === 'object' &&
+    typeof c.branding === 'object' &&
+    typeof c.features === 'object'
+  )
 }

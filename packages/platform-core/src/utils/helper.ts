@@ -1,8 +1,8 @@
 import { differenceInYears, parseISO } from 'date-fns'
-import { DemoName, SystemMode } from '../types/core-types'
+import type { DemoName } from '../types/core-types'
+import type { SystemMode, Settings } from '@cap/shared-types'
 import themeConfig from '../configs/themeConfig'
 import demoConfigs from '../configs/demoConfigs'
-import { Settings } from '../contexts/settingsContext'
 import { getCookie, getJsonCookie } from './cookieUtils'
 
 export const isObjectEmpty = (objectName: object) => {

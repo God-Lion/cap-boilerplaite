@@ -1,8 +1,8 @@
 import React from 'react'
 import MuiAvatar from '@mui/material/Avatar'
-import { lighten, styled } from '@mui/material/styles'
+import { alpha, lighten, styled } from '@mui/material/styles'
 import type { AvatarProps } from '@mui/material/Avatar'
-import type { ThemeColor } from '@cap/platform-core'
+import type { ThemeColor } from '@cap/shared-types'
 
 export type CustomAvatarProps = AvatarProps & {
   color?: ThemeColor
@@ -14,18 +14,18 @@ const Avatar = styled(MuiAvatar)<CustomAvatarProps>(({ skin, color, size, theme 
   return {
     ...(color &&
       skin === 'light' && {
-        backgroundColor: `var(--mui-palette-${color}-lightOpacity)`,
-        color: `var(--mui-palette-${color}-main)`,
+        backgroundColor: alpha(theme.palette[color as ThemeColor].main, 0.16),
+        color: theme.palette[color as ThemeColor].main,
       }),
     ...(color &&
       skin === 'light-static' && {
         backgroundColor: lighten(theme.palette[color as ThemeColor].main, 0.84),
-        color: `var(--mui-palette-${color}-main)`,
+        color: theme.palette[color as ThemeColor].main,
       }),
     ...(color &&
       skin === 'filled' && {
-        backgroundColor: `var(--mui-palette-${color}-main)`,
-        color: `var(--mui-palette-${color}-contrastText)`,
+        backgroundColor: theme.palette[color as ThemeColor].main,
+        color: theme.palette[color as ThemeColor].contrastText,
       }),
     ...(size && {
       height: size,

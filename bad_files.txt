@@ -1,0 +1,11 @@
+C:\Node.Js\proj\boilerplate\packages\layout\src\components\horizontal\Header.tsx
+C:\Node.Js\proj\boilerplate\packages\layout\src\components\horizontal\Navigation.tsx
+C:\Node.Js\proj\boilerplate\packages\layout\src\components\vertical\Navigation.tsx
+C:\Node.Js\proj\boilerplate\packages\layout\src\hooks\useHorizontalNav.ts
+C:\Node.Js\proj\boilerplate\packages\layout\src\hooks\useVerticalNav.ts
+C:\Node.Js\proj\boilerplate\packages\layout\src\menu\contexts\horizontalNavContextCore.ts
+C:\Node.Js\proj\boilerplate\packages\layout\src\menu\layouts\AdminMenu.tsx
+C:\Node.Js\proj\boilerplate\packages\layout\src\menu\layouts\HorizontalMenu.tsx
+C:\Node.Js\proj\boilerplate\packages\layout\src\menu\layouts\VerticalMenu.tsx
+C:\Node.Js\proj\boilerplate\packages\layout\src\menu\search\index.tsx
+C:\Node.Js\proj\boilerplate\packages\layout\src\menu\shared\Logo.tsx

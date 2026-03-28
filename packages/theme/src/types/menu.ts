@@ -1,19 +1,8 @@
-import type { CSSObject } from '@emotion/react'
-import type { ReactNode, MutableRefObject, ReactElement } from 'react'
+import { VerticalNavState } from '@cap/shared-types'
+import { ReactNode, ReactElement, MutableRefObject } from 'react'
+import { CSSObject } from '@mui/material/styles'
 
-export interface VerticalNavState {
-  width?: number
-  collapsedWidth?: number
-  isCollapsed?: boolean
-  isHovered?: boolean
-  isToggled?: boolean
-  isScrollWithContent?: boolean
-  isBreakpointReached?: boolean
-  isPopoutWhenCollapsed?: boolean
-  collapsing?: boolean
-  expanding?: boolean
-  transitionDuration?: number
-}
+export type { VerticalNavState }
 
 export type MenuSectionStyles = {
   root?: CSSObject

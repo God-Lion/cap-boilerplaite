@@ -1,12 +1,13 @@
 import type { Theme } from '@mui/material/styles'
 import styled from '@emotion/styled'
-import { themeConfig } from '@cap/platform-core'
-import { horizontalLayoutClasses } from '../../utils/layoutClasses'
 import type { CSSObject } from '@emotion/styled'
-
+import { horizontalLayoutClasses } from '../../utils/layoutClasses'
+// themeConfig values inlined to avoid circular import (layoutPadding:24, compactContentWidth:1440)
 type StyledFooterProps = {
   theme: Theme
   overrideStyles?: CSSObject
+  layoutPadding: string
+  compactContentWidth: number
 }
 
 const StyledFooter = styled.footer<StyledFooterProps>`
@@ -28,12 +29,12 @@ const StyledFooter = styled.footer<StyledFooterProps>`
   &.${horizontalLayoutClasses.footerContentCompact}
     .${horizontalLayoutClasses.footerContentWrapper} {
     margin-inline: auto;
-    max-inline-size: ${themeConfig.compactContentWidth}px;
+    max-inline-size: ${({ compactContentWidth }) => compactContentWidth}px;
   }
 
   .${horizontalLayoutClasses.footerContentWrapper} {
     padding-block: 16px;
-    padding-inline: ${themeConfig.layoutPadding}px;
+    padding-inline: ${({ layoutPadding }) => layoutPadding};
   }
 
   ${({ overrideStyles }) => overrideStyles}

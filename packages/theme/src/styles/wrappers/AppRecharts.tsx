@@ -15,13 +15,11 @@ const AppRecharts = styled('div')(({ theme }) => ({
   },
   '& .recharts-default-tooltip': {
     border: 'none !important',
-    // boxShadow: theme.customShadows.xs,
     borderRadius: theme.shape.borderRadius,
     backgroundColor: `${theme.palette.background.paper} !important`,
   },
   '& .recharts-custom-tooltip': {
     padding: theme.spacing(2.5),
-    // boxShadow: theme.customShadows.xs,
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.paper,
   },

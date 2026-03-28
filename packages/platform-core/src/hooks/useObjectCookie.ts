@@ -4,10 +4,10 @@ import { useCookie } from 'react-use'
 const useObjectCookie = <T>(key: string, fallback?: T | null): [T, (newVal: T) => void] => {
   const [valStr, updateCookie] = useCookie(key)
 
-  // eslint-disable-next-line react-compiler/react-compiler
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const value = React.useMemo<T>(() => (valStr ? JSON.parse(valStr) : fallback), [valStr])
-
+  const value = React.useMemo<T>(
+    () => (valStr ? JSON.parse(valStr) : (fallback as T)),
+    [valStr, fallback],
+  )
   const updateValue = (newVal: T) => {
     updateCookie(JSON.stringify(newVal))
   }

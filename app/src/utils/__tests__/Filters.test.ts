@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import Filters from '../Filters'
-import type { ITableData } from '../../components/table/types'
+import type { ITableData } from '@cap/shared-types'
 
 // ─── Fixture ─────────────────────────────────────────────────────────────────
 

@@ -24,7 +24,7 @@ export const MuiTableOverrides = (theme: Theme) => ({
   MuiTableCell: {
     styleOverrides: {
       root: {
-        padding: '12px 16px',
+        padding: theme.spacing(1.5, 2),
         borderBottom: `1px solid ${theme.palette.divider}`,
         borderRight: `1px solid ${theme.palette.divider}`,
         '&:last-child': {
@@ -33,8 +33,10 @@ export const MuiTableOverrides = (theme: Theme) => ({
       },
       head: {
         fontWeight: 600,
-        backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+        backgroundColor: theme.palette.background.default,
       },
     },
   },
 });
+
+export default MuiTableOverrides;

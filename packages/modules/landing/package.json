@@ -10,6 +10,8 @@
     },
     "dependencies": {
         "@cap/platform-core": "workspace:*",
+        "@cap/theme": "workspace:*",
+        "@cap/layout": "workspace:*",
         "@mui/material": "^7.0.0",
         "@mui/icons-material": "^7.0.0",
         "react-router-dom": "^7.1.1"

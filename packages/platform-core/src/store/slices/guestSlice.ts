@@ -37,7 +37,7 @@ export interface GuestSlice {
   getAnalysisCount: () => number
 }
 
-const GUEST_STORAGE_KEY = 'god-lion-seeker-optimizer-guest-session'
+const GUEST_STORAGE_KEY = (import.meta as any).env?.VITE_GUEST_STORAGE_KEY || 'cap-platform-guest-session'
 
 const saveGuestToSession = (data: GuestSessionData | null) => {
   if (data) {

@@ -1,3 +1,5 @@
 export { useThemeVariables } from './useThemeVariables';
 export { useTenantTheme } from './useTenantTheme';
-export { default as useObjectCookie } from './useObjectCookie';
+export * from './useDerivedMuiTheme';
+export * from './useComponentEffectConfig';
+export * from './useComponentStyle';
