@@ -18,6 +18,38 @@ export interface OIDCClient {
   updated_at: string
 }
 
+export interface SAMLConfig {
+  enabled: boolean
+  entityId: string
+  acsUrl: string
+  sloUrl: string
+  ssoUrl: string
+  nameIdFormat: string
+  wantAssertionsSigned: boolean
+  wantResponseSigned: boolean
+  certificate: string
+  attributeMapping: Record<string, string>
+}
+
+export interface SAMLMetadata {
+  entityId: string
+  xml: string
+  name?: string
+  isRemote?: boolean
+}
+
+export interface JWKSKey {
+  kty: string
+  use?: string
+  key_ops?: string[]
+  alg?: string
+  kid?: string
+  x5u?: string[]
+  x5c?: string[]
+  x5t?: string
+  "x5t#S256"?: string
+}
+
 export interface CreateOIDCClientRequest {
   name: string
   redirectUris: string[]
@@ -402,4 +434,10 @@ export interface DeveloperApiKey {
   last_used_at: string | null
   created_at: string
   key?: string
+}
+
+export interface CreateDeveloperApiKeyRequest {
+  name: string
+  expires_at?: string | null
+  organization_id?: number
 }

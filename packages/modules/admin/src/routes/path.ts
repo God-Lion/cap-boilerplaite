@@ -20,6 +20,8 @@ export const Path = {
   Root: AuthPath.admin.root,
   Dashboard: AuthPath.admin.dashboard,
   ThemeEditor: AuthPath.admin.themeEditor,
+  // ThemeBuilder: AuthPath.admin.themeBuilder,
+  themeBuilder: '/theme-builder',
 }
 
 export default Path

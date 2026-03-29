@@ -139,6 +139,7 @@ export const Path = {
     root: '/admin',
     dashboard: '/admin/dashboard',
     themeEditor: '/admin/theme-editor',
+    themeBuilder: '/admin/theme-builder',
     overview: '/admin',
     users: '/admin/users',
     userProfile: '/admin/users/:id',

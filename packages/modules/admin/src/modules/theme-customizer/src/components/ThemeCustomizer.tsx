@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -20,7 +20,9 @@ import {
   THEME_PRESETS,
   AdaptiveCard,
   AdaptiveButton,
-  type TenantThemeConfig
+  useThemeCustomizer,
+  type TenantThemeConfig,
+  type ThemePresetId
 } from '@cap/theme';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -124,61 +126,40 @@ const getContrastRatio = (hex: string) => {
 // --- Main ThemeCustomizer Component ---
 
 export const ThemeCustomizer: React.FC = () => {
-  const { theme: themeConfig, updateTheme, saveTheme, isLoading, error } = useTenantThemeContext();
+  const { theme: themeConfig, isLoading, error } = useTenantThemeContext();
   const theme = useTheme();
+  const { localDraft, isDirty, isSaving, applyDraftUpdate, applyDraftPreset, resetDraft, commitDraft } = useThemeCustomizer();
 
   const [mode, setMode] = useState<'guided' | 'expert'>('guided');
   const [activeTab, setActiveTab] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-  const [localTheme, setLocalTheme] = useState<TenantThemeConfig | null>(themeConfig);
   const [isSaved, setIsSaved] = useState(false);
 
-  useEffect(() => {
-    if (themeConfig && !localTheme) {
-      setLocalTheme(themeConfig);
-    }
-  }, [themeConfig]);
-
   const identityScore = useMemo(() => {
-    if (!localTheme) return 0;
+    if (!localDraft) return 0;
     let score = 70;
-    if (localTheme.name) score += 10;
-    if (localTheme.tokens.colors.primary.value !== theme.palette.primary.main) score += 10;
-    if (localTheme.effects.globalType !== 'standard') score += 10;
+    if (localDraft.name) score += 10;
+    if (localDraft.tokens.colors.primary.value !== theme.palette.primary.main) score += 10;
+    if (localDraft.effects.globalType !== 'standard') score += 10;
     return Math.min(score, 100);
-  }, [localTheme]);
+  }, [localDraft]);
 
   const contrastRatio = useMemo(() => {
-    if (!localTheme) return '0.0';
-    const ratio = getContrastRatio(localTheme.tokens.colors.primary.value || theme.palette.primary.main);
+    if (!localDraft) return '0.0';
+    const ratio = getContrastRatio(localDraft.tokens.colors.primary.value || theme.palette.primary.main);
     return ratio.toFixed(1);
-  }, [localTheme?.tokens.colors.primary.value]);
+  }, [localDraft?.tokens.colors.primary.value]);
 
-  if (!localTheme) return <Typography sx={{ p: 4 }}>Initializing Design System...</Typography>;
+  if (!localDraft) return <Typography sx={{ p: 4 }}>Initializing Design System...</Typography>;
 
-  const handleUpdate = (updates: any) => {
-    const deepMerge = (target: any, source: any): any => {
-      const output = { ...target };
-      if (source && typeof source === 'object') {
-        Object.keys(source).forEach(key => {
-          if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key]) && target && key in target) {
-            output[key] = deepMerge(target[key], source[key]);
-          } else {
-            output[key] = source[key];
-          }
-        });
-      }
-      return output;
-    };
-    const newTheme = deepMerge(localTheme, updates);
-    setLocalTheme(newTheme as TenantThemeConfig);
-    updateTheme(newTheme as TenantThemeConfig);
+  const handleUpdate = (updates: Partial<TenantThemeConfig>) => {
+    applyDraftUpdate(updates);
     setIsSaved(false);
   };
 
   const handleSave = async () => {
     try {
-      await saveTheme(localTheme);
+      await commitDraft();
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 3000);
     } catch (err) {
@@ -187,19 +168,8 @@ export const ThemeCustomizer: React.FC = () => {
   };
 
   const handlePresetSelect = (presetKey: string) => {
-    const preset = THEME_PRESETS[presetKey as keyof typeof THEME_PRESETS];
-    if (preset) {
-      handleUpdate({
-        tokens: {
-          colors: {
-            primary: { value: preset.preview.primaryColor },
-            secondary: { value: preset.preview.secondaryColor },
-            background: { value: preset.preview.backgroundColor }
-          }
-        },
-        metadata: { preset: presetKey }
-      });
-    }
+    applyDraftPreset(presetKey as ThemePresetId);
+    setIsSaved(false);
   };
 
   const wizardSteps = ['Identity', 'Typography', 'Visuals', 'Review'];
@@ -212,7 +182,7 @@ export const ThemeCustomizer: React.FC = () => {
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.5 }}>Organization Name</Typography>
               <Paper sx={{ p: 0, borderRadius: theme.spacing(1.5), background: alpha(theme.palette.common.white, 0.03), border: `1px solid ${theme.palette.divider}` }}>
-                <Box component="input" placeholder="e.g. Acme Corp" value={localTheme.name || ''} onChange={(e: any) => handleUpdate({ name: e.target.value })}
+                <Box component="input" placeholder="e.g. Acme Corp" value={localDraft.name || ''} onChange={(e: any) => handleUpdate({ name: e.target.value })}
                   sx={{ width: '100%', background: 'none', border: 'none', p: 2, color: 'text.primary', '&:focus': { outline: 'none' } }}
                 />
               </Paper>
@@ -220,9 +190,9 @@ export const ThemeCustomizer: React.FC = () => {
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.5 }}>Base Theme Mode</Typography>
               <Grid container spacing={1.5}>
-                <Grid size={{ xs: 4 }}><SelectionCard title="Light" icon={<LightModeIcon />} selected={true} onClick={() => { }} /></Grid>
-                <Grid size={{ xs: 4 }}><SelectionCard title="Dark" icon={<DarkModeIcon />} selected={false} onClick={() => { }} /></Grid>
-                <Grid size={{ xs: 4 }}><SelectionCard title="System" icon={<SystemIcon />} selected={false} onClick={() => { }} /></Grid>
+                <Grid size={{ xs: 4 }}><SelectionCard title="Light" icon={<LightModeIcon />} selected={localDraft.metadata?.mode !== 'dark'} onClick={() => applyDraftUpdate({ metadata: { ...localDraft.metadata, mode: 'light' } })} /></Grid>
+                <Grid size={{ xs: 4 }}><SelectionCard title="Dark" icon={<DarkModeIcon />} selected={localDraft.metadata?.mode === 'dark'} onClick={() => applyDraftUpdate({ metadata: { ...localDraft.metadata, mode: 'dark' } })} /></Grid>
+                <Grid size={{ xs: 4 }}><SelectionCard title="System" icon={<SystemIcon />} selected={localDraft.metadata?.mode === 'system'} onClick={() => applyDraftUpdate({ metadata: { ...localDraft.metadata, mode: 'system' } })} /></Grid>
               </Grid>
             </Box>
           </Stack>
@@ -239,7 +209,7 @@ export const ThemeCustomizer: React.FC = () => {
                   { id: 'mono', title: 'Mono', subtitle: 'Tech', font: "'Fira Code', monospace" }
                 ].map((f) => (
                   <Grid size={{ xs: 4 }} key={f.id}>
-                    <SelectionCard title={f.title} subtitle={f.subtitle} selected={localTheme.tokens.typography.fontFamily.sans === f.font}
+                    <SelectionCard title={f.title} subtitle={f.subtitle} selected={localDraft.tokens.typography.fontFamily.sans === f.font}
                       onClick={() => handleUpdate({ tokens: { typography: { fontFamily: { sans: f.font } } } })} />
                   </Grid>
                 ))}
@@ -247,7 +217,7 @@ export const ThemeCustomizer: React.FC = () => {
             </Box>
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>Layout Density</Typography>
-              <Slider value={parseFloat(localTheme.tokens.spacing.md || '1')} step={0.25} min={0.5} max={1.5}
+              <Slider value={parseFloat(localDraft.tokens.spacing.md || '1')} step={0.25} min={0.5} max={1.5}
                 onChange={(_, v) => handleUpdate({ tokens: { spacing: { md: `${v}rem` } } })}
               />
             </Box>
@@ -259,8 +229,8 @@ export const ThemeCustomizer: React.FC = () => {
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.5 }}>Brand Colors</Typography>
               <Grid container spacing={2}>
-                <Grid size={{ xs: 6 }}><ColorPicker label="Primary" value={localTheme.tokens.colors.primary.value} onChange={(v) => handleUpdate({ tokens: { colors: { primary: { value: v } } } })} /></Grid>
-                <Grid size={{ xs: 6 }}><ColorPicker label="Secondary" value={localTheme.tokens.colors.secondary.value} onChange={(v) => handleUpdate({ tokens: { colors: { secondary: { value: v } } } })} /></Grid>
+                <Grid size={{ xs: 6 }}><ColorPicker label="Primary" value={localDraft.tokens.colors.primary.value} onChange={(v) => handleUpdate({ tokens: { colors: { primary: { value: v } } } })} /></Grid>
+                <Grid size={{ xs: 6 }}><ColorPicker label="Secondary" value={localDraft.tokens.colors.secondary.value} onChange={(v) => handleUpdate({ tokens: { colors: { secondary: { value: v } } } })} /></Grid>
               </Grid>
             </Box>
             <Box>
@@ -268,7 +238,7 @@ export const ThemeCustomizer: React.FC = () => {
               <Grid container spacing={1}>
                 {['standard', 'glass', 'neu', 'bento'].map((e) => (
                   <Grid size={{ xs: 3 }} key={e}>
-                    <SelectionCard title={e.toUpperCase()} selected={localTheme.effects.globalType === e} onClick={() => handleUpdate({ effects: { globalType: e as any } })} />
+                    <SelectionCard title={e.toUpperCase()} selected={localDraft.effects.globalType === e} onClick={() => handleUpdate({ effects: { globalType: e as any } })} />
                   </Grid>
                 ))}
               </Grid>
@@ -353,7 +323,7 @@ export const ThemeCustomizer: React.FC = () => {
                       <Grid container spacing={2}>
                         {Object.entries(THEME_PRESETS).map(([key, p]) => (
                           <Grid size={{ xs: 6 }} key={key}>
-                            <Paper onClick={() => handlePresetSelect(key)} sx={{ p: 2, cursor: 'pointer', background: localTheme.metadata?.preset === key ? alpha(theme.palette.primary.main, 0.1) : alpha(theme.palette.common.white, 0.02), border: '1px solid', borderColor: localTheme.metadata?.preset === key ? theme.palette.primary.main : 'transparent', borderRadius: theme.spacing(1.5) }}>
+                            <Paper onClick={() => handlePresetSelect(key)} sx={{ p: 2, cursor: 'pointer', background: localDraft.metadata?.preset === key ? alpha(theme.palette.primary.main, 0.1) : alpha(theme.palette.common.white, 0.02), border: '1px solid', borderColor: localDraft.metadata?.preset === key ? theme.palette.primary.main : 'transparent', borderRadius: theme.spacing(1.5) }}>
                               <Typography variant="caption" sx={{ fontWeight: 800, display: 'block', mb: 1 }}>{p.name}</Typography>
                               <Box sx={{ width: '100%', height: theme.spacing(0.5), background: p.preview.primaryColor, borderRadius: theme.shape.borderRadius / 2 }} />
                             </Paper>
@@ -363,9 +333,9 @@ export const ThemeCustomizer: React.FC = () => {
                     )}
                     {activeTab === 1 && (
                       <Stack spacing={1}>
-                        <ColorPicker label="Primary Identity" value={localTheme.tokens.colors.primary.value} onChange={(v) => handleUpdate({ tokens: { colors: { primary: { value: v } } } })} />
-                        <ColorPicker label="Secondary Accent" value={localTheme.tokens.colors.secondary.value} onChange={(v) => handleUpdate({ tokens: { colors: { secondary: { value: v } } } })} />
-                        <ColorPicker label="Base Background" value={localTheme.tokens.colors.background.value} onChange={(v) => handleUpdate({ tokens: { colors: { background: { value: v } } } })} />
+                        <ColorPicker label="Primary Identity" value={localDraft.tokens.colors.primary.value} onChange={(v) => handleUpdate({ tokens: { colors: { primary: { value: v } } } })} />
+                        <ColorPicker label="Secondary Accent" value={localDraft.tokens.colors.secondary.value} onChange={(v) => handleUpdate({ tokens: { colors: { secondary: { value: v } } } })} />
+                        <ColorPicker label="Base Background" value={localDraft.tokens.colors.background.value} onChange={(v) => handleUpdate({ tokens: { colors: { background: { value: v } } } })} />
                       </Stack>
                     )}
                     {activeTab === 2 && (
@@ -373,16 +343,16 @@ export const ThemeCustomizer: React.FC = () => {
                         <Typography variant="overline" sx={{ fontWeight: 800 }}>Global Effect Style</Typography>
                         <Grid container spacing={1}>
                           {['standard', 'glass', 'neu', 'brutalism', 'organic', 'immersive'].map(t => (
-                            <Grid size={{ xs: 4 }} key={t}><Button variant={localTheme.effects.globalType === t ? 'contained' : 'outlined'} onClick={() => handleUpdate({ effects: { globalType: t as any } })} fullWidth sx={{ fontSize: '0.65rem', borderRadius: theme.spacing(1) }}>{t}</Button></Grid>
+                            <Grid size={{ xs: 4 }} key={t}><Button variant={localDraft.effects.globalType === t ? 'contained' : 'outlined'} onClick={() => handleUpdate({ effects: { globalType: t as any } })} fullWidth sx={{ fontSize: '0.65rem', borderRadius: theme.spacing(1) }}>{t}</Button></Grid>
                           ))}
                         </Grid>
-                        {localTheme.effects.globalType === 'glass' && <Box><Typography variant="caption">Blur Force</Typography><Slider value={parseInt(localTheme.effects.glassmorphism?.blur || '16')} max={64} onChange={(_, v) => handleUpdate({ effects: { glassmorphism: { blur: `${v}px` } } })} /></Box>}
+                        {localDraft.effects.globalType === 'glass' && <Box><Typography variant="caption">Blur Force</Typography><Slider value={parseInt(localDraft.effects.glassmorphism?.blur || '16')} max={64} onChange={(_, v) => handleUpdate({ effects: { glassmorphism: { blur: `${v}px` } } })} /></Box>}
                       </Stack>
                     )}
                     {activeTab === 3 && (
                       <Stack spacing={4}>
-                        <Box><Typography variant="caption">Corner Radius</Typography><Slider value={parseInt(localTheme.tokens.borderRadius.md || '12')} max={100} onChange={(_, v) => handleUpdate({ tokens: { borderRadius: { md: `${v}px` } } })} /></Box>
-                        <Box><Typography variant="caption">Spacing Scale</Typography><Slider value={parseFloat(localTheme.tokens.spacing.md || '1')} step={0.25} min={0.5} max={3} onChange={(_, v) => handleUpdate({ tokens: { spacing: { md: `${v}rem` } } })} /></Box>
+                        <Box><Typography variant="caption">Corner Radius</Typography><Slider value={parseInt(localDraft.tokens.borderRadius.md || '12')} max={100} onChange={(_, v) => handleUpdate({ tokens: { borderRadius: { md: `${v}px` } } })} /></Box>
+                        <Box><Typography variant="caption">Spacing Scale</Typography><Slider value={parseFloat(localDraft.tokens.spacing.md || '1')} step={0.25} min={0.5} max={3} onChange={(_, v) => handleUpdate({ tokens: { spacing: { md: `${v}rem` } } })} /></Box>
                       </Stack>
                     )}
                   </Box>
@@ -414,7 +384,7 @@ export const ThemeCustomizer: React.FC = () => {
                 <Grid size={{ xs: 6 }}>
                   <AdaptiveCard effectStyle="global">
                     <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Platform Hub</Typography>
-                    <Typography variant="h6" sx={{ fontWeight: 800, mt: 2 }}>{localTheme.name || 'Undefined Corp'}</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 800, mt: 2 }}>{localDraft.name || 'Undefined Corp'}</Typography>
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>Global Namespace Integration</Typography>
                   </AdaptiveCard>
                 </Grid>
@@ -430,7 +400,7 @@ export const ThemeCustomizer: React.FC = () => {
               <Box sx={{ width: theme.spacing(6), height: theme.spacing(6), borderRadius: theme.spacing(1.75), background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`, boxShadow: theme.shadows[10] }} />
               <Box>
                 <Typography variant="subtitle1" sx={{ fontWeight: 900, lineHeight: 1 }}>Enterprise Core</Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary' }}>{localTheme.metadata?.preset?.toUpperCase() || 'DEFAULT'} PRESET ACTIVE</Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>{localDraft.metadata?.preset?.toUpperCase() || 'DEFAULT'} PRESET ACTIVE</Typography>
               </Box>
             </Box>
           </Box>

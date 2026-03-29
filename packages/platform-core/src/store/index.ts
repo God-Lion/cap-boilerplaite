@@ -53,19 +53,18 @@ const setHydrated = () => {
  * Use this to wait before checking auth state
  */
 export const useHasHydrated = () => {
-  const [hydrated, setHydrated] = useState(hasHydrated)
+  const [isHydrated, setHasHydratedState] = useState(hasHydrated)
 
   useEffect(() => {
     if (hasHydrated) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setHydrated(true)
+      setHasHydratedState(true)
       return
     }
-    const unsubscribe = onHydrationComplete(() => setHydrated(true))
+    const unsubscribe = onHydrationComplete(() => setHasHydratedState(true))
     return unsubscribe
   }, [])
 
-  return hydrated
+  return isHydrated
 }
 
 /**
@@ -86,9 +85,10 @@ const secureStorage = {
     if (name === storageKey) {
       try {
         // Attempt to decrypt
-        const masterKey =
-          (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY ||
-          'cap-platform-default-secure-key'
+        const masterKey = (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY
+        if (!masterKey) {
+          throw new Error('VITE_STORAGE_ENCRYPTION_KEY is not defined')
+        }
         const decrypted = await encryption.decryptData(value, masterKey)
         console.log(
           '[secureStorage] decryption success. Content:',
@@ -108,8 +108,10 @@ const secureStorage = {
     const storageKey = (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
     if (name === storageKey) {
       console.log('[secureStorage] payload to encrypt:', value.substring(0, 100) + '...')
-      const masterKey =
-        (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'cap-platform-default-secure-key'
+      const masterKey = (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY
+      if (!masterKey) {
+        throw new Error('VITE_STORAGE_ENCRYPTION_KEY is not defined')
+      }
       const encrypted = await encryption.encryptData(value, masterKey)
       localStorage.setItem(name, encrypted)
     } else {
@@ -150,19 +152,22 @@ export const useAppStore = create<AppStore>()(
         name: (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage',
         storage: createJSONStorage(() => secureStorage as any),
         onRehydrateStorage: (_state) => {
-          console.log('[useAppStore] hydration started')
+          if (process.env.NODE_ENV === 'development') console.log('[useAppStore] hydration started')
           return (state, error) => {
             if (error) {
               console.error('[useAppStore] hydration failed:', error)
               // Mark hydration complete even on failure so app doesn't hang
               setHydrated()
             } else {
-              console.log('[useAppStore] hydration finished')
-              console.log('[useAppStore] Hydrated Auth State:', state?.isAuthenticated, state?.user)
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[useAppStore] hydration finished')
+                console.log('[useAppStore] Hydrated Auth State:', state?.isAuthenticated, state?.user)
+              }
               // Use queueMicrotask to ensure state is fully applied before marking hydration complete
               // This prevents race conditions where components check auth state before it's updated
               queueMicrotask(() => {
-                console.log('[useAppStore] setHydrated called (after microtask)')
+                if (process.env.NODE_ENV === 'development')
+                  console.log('[useAppStore] setHydrated called (after microtask)')
                 setHydrated()
               })
             }

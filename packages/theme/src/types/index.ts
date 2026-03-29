@@ -27,6 +27,7 @@ export interface TenantThemeConfig {
     updatedAt?: string;
     createdBy?: string;
     preset?: string;
+    mode?: 'light' | 'dark' | 'system';
   };
 }
 
