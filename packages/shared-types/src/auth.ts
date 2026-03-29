@@ -1,13 +1,17 @@
 export type UserRole = 
   | 'user' 
-  | 'participant' 
-  | 'judge' 
-  | 'provider_employee' 
-  | 'provider_admin' 
   | 'admin' 
-  | 'super_admin_employee' 
-  | 'super_admin'
+  | 'super_admin';
+
+export type ApplicationRole =
+  | 'participant'
+  | 'judge'
+  | 'provider_employee'
+  | 'provider_admin'
+  | 'super_admin_employee'
   | 'moderator';
+
+export type AnyRole = UserRole | ApplicationRole;
 export type UserStatus = 'active' | 'inactive' | 'suspended' | 'pending';
 
 export interface UserSessionDto {
@@ -22,43 +26,62 @@ export interface UserSessionDto {
 }
 
 export interface UserDto {
-  id: string | number; // Supports both GUID (string) and legacy numeric IDs
+  // Core Identity
+  id: string | number;
   email: string;
-  name: string; // Standardized from firstName+lastName
+  
+  // Name fields (normalized - prefer fullName, firstName, lastName over name)
+  name: string;
   fullName?: string;
   firstName?: string;
   lastName?: string;
-  role?: UserRole;
+  
+  // Auth & Security
+  role?: AnyRole;
   status?: UserStatus;
-  roleId?: number; // Legacy compatibility
-  roleName?: string;
   permissions: string[];
-  phone?: string | null;
-  avatar?: string;
-  avatarUrl?: string;
   emailVerified?: boolean;
   mfaEnabled?: boolean;
-  lastLoginAt?: string | null;
+  /** @deprecated Use lastLoginAt */
   lastLogin?: string;
+  lastLoginAt?: string | null;
   lastActivity?: string;
   sessions?: UserSessionDto[];
   roleObject?: IRole;
+  
+  // Contact & Profile
+  phone?: string | null;
+  /** @deprecated Use avatarUrl */
+  avatar?: string;
+  avatarUrl?: string;
+  /** @deprecated Use lastName */
+  sexe?: string;
+  
+  // Auth Tokens (usually only populated during login)
+  token?: string;
+  refreshToken?: string;
+  rememberMe?: boolean;
+  
+  // Timestamps
+  createdAt?: string;
+  updatedAt?: string;
+  
+  // Metadata
   metadata?: {
     preferences?: Record<string, unknown>;
     settings?: Record<string, unknown>;
     [key: string]: unknown;
   };
-  token?: string;
-  refreshToken?: string;
-  rememberMe?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  // Admin-specific extended fields
+  
+  // Legacy fields (deprecated, for backward compatibility)
+  roleId?: number;
+  roleName?: string;
+  
+  // Admin-specific fields (application domain knowledge)
   orgName?: string;
   isActif?: boolean;
   apiAccessEnabled?: boolean;
   maintenanceModeBypass?: boolean;
-  sexe?: string;
 }
 
 export interface LoginResponseDto {

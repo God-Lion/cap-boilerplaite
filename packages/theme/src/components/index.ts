@@ -1,28 +1,3 @@
-export { default as CustomInputVertical } from './custom-inputs/Vertical'
-export { default as CustomInputHorizontal } from './custom-inputs/Horizontal'
-export { default as CustomInputImage } from './custom-inputs/Image'
-export { default as OptionMenu } from './option-menu'
 export { default as Avatar } from './mui/Avatar'
 export { default as Chip } from './mui/Chip'
-
-export * from './custom-inputs/types'
-
-// Newly moved components from app
-export { default as DashboardItem } from './DashboardItem'
-export { default as DirectionalIcon } from './DirectionalIcon'
-export { default as DropZone } from './DropZone'
-export { default as Empty } from './Empty'
-export { default as ErrorBoundary } from './ErrorBoundary'
-export { default as Icon } from './Icon'
-export { default as Loading } from './Loading'
-export { default as PhoneInput } from './PhoneInput'
-export { default as StyledMenu } from './StyledMenu'
-export { default as TablePaginationComponent } from './TablePaginationComponent'
-
-// Moved folders
-export * from './common'
-export * from './pwa'
-export { default as AppReactTable } from './react-table'
-export { default as Table } from './table/Table'
-export * from './table/types'
-export * from './virtualized'
+export { default as OptionMenu } from './option-menu'

@@ -24,4 +24,3 @@ export type { DemoName } from './core-types'
 
 export * from './app-types'
 export * from './tenant'
-export * from './nfc'

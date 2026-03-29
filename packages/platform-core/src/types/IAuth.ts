@@ -1,4 +1,4 @@
-import { UserDto, UserRole, UserSessionDto } from '@cap/shared-types'
+import { UserDto, UserRole, UserSessionDto, AnyRole } from '@cap/shared-types'
 
 export type ISession = UserSessionDto
 export type IUserResponse = UserDto
@@ -25,7 +25,7 @@ export interface ISignup {
   sexe?: string
   phone?: string | null
   email: string
-  role: UserRole | number
+  role: AnyRole | number
   roleName: string
   permissions?: string[]
   roleObject?: IUserResponse['roleObject']

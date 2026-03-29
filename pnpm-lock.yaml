@@ -355,6 +355,9 @@ importers:
       react-perfect-scrollbar:
         specifier: ^1.5.8
         version: 1.5.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      react-phone-input-2:
+        specifier: ^2.15.1
+        version: 2.15.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
         specifier: ^7.13.1
         version: 7.13.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -367,12 +370,18 @@ importers:
 
   packages/modules/admin:
     dependencies:
+      '@cap/layout':
+        specifier: workspace:*
+        version: link:../../layout
       '@cap/module-auth':
         specifier: workspace:*
         version: link:../auth
       '@cap/platform-core':
         specifier: workspace:*
         version: link:../../platform-core
+      '@cap/shared-types':
+        specifier: workspace:*
+        version: link:../../shared-types
       '@cap/theme':
         specifier: workspace:*
         version: link:../../theme
@@ -461,9 +470,15 @@ importers:
 
   packages/modules/auth:
     dependencies:
+      '@cap/layout':
+        specifier: workspace:*
+        version: link:../../layout
       '@cap/platform-core':
         specifier: workspace:*
         version: link:../../platform-core
+      '@cap/shared-types':
+        specifier: workspace:*
+        version: link:../../shared-types
       '@cap/theme':
         specifier: workspace:*
         version: link:../../theme

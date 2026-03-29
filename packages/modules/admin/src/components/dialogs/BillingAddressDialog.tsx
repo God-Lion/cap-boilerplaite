@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
-import CustomInputVertical from '@cap/theme/components/custom-inputs/Vertical'
-import type { CustomInputVerticalData } from '@cap/theme/components/custom-inputs/types'
+import { CustomInputVertical } from "@cap/layout";
+import type { CustomInputVerticalData } from '@cap/layout/src/components/ui/custom-inputs/types'
 import DialogCloseButton from './DialogCloseButton'
 import {
   Dialog,

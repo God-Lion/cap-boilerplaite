@@ -101,6 +101,7 @@ export interface BasePlugin extends PluginMetadata {
 
 /**
  * Plugin that provides UI components
+ * @deprecated Not currently implemented. Use ServicePlugin for extending functionality.
  */
 export interface ComponentPlugin extends BasePlugin {
   pluginType: 'component'
@@ -114,6 +115,7 @@ export interface ComponentPlugin extends BasePlugin {
 
 /**
  * Plugin that provides routes
+ * @deprecated Not currently implemented. Use ServicePlugin for extending functionality.
  */
 export interface RoutePlugin extends BasePlugin {
   pluginType: 'route'
@@ -160,6 +162,7 @@ export interface ServicePlugin extends BasePlugin {
 
 /**
  * Plugin that provides i18n translations
+ * @deprecated Not currently implemented. Use ServicePlugin for extending functionality.
  */
 export interface I18nPlugin extends BasePlugin {
   pluginType: 'i18n'
@@ -170,6 +173,7 @@ export interface I18nPlugin extends BasePlugin {
 
 /**
  * Generic plugin that can combine multiple types
+ * @deprecated Not currently implemented. Use ServicePlugin for extending functionality.
  */
 export interface HybridPlugin extends BasePlugin {
   pluginType: 'hybrid'
@@ -194,78 +198,22 @@ export type CAPPlugin = ComponentPlugin | RoutePlugin | ServicePlugin | I18nPlug
 
 /**
  * Plugin registry interface for managing plugins
+ * 
+ * Note: Currently only ServicePlugin is implemented. Other plugin types
+ * (ComponentPlugin, RoutePlugin, I18nPlugin, HybridPlugin) are defined
+ * but not implemented.
  */
 export interface PluginRegistry {
-  /**
-   * Register a plugin
-   * @throws Error if plugin with same ID is already registered
-   */
   register: (plugin: CAPPlugin) => Promise<void>
-  
-  /**
-   * Unregister a plugin by ID
-   */
   unregister: (id: string) => Promise<void>
-  
-  /**
-   * Get a plugin by ID
-   */
   getPlugin: <T extends CAPPlugin = CAPPlugin>(id: string) => T | undefined
-  
-  /**
-   * Get all registered plugins
-   */
   getAllPlugins: () => CAPPlugin[]
-  
-  /**
-   * Get plugins by type
-   */
   getPluginsByType: <T extends CAPPlugin['pluginType']>(type: T) => Extract<CAPPlugin, { pluginType: T }>[]
-  
-  /**
-   * Get plugins by category
-   */
   getPluginsByCategory: (category: PluginMetadata['category']) => CAPPlugin[]
-  
-  /**
-   * Check if a plugin is registered
-   */
   hasPlugin: (id: string) => boolean
-  
-  /**
-   * Get the state of a plugin
-   */
   getPluginState: (id: string) => PluginLifecycleState | undefined
-  
-  /**
-   * Get all registered components
-   */
-  getComponents: () => Record<string, ComponentType>
-  
-  /**
-   * Get a specific component by name
-   */
-  getComponent: (name: string) => ComponentType | undefined
-  
-  /**
-   * Get all registered routes
-   */
-  getRoutes: () => RouteRegistration[]
-  
-  /**
-   * Get all registered services
-   */
   getServices: () => Record<string, unknown>
-  
-  /**
-   * Get a specific service by name
-   */
   getService: <T = unknown>(name: string) => T | undefined
-  
-  /**
-   * Get all registered dictionaries
-   */
-  getDictionaries: () => Record<string, Record<string, Record<string, string>>>
 }
 
 /**

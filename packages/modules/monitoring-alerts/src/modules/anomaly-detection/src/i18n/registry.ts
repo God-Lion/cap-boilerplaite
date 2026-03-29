@@ -1,19 +1,15 @@
-import en from '../data/dictionaries/en.json'
-import ar from '../data/dictionaries/ar.json'
-import fr from '../data/dictionaries/fr.json'
+/**
+ * I18n Registry for Monitoring Alerts Module
+ * 
+ * Re-exports the canonical implementation from @cap/platform-core.
+ * All modules should use this pattern for consistency.
+ */
 
-export const monitoringAlertsDictionary = {
-  en,
-  ar,
-  fr,
-}
+export {
+  registerDictionary,
+  getMergedDictionary,
+  getAvailableLocales,
+  type DictionaryMap
+} from '@cap/platform-core/i18n/registry'
 
-export const registerDictionary = (dict: typeof monitoringAlertsDictionary) => {
-  if (typeof window !== 'undefined') {
-    (window as any).__MONITORING_ALERTS_DICT__ = dict
-  }
-}
-
-export const getMergedDictionary = (lang: string) => {
-  return monitoringAlertsDictionary[lang as keyof typeof monitoringAlertsDictionary] || monitoringAlertsDictionary.en
-}
+export { i18n, type Locale } from '@cap/platform-core/i18n/i18n'

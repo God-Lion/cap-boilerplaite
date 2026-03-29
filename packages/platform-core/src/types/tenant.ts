@@ -36,6 +36,7 @@ export type {
 } from '@cap/shared-types'
 
 import type { TenantConfig, TenantLayout } from '@cap/shared-types'
+import { CURRENT_TENANT_CONFIG_VERSION } from '@cap/shared-types'
 import type { TenantThemeConfig } from '@cap/theme'
 import { DEFAULT_THEME_CONFIG } from '@cap/theme'
 
@@ -96,7 +97,7 @@ export const DEFAULT_TENANT_CONFIG: TenantConfig = {
     notifications: true,
     chat: true,
   },
-  version: 2,
+  version: CURRENT_TENANT_CONFIG_VERSION,
 }
 
 /**
@@ -127,7 +128,7 @@ export function normalizeTenantConfig(raw: unknown): TenantConfig {
         companyName: 'Company',
       },
       features: v1.features,
-      version: 2,
+      version: CURRENT_TENANT_CONFIG_VERSION,
     }
   }
   

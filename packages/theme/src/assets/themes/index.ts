@@ -13,5 +13,8 @@ export { default as typography } from './definitions/typography'
 export * from './definitions/zIndex'
 export * from './definitions/menuClasses'
 
+// Theme Tokens (authoritative source for shadows and customShadows)
+export { themeShadows, themeCustomShadows, type SystemMode } from './themeTokens'
+
 // Types
 export * from './types/theme'

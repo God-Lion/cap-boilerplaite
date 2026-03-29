@@ -1,3 +1,2 @@
 export * from './api-tokens'
-export * from './roles'
-export { default as DomainVerification } from './organizations/DomainVerification'
+// Note: DomainVerification and other admin screens have been moved to @cap/module-admin

@@ -39,7 +39,7 @@ import {
   ChunkingProgress,
   documentDeduplication,
   DeduplicationResult,
-} from '@cap/platform-core'
+} from '@auth/modules/authorization-engine/services/document'
 
 type FileStatus = 'pending' | 'processing' | 'completed' | 'error' | 'duplicate'
 

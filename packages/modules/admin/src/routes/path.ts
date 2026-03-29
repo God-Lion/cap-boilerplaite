@@ -2,7 +2,21 @@ import { Path as AuthPath } from '@cap/module-auth'
 
 export const Path = {
   ...AuthPath,
-  // Mapping for backward compatibility with admin module's local Path definitions if they vary
+  admin: {
+    ...AuthPath.admin,
+    // Additional admin paths
+    apiTokens: AuthPath.apiTokens?.dashboard || '/admin/api-tokens',
+    policies: AuthPath.admin.policies || '/admin/organizations/:id/policies',
+  },
+  monitoring: {
+    ...AuthPath.monitoring,
+  },
+  identity: {
+    ...AuthPath.identity,
+  },
+  apiTokens: {
+    ...AuthPath.apiTokens,
+  },
   Root: AuthPath.admin.root,
   Dashboard: AuthPath.admin.dashboard,
   ThemeEditor: AuthPath.admin.themeEditor,

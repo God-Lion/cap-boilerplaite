@@ -7,7 +7,6 @@ export { default as BillingAddressDialog } from './BillingAddressDialog'
 export type { BillingAddressData, BillingAddressDialogProps } from './BillingAddressDialog'
 
 export { default as BillingCardDialog } from './billing-card'
-export { default as ConfirmationDialog } from './confirmation-dialog'
 export { default as CreateAppDialog } from './create-app'
 export { default as EditUserInfoDialog } from './edit-user-info'
 export { default as PaymentMethodDialog } from './payment-method'

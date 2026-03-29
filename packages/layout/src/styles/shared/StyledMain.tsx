@@ -9,8 +9,17 @@ type StyledMainProps = {
   compactContentWidth: number;
 }
 
-const StyledMain = styled('main')<StyledMainProps>(({ isContentCompact, layoutPadding, compactContentWidth }) => ({
+const StyledMain = styled('main', {
+  shouldForwardProp: (prop) => !['isContentCompact', 'layoutPadding', 'compactContentWidth'].includes(prop as string),
+})<StyledMainProps>(({ theme, isContentCompact, layoutPadding, compactContentWidth }: any) => ({
+  flexGrow: 1,
   padding: layoutPadding,
+  minHeight: '100vh',
+  backgroundColor: theme.palette.background.default,
+  transition: theme.transitions.create(['padding', 'max-width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
   ...(isContentCompact && {
     marginInline: 'auto',
     maxInlineSize: `${compactContentWidth}px`,

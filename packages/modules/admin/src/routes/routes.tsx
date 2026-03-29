@@ -1,19 +1,32 @@
 import React, { lazy } from 'react'
 import { Route } from 'react-router-dom'
 import { AuthRouteConfig } from '@cap/platform-core'
-import { 
-  AdminRoute, 
+import { AdminRoute } from '@cap/module-auth'
+
+import {
   UserList, AdminUserProfile, BanManagement, ImpersonationLogs,
   OrganizationListDashboard, OrganizationProfile, OrganizationInvitationDashboard,
+  DomainVerification,
+} from '@cap/module-admin/modules/user-management/screens/admin'
+import {
   RoleList, RoleDetailView, PermissionRegistry, AccessPolicyBuilder,
-  MachineIdentityManagement, DomainVerification,
+} from '@cap/module-admin/modules/authorization/screens/roles'
+import { MachineIdentityManagement } from '@cap/module-admin/modules/authorization/screens/api-tokens'
+import {
+  ApplicationDashboard, ApplicationDetailView, ScopesRegistry, APIExplorerDashboard, WebhookManagement,
+} from '@cap/module-admin/modules/developer-console/screens/developer'
+import {
+  SAMLMetadataDisplay, SAMLMetadataBrowser, OIDCConfigBrowser, OIDCClientCreate, OIDCClientEdit,
+  SAMLConfigDashboard, SSFConfiguration, JWKSManagement,
+} from '@cap/module-admin/modules/sso/screens/sso'
+import {
+  DirectorySyncDashboard, SCIMConfiguration, SyncLogsView, ConnectorDetailView,
+} from '@cap/module-admin/modules/sso/screens/provisioning'
+import {
   AdminOverviewDashboard, AuthEventsMonitor, SystemHealthDashboard, ExportAuditTrail,
   EmailTestingDashboard, EmailTemplatePreview, MFAUsageAnalytics,
-  ApplicationDashboard, ApplicationDetailView, ScopesRegistry, APIExplorerDashboard, WebhookManagement,
-  SAMLMetadataDisplay, SAMLMetadataBrowser, OIDCConfigBrowser, OIDCClientCreate, OIDCClientEdit,
-  SAMLConfigDashboard, SSFConfiguration, JWKSManagement, DirectorySyncDashboard,
-  SCIMConfiguration, SyncLogsView, ConnectorDetailView
-} from '@cap/module-auth'
+} from '@cap/module-admin/modules/monitoring/screens/monitoring'
+
 import { Path } from './path'
 
 const Dashboard = lazy(() => import('../modules/dashboard/src'))

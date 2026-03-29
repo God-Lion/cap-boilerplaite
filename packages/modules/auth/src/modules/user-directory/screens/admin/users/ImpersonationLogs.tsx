@@ -48,7 +48,7 @@ import {
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { ImpersonationSession } from "../../../../platform-cluster"
+import { ImpersonationSession } from "@cap/shared-types"
 import { useImpersonationLogs } from "../../../../authentication-core"
 import { format, formatDistanceToNow } from 'date-fns'
 

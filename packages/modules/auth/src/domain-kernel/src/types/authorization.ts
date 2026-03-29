@@ -36,7 +36,7 @@ export interface UserRole {
   assignedBy?: UserId
 }
 
-export interface AccessPolicy {
+export interface AuthAccessPolicy {
   id: string
   name: string
   effect: 'allow' | 'deny'

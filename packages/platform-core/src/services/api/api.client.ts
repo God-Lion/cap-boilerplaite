@@ -1,6 +1,6 @@
 import { secureTokenManager, TokenData } from '../secureTokenManager'
 
-// --- API Configuration ---
+export { ENDPOINTS, QUERY_KEYS } from '@cap/shared-types'
 
 const getBaseURL = (): string => {
   const envApiUrl = import.meta.env.VITE_API_URL
@@ -34,325 +34,25 @@ export const API_CONFIG = {
   },
 } as const
 
-export const ENDPOINTS = {
-  // Health & Metrics
-  health: {
-    root: '/',
-    basic: '/api/health',
-    live: '/api/health/live',
-    ready: '/api/health/ready',
-    detailed: '/api/health/detailed',
-    startup: '/api/health/startup',
-  },
-  metrics: {
-    basic: '/api/metrics',
-    prometheus: '/api/metrics/prometheus',
-  },
-
-  // Auth
-  auth: {
-    register: '/api/auth/register',
-    signup: '/api/auth/register',
-    login: '/api/auth/login',
-    logout: '/api/auth/logout',
-    forgotPassword: '/api/auth/forgot-password',
-    resetPassword: '/api/auth/reset-password',
-    refresh: '/api/auth/refresh',
-    session: '/api/auth/session',
-    trackFailedLogin: '/api/auth/track-failed-login',
-    verifyEmail: (email: string, signature: string) =>
-      `/api/auth/verification/email/${email}?signature=${signature}`,
-    verifyResetPassword: (email: string, signature: string) =>
-      `/api/auth/reset-password/${email}?signature=${signature}`,
-    resendVerification: '/api/auth/verification/email/resend',
-    verifyEmailToken: (email: string, signature: string) =>
-      `/api/auth/verification/email/${email}?signature=${signature}`,
-    validateUser: (id: string | number, token: string) => `/api/auth/validate/${id}/${token}`,
-    passkey: {
-      registerStart: '/api/auth/passkey/register/start',
-      registerFinish: '/api/auth/passkey/register/finish',
-      loginStart: '/api/auth/passkey/login/start',
-      loginFinish: '/api/auth/passkey/login/finish',
-    },
-    mfa: {
-      setup: '/api/auth/mfa/setup',
-      verify: '/api/auth/mfa/verify',
-      disable: '/api/auth/mfa/disable',
-      recoveryCodes: '/api/auth/mfa/recovery-codes',
-      recoveryVerify: '/api/auth/mfa/recovery-verify',
-      verifyLogin: '/api/auth/mfa/verify-login',
-      regenerateBackupCodes: '/api/auth/mfa/regenerate-backup-codes',
-    },
-    sessions: '/api/auth/sessions',
-    revokeSession: (sessionId: string) => `/api/auth/sessions/${sessionId}`,
-    revokeAllSessions: '/api/auth/sessions/revoke-all',
-    loginHistory: '/api/auth/login-history',
-    securityLogs: '/api/auth/security-logs',
-  },
-
-  // User
-  user: {
-    me: '/api/user/me',
-    update: '/api/user/update',
-    changeEmail: '/api/user/change-email',
-    changePassword: '/api/user/change-password',
-    destroy: '/api/user',
-    deactivate: '/api/user/deactivate',
-    linkedAccounts: '/api/user/linked-accounts',
-    linkAccount: '/api/user/link-account',
-    unlinkAccount: (id: string | number) => `/api/user/linked-accounts/${id}`,
-    emailPreferences: '/api/user/email-preferences',
-    tokens: {
-      index: '/api/user/tokens',
-      store: '/api/user/tokens',
-      destroy: (id: string | number) => `/api/user/tokens/${id}`,
-    },
-    passkeys: {
-      index: '/api/user/passkeys',
-      update: (id: string | number) => `/api/user/passkeys/${id}`,
-      destroy: (id: string | number) => `/api/user/passkeys/${id}`,
-    },
-    mfa: {
-      methods: '/api/user/mfa-methods',
-    },
-  },
-
-  // Resume Profiles
-  profiles: {
-    list: '/api/profiles',
-    upload: '/api/profiles/upload',
-    byId: (id: number) => `/api/profiles/${id}`,
-    setActive: (id: number) => `/api/profiles/${id}/set-active`,
-    update: (id: number) => `/api/profiles/${id}`,
-    delete: (id: number) => `/api/profiles/${id}`,
-    activeStatus: (id: number) => `/api/profiles/${id}/active-status`,
-  },
-
-  // Logs & Events
-  logs: '/logs',
-  event: '/event',
-
-  // Translation
-  translation: (code: string) => `/translate/${code}.json`,
-
-  // Guest/Anonymous Routes
-  guest: {
-    analyzeAnonymous: '/api/guest/analyze-anonymous',
-    matchAnonymous: '/api/guest/match-anonymous',
-    getSession: (sessionId: string) => `/api/guest/session/${sessionId}`,
-    deleteSession: (sessionId: string) => `/api/guest/session/${sessionId}`,
-    tenantConfig: '/api/auth/tenant',
-  },
-
-  // Statistics
-  statistics: {
-    overview: '/api/statistics/overview',
-    jobsByLocation: '/api/statistics/jobs-by-location',
-    jobsByCompany: '/api/statistics/jobs-by-company',
-    jobsByType: '/api/statistics/jobs-by-type',
-    jobsByExperience: '/api/statistics/jobs-by-experience',
-    scrapingActivity: '/api/statistics/scraping-activity',
-    topSkills: '/api/statistics/top-skills',
-    recentJobs: '/api/statistics/recent-jobs',
-    sessionStatistics: '/api/statistics/session-statistics',
-    trends: '/api/statistics/trends',
-  },
-
-  // Dashboard
-  dashboard: {
-    overview: '/api/dashboard/overview',
-    stats: '/api/dashboard/stats',
-    recentApplications: '/api/dashboard/recent-applications',
-    recommendations: '/api/dashboard/recommendations',
-  },
-
-  // Automation
-  automation: {
-    config: '/api/automation/config',
-    updateConfig: '/api/automation/config',
-    start: '/api/automation/start',
-    stop: '/api/automation/stop',
-    status: '/api/automation/status',
-    history: '/api/automation/history',
-    stats: '/api/automation/stats',
-    runNow: '/api/automation/run-now',
-  },
-
-  // Notifications
-  notifications: {
-    list: '/api/notifications',
-    markAsRead: (id: number) => `/api/notifications/${id}/read`,
-    markAllAsRead: '/api/notifications/read-all',
-    delete: (id: number) => `/api/notifications/${id}`,
-    clearAll: '/api/notifications/clear-all',
-    preferences: '/api/notifications/preferences',
-    updatePreferences: '/api/notifications/preferences',
-    unreadCount: '/api/notifications/unread-count',
-    ws: '/ws/notifications',
-  },
-
-  // Server-Sent Events
-  sse: {
-    scrapingProgress: (sessionId: number | string) => `/api/sse/scraping/${sessionId}`,
-    analysisProgress: (analysisId: number) => `/api/sse/analysis/${analysisId}`,
-  },
-
-  // Security
-  security: {
-    cspReport: '/api/security/csp-report',
-    cspReportAlt: '/api/security/report/csp',
-    headersTest: '/api/security/security-headers-test',
-  },
-
-  // Audit Logging
-  audit: {
-    logs: '/api/audit/logs',
-    export: '/api/audit/logs/export',
-    statistics: '/api/audit/statistics',
-    compliance: '/api/audit/compliance',
-  },
-
-  // Backup & Disaster Recovery
-  backup: {
-    create: '/api/backup/create',
-    list: '/api/backup/list',
-    byId: (id: number | string) => `/api/backup/${id}`,
-    verify: (id: number | string) => `/api/backup/${id}/verify`,
-    restore: '/api/backup/restore',
-    pitr: '/api/backup/pitr',
-    testRestore: (id: number | string) => `/api/backup/${id}/test`,
-    rpoStatus: '/api/backup/rpo-status',
-  },
-
-  // GDPR Compliance
-  gdpr: {
-    dataExport: '/api/gdpr/data-export',
-    erasure: '/api/gdpr/erasure',
-    downloadExport: (exportId: number | string) => `/api/gdpr/export/${exportId}/download`,
-    dataDeletion: '/api/gdpr/data-deletion',
-    verifyDeletion: (requestId: number | string) => `/api/gdpr/deletion/${requestId}/verify`,
-    consent: '/api/gdpr/consent',
-    updateConsent: (consentId: number) => `/api/gdpr/consent/${consentId}`,
-    consentStatus: '/api/gdpr/consent/status',
-    retentionReport: '/api/gdpr/retention-report',
-    processingActivities: '/api/gdpr/processing-activities',
-  },
-} as const
-
-export const QUERY_KEYS = {
-  // Health & Metrics
-  health: {
-    all: ['health'] as const,
-    basic: ['health', 'basic'] as const,
-    detailed: ['health', 'detailed'] as const,
-  },
-  metrics: {
-    all: ['metrics'] as const,
-    basic: ['metrics', 'basic'] as const,
-    prometheus: ['metrics', 'prometheus'] as const,
-  },
-
-  // Auth
-  auth: {
-    all: ['auth'] as const,
-    session: ['auth', 'session'] as const,
-    profileSettings: ['auth', 'profile-settings'] as const,
-    validateUser: (id: string | number, token: string) => ['auth', 'validate', id, token] as const,
-    mfa: {
-      status: ['auth', 'mfa', 'status'] as const,
-    },
-    sessions: ['auth', 'sessions'] as const,
-    loginHistory: (limit: number) => ['auth', 'login-history', limit] as const,
-    securityLogs: (params: unknown) => ['auth', 'security-logs', params] as const,
-    linkedAccounts: ['auth', 'linked-accounts'] as const,
-    emailPreferences: ['auth', 'email-preferences'] as const,
-  },
-
-  translation: (code: string) => ['translation', code] as const,
-  settings: ['settings'] as const,
-  validateUser: (id: string | number, token: string) => ['validateUser', id, token] as const,
-
-  users: {
-    all: ['users'] as const,
-    byId: (id: number) => ['users', id] as const,
-    byUserType: (userTypeId: number) => ['users', userTypeId] as const,
-  },
-
-  // Dashboard
-  dashboard: {
-    all: ['dashboard'] as const,
-    overview: ['dashboard', 'overview'] as const,
-    stats: ['dashboard', 'stats'] as const,
-    recentApplications: ['dashboard', 'recent-applications'] as const,
-    recommendations: ['dashboard', 'recommendations'] as const,
-  },
-
-  // Automation
-  automation: {
-    all: ['automation'] as const,
-    config: ['automation', 'config'] as const,
-    status: ['automation', 'status'] as const,
-    history: (params?: string) =>
-      params ? (['automation', 'history', params] as const) : (['automation', 'history'] as const),
-    stats: ['automation', 'stats'] as const,
-    logs: (params: string) => ['automation', 'logs', params] as const,
-  },
-
-  // Notifications
-  notifications: {
-    all: ['notifications'] as const,
-    list: (params: string) => ['notifications', 'list', params] as const,
-    unreadCount: ['notifications', 'unread-count'] as const,
-    preferences: ['notifications', 'preferences'] as const,
-  },
-
-  // Audit
-  audit: {
-    all: ['audit'] as const,
-    logs: (params: string) => ['audit', 'logs', params] as const,
-    statistics: ['audit', 'statistics'] as const,
-    compliance: ['audit', 'compliance'] as const,
-  },
-
-  // Backup
-  backup: {
-    all: ['backup'] as const,
-    list: ['backup', 'list'] as const,
-    byId: (id: number | string) => ['backup', id] as const,
-    rpoStatus: ['backup', 'rpo-status'] as const,
-  },
-
-  // GDPR
-  gdpr: {
-    all: ['gdpr'] as const,
-    exports: ['gdpr', 'exports'] as const,
-    exportById: (id: number | string) => ['gdpr', 'export', id] as const,
-    consentStatus: ['gdpr', 'consent', 'status'] as const,
-    retentionReport: ['gdpr', 'retention-report'] as const,
-    processingActivities: ['gdpr', 'processing-activities'] as const,
-  },
-} as const
-
-// --- Types ---
-
 import {
   RefreshResponseDto,
   ApiResponse,
   PaginatedResponse,
   ApiErrorResponse,
+  ENDPOINTS,
 } from '@cap/shared-types'
-
-export interface FetchRequestConfig extends RequestInit {
-  params?: Record<string, string | number | boolean | undefined>
-  data?: any // Body data
-  timeout?: number // Request timeout in ms
-  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer' | 'formData'
-  _retry?: boolean // For internal use
-}
 
 export type { ApiResponse, PaginatedResponse, ApiErrorResponse }
 
-export interface FetchResponse<T = any> {
+export interface FetchRequestConfig extends RequestInit {
+  params?: Record<string, string | number | boolean | undefined>
+  data?: unknown
+  timeout?: number
+  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer' | 'formData'
+  _retry?: boolean
+}
+
+export interface FetchResponse<T = unknown> {
   data: T
   status: number
   statusText: string
@@ -361,18 +61,16 @@ export interface FetchResponse<T = any> {
   ok: boolean
 }
 
-// --- HttpError ---
-
 export class HttpError extends Error {
   config: FetchRequestConfig
   request?: Request
-  response?: FetchResponse
+  response?: FetchResponse<unknown>
   code?: string
 
   constructor(
     message: string,
     config: FetchRequestConfig,
-    response?: FetchResponse,
+    response?: FetchResponse<unknown>,
     code?: string,
   ) {
     super(message)
@@ -382,8 +80,6 @@ export class HttpError extends Error {
     this.code = code
   }
 }
-
-// --- Terminal Error Registry ---
 
 export type TerminalErrorHandler = () => void
 const terminalErrorHandlers: Set<TerminalErrorHandler> = new Set()
@@ -398,8 +94,6 @@ const notifyTerminalError = () => {
   terminalErrorHandlers.forEach((handler) => handler())
 }
 
-// --- Forbidden Error Registry ---
-
 export type ForbiddenErrorHandler = () => void
 const forbiddenErrorHandlers: Set<ForbiddenErrorHandler> = new Set()
 
@@ -413,18 +107,16 @@ const notifyForbiddenError = () => {
   forbiddenErrorHandlers.forEach((handler) => handler())
 }
 
-// --- Token Refresh Manager ---
-
 class TokenRefreshManager {
   private isRefreshing = false
   private isPaused = false
   private refreshPromise: Promise<string> | null = null
   private failedQueue: Array<{
     resolve: (token: string) => void
-    reject: (error: any) => void
+    reject: (error: unknown) => void
   }> = []
 
-  private processQueue(error: any = null, token: string | null = null) {
+  private processQueue(error: unknown = null, token: string | null = null) {
     this.failedQueue.forEach((promise) => {
       if (error) {
         promise.reject(error)
@@ -436,12 +128,7 @@ class TokenRefreshManager {
   }
 
   private async refreshTokenRequest(): Promise<string> {
-    // Note: We don't need to check for refresh token presence here as it's in an HttpOnly cookie
-    // The backend will check the cookie.
-
     try {
-      // Send request WITHOUT Authorization header - cookies are sent automatically
-      // CRITICAL: Must use credentials: 'include' to send refresh HttpOnly cookie cross-origin
       const response = await fetch(`${API_CONFIG.baseURL}${ENDPOINTS.auth.refresh}`, {
         method: 'POST',
         headers: {
@@ -456,9 +143,7 @@ class TokenRefreshManager {
 
       const data: RefreshResponseDto = await response.json()
 
-      // Handle response - we expect access_token
       const accessToken = data.access_token
-      // We don't get refresh_token back in body (it's in cookie)
       const expiresIn = data.expires_in || 3600
 
       if (!accessToken) {
@@ -475,8 +160,8 @@ class TokenRefreshManager {
       secureTokenManager.setTokens(newTokens)
 
       return accessToken
-    } catch (error: any) {
-      console.error('[Token Refresh] Failed:', error.message)
+    } catch (error) {
+      console.error('[Token Refresh] Failed:', (error as Error).message)
       throw error
     }
   }
@@ -484,9 +169,8 @@ class TokenRefreshManager {
   private handleRefreshFailure() {
     secureTokenManager.clearTokens()
 
-    // Clear any stored state
     try {
-      const storageKey = (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
+      const storageKey = (import.meta as { env?: { VITE_STORAGE_KEY?: string } }).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
       localStorage.removeItem(storageKey)
       sessionStorage.clear()
     } catch (error) {
@@ -495,12 +179,10 @@ class TokenRefreshManager {
       }
     }
 
-    // Log the failure - let React Router handle navigation
     console.warn(
       '[TokenRefreshManager] Token refresh failed, tokens cleared. Application should redirect to login.',
     )
 
-    // Notify listeners so store can be updated
     notifyTerminalError()
   }
 
@@ -514,12 +196,10 @@ class TokenRefreshManager {
       })
     }
 
-    // If already refreshing, return the existing promise
     if (this.refreshPromise) {
       return this.refreshPromise
     }
 
-    // Create new refresh promise
     this.refreshPromise = (async () => {
       this.isRefreshing = true
 
@@ -528,26 +208,24 @@ class TokenRefreshManager {
         this.isPaused = false
         this.processQueue(null, token)
         return token
-      } catch (error: any) {
-        // --- ADR-004: Differentiated Error Handling ---
-        
-        // 1. Check for Network Failure (TypeError: Failed to fetch / status 0)
-        const isNetworkError = 
+      } catch (error) {
+        const isNetworkError =
           (error instanceof TypeError && (error.message === 'Failed to fetch' || error.message.includes('NetworkError'))) ||
-          error.status === 0 ||
-          error.code === 'NETWORK_ERROR'
+          (error as { status?: number }).status === 0 ||
+          (error as { code?: string }).code === 'NETWORK_ERROR'
 
         if (isNetworkError) {
           console.warn('[TokenRefreshManager] Network failure detected during refresh. Pausing queue.')
           this.isPaused = true
           this.isRefreshing = false
           this.refreshPromise = null
-          // Do NOT processQueue with error, let them stay queued
           throw error
         }
 
-        // 2. Check for Auth Failure (400, 401, 403 on refresh)
-        const isAuthFailure = error.status === 400 || error.status === 401 || error.status === 403
+        const isAuthFailure =
+          (error as { status?: number }).status === 400 ||
+          (error as { status?: number }).status === 401 ||
+          (error as { status?: number }).status === 403
 
         if (isAuthFailure) {
           this.handleRefreshFailure()
@@ -555,7 +233,6 @@ class TokenRefreshManager {
           throw error
         }
 
-        // Generic failure
         this.processQueue(error, null)
         throw error
       } finally {
@@ -582,14 +259,12 @@ class TokenRefreshManager {
     return this.isRefreshing || this.isPaused
   }
 
-  queueRequest(resolve: (token: string) => void, reject: (error: any) => void) {
+  queueRequest(resolve: (token: string) => void, reject: (error: unknown) => void) {
     this.failedQueue.push({ resolve, reject })
   }
 }
 
 export const refreshManager = new TokenRefreshManager()
-
-// --- FetchClient ---
 
 export class FetchClient {
   public readonly baseURL: string
@@ -609,18 +284,15 @@ export class FetchClient {
     this.withCredentials = config.withCredentials || false
   }
 
-  public async request<T = any>(
+  public async request<T = unknown>(
     endpoint: string,
     config: FetchRequestConfig = {},
   ): Promise<FetchResponse<T>> {
     if (import.meta.env.DEV) {
-      console.log('FetchClient request')
-      console.log('endpoint', endpoint)
-      console.log('config', config)
+      console.log('FetchClient request', endpoint, config)
     }
     let url = endpoint.startsWith('http') ? endpoint : `${this.baseURL}${endpoint}`
 
-    // Append params to URL
     if (config.params) {
       const params = new URLSearchParams()
       Object.entries(config.params).forEach(([key, value]) => {
@@ -634,7 +306,6 @@ export class FetchClient {
       }
     }
 
-    // Prepare headers
     const headers = new Headers(config.headers)
     Object.entries(this.defaultHeaders).forEach(([key, value]) => {
       if (!headers.has(key)) {
@@ -642,9 +313,7 @@ export class FetchClient {
       }
     })
 
-    // Request Interceptor Logic
     if (!endpoint.includes(ENDPOINTS.auth.refresh)) {
-      // Ensure tokens are loaded from storage before accessing
       await secureTokenManager.ensureInitialized()
 
       const tokens = secureTokenManager.getTokens()
@@ -663,7 +332,6 @@ export class FetchClient {
             headers.set('Authorization', `Bearer ${newToken}`)
           } catch {
             console.error('[Fetch Client] Token refresh pre-check failed')
-            // Proceed without valid token, might fail 401
           }
         } else if (tokens.accessToken) {
           headers.set('Authorization', `Bearer ${tokens.accessToken}`)
@@ -671,17 +339,14 @@ export class FetchClient {
       }
     }
 
-    // Prepare timeout
     const timeout = config.timeout !== undefined ? config.timeout : this.timeout
     const controller = new AbortController()
     const id = setTimeout(() => controller.abort(), timeout)
 
-    // Prepare body
     let body = config.body
     if (config.data) {
       if (config.data instanceof FormData) {
         body = config.data
-        // Don't set Content-Type for FormData, let browser set it with boundary
         headers.delete('Content-Type')
       } else {
         body = JSON.stringify(config.data)
@@ -701,9 +366,7 @@ export class FetchClient {
 
     try {
       if (import.meta.env.DEV) {
-        console.log('FetchClient fetch')
-        console.log('url', url)
-        console.log('fetchConfig', fetchConfig)
+        console.log('FetchClient fetch', url, fetchConfig)
       }
       const response = await fetch(url, fetchConfig)
       clearTimeout(id)
@@ -723,7 +386,6 @@ export class FetchClient {
       }
 
       if (!response.ok) {
-        // Handle 401 & Retry
         if (
           response.status === 401 &&
           !config._retry &&
@@ -741,7 +403,6 @@ export class FetchClient {
               newToken = await refreshManager.attemptRefresh()
             }
 
-            // Update headers with new token
             const newHeaders = new Headers(config.headers)
             newHeaders.set('Authorization', `Bearer ${newToken}`)
 
@@ -759,7 +420,7 @@ export class FetchClient {
         }
 
         throw new HttpError(
-          responseData?.message || `Request failed with status ${response.status}`,
+          (responseData as { message?: string })?.message || `Request failed with status ${response.status}`,
           config,
           result,
           String(response.status),
@@ -767,16 +428,15 @@ export class FetchClient {
       }
 
       return result
-    } catch (error: any) {
+    } catch (error) {
       clearTimeout(id)
       if (error instanceof HttpError) throw error
 
-      if (error.name === 'AbortError') {
+      if ((error as { name?: string }).name === 'AbortError') {
         throw new HttpError('Request timeout', config, undefined, 'TIMEOUT')
       }
 
-      // Network error or other fetch error
-      const minimalResponse: FetchResponse<any> = {
+      const minimalResponse: FetchResponse<null> = {
         data: null,
         status: 0,
         statusText: 'Network Error',
@@ -785,7 +445,7 @@ export class FetchClient {
         ok: false,
       }
       throw new HttpError(
-        error.message || 'Network Error',
+        (error as Error).message || 'Network Error',
         config,
         minimalResponse,
         'NETWORK_ERROR',
@@ -801,43 +461,37 @@ export class FetchClient {
     if (responseType === 'arraybuffer') return response.arrayBuffer()
     if (responseType === 'formData') return response.formData()
 
-    // Default to JSON
     try {
       return await response.json()
     } catch {
-      return null // No JSON body
+      return null
     }
   }
 
-  // Convenience methods
-  get<T = any>(url: string, config?: FetchRequestConfig) {
+  get<T = unknown>(url: string, config?: FetchRequestConfig) {
     return this.request<T>(url, { ...config, method: 'GET' })
   }
 
-  post<T = any>(url: string, data?: any, config?: FetchRequestConfig) {
+  post<T = unknown>(url: string, data?: unknown, config?: FetchRequestConfig) {
     if (import.meta.env.DEV) {
-      console.log('FetchClient post')
-      console.log('url', url)
-      console.log('data', data)
-      console.log('config', config)
+      console.log('ApiClient post', url, data, config)
     }
     return this.request<T>(url, { ...config, method: 'POST', data })
   }
 
-  put<T = any>(url: string, data?: any, config?: FetchRequestConfig) {
+  put<T = unknown>(url: string, data?: unknown, config?: FetchRequestConfig) {
     return this.request<T>(url, { ...config, method: 'PUT', data })
   }
 
-  patch<T = any>(url: string, data?: any, config?: FetchRequestConfig) {
+  patch<T = unknown>(url: string, data?: unknown, config?: FetchRequestConfig) {
     return this.request<T>(url, { ...config, method: 'PATCH', data })
   }
 
-  delete<T = any>(url: string, config?: FetchRequestConfig) {
+  delete<T = unknown>(url: string, config?: FetchRequestConfig) {
     return this.request<T>(url, { ...config, method: 'DELETE' })
   }
 }
 
-// Export singleton fetchClient
 export const fetchClient = new FetchClient({
   baseURL: API_CONFIG.baseURL,
   headers: { ...API_CONFIG.headers },
@@ -845,58 +499,53 @@ export const fetchClient = new FetchClient({
   withCredentials: API_CONFIG.withCredentials,
 })
 
-// --- ApiClient (Wrapper) ---
-
 export class ApiClient {
   constructor(private instance: FetchClient = fetchClient) {}
 
-  async request<T = any>(endpoint: string, config: FetchRequestConfig = {}): Promise<FetchResponse<T>> {
-    return this.instance.request<T>(endpoint, config);
+  async request<T = unknown>(endpoint: string, config: FetchRequestConfig = {}): Promise<FetchResponse<T>> {
+    return this.instance.request<T>(endpoint, config)
   }
 
-  async get<T = any>(url: string, config?: FetchRequestConfig): Promise<FetchResponse<T>> {
+  async get<T = unknown>(url: string, config?: FetchRequestConfig): Promise<FetchResponse<T>> {
     return this.instance.get<T>(url, config)
   }
 
-  async post<T = any>(
+  async post<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: FetchRequestConfig,
   ): Promise<FetchResponse<T>> {
     if (import.meta.env.DEV) {
-      console.log('ApiClient post')
-      console.log('url', url)
-      console.log('data', data)
-      console.log('config', config)
+      console.log('ApiClient post', url, data, config)
     }
     return this.instance.post<T>(url, data, config)
   }
 
-  async put<T = any>(
+  async put<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: FetchRequestConfig,
   ): Promise<FetchResponse<T>> {
     return this.instance.put<T>(url, data, config)
   }
 
-  async patch<T = any>(
+  async patch<T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: FetchRequestConfig,
   ): Promise<FetchResponse<T>> {
     return this.instance.patch<T>(url, data, config)
   }
 
-  async delete<T = any>(url: string, config?: FetchRequestConfig): Promise<FetchResponse<T>> {
+  async delete<T = unknown>(url: string, config?: FetchRequestConfig): Promise<FetchResponse<T>> {
     return this.instance.delete<T>(url, config)
   }
 
-  async uploadFile<T = any>(
+  async uploadFile<T = unknown>(
     url: string,
     files: File | Array<File>,
-    fieldName: string = 'file',
-    additionalData?: Record<string, any>,
+    fieldName = 'file',
+    additionalData?: Record<string, unknown>,
   ): Promise<FetchResponse<T>> {
     const formData = new FormData()
 
@@ -905,16 +554,16 @@ export class ApiClient {
 
     if (additionalData) {
       Object.entries(additionalData).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) formData.append(key, value)
+        if (value !== null && value !== undefined) formData.append(key, String(value))
       })
     }
 
     return this.instance.post<T>(url, formData)
   }
 
-  async uploadFormData<T = any>(
+  async uploadFormData<T = unknown>(
     url: string,
-    data: Record<string, any>,
+    data: Record<string, unknown>,
     method: 'post' | 'put' | 'patch' = 'post',
   ): Promise<FetchResponse<T>> {
     const formData = new FormData()
@@ -934,7 +583,7 @@ export class ApiClient {
     return this.instance.baseURL
   }
 
-  async getWithFallback<T = any>(
+  async getWithFallback<T = unknown>(
     url: string,
     fallbackData: T,
     config?: FetchRequestConfig,
@@ -950,25 +599,23 @@ export class ApiClient {
         headers: new Headers(),
         config: config || {},
         ok: true,
-        success: true, // Added for compatibility if needed
-      } as unknown as FetchResponse<T>
+      } as FetchResponse<T>
     }
   }
 }
 
-// --- Utilities ---
-
-export function handleApiError(error: any): ApiErrorResponse {
-  if (error.response) {
+export function handleApiError(error: unknown): ApiErrorResponse {
+  if ((error as { response?: { data?: { message?: string }; status?: number; data?: { code?: string } } }).response) {
+    const err = error as { response: { data?: { message?: string }; status?: number; data?: { code?: string } } }
     return {
-      message: error.response.data?.message || 'An error occurred',
-      errors: error.response.data?.errors,
-      status: error.response.status,
-      code: error.response.data?.code,
+      message: err.response.data?.message || 'An error occurred',
+      errors: err.response.data as Record<string, string[]>,
+      status: err.response.status || 0,
+      code: err.response.data?.code,
     }
   }
 
-  if (error.request) {
+  if ((error as { request?: unknown }).request) {
     return {
       message: 'No response from server. Please check your connection.',
       status: 0,
@@ -977,17 +624,16 @@ export function handleApiError(error: any): ApiErrorResponse {
   }
 
   return {
-    message: error.message || 'An unexpected error occurred',
+    message: (error as Error).message || 'An unexpected error occurred',
     status: 0,
     code: 'UNKNOWN_ERROR',
   }
 }
 
-export function isApiError(error: any): error is ApiErrorResponse {
+export function isApiError(error: unknown): error is ApiErrorResponse {
   return typeof error === 'object' && error !== null && 'message' in error && 'status' in error
 }
 
-// Export singleton instance
 export const apiClient = new ApiClient()
 
 export default fetchClient

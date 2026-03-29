@@ -1,5 +1,5 @@
 import React from 'react'
-import ConfirmationDialog from '../confirmation-dialog'
+import ConfirmationDialog from '../../shared/Modals/ConfirmationDialog'
 import DialogCloseButton from '../DialogCloseButton'
 import {
   Dialog,
@@ -92,8 +92,14 @@ const UpgradePlan = ({ open, setOpen }: UpgradePlanProps) => {
       </Dialog>
       <ConfirmationDialog
         open={openConfirmation}
-        setOpen={setOpenConfirmation}
-        type='unsubscribe'
+        onClose={() => setOpenConfirmation(false)}
+        onConfirm={() => {
+          setOpenConfirmation(false)
+        }}
+        title='Cancel Subscription?'
+        message='Are you sure you want to cancel your subscription? This action cannot be undone.'
+        confirmLabel='Yes, Cancel'
+        severity='warning'
       />
     </>
   )

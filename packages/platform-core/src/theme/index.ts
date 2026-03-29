@@ -2,25 +2,24 @@ import type { Theme } from '@mui/material/styles'
 import type {} from '@mui/lab/themeAugmentation'
 import '../types/mui.d.ts'
 
-import type { SystemMode, Skin, Settings } from '../types'
+import type { Skin, Settings } from '../types'
+
+// Re-export SystemMode from @cap/theme for convenience
+export type { SystemMode } from '@cap/theme'
 
 // Theme Options Imports
 import { coreOverrides } from '@cap/theme'
-// colorSchemes removed — not used in static theme mode (MUI v6 processes this
-// key by calling alpha() internally for CSS variable generation, which crashes)
 import spacing from './spacing'
 import shadows from './shadows'
 import customShadows from './customShadows'
 import { zIndexScale } from '@cap/theme'
 
+import type { SystemMode } from '@cap/theme'
 
 const theme = (settings: Settings, mode: SystemMode, direction: Theme['direction']): Theme => {
   return {
     direction,
     components: coreOverrides(settings.skin as Skin),
-    // NOTE: colorSchemes intentionally omitted — MUI v6 processes that key by running
-    // alpha() on palette entries for CSS variable generation, which crashes in static
-    // (non-cssVariables) mode. Palette opacity tokens are added via composeMuiTheme.
     ...spacing,
     shape: {
       borderRadius: 6,
@@ -33,7 +32,6 @@ const theme = (settings: Settings, mode: SystemMode, direction: Theme['direction
       },
     },
     shadows: shadows(mode),
-    // typography: typography(public_sans.style.fontFamily),
     customShadows: customShadows(mode),
     zIndex: zIndexScale,
     mainColorChannels: {

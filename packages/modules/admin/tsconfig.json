@@ -23,10 +23,16 @@
       "@cap/platform-core/*": ["../../platform-core/src/*"],
       "@cap/theme": ["../../theme/src"],
       "@cap/theme/*": ["../../theme/src/*"],
+      "@cap/shared-types": ["../../shared-types/src"],
+      "@cap/shared-types/*": ["../../shared-types/src/*"],
       "@cap/module-auth": ["../auth/src"],
       "@cap/module-auth/*": ["../auth/src/*"],
       "@cap/module-admin": ["./src"],
       "@cap/module-admin/*": ["./src/*"],
+      "@auth/*": ["../auth/src/*"],
+      "@auth/authentication-core": ["../auth/src/modules/authentication-core"],
+      "@auth/authorization-engine": ["../auth/src/modules/authorization-engine"],
+      "@idaas/*": ["../auth/src/modules/*"],
       "@/": ["src"],
       "@/*": ["src/*"]
     }

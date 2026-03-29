@@ -1,4 +1,4 @@
-import type { IRole, UserDto, UserRole, UserStatus } from './auth'
+import type { IRole, UserDto, UserRole, UserStatus, AnyRole } from './auth'
 
 export interface AdminOrganization {
   id: number
@@ -65,7 +65,7 @@ export interface ExportParams {
 }
 
 export interface AdminUserDto extends UserDto {
-  role?: UserRole | number
+  role?: AnyRole | number
   status?: UserStatus | string
 }
 

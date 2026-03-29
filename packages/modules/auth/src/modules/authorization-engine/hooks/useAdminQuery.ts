@@ -131,7 +131,11 @@ import type {
   JWKSKey,
   JWKSKeyDetail,
   CreateJWKSKeyRequest,
-} from "../services/adminService"
+  Webhook,
+  CreateWebhookRequest,
+  DomainVerification,
+  SecurityHealthResponse,
+} from '@cap/shared-types'
 // ============================================================================
 // OIDC Client Management Hooks
 // ============================================================================
@@ -711,7 +715,7 @@ export function useRecentSAMLEntities(
  */
 export function useVerifyDomain(
   options?: UseMutationOptions<
-    FetchResponse<MessageResponse>,
+    FetchResponse<DomainVerification>,
     HttpError,
     { domain: string; organizationId?: number },
     unknown
@@ -733,11 +737,11 @@ export function useVerifyDomain(
  * Check domain verification status
  */
 export function useCheckDomain(
-  options?: UseMutationOptions<FetchResponse<{ verified: boolean }>, HttpError, string, unknown>,
+  options?: UseMutationOptions<FetchResponse<DomainVerification>, HttpError, { domainId: number; organizationId: number }, unknown>,
 ) {
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
   return useMutation({
-    mutationFn: (domain) => adminService.checkDomain(domain),
+    mutationFn: ({ domainId, organizationId }) => adminService.checkDomain(organizationId, domainId),
     ...options,
     onSuccess: (...args) => {
       customOnSuccess?.(...args)

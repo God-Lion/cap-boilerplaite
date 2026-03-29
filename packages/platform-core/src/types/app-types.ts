@@ -1,4 +1,4 @@
-import type { UserRole } from '@cap/shared-types'
+import type { UserRole, ApplicationRole } from '@cap/shared-types'
 import { IUserResponse, ILogin } from './IAuth'
 
 export const Roles = {
@@ -13,11 +13,11 @@ export const Roles = {
   MODERATOR: 'moderator',
 } as const
 
-export type Roles = UserRole
+export type Roles = UserRole | ApplicationRole
 
-const ROLE_VALUES = new Set<UserRole>(Object.values(Roles))
+const ROLE_VALUES = new Set<Roles>(Object.values(Roles))
 
-const ROLE_ALIASES: Record<string, UserRole> = {
+const ROLE_ALIASES: Record<string, Roles> = {
   user: Roles.USER,
   participant: Roles.PARTICIPANT,
   judge: Roles.JUDGE,
@@ -37,13 +37,13 @@ const ROLE_ALIASES: Record<string, UserRole> = {
   moderator: Roles.MODERATOR,
 }
 
-export const normalizeRole = (role: unknown): UserRole | undefined => {
+export const normalizeRole = (role: unknown): Roles | undefined => {
   if (!role) return undefined
 
   if (typeof role === 'string') {
     const normalized = role.trim().toLowerCase().replace(/[\s-]+/g, '_')
-    return ROLE_VALUES.has(normalized as UserRole)
-      ? (normalized as UserRole)
+    return ROLE_VALUES.has(normalized as Roles)
+      ? (normalized as Roles)
       : ROLE_ALIASES[role.trim().toLowerCase()] || ROLE_ALIASES[normalized]
   }
 
@@ -62,14 +62,14 @@ export const normalizeRole = (role: unknown): UserRole | undefined => {
   return undefined
 }
 
-export const ADMIN_ROLES: UserRole[] = [Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE]
+export const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE]
 
 export const hasAdminRole = (role: unknown): boolean => {
   const normalized = normalizeRole(role)
   return normalized ? ADMIN_ROLES.includes(normalized) : false
 }
 
-export const RoleWeights: UserRole[] = [
+export const RoleWeights: Roles[] = [
   Roles.USER,
   Roles.PARTICIPANT,
   Roles.JUDGE,

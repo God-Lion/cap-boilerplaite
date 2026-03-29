@@ -88,15 +88,9 @@ export {
   RoleIndicator,
   AuthorizationEnginePath,
   AdminRoute,
-  // Exporting screens for central admin routing
-  RoleList,
-  RoleDetailView,
-  PermissionRegistry,
-  AccessPolicyBuilder,
-  MachineIdentityManagement,
-  DomainVerification,
+  adminService
 } from './modules/authorization-engine'
-export type { CreateJWKSKeyRequest } from './modules/authorization-engine'
+export type { CreateJWKSKeyRequest, DeveloperApiKey } from './modules/authorization-engine'
 
 // Re-export types from domain-kernel for cross-package use
 export type { SAMLConfig, JWKSKey, JWKSKeyDetail, SSFConfig } from './domain-kernel/src/types'
@@ -104,7 +98,10 @@ export { AuthRoute, GuestRoute, PrivateRoute } from './modules/authentication-co
 export * from './modules/mfa-orchestrator'
 export * from './modules/identity-broker'
 export * from './modules/passwordless-service'
-export * from './modules/platform-cluster'
+export { PlatformClusterPath, apiExplorerService } from './modules/platform-cluster'
+export type { SandboxExecutionResult, OpenAPISpec, OpenAPIPathItem } from './modules/platform-cluster'
+export type { AccessPolicy, AccessPolicyRule } from '@cap/shared-types'
+export type { AuthAccessPolicy } from './domain-kernel/src/types/authorization'
 
 // User Directory - Export everything EXCEPT the ones that collide with authentication-core
 export {
@@ -123,15 +120,13 @@ export {
   useUserTokens,
   useChangeEmail,
   useChangePassword,
-  // Exporting screens for central admin routing
-  UserList,
-  AdminUserProfile,
-  BanManagement,
-  ImpersonationLogs,
-  OrganizationListDashboard,
-  OrganizationProfile,
-  OrganizationInvitationDashboard,
 } from './modules/user-directory'
+
+export { useSessionGuard } from './modules/session-manager/middlewares/useSessionGuard'
+
+
+// Note: Admin screens moved to @cap/module-admin and are now exported from there to avoid circular dependencies.
+
 
 // Path registry is exported at the top of the file
 

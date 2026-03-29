@@ -20,6 +20,13 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@cap/shared-types": ["../shared-types/src"],
+      "@cap/shared-types/*": ["../shared-types/src/*"],
+      "@cap/theme": ["../theme/src"],
+      "@cap/theme/*": ["../theme/src/*"]
+    },
     "types": [
       "react",
       "node",

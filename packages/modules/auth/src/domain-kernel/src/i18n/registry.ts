@@ -1,57 +1,15 @@
-type Locale = 'en' | 'ar' | 'fr'
-type DictionaryMap = Record<Locale, Record<string, unknown>>
+/**
+ * I18n Registry for Auth Module
+ * 
+ * Re-exports the canonical implementation from @cap/platform-core.
+ * All modules should use this pattern for consistency.
+ */
 
-const _modules: DictionaryMap[] = []
+export {
+  registerDictionary,
+  getMergedDictionary,
+  getAvailableLocales,
+  type DictionaryMap
+} from '@cap/platform-core/i18n/registry'
 
-export function registerDictionary(dict: DictionaryMap): void {
-  _modules.push(dict)
-}
-
-export function getMergedDictionary(locale: Locale): Record<string, unknown> {
-  return _modules.reduce((acc, mod) => deepMerge(acc, mod[locale] ?? {}), {})
-}
-
-export function getAvailableLocales(): Locale[] {
-  return ['en', 'ar', 'fr']
-}
-
-export function getRegisteredCount(): number {
-  return _modules.length
-}
-
-function deepMerge(
-  target: Record<string, unknown>,
-  source: Record<string, unknown>,
-): Record<string, unknown> {
-  const result: Record<string, unknown> = { ...target }
-  for (const key in source) {
-    if (Object.prototype.hasOwnProperty.call(source, key)) {
-      const val = source[key]
-      if (
-        val &&
-        typeof val === 'object' &&
-        !Array.isArray(val) &&
-        !isDate(val)
-      ) {
-        result[key] = deepMerge(
-          (result[key] as Record<string, unknown>) ?? {},
-          val as Record<string, unknown>,
-        )
-      } else {
-        result[key] = val
-      }
-    }
-  }
-  return result
-}
-
-function isDate(value: unknown): boolean {
-  return value instanceof Date || 
-    (typeof value === 'object' && 
-     value !== null && 
-     Object.prototype.toString.call(value) === '[object Date]')
-}
-
-export function clearRegistries(): void {
-  _modules.length = 0
-}
+export { i18n, type Locale } from '@cap/platform-core/i18n/i18n'

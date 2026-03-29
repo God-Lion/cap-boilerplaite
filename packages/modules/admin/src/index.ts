@@ -24,6 +24,79 @@ export * from './modules/dashboard/src'
 export * from './modules/theme-customizer/src'
 export * from './plugins/AdminDashboardPlugin'
 
+// User Management screens
+export {
+  UserList,
+  AdminUserProfile,
+  BanManagement,
+  ImpersonationLogs,
+  CreateUserDialog,
+  DataExport,
+  IssueBanDialog,
+  ResetPasswordDialog,
+  OrganizationListDashboard,
+  OrganizationProfile,
+  OrganizationInvitationDashboard,
+  DomainVerification,
+} from './modules/user-management/screens/admin'
+
+// Authorization screens
+export {
+  RoleList,
+  RoleDetailView,
+  PermissionRegistry,
+  AccessPolicyBuilder,
+  MachineIdentityManagement,
+} from './modules/authorization/screens'
+
+// Developer console screens
+export {
+  ApplicationDashboard,
+  ApplicationDetailView,
+  ScopesRegistry,
+  APIExplorerDashboard,
+  WebhookManagement,
+} from './modules/developer-console/screens/developer'
+
+// SSO screens
+export {
+  SAMLMetadataDisplay,
+  SAMLMetadataBrowser,
+  OIDCConfigBrowser,
+  OIDCClientCreate,
+  OIDCClientEdit,
+  SAMLConfigDashboard,
+  SSFConfiguration,
+  JWKSManagement,
+  AuthWaitScreen,
+  OIDCLoginPrompt,
+  OidcWaitScreen,
+  PermissionConsentScreen,
+  SAMLSSOInitiation,
+  SamlWaitScreen,
+  SSOProviderSelection,
+} from './modules/sso/screens/sso'
+
+// Provisioning screens
+export {
+  DirectorySyncDashboard,
+  SCIMConfiguration,
+  SyncLogsView,
+  ConnectorDetailView,
+} from './modules/sso/screens/provisioning'
+
+// Monitoring screens
+export {
+  AdminOverviewDashboard,
+  AuthEventsMonitor,
+  SystemHealthDashboard,
+  ExportAuditTrail,
+  EmailTestingDashboard,
+  EmailTemplatePreview,
+  MFAUsageAnalytics,
+} from './modules/monitoring/screens/monitoring'
+
+
 // Dialog Components
 export * from './components/dialogs'
 

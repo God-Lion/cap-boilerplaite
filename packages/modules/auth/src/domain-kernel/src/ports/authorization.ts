@@ -1,7 +1,7 @@
 import type {
   Permission,
   Role,
-  AccessPolicy,
+  AuthAccessPolicy,
   PermissionCheckResult,
   MemberOverride,
 } from '../types/authorization'
@@ -68,14 +68,14 @@ export interface IPermissionManager {
 }
 
 export interface IPolicyEngine {
-  listPolicies(organizationId: OrganizationId): Promise<AccessPolicy[]>
+  listPolicies(organizationId: OrganizationId): Promise<AuthAccessPolicy[]>
 
   createPolicy(
     organizationId: OrganizationId,
-    policy: Omit<AccessPolicy, 'id'>,
-  ): Promise<AccessPolicy>
+    policy: Omit<AuthAccessPolicy, 'id'>,
+  ): Promise<AuthAccessPolicy>
 
-  updatePolicy(policyId: string, policy: Partial<AccessPolicy>): Promise<AccessPolicy>
+  updatePolicy(policyId: string, policy: Partial<AuthAccessPolicy>): Promise<AuthAccessPolicy>
 
   deletePolicy(policyId: string): Promise<void>
 

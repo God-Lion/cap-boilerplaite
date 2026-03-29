@@ -59,4 +59,7 @@ export {
   keyframes
 } from '@mui/material/styles';
 
+export { default as Avatar } from './Avatar';
+export { default as Chip } from './Chip';
+
 // Add any other common MUI exports here as needed

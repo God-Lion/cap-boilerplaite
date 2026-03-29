@@ -99,7 +99,7 @@ export interface TenantFeatures {
 // Tenant Config Types
 // ============================================
 
-export const CURRENT_TENANT_CONFIG_VERSION = 2
+export const CURRENT_TENANT_CONFIG_VERSION = 1
 
 export interface TenantConfigV1 {
   readonly _version: 1

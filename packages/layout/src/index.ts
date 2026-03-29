@@ -108,3 +108,6 @@ export { default as adminMenu } from './menu/adminMenu'
 
 // Auth & Status Components (Moved from @cap/theme)
 export * from './components/auth'
+
+// UI Components (Moved from @cap/theme for proper separation)
+export * from './components/ui'
