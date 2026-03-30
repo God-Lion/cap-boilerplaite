@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useAppStore } from '../store'
 import { usePermissions } from './usePermissions'
-import { NavVariant, NavItemConfig } from '../types/module'
+import { NavVariant, NavItemConfig } from '@cap/shared-types/module'
 
 /**
  * Hook to get filtered navigation items based on current user state and variant.

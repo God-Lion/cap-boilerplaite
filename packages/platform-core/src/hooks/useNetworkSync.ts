@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import { onlineManager } from '@tanstack/react-query'
 import { useNetwork } from '../store'
-import { refreshManager } from '../services/api/api.client'
-import { replayOfflineQueue } from '../services/api/offline-sync.service'
+import { refreshManager, replayOfflineQueue } from '@cap/platform-store'
 
 export const useNetworkSync = () => {
   const { setOnline, setOffline } = useNetwork()

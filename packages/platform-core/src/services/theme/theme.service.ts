@@ -1,4 +1,4 @@
-import { apiClient } from '../api/api.client'
+import { apiClient } from '@cap/platform-store'
 import type { TenantThemeConfig } from '@cap/theme'
 
 const pendingRequests = new Map<string, Promise<TenantThemeConfig | null>>();

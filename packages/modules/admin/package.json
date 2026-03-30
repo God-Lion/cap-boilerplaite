@@ -14,6 +14,8 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
+    "@cap/api-contracts": "workspace:*",
+    "@cap/auth-contracts": "workspace:*",
     "@cap/layout": "workspace:*",
     "@cap/module-auth": "workspace:*",
     "@cap/platform-core": "workspace:*",

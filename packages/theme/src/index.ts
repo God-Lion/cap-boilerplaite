@@ -17,11 +17,17 @@ export { ThemeSettingsProvider, useThemeSettings } from './context/ThemeSettings
 
 // Theme & Style Exports
 export * from './assets/themes';
-export { default as AppReactApexCharts } from './styles/wrappers/AppReactApexCharts';
-export { default as AppReactToastify } from './styles/wrappers/AppReactToastify';
-export { default as AppRecharts } from './styles/wrappers/AppRecharts';
-export { default as AppReactDropzone } from './styles/wrappers/AppReactDropzone';
 export { default as coreOverrides } from './overrides/core-overrides';
+
+// Re-export wrappers from @cap/layout for backward compatibility
+export {
+  AppReactToastify,
+  AppReactDropzone,
+  AppRecharts,
+} from '@cap/layout/components/wrappers';
+
+// Re-export AppReactApexCharts from local (needs apex-charts)
+// export { default as AppReactApexCharts } from './styles/wrappers/AppReactApexCharts';
 
 // Re-export MUI components from local (theme-related)
 

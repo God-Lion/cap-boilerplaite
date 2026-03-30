@@ -12,8 +12,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@cap/platform-api": "workspace:*",
     "@cap/platform-core": "workspace:*",
-    "@cap/module-auth": "workspace:*",
     "react-router-dom": ">=6",
     "react-toastify": "^11.0.5",
     "@mui/icons-material": "^7.3.6",

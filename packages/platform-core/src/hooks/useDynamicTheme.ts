@@ -16,7 +16,7 @@ export const useDynamicTheme = (): DynamicThemeConfig | null => {
     if (!tenant) return null
     
     return {
-      theme: tenant.theme as TenantThemeConfig,
+      theme: tenant.theme as unknown as TenantThemeConfig,
       layout: tenant.layout,
       userTheme: userPreferences.theme,
     }

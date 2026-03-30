@@ -1,4 +1,4 @@
-import { apiClient, ENDPOINTS } from '../api/api.client'
+import { apiClient, ENDPOINTS } from '@cap/platform-store'
 import { UserDto, ApiResponse } from '@cap/shared-types'
 
 export const userService = {

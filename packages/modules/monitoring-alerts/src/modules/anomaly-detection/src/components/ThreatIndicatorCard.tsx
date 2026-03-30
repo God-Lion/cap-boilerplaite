@@ -1,5 +1,5 @@
 import { Card, CardContent, Typography, Chip, Box, Tooltip } from '@mui/material'
-import { Warning, Public, Dns, Email, Hash } from '@mui/icons-material'
+import { Warning, Public, Dns, Email, Tag } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import type { IThreatIndicator, ThreatCategory, ThreatConfidence } from '../../../../domain-kernel/src/types'
 import { getRiskLevelColor } from './utils'
@@ -14,7 +14,7 @@ const getTypeIcon = (type: IThreatIndicator['type']) => {
     case 'ip': return <Dns />
     case 'domain': return <Public />
     case 'email': return <Email />
-    case 'hash': return <Hash />
+    case 'hash': return <Tag />
   }
 }
 

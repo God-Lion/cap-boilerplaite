@@ -4,6 +4,7 @@ export * from './common';
 export * from './table';
 export * from './layout';
 export * from './module';
+export * from './theme';
 export * from './contracts/plugin.contracts';
 
 // Core domain types

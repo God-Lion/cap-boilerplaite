@@ -64,7 +64,7 @@ export interface ExportParams {
   endDate?: string
 }
 
-export interface AdminUserDto extends UserDto {
+export interface AdminUserDto extends Omit<UserDto, 'role' | 'status'> {
   role?: AnyRole | number
   status?: UserStatus | string
 }

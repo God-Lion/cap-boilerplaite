@@ -88,9 +88,8 @@ export {
   RoleIndicator,
   AuthorizationEnginePath,
   AdminRoute,
-  adminService
 } from './modules/authorization-engine'
-export type { CreateJWKSKeyRequest, DeveloperApiKey } from './modules/authorization-engine'
+export type { CreateJWKSKeyRequest } from './modules/authorization-engine'
 
 // Re-export types from domain-kernel for cross-package use
 export type { SAMLConfig, JWKSKey, JWKSKeyDetail, SSFConfig } from './domain-kernel/src/types'
@@ -100,7 +99,6 @@ export * from './modules/identity-broker'
 export * from './modules/passwordless-service'
 export { PlatformClusterPath, apiExplorerService } from './modules/platform-cluster'
 export type { SandboxExecutionResult, OpenAPISpec, OpenAPIPathItem } from './modules/platform-cluster'
-export type { AccessPolicy, AccessPolicyRule } from '@cap/shared-types'
 export type { AuthAccessPolicy } from './domain-kernel/src/types/authorization'
 
 // User Directory - Export everything EXCEPT the ones that collide with authentication-core
@@ -124,6 +122,24 @@ export {
 
 export { useSessionGuard } from './modules/session-manager/middlewares/useSessionGuard'
 
+
+// Re-export from auth-contracts for backwards compatibility
+export {
+  adminService,
+  type AdminUser,
+  type DeveloperApiKey,
+  type MemberOverride,
+  type Role,
+  type Permission,
+  type Organization,
+  type BulkActionRequest,
+  type BulkActionResult,
+  type MessageResponse,
+  type SecurityHealthResponse,
+  type ImpersonationSession,
+  type AccessPolicy,
+  type AccessPolicyRule,
+} from '@cap/auth-contracts'
 
 // Note: Admin screens moved to @cap/module-admin and are now exported from there to avoid circular dependencies.
 

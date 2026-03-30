@@ -27,7 +27,7 @@
       "@cap/shared-types": ["../shared-types/src"],
       "@cap/shared-types/*": ["../shared-types/src/*"]
     },
-    "types": ["node", "vite/client", "react", "react-dom", "react-router-dom", "classnames", "react-use"]
+    "types": ["node", "vite/client", "react", "react-dom", "classnames", "react-use"]
   },
   "include": ["src/**/*", "vite-env.d.ts"]
 }

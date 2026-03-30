@@ -39,15 +39,32 @@ export interface SAMLMetadata {
 }
 
 export interface JWKSKey {
-  kty: string
+  kid: string
+  kty?: string
   use?: string
-  key_ops?: string[]
   alg?: string
-  kid?: string
-  x5u?: string[]
-  x5c?: string[]
-  x5t?: string
-  "x5t#S256"?: string
+  n?: string
+  e?: string
+  status?: 'active' | 'standby' | 'revoked'
+  created?: string
+  expires?: string
+  health?: number
+}
+
+export interface JWKSKeyDetail extends JWKSKey {
+  updated: string
+  publicJwk?: Record<string, unknown>
+  metadata?: Record<string, unknown> | null
+}
+
+export interface CreateJWKSKeyRequest {
+  kid: string
+  privateKey?: string
+  publicKey?: string
+  algorithm?: string
+  use?: string
+  status?: 'active' | 'standby' | 'revoked'
+  expiresAt?: string
 }
 
 export interface CreateOIDCClientRequest {
@@ -133,6 +150,27 @@ export interface SSFConfig {
   deliveryMethods?: string[]
   streamStatus?: 'active' | 'inactive' | 'error'
   lastEventAt?: string
+  enabled?: boolean
+  issuer?: string
+  audience?: string
+  delivery_method?: string
+  events_supported?: string[]
+  events_delivered?: string[]
+  events_meta?: Array<{ id: string; name: string; desc: string }>
+}
+
+export interface BroadcastSSFEventRequest {
+  eventType: string
+  subject: string
+  reason?: string
+  payload?: Record<string, unknown>
+}
+
+export interface BroadcastSSFEventResponse {
+  message: string
+  event: unknown
+  recipients: unknown[]
+  deliveredAt?: string
 }
 
 export interface Role {

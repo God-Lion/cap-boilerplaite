@@ -40,9 +40,9 @@
     "react-router-dom": "^6.28.0 || ^7.0.0"
   },
   "dependencies": {
+    "@cap/civil-registry": "workspace:*",
+    "@cap/platform-api": "workspace:*",
     "@cap/platform-core": "workspace:*",
-    "@cap/module-auth": "workspace:*",
-    "@cap/module-civil-registry": "workspace:*",
     "@tanstack/react-query": "^5.90.12",
     "date-fns": "^4.1.0",
     "immer": "^11.0.1",

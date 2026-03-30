@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "declaration": true,
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@cap/shared-types": ["../shared-types/src"],
+      "@cap/shared-types/*": ["../shared-types/src/*"],
+      "@cap/theme": ["../theme/src"],
+      "@cap/theme/*": ["../theme/src/*"],
+      "@cap/layout": ["../layout/src"],
+      "@cap/layout/*": ["../layout/src/*"],
+      "@cap/platform-core": ["../platform-core/src"],
+      "@cap/platform-core/*": ["../platform-core/src/*"]
+    },
+    "types": ["node", "vite/client", "react", "react-dom"]
+  },
+  "include": ["src/**/*"]
+}

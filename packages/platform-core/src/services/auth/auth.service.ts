@@ -1,5 +1,4 @@
-import { apiClient, ENDPOINTS } from '../api/api.client'
-import { secureTokenManager } from '../secureTokenManager'
+import { apiClient, ENDPOINTS, secureTokenManager } from '@cap/platform-store'
 import { UserDto, ApiResponse } from '@cap/shared-types'
 
 export const authService = {

@@ -1,4 +1,4 @@
-import { apiClient, ENDPOINTS } from './api/api.client'
+import { apiClient, ENDPOINTS } from '@cap/platform-store'
 import type { TenantConfig, UserPreferences } from '../types/tenant'
 import { DEFAULT_TENANT_CONFIG, DEFAULT_TENANT_THEME } from '../types/tenant'
 

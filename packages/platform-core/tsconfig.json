@@ -24,6 +24,8 @@
     "paths": {
       "@cap/shared-types": ["../shared-types/src"],
       "@cap/shared-types/*": ["../shared-types/src/*"],
+      "@cap/platform-store": ["../platform-store/src"],
+      "@cap/platform-store/*": ["../platform-store/src/*"],
       "@cap/theme": ["../theme/src"],
       "@cap/theme/*": ["../theme/src/*"]
     },

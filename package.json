@@ -4,8 +4,13 @@
   "private": true,
   "workspaces": [
     "app",
+    "packages/api-contracts",
+    "packages/civil-registry",
     "packages/layout",
+    "packages/platform-api",
     "packages/platform-core",
+    "packages/platform-store",
+    "packages/platform-ui",
     "packages/shared-types",
     "packages/theme",
     "packages/modules/*"

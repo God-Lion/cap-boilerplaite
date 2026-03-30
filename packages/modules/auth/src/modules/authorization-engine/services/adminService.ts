@@ -1,5 +1,5 @@
 import { apiClient, FetchResponse, PaginatedResponse } from '@cap/platform-core'
-import { ENDPOINTS } from "@cap/module-auth/modules/authentication-core/services/endpoints"
+import { ENDPOINTS } from '@cap/api-contracts'
 import type { SCIMConfig } from '../../../domain-kernel/src/types'
 import type { SAMLConfig, JWKSKey, CreateJWKSKeyRequest, JWKSKeyDetail, SSFConfig, BroadcastSSFEventRequest, BroadcastSSFEventResponse } from '../../../domain-kernel/src/types'
 import { AccessPolicy, AccessPolicyRule } from '@cap/shared-types'

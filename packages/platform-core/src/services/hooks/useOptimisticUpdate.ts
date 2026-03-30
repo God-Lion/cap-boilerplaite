@@ -6,13 +6,14 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { HttpError, FetchResponse, fetchClient } from '../api/api.client'
-
 import {
+  HttpError,
+  FetchResponse,
+  fetchClient,
   optimisticUpdateManager,
   OptimisticUpdate,
   OptimisticUpdateType,
-} from './../optimisticUpdates'
+} from '@cap/platform-store'
 
 export interface UseOptimisticMutationOptions<TData, TVariables> {
   /**

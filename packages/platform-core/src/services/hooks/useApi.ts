@@ -1,7 +1,7 @@
 // src/shared/hooks/useApi.ts
 
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { FetchResponse, ApiErrorResponse, handleApiError } from '../api/api.client'
+import { FetchResponse, ApiErrorResponse, handleApiError } from '@cap/platform-store'
 
 interface UseApiState<T> {
   data: T | null

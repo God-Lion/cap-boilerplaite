@@ -1,0 +1,32 @@
+{
+  "name": "@cap/auth-contracts",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "build": "tsc",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@cap/api-contracts": "workspace:*",
+    "@cap/platform-api": "workspace:*",
+    "@cap/platform-core": "workspace:*",
+    "@cap/shared-types": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19",
+    "react-router-dom": ">=6",
+    "typescript": "~5.9.3"
+  }
+}
