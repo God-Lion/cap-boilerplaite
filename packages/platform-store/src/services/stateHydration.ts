@@ -19,7 +19,10 @@ export const useStateHydration = (): HydrationStatus => {
     error: null,
   })
 
-  const { refreshAuth, guestSession, createGuestSession, isAuthenticated } = useAppStore()
+  const refreshAuth = useAppStore((state) => state.refreshAuth)
+  const guestSession = useAppStore((state) => state.guestSession)
+  const createGuestSession = useAppStore((state) => state.createGuestSession)
+  const isAuthenticated = useAppStore((state) => state.isAuthenticated)
   const hasZustandHydrated = useHasHydrated()
 
   useEffect(() => {
@@ -64,7 +67,7 @@ export const useStateHydration = (): HydrationStatus => {
     }
 
     hydrateState()
-  }, [refreshAuth, guestSession, createGuestSession, hasZustandHydrated])
+  }, [refreshAuth, guestSession, createGuestSession, isAuthenticated, hasZustandHydrated])
 
   return status
 }

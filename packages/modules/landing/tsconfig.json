@@ -14,11 +14,32 @@
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "module": "ESNext",
-        "moduleResolution": "Node",
+        "moduleResolution": "Bundler",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@auth/*": [
+                "../../modules/auth/src/*",
+                "../../platform-core/src/stubs/auth-shim.tsx"
+            ],
+            "@idaas/*": [
+                "../../modules/auth/src/modules/*",
+                "../../platform-core/src/stubs/auth-shim.tsx"
+            ],
+            "@cap/module-auth": [
+                "../../modules/auth/src",
+                "../../platform-core/src/stubs/auth-shim.tsx"
+            ],
+            "@cap/module-auth/*": [
+                "../../modules/auth/src/*",
+                "../../platform-core/src/stubs/auth-shim.tsx"
+            ],
+            "@cap/theme": ["../theme/src"],
+            "@cap/theme/*": ["../theme/src/*"]
+        },
         "types": ["react", "react-dom", "node", "vite/client"]
     },
     "include": [

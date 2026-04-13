@@ -1,8 +1,0 @@
-dist
-node_modules
-coverage
-test-results
-.git
-*-report.json
-analyze-report.cjs
-public

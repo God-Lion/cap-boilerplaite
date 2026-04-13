@@ -24,8 +24,7 @@ import Person from '@mui/icons-material/Person'
 import Settings from '@mui/icons-material/Settings'
 import { useSettings, useAuth } from '@cap/platform-core'
 import { zIndexScale } from "@cap/theme";
-import { useSignOut } from '@cap/module-auth'
-import Path from '@cap/module-auth/routes/path'
+import { useSignOut, Path } from '@cap/module-auth'
 
 const BadgeContentSpan = styled('span')({
   width: 8,

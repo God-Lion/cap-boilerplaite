@@ -33,7 +33,7 @@
       "@hooks/*": ["./src/hooks/*"],
       "@store/*": ["./src/store/*"]
     },
-    "types": ["vite-plugin-pwa/info", "vite-plugin-pwa/client", "vite/client", "node"]
+    "types": ["vite/client", "node"]
   },
   "include": ["src", "app", ".react-router", "packages"],
   "references": [

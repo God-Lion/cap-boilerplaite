@@ -1,8 +1,0 @@
-export * from './hooks'
-export * from './store'
-export * from './services/auth.service'
-export { AuthRoute, GuestRoute, PrivateRoute } from '@cap/platform-core'
-export * from './components'
-export * from './screens'
-export { default as AuthenticationCorePath } from './screens/path'
-export { useAuthStore } from './store'

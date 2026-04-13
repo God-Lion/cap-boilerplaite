@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import type { ToastContainerProps } from 'react-toastify'
 import type { Skin } from '@cap/shared-types'
-import { useThemeSettings } from '@cap/theme/context/ThemeSettingsContext'
+import { useThemeSettings } from '@cap/theme'
 
 type Props = ToastContainerProps & {
   boxProps?: BoxProps

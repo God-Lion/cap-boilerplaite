@@ -12,6 +12,14 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "@cap/module-auth": [
+        "../modules/auth/src",
+        "../platform-core/src/stubs/auth-shim.tsx"
+      ],
+      "@cap/module-auth/*": [
+        "../modules/auth/src/*",
+        "../platform-core/src/stubs/auth-shim.tsx"
+      ],
       "@cap/shared-types": ["../shared-types/src"],
       "@cap/shared-types/*": ["../shared-types/src/*"],
       "@cap/theme": ["../theme/src"],

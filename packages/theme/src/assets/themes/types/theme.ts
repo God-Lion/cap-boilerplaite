@@ -3,7 +3,7 @@ import type {
   CustomInputHorizontalProps,
   CustomInputVerticalProps,
   CustomInputImgProps,
-} from '../../../components/custom-inputs/types'
+} from '@cap/layout/components/ui/custom-inputs/types'
 import type { TenantThemeConfig } from '../../../types'
 
 declare module '@mui/material/styles' {

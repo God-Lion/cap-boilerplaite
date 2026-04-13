@@ -5,7 +5,6 @@
   "workspaces": [
     "app",
     "packages/api-contracts",
-    "packages/civil-registry",
     "packages/layout",
     "packages/platform-api",
     "packages/platform-core",
@@ -24,12 +23,14 @@
   },
   "dependencies": {
     "@mui/utils": "^7.3.9",
+    "@tanstack/react-query": "^5.99.0",
     "undici": "^7.22.0"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "vite-plugin-pwa": "^0.21.2"
+    "eslint-plugin-import": "^2.32.0",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }

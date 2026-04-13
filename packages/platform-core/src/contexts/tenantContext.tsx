@@ -3,6 +3,7 @@ import TenantService from '../services/tenantService'
 import { themeService } from '../services/theme/theme.service'
 import { useSettings } from '../store'
 import type { TenantConfig, UserPreferences, TenantContextValue, TenantThemeBase } from '../types/tenant'
+import { DEFAULT_THEME_CONFIG } from '@cap/theme'
 import type { TenantThemeConfig } from '@cap/theme'
 import { normalizeTenantConfig } from '../types/tenant'
 
@@ -124,23 +125,42 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
     }
   }, [tenant, updateSettings])
 
-  const saveTheme = useCallback(async (themeToSave: TenantThemeConfig) => {
+  const saveTheme = useCallback(async (themeToSave: TenantThemeBase) => {
     setIsLoadingTheme(true)
     setErrorTheme(null)
     try {
-      await themeService.saveTheme(themeToSave)
+      const organizationId = tenant?.id || DEFAULT_THEME_CONFIG.organizationId
+      const themePayload: TenantThemeConfig = {
+        ...DEFAULT_THEME_CONFIG,
+        organizationId,
+        name: tenant?.name ? `${tenant.name} Theme` : DEFAULT_THEME_CONFIG.name,
+        metadata: {
+          ...DEFAULT_THEME_CONFIG.metadata,
+          mode: themeToSave.mode,
+        },
+        tokens: {
+          ...DEFAULT_THEME_CONFIG.tokens,
+          colors: {
+            ...DEFAULT_THEME_CONFIG.tokens.colors,
+            primary: {
+              ...DEFAULT_THEME_CONFIG.tokens.colors.primary,
+              value: themeToSave.primaryColor,
+            },
+            secondary: {
+              ...DEFAULT_THEME_CONFIG.tokens.colors.secondary,
+              value: themeToSave.secondaryColor,
+            },
+          },
+        },
+      }
+
+      await themeService.saveTheme(themePayload)
       // Update local state to reflect the saved theme
       setTenant(prev => {
         if (!prev) return null
         return {
           ...prev,
-          theme: {
-            mode: themeToSave.tokens?.primary?.main || 'light',
-            skin: 'default',
-            semiDark: false,
-            primaryColor: themeToSave.tokens?.primary?.main || '#1976d2',
-            secondaryColor: themeToSave.tokens?.secondary?.main || '#dc0046'
-          }
+          theme: themeToSave,
         }
       })
     } catch (err) {
@@ -150,7 +170,7 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
     } finally {
       setIsLoadingTheme(false)
     }
-  }, [])
+  }, [tenant])
 
   const refetchTheme = useCallback(async () => {
     await refetchTenant()

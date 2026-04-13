@@ -2,7 +2,6 @@ packages:
   - "app"
   - "packages/auth-contracts"
   - "packages/api-contracts"
-  - "packages/civil-registry"
   - "packages/layout"
   - "packages/platform-api"
   - "packages/platform-core"

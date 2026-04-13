@@ -14,7 +14,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
     "moduleDetection": "force",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -22,6 +22,16 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "@cap/module-auth": [
+        "../modules/auth/src",
+        "../platform-core/src/stubs/auth-shim.tsx"
+      ],
+      "@cap/module-auth/*": [
+        "../modules/auth/src/*",
+        "../platform-core/src/stubs/auth-shim.tsx"
+      ],
+      "@cap/layout": ["../layout/src"],
+      "@cap/layout/*": ["../layout/src/*"],
       "@cap/shared-types": ["../shared-types/src"],
       "@cap/shared-types/*": ["../shared-types/src/*"],
       "@cap/platform-store": ["../platform-store/src"],
@@ -32,12 +42,15 @@
     "types": [
       "react",
       "node",
-      "vite/client",
-      "vite-plugin-pwa/client"
+      "vite/client"
     ]
   },
   "include": [
     "src/**/*",
     "vite-env.d.ts"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
   ]
 }

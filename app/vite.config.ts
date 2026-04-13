@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 import { createRequire } from 'module'
 
@@ -21,13 +22,22 @@ try {
   console.warn('[vite.config] vite-plugin-pwa not found — PWA features disabled for this session.')
 }
 
+// ── Smart Auth Module Detection ──────────────────────────────────────────────
+const authModulePath = path.resolve(workspaceRoot, 'packages/modules/auth/src')
+const authExists = fs.existsSync(authModulePath)
+const authShimPath = path.resolve(workspaceRoot, 'packages/platform-core/src/stubs/auth-shim.tsx')
+
+if (!authExists) {
+  console.info(`[vite.config] @cap/module-auth not found at ${authModulePath}. Using shim fallback.`)
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     ...(vitePWA
       ? [
-          vitePWA({
+          (vitePWA as any)({
             registerType: 'autoUpdate',
             injectRegister: 'auto',
             devOptions: {
@@ -51,35 +61,46 @@ export default defineConfig({
       : []),
   ],
   resolve: {
-    alias: {
-      // ── Specific sub-path aliases MUST come before the bare '@' catch-all ──
-      '@/routes':  path.resolve(workspaceRoot, 'packages/modules/auth/src/routes'),
-      '@/modules': path.resolve(workspaceRoot, 'packages/modules/auth/src/modules'),
+    alias: [
+      // ── Auth Module Catch-all (Regex) ──
+      // This catches @cap/module-auth and ANY sub-path, redirecting to the shim if missing.
+      { 
+        find: /^@cap\/module-auth(\/.*)?$/, 
+        replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src$1') : authShimPath 
+      },
+      // ── Internal Auth Aliases (Regex) ──
+      { find: /^@auth(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src$1') : authShimPath },
+      { find: /^@idaas(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules$1') : authShimPath },
+      { find: /^@\/routes(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/routes$1') : authShimPath },
+      { find: /^@\/modules(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules$1') : authShimPath },
+
       // ── Workspace source package aliases ─────────────────────────────────────
-      '@cap/layout':          path.resolve(workspaceRoot, 'packages/layout/src'),
-      '@cap/theme':           path.resolve(workspaceRoot, 'packages/theme/src'),
-      '@cap/module-auth':     path.resolve(workspaceRoot, 'packages/modules/auth/src'),
-      '@cap/module-admin':    path.resolve(workspaceRoot, 'packages/modules/admin/src'),
-      '@cap/module-landing':  path.resolve(workspaceRoot, 'packages/modules/landing/src'),
-      '@cap/module-mfa':      path.resolve(workspaceRoot, 'packages/modules/mfa/src'),
-      '@cap/platform-core':   path.resolve(workspaceRoot, 'packages/platform-core/src'),
-      // ── @auth/* sub-module aliases ────────────────────────────────────────────
-      '@auth/authentication-core':  path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/authentication-core'),
-      '@auth/authorization-engine': path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/authorization-engine'),
-      '@auth/identity-broker':      path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/identity-broker'),
-      '@auth/mfa-orchestrator':     path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/mfa-orchestrator'),
-      '@auth/passwordless-service': path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/passwordless-service'),
-      '@auth/platform-cluster':     path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/platform-cluster'),
-      '@auth/session-manager':      path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/session-manager'),
-      '@auth/user-directory':       path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/user-directory'),
-      '@auth/domain-kernel':        path.resolve(workspaceRoot, 'packages/modules/auth/src/domain-kernel'),
-      '@auth':                      path.resolve(workspaceRoot, 'packages/modules/auth/src'),
-      '@idaas':                     path.resolve(workspaceRoot, 'packages/modules/auth/src/modules'),
+      { find: '@cap/layout',          replacement: path.resolve(workspaceRoot, 'packages/layout/src') },
+      { find: '@cap/theme',           replacement: path.resolve(workspaceRoot, 'packages/theme/src') },
+      { find: '@cap/api-contracts',   replacement: path.resolve(workspaceRoot, 'packages/api-contracts/src') },
+      { find: '@cap/auth-contracts',  replacement: path.resolve(workspaceRoot, 'packages/auth-contracts/src') },
+      { find: '@cap/shared-types',    replacement: path.resolve(workspaceRoot, 'packages/shared-types/src') },
+      { find: '@cap/platform-api',    replacement: path.resolve(workspaceRoot, 'packages/platform-api/src') },
+      { find: '@cap/platform-core',   replacement: path.resolve(workspaceRoot, 'packages/platform-core/src') },
+      { find: '@cap/platform-store',  replacement: path.resolve(workspaceRoot, 'packages/platform-store/src') },
+      { find: '@cap/platform-ui',     replacement: path.resolve(workspaceRoot, 'packages/platform-ui/src') },
+      
+      // ── Other Modules ────────────────────────────────────────────────────────
+      { find: '@cap/module-admin',    replacement: path.resolve(workspaceRoot, 'packages/modules/admin/src') },
+      { find: '@cap/module-landing',  replacement: path.resolve(workspaceRoot, 'packages/modules/landing/src') },
+      { find: '@cap/module-user',     replacement: path.resolve(workspaceRoot, 'packages/modules/user/src') },
+      { find: '@cap/module-kyc',      replacement: path.resolve(workspaceRoot, 'packages/modules/kyc/src') },
+      { find: '@cap/module-digital-id', replacement: path.resolve(workspaceRoot, 'packages/modules/digital-id/src') },
+      { find: '@cap/module-civil-registry', replacement: path.resolve(workspaceRoot, 'packages/modules/civil-registry/src') },
+      { find: '@cap/module-monitoring-alerts', replacement: path.resolve(workspaceRoot, 'packages/modules/monitoring-alerts/src') },
+      { find: '@cap/module-blockchain-idaas', replacement: path.resolve(workspaceRoot, 'packages/modules/blockchain-idaas/src') },
+      { find: '@cap/module-mfa',      replacement: path.resolve(workspaceRoot, 'packages/modules/mfa/src') },
+
       // ── App-local catch-alls (LAST — least specific) ──────────────────────────
-      '@': path.resolve(__dirname, './src'),
-      src: path.resolve(__dirname, './src'),
-      app: path.resolve(__dirname, './src'),
-    },
+      { find: '@', replacement: path.resolve(__dirname, './src') },
+      { find: 'src', replacement: path.resolve(__dirname, './src') },
+      { find: 'app', replacement: path.resolve(__dirname, './src') },
+    ],
     dedupe: [
       'react',
       'react-dom',
@@ -94,18 +115,35 @@ export default defineConfig({
       '@emotion/styled',
       'zustand',
       '@cap/platform-core',
+      '@cap/platform-store',
     ],
   },
   optimizeDeps: {
+    include: [
+      '@tanstack/react-query',
+      'react-toastify',
+    ],
     // Exclude workspace source packages — they are TypeScript source-linked
     exclude: [
       '@cap/layout',
       '@cap/theme',
+      '@cap/api-contracts',
+      '@cap/auth-contracts',
+      '@cap/shared-types',
+      '@cap/platform-api',
+      '@cap/platform-core',
+      '@cap/platform-store',
+      '@cap/platform-ui',
       '@cap/module-auth',
       '@cap/module-admin',
       '@cap/module-landing',
+      '@cap/module-user',
+      '@cap/module-kyc',
+      '@cap/module-digital-id',
+      '@cap/module-civil-registry',
+      '@cap/module-monitoring-alerts',
+      '@cap/module-blockchain-idaas',
       '@cap/module-mfa',
-      '@cap/platform-core',
     ],
   },
   server: {
@@ -114,7 +152,7 @@ export default defineConfig({
     strictPort: false,
     proxy: {
       '/api': {
-        target: 'http://localhost:3333',
+        target: 'http://127.0.0.1:3333',
         changeOrigin: true,
         configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq, req) => {
