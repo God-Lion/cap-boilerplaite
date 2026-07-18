@@ -53,7 +53,7 @@ const mockTenants: Record<string, TenantConfig> = {
       companyName: 'Acme Corporation',
       welcomeText: 'Welcome to Acme Corp',
     },
-    features: { darkMode: true, rtl: false, notifications: true, chat: true },
+    features: { darkMode: true, rtl: false, notifications: true, chat: true, enabledAuthPlugins: ['mfa-totp'] },
     version: 1,
   },
   'tenant2.localhost': {
@@ -91,7 +91,7 @@ const mockTenants: Record<string, TenantConfig> = {
       companyName: 'TechStart Inc',
       welcomeText: 'Innovate with TechStart',
     },
-    features: { darkMode: true, rtl: false, notifications: true, chat: false },
+    features: { darkMode: true, rtl: false, notifications: true, chat: false, enabledAuthPlugins: [] },
     version: 1,
   },
   'tenant3.localhost': {
@@ -129,7 +129,7 @@ const mockTenants: Record<string, TenantConfig> = {
       companyName: 'Green Eco Solutions',
       welcomeText: 'Go Green with Us',
     },
-    features: { darkMode: false, rtl: false, notifications: true, chat: true },
+    features: { darkMode: false, rtl: false, notifications: true, chat: true, enabledAuthPlugins: [] },
     version: 1,
   },
 }
@@ -203,7 +203,7 @@ export class TenantService {
 
   static async fetchTenant(tenantSlug?: string): Promise<TenantConfig> {
     const domain = this.getCurrentHostname()
-    const slug = tenantSlug || this.getTenantFromHostname()
+    const _slug = tenantSlug || this.getTenantFromHostname()
     
     // 1. Try Cache
     const cached = this.getCachedTenant(domain)

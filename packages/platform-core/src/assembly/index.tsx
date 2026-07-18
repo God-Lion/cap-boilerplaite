@@ -2,7 +2,7 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import i18next from 'i18next'
 import { CAPModule, SearchItemConfig } from '../types'
-import { useAppStore } from '../store'
+import { useAppStore } from '@cap/platform-store'
 
 interface AssembleAppProps {
   modules: Array<CAPModule>

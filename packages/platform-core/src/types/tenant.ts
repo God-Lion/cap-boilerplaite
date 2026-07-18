@@ -19,6 +19,8 @@ export type {
   TenantConfig,
   TenantContextValue,
   UserPreferences,
+  TenantModule,
+  TenantModuleStatus,
   
   // Type aliases
   LayoutType,
@@ -96,6 +98,7 @@ export const DEFAULT_TENANT_CONFIG: TenantConfig = {
     rtl: false,
     notifications: true,
     chat: true,
+    enabledAuthPlugins: [],
   },
   version: CURRENT_TENANT_CONFIG_VERSION,
 }

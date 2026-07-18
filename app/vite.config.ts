@@ -69,6 +69,7 @@ export default defineConfig({
         replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src$1') : authShimPath 
       },
       // ── Internal Auth Aliases (Regex) ──
+      { find: /^@auth\/(authentication-core|authorization-engine|developer-console|identity-broker|mfa-orchestrator|passwordless-service|platform-cluster|session-manager|user-directory)(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/$1$2') : authShimPath },
       { find: /^@auth(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src$1') : authShimPath },
       { find: /^@idaas(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules$1') : authShimPath },
       { find: /^@\/routes(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/routes$1') : authShimPath },

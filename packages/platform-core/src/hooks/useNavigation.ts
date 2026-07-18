@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAppStore } from '../store'
+import { useAppStore } from '@cap/platform-store'
 import { usePermissions } from './usePermissions'
 import { NavVariant, NavItemConfig } from '@cap/shared-types/module'
 

@@ -184,6 +184,9 @@ export interface HybridPlugin extends BasePlugin {
   /** Optional routes */
   routes?: RouteRegistration[]
   
+  /** Route prefix for this plugin */
+  routePrefix?: string
+  
   /** Optional services */
   services?: Record<string, unknown>
   
@@ -214,6 +217,14 @@ export interface PluginRegistry {
   getPluginState: (id: string) => PluginLifecycleState | undefined
   getServices: () => Record<string, unknown>
   getService: <T = unknown>(name: string) => T | undefined
+  
+  // Component Management
+  getComponents: () => Record<string, ComponentType>
+  getComponent: <T = ComponentType>(name: string) => T | undefined
+  registerComponent: (name: string, component: ComponentType) => void
+
+  // Route Management
+  getRoutes: () => RouteRegistration[]
 }
 
 /**

@@ -1,11 +1,22 @@
+// @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import React from 'react'
 import { usePermissions } from './usePermissions'
-import { useAppStore } from '../store'
+import { useAppStore } from '@cap/platform-store'
 
-vi.mock('../store', () => ({
-  useAppStore: vi.fn(),
+const mockStore = vi.fn((selector) => {
+  const state = mockStore.getState()
+  return selector ? selector(state) : state
+}) as any
+let currentState = { user: null, isAuthenticated: false }
+mockStore.getState = () => currentState
+mockStore.mockReturnValue = (val: any) => {
+  currentState = val
+}
+
+vi.mock('@cap/platform-store', () => ({
+  useAppStore: mockStore,
 }))
 
 const mockedUseAppStore = vi.mocked(useAppStore)

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { onlineManager } from '@tanstack/react-query'
-import { useNetwork } from '../store'
+import { useNetwork } from '@cap/platform-store'
 import { refreshManager, replayOfflineQueue } from '@cap/platform-store'
 
 export const useNetworkSync = () => {

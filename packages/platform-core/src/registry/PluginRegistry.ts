@@ -5,6 +5,11 @@ import type {
   PluginInstallContext,
   PluginUninstallContext,
   ServicePlugin,
+  ComponentPlugin,
+  RoutePlugin,
+  RouteRegistration,
+  HybridPlugin,
+  ComponentType,
   PluginMetadata
 } from '@cap/shared-types'
 
@@ -37,9 +42,17 @@ class PluginRegistryImpl implements IPluginRegistry {
   private pluginStates: Map<string, PluginLifecycleState> = new Map()
   private pluginOutputs: Map<string, PluginOutputs> = new Map()
   private services: Map<string, unknown> = new Map()
+  private components: Map<string, ComponentType> = new Map()
+  private routes: Map<string, RouteRegistration[]> = new Map()
   
   private serviceOwnership: ServiceOwnership = {
     services: new Map()
+  }
+
+  private componentOwnership: {
+    components: Map<string, Set<string>>
+  } = {
+    components: new Map()
   }
 
   /**
@@ -80,6 +93,14 @@ class PluginRegistryImpl implements IPluginRegistry {
 
       if (plugin.pluginType === 'service') {
         this.registerServices((plugin as ServicePlugin).services, plugin.id)
+      } else if (plugin.pluginType === 'component') {
+        this.registerComponents((plugin as ComponentPlugin).components, plugin.id)
+      } else if (plugin.pluginType === 'route') {
+        this.registerRoutes((plugin as RoutePlugin).routes, (plugin as RoutePlugin).routePrefix, plugin.id)
+      } else if (plugin.pluginType === 'hybrid') {
+        this.registerServices((plugin as HybridPlugin).services || {}, plugin.id)
+        this.registerComponents((plugin as HybridPlugin).components || {}, plugin.id)
+        this.registerRoutes((plugin as HybridPlugin).routes || [], (plugin as HybridPlugin).routePrefix, plugin.id)
       }
 
       this.pluginStates.set(plugin.id, 'active')
@@ -94,7 +115,8 @@ class PluginRegistryImpl implements IPluginRegistry {
     }
   }
 
-  private registerServices(services: Record<string, unknown>, pluginId: string): void {
+  private registerServices(services: Record<string, unknown> | undefined, pluginId: string): void {
+    if (!services) return
     const outputs: PluginOutputs = { services: [] }
 
     for (const [name, service] of Object.entries(services)) {
@@ -111,6 +133,39 @@ class PluginRegistryImpl implements IPluginRegistry {
     }
 
     this.pluginOutputs.set(pluginId, outputs)
+  }
+
+  private registerComponents(components: Record<string, ComponentType> | undefined, pluginId: string): void {
+    if (!components) return
+    
+    for (const [name, component] of Object.entries(components)) {
+      if (this.components.has(name)) {
+        console.warn(`[PluginRegistry] Component "${name}" is being overwritten`)
+      }
+      this.components.set(name, component)
+      
+      if (!this.componentOwnership.components.has(name)) {
+        this.componentOwnership.components.set(name, new Set())
+      }
+      this.componentOwnership.components.get(name)!.add(pluginId)
+    }
+  }
+
+  private registerRoutes(routes: RouteRegistration[] | undefined, routePrefix: string | undefined, pluginId: string): void {
+    if (!routes) return
+    const formattedRoutes = routes.map(route => {
+      let path = route.path
+      if (routePrefix) {
+        const cleanPrefix = routePrefix.endsWith('/') ? routePrefix.slice(0, -1) : routePrefix
+        const cleanPath = path.startsWith('/') ? path : '/' + path
+        path = cleanPrefix + cleanPath
+      }
+      return {
+        ...route,
+        path
+      }
+    })
+    this.routes.set(pluginId, formattedRoutes)
   }
 
   /**
@@ -150,24 +205,39 @@ class PluginRegistryImpl implements IPluginRegistry {
 
   private cleanupPluginOutputs(plugin: CAPPlugin): void {
     const outputs = this.pluginOutputs.get(plugin.id)
-    if (!outputs) {
-      return
+    if (outputs) {
+      for (const name of outputs.services) {
+        const owners = this.serviceOwnership.services.get(name)
+        if (owners) {
+          owners.delete(plugin.id)
+          if (owners.size === 0) {
+            this.services.delete(name)
+            this.serviceOwnership.services.delete(name)
+          }
+        } else {
+          this.services.delete(name)
+        }
+      }
+      this.pluginOutputs.delete(plugin.id)
     }
 
-    for (const name of outputs.services) {
-      const owners = this.serviceOwnership.services.get(name)
-      if (owners) {
+    // Cleanup components
+    const componentsToRemove: string[] = []
+    for (const [name, owners] of this.componentOwnership.components.entries()) {
+      if (owners.has(plugin.id)) {
         owners.delete(plugin.id)
         if (owners.size === 0) {
-          this.services.delete(name)
-          this.serviceOwnership.services.delete(name)
+          componentsToRemove.push(name)
         }
-      } else {
-        this.services.delete(name)
       }
     }
+    for (const name of componentsToRemove) {
+      this.components.delete(name)
+      this.componentOwnership.components.delete(name)
+    }
 
-    this.pluginOutputs.delete(plugin.id)
+    // Cleanup routes
+    this.routes.delete(plugin.id)
   }
 
   getPlugin<T extends CAPPlugin = CAPPlugin>(id: string): T | undefined {
@@ -204,18 +274,43 @@ class PluginRegistryImpl implements IPluginRegistry {
     return this.services.get(name) as T | undefined
   }
 
+  getComponents(): Record<string, ComponentType> {
+    return Object.fromEntries(this.components.entries())
+  }
+
+  getComponent<T = ComponentType>(name: string): T | undefined {
+    return this.components.get(name) as T | undefined
+  }
+
+  registerComponent(name: string, component: ComponentType): void {
+    if (this.components.has(name)) {
+      console.warn(`[PluginRegistry] Component ${name} is already registered. Overwriting.`)
+    }
+    this.components.set(name, component)
+  }
+
+
+  getRoutes(): RouteRegistration[] {
+    return Array.from(this.routes.values()).flat()
+  }
+
   clear(): void {
     this.plugins.clear()
     this.pluginStates.clear()
     this.pluginOutputs.clear()
     this.services.clear()
+    this.components.clear()
+    this.routes.clear()
     this.serviceOwnership.services.clear()
+    this.componentOwnership.components.clear()
   }
 
   getStats(): {
     totalPlugins: number
     activePlugins: number
     services: number
+    components: number
+    routes: number
   } {
     let activePlugins = 0
     for (const state of this.pluginStates.values()) {
@@ -225,11 +320,21 @@ class PluginRegistryImpl implements IPluginRegistry {
     return {
       totalPlugins: this.plugins.size,
       activePlugins,
-      services: this.services.size
+      services: this.services.size,
+      components: this.components.size,
+      routes: this.getRoutes().length
     }
   }
 }
 
+/**
+ * globalPluginRegistry acts as the generic, application-wide plugin registry.
+ * It manages the lifecycle, installation, and uninstallation of Service, Component,
+ * Route, and Hybrid plugins across the application.
+ *
+ * This differs from `authRegistry`, which is specialized for authentication-specific
+ * plugins and gates active plugins based on the active tenant configuration.
+ */
 export const globalPluginRegistry = new PluginRegistryImpl()
 
 export const createPluginRegistry = (): PluginRegistryImpl => {
@@ -238,3 +343,9 @@ export const createPluginRegistry = (): PluginRegistryImpl => {
 
 export const isServicePlugin = (plugin: CAPPlugin): plugin is ServicePlugin => 
   plugin.pluginType === 'service'
+
+export const isComponentPlugin = (plugin: CAPPlugin): plugin is ComponentPlugin => 
+  plugin.pluginType === 'component'
+
+export const isRoutePlugin = (plugin: CAPPlugin): plugin is RoutePlugin => 
+  plugin.pluginType === 'route'

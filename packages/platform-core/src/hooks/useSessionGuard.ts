@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAuth } from './useAuth'
-import { useHasHydrated } from '../store'
+import { useHasHydrated } from '@cap/platform-store'
 
 export const useSessionGuard = () => {
   const hasHydrated = useHasHydrated()

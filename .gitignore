@@ -25,3 +25,8 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# TS Build Info & Debug Text/Logs
+*.tsbuildinfo
+*.txt
+*.log

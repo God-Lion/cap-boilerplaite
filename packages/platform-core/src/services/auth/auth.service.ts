@@ -23,6 +23,7 @@ export const authService = {
       throw new Error('No access token received')
     }
 
+    // TODO: Migrate sensitive token storage (like refresh tokens) to HttpOnly cookies for enhanced security
     // Store tokens
     secureTokenManager.setTokens({
       accessToken,

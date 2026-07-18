@@ -1,8 +1,9 @@
-import { useAppStore } from '../store'
+import { useAppStore } from '@cap/platform-store'
 import { hasAdminRole, normalizeRole, Roles } from '../types/app-types'
 
 export const usePermissions = () => {
-  const { user, isAuthenticated } = useAppStore()
+  const user = useAppStore((state) => state.user)
+  const isAuthenticated = useAppStore((state) => state.isAuthenticated)
 
   /**
    * Check if the currently authenticated user has ALL of the specified roles

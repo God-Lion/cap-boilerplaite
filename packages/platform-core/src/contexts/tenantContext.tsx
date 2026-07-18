@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import TenantService from '../services/tenantService'
 import { themeService } from '../services/theme/theme.service'
-import { useSettings } from '../store'
-import type { TenantConfig, UserPreferences, TenantContextValue, TenantThemeBase } from '../types/tenant'
+import { useSettings } from '@cap/platform-store'
+import type { TenantConfig, UserPreferences, TenantContextValue, TenantThemeBase, TenantModule } from '../types/tenant'
 import { DEFAULT_THEME_CONFIG } from '@cap/theme'
 import type { TenantThemeConfig } from '@cap/theme'
 import { normalizeTenantConfig } from '../types/tenant'
@@ -176,6 +176,22 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
     await refetchTenant()
   }, [refetchTenant])
 
+  const saveModules = useCallback(async (modulesToSave: TenantModule[]) => {
+    setTenant(prev => {
+      if (!prev) return null
+      const updated = { ...prev, modules: modulesToSave }
+      const hostname = typeof window !== 'undefined' ? window.location.hostname : 'localhost'
+      TenantService.setCache(hostname, updated)
+      return updated
+    })
+  }, [])
+
+  const isModuleEnabled = useCallback((moduleId: string) => {
+    if (!tenant?.modules) return true
+    const mod = tenant.modules.find(m => m.id === moduleId)
+    return mod ? mod.status === 'enabled' : true
+  }, [tenant])
+
   const value = useMemo<TenantContextValue>(() => ({
     tenant,
     theme: tenant?.theme || null,
@@ -189,7 +205,9 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
     refetchTheme,
     updateTheme,
     saveTheme,
-  }), [tenant, isLoading, error, isLoadingTheme, errorTheme, userPreferences, updateUserPreferences, refetchTenant, refetchTheme, updateTheme, saveTheme])
+    saveModules,
+    isModuleEnabled,
+  }), [tenant, isLoading, error, isLoadingTheme, errorTheme, userPreferences, updateUserPreferences, refetchTenant, refetchTheme, updateTheme, saveTheme, saveModules, isModuleEnabled])
 
   return <TenantContext.Provider value={value}>{children}</TenantContext.Provider>
 }

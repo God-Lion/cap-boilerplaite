@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@cap/api-contracts": "workspace:*",
-    "@cap/platform-api": "workspace:*",
     "@cap/platform-core": "workspace:*",
     "@cap/shared-types": "workspace:*"
   },

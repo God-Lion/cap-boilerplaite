@@ -25,7 +25,6 @@ export * from './hooks/useNetworkSync'
 export * from './hooks/useAuth'
 export * from './hooks/useNavigation'
 export * from './hooks/useSessionGuard'
-export * from './guards'
 export * from './components/guards'
 
 

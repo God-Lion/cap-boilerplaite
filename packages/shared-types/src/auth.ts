@@ -244,7 +244,7 @@ export const normalizeRole = (role: unknown): Roles | undefined => {
   return undefined
 }
 
-export const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE]
+export const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMIN, Roles.SUPERADMINEMPLOYEE, Roles.PROVIDERADMIN]
 
 export const hasAdminRole = (role: unknown): boolean => {
   const normalized = normalizeRole(role)

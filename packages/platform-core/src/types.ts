@@ -12,7 +12,6 @@ export type * from '@cap/shared-types'
 // Export all types specific to platform-core
 export * from './types/index'
 export * from './services/tenantService'
-export * from './guards/index'
 export * from './hooks/usePermissions'
 export * from './contexts/tenantContext'
 export * from './registry/PluginRegistry'

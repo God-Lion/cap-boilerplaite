@@ -1,7 +1,11 @@
 /**
  * Secure Encryption Utility using Web Crypto API (Standard 2025)
  *
- * This provides real cryptographic security for sensitive data.
+ * NOTE: The current AES-GCM implementation for `localStorage` acts as obfuscation rather
+ * than a strict security boundary. Since the Vite master key (VITE_STORAGE_ENCRYPTION_KEY)
+ * is compiled and shipped in the client bundle, any client-side decryption key can be
+ * recovered by an attacker. Real security boundaries must be enforced on the backend.
+ *
  * No Base64, atob, or btoa is used to avoid encoding/security pitfalls.
  * Strictly uses Hex encoding for string representation.
  */

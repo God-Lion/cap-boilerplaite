@@ -93,6 +93,21 @@ export interface TenantFeatures {
   rtl: boolean
   notifications: boolean
   chat: boolean
+  enabledAuthPlugins?: string[]
+}
+
+// ============================================
+// Tenant Module Access Control
+// ============================================
+
+export type TenantModuleStatus = 'enabled' | 'disabled'
+
+export interface TenantModule {
+  /** Must match the CAPModule id used in assembleApp() */
+  id: string
+  status: TenantModuleStatus
+  /** Optional override label shown in admin UI */
+  label?: string
 }
 
 // ============================================
@@ -111,6 +126,8 @@ export interface TenantConfigV1 {
   layout: TenantLayout
   branding: TenantBranding
   features: TenantFeatures
+  /** Per-tenant module access control. Absent = all modules allowed. */
+  modules?: TenantModule[]
   version: number
 }
 
@@ -141,6 +158,10 @@ export interface TenantContextValue {
   refetchTheme: () => Promise<void>
   updateTheme: (updates: Partial<TenantThemeBase>) => Promise<void>
   saveTheme: (theme: TenantThemeBase) => Promise<void>
+  /** Replace the full module list and persist to the backend. */
+  saveModules: (modules: TenantModule[]) => Promise<void>
+  /** Returns true when a module is enabled for this tenant (default: true if no list). */
+  isModuleEnabled: (moduleId: string) => boolean
 }
 
 // ============================================
