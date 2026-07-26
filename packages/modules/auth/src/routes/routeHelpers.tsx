@@ -36,39 +36,6 @@ export const createAuthRoute = (
   ),
 })
 
-// ---------------------------------------------------------------------------
-// Layout override wrapper
-// ---------------------------------------------------------------------------
-// Wraps a route element and syncs the layoutOverride Zustand slice based on
-// the layout value declared in AuthRouteConfig.
-//
-// Admin routes do NOT need to set layoutOverride here — AdminRoute.tsx handles
-// that directly (it calls updateLayoutOverride('admin') in a useEffect).
-// This wrapper only needs to handle the two remaining non-default cases:
-//   'noLayout' — suppress all chrome (used for error pages, maintenance, etc.)
-//   anything else (undefined / 'vertical' / 'horizontal') — leave override as-is
+// Re-export LayoutRouteWrapper from layout package
+export { LayoutRouteWrapper } from '@cap/layout'
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const LayoutRouteWrapper = ({
-  element,
-  layout,
-}: {
-  element: React.ReactNode
-  layout?: AuthRouteConfig['layout']
-}) => {
-  const updateLayoutOverride = useAppStore((state) => state.updateLayoutOverride)
-
-  React.useEffect(() => {
-    if (layout === 'noLayout') {
-      updateLayoutOverride('noLayout')
-      return () => updateLayoutOverride('none')
-    }
-    // 'admin' override is set by AdminRoute itself — no action needed here
-  }, [layout, updateLayoutOverride])
-
-  return (
-    <div className='premium-auth-container' style={{ display: 'contents' }}>
-      {element}
-    </div>
-  )
-}

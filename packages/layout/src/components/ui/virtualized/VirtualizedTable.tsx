@@ -225,7 +225,12 @@ export default function VirtualizedTable<T>({
                       {virtualRows.map((virtualRow) => {
                         const row = rows[virtualRow.index]
                         return (
-                          <TableRow hover key={row.id}>
+                          <TableRow
+                            hover
+                            key={row.id}
+                            data-index={virtualRow.index}
+                            ref={rowVirtualizer.measureElement}
+                          >
                             {row.getVisibleCells().map((cell) => {
                               return (
                                 <TableCell

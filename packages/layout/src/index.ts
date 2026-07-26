@@ -3,6 +3,9 @@ export { default as HorizontalLayout } from './HorizontalLayout'
 export { default as PublicLayout } from './PublicLayout'
 export { default as BlankLayout } from './BlankLayout'
 export { default as LayoutWrapper } from './LayoutWrapper'
+export { default as LayoutRouteWrapper } from './components/wrappers/LayoutRouteWrapper'
+export * from './components/wrappers/LayoutRouteWrapper'
+
 
 // Components
 export { default as VerticalNavigation } from './components/vertical/Navigation'

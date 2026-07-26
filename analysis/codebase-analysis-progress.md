@@ -1,40 +1,38 @@
-# Codebase Analysis Progress
+# Codebase Analysis & Maintenance Log
 
-## Project
+## Project Summary
 - **Root:** `C:\Node.Js\proj\boilerplate`
-- **Name:** `cap-monorepo` (`@cap/*` packages) — civil/digital-identity platform boilerplate (Landing + Auth modules active; Admin/User/CivilRegistry/DigitalId/KYC/MonitoringAlerts/BlockchainIdaas modules referenced but not present/active)
-- **Tools used:** Filesystem MCP (user's machine) — read + write access confirmed, restricted to `C:\Node.Js\proj`.
+- **Name:** `cap-monorepo` (`@cap/*` packages) — multi-tenant civil/digital-identity platform boilerplate.
 
-## Methodology
-3-phase process, technical-only scope (no business/cost/timeline recommendations). `.env` files (root and `app/`) noted but not opened — ask before reading if a future phase needs them.
+---
 
-## Phase 1 — Discovery & Architecture: COMPLETE
-See `project-overview.md`, `architecture-analysis.md`.
+## Architecture & Maintenance Updates (Recent Milestones)
 
-## Phase 2 — Component Analysis: COMPLETE
-Deliverables written to `analysis/`:
-- `component-deep-dives/module-assembly.md` — `assembleApp()` implementation detail: mutable module-level registries, i18n last-write-wins vs. route/search first-write-wins precedence, dropped `layout` field, `null` catch-all route
-- `component-deep-dives/auth-module.md` — full sub-module map (9 feature areas under `modules/`), the two parallel route-composition exports (`authRouteConfig` vs `authRoutes`), the three layout-tagging mechanisms and their reliability, MFA plugin/registry pattern, session-guard middleware behavior
-- `component-deep-dives/theme-layout.md` — `@cap/theme` token/preset system (tenant-driven, glassmorphism as a first-class effect), `@cap/layout`'s `LayoutWrapper` selector logic and hydration-flicker handling
-- `component-deep-dives/domain-kernel-idaas.md` — `EventBus` wildcard subscriptions, dynamic concurrent execution, abstract service port contracts (`ports/`), `IdaasFacadeImpl` service mapping, and discoveries (unwired/inert client-side event bus, and Shared Signals and Events / SSF configurations).
-- `component-deep-dives/react-table-virtualization.md` — `@tanstack/react-table` integration with `@tanstack/react-virtual`'s `useVirtualizer`, HTML-safe spacer row strategy (padding top/bottom table cells) vs absolute positioning/translation in lists/grids, dynamic row sizing (`measureElement`), and column-slicing CSS grid rendering for tiles.
-- `component-deep-dives/state-session-hooks.md` — custom hook review for client state/cache synchronization (`useAuthQuery.ts`), user role normalization and numeric type coercion, secure logout clearing flow, and comparison of the two different `useSSE.ts` implementations (auth module's exponential backoff and ref safeguards vs platform-core's static reconnect and auto-close scrapers).
-- `technical-issues.md` — consolidated findings, most notably a **confirmed routing/layout bug**: `assembleApp` never reads `module.routes` (only `module.authRouteConfig`), so `AuthModule`'s `routes: authRoutes` (built around `LayoutRouteWrapper`, which applies `layout: 'noLayout'`) is orphaned. Concrete effect: sign-in/sign-up/verification screens that rely on bare `<GuestRoute>`/plain elements + a config-level `layout: 'noLayout'` tag render inside the public site header/footer chrome instead of chrome-free, because nothing calls `updateLayoutOverride('noLayout')` for them. Routes built via `createAuthRoute`/`createAdminRoute` are unaffected (those wrapper components self-apply layout).
+### 1. Dedicated Not Found (404) Route
+- **File:** `packages/platform-core/src/assembly/index.tsx`
+- **Details:** Mapped wildcard route (`*`) in `assembleApp()` to a dedicated `<NotFound />` component in `@cap/platform-core` wrapped in `<LayoutRouteWrapper element={<NotFound />} />`. Avoids blank null screens on unmatched URLs.
 
-Also carried forward and re-confirmed: workspace/dependency drift (`packages/platform-api` and 7 `@cap/module-*` deps referenced but absent on disk).
+### 2. Isolated i18n Resource Bundles
+- **File:** `packages/platform-core/src/assembly/index.tsx`
+- **Details:** Updated `assembleApp()` to register module `i18n` bundles strictly by module namespace (`moduleNs = module.id || module.name || 'common'`). Eliminates key collision risk across modules.
 
-## Phase 3 — Documentation & Recommendations: COMPLETE
-Deliverables written to `analysis/`:
-- `comprehensive-codebase-guide.md` — full system doc detailing Monorepo package topology, the compile-time `assembleApp` orchestration system, hexagonal auth domain structures, multi-tenancy contexts, and real-time Server-Sent Events (SSE).
-- `developer-onboarding-guide.md` — developer setup instructions, pnpm commands, and step-by-step conventions for module development, i18n registration, route decorator factories, linting, and QA testing.
-- `technical-recommendations.md` — prioritized roadmap detailing the route layout tagging bug and solutions, i18n key collisions namespace mitigations, monorepo dependency/workspace pruning, themed 404 pages, and dynamic table virtualization measurements.
+### 3. Route Layout Association Fix
+- **File:** `packages/platform-core/src/assembly/index.tsx`, `packages/layout/src/components/wrappers/LayoutRouteWrapper.tsx`
+- **Details:** Moved `LayoutRouteWrapper` to `@cap/layout` and updated `assembleApp()` to wrap every route in `<LayoutRouteWrapper element={element} layout={layout} />`. Preserves layout metadata (`noLayout`, `admin`, `public`) across all route configs.
 
-## Not Yet Investigated (any phase)
-- `platform-store` slices beyond `settingsSlice` (auth, navigation, network, notifications, offlineQueue, profile, guest, preferences/)
-- `packages/modules/document-processing` — not opened at all
-- `packages/api-contracts`, `packages/auth-contracts`, `packages/shared-types`, `packages/platform-ui` — not opened at all
-- `.env` files (root, `app/`) — intentionally not opened; ask user first
+### 4. Activated DDD Event Bus
+- **Files:** `packages/modules/auth/src/modules/authentication-core/services/auth.service.ts`
+- **Details:** Injected `eventBus.publish()` calls across key authentication lifecycle hooks (`UserAuthenticated`, `SessionCreated`, `TokenIssued`, `SessionRevoked`, `TokenRefreshed`, `AuthenticationFailed`), ensuring domain events publish on state changes.
 
-## How to Resume
-Start a new chat with:
-> "Continue codebase analysis - please read `analysis/codebase-analysis-progress.md` in C:\Node.Js\proj\boilerplate (via Filesystem MCP) to understand where we left off, then proceed with Phase 3."
+### 5. Dynamic Table Virtualization Measurements
+- **Files:** `packages/layout/src/components/ui/virtualized/VirtualizedTable.tsx`
+- **Details:** Bound `measureElement` ref to `TableRow` elements to accurately calculate dynamic row heights in TanStack Virtualizer, resolving table height jumps.
+
+---
+
+## Documentation Artifacts
+- `analysis/project-overview.md` — system overview
+- `analysis/architecture-analysis.md` — platform architecture breakdown
+- `analysis/technical-issues.md` — tracked technical issues and resolution log
+- `analysis/component-deep-dives/` — detailed component analysis for assembly, auth, theme, domain kernel, virtualization, and session state
+- `packages/platform-core/src/assembly/README.md` — assembly module API and architecture guide

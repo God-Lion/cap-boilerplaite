@@ -4,5 +4,7 @@ export * from './components'
 export * from './screens'
 export { default as AuthorizationEnginePath } from './screens/path'
 export * from './services/adminService'
+export * from './src/services/rbac.subscriber'
+
 
 

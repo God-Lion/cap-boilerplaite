@@ -12,7 +12,17 @@ import {
   SecurityLogParams,
 } from "../types/api.types"
 import { ENDPOINTS } from "./endpoints"
-import TenantService from "@cap/platform-core/services/tenantService"
+import { TenantService } from "@cap/platform-core"
+
+import { eventBus } from '../../../domain-kernel/src/events/event-bus'
+import {
+  createUserAuthenticatedEvent,
+  createAuthenticationFailedEvent,
+  createSessionCreatedEvent,
+  createSessionRevokedEvent,
+  createTokenIssuedEvent,
+  createTokenRefreshedEvent,
+} from '../../../domain-kernel/src/events/event-factory'
 
 const authService = {
   /**
@@ -30,20 +40,112 @@ const authService = {
       )
     }
   },
-  signup: (body: ISignup): Promise<FetchResponse> => {
-    return apiClient.post(ENDPOINTS.auth.signup, body)
+  signup: async (body: ISignup): Promise<FetchResponse> => {
+    const response = await apiClient.post(ENDPOINTS.auth.signup, body)
+    const data: any = response?.data
+    if (data?.user || data?.userId) {
+      const userId = String(data?.user?.id || data?.userId || 'unknown')
+      const sessionId = String(data?.session?.id || data?.sessionId || 'default-session')
+      await eventBus.publish(
+        createUserAuthenticatedEvent({
+          userId,
+          email: body.email || data?.user?.email || '',
+          factors: ['password'],
+          method: 'password',
+          sessionId,
+        })
+      )
+      await eventBus.publish(
+        createSessionCreatedEvent({
+          sessionId,
+          userId,
+          createdAt: new Date().toISOString(),
+          expiresAt: data?.session?.expiresAt || new Date(Date.now() + 86400000).toISOString(),
+        })
+      )
+    }
+    return response
   },
 
-  signin: (body: ILogin): Promise<FetchResponse> => {
-    return apiClient.post(ENDPOINTS.auth.login, body)
+  signin: async (body: ILogin): Promise<FetchResponse> => {
+    try {
+      const response = await apiClient.post(ENDPOINTS.auth.login, body)
+      const data: any = response?.data
+      if (data) {
+        const userId = String(data?.user?.id || data?.user?.userId || data?.userId || 'unknown')
+        const sessionId = String(data?.session?.id || data?.sessionId || 'default-session')
+        const email = body.email || data?.user?.email || ''
+
+        await eventBus.publish(
+          createUserAuthenticatedEvent({
+            userId,
+            email,
+            factors: ['password'],
+            method: 'password',
+            sessionId,
+          })
+        )
+
+        await eventBus.publish(
+          createSessionCreatedEvent({
+            sessionId,
+            userId,
+            createdAt: new Date().toISOString(),
+            expiresAt: data?.session?.expiresAt || new Date(Date.now() + 86400000).toISOString(),
+          })
+        )
+
+        if (data?.token || data?.tokens?.accessToken) {
+          await eventBus.publish(
+            createTokenIssuedEvent({
+              tokenId: data?.tokenId || data?.tokens?.accessToken?.id || 'access-token',
+              userId,
+              tokenType: 'access',
+              expiresAt: data?.expiresAt || new Date(Date.now() + 3600000).toISOString(),
+              scopes: data?.scopes || ['read', 'write'],
+            })
+          )
+        }
+      }
+      return response
+    } catch (error) {
+      await eventBus.publish(
+        createAuthenticationFailedEvent({
+          email: body.email,
+          reason: 'invalid_credentials',
+        })
+      )
+      throw error
+    }
   },
 
-  signout: (): Promise<FetchResponse> => {
-    return apiClient.post(ENDPOINTS.auth.logout)
+  signout: async (): Promise<FetchResponse> => {
+    const response = await apiClient.post(ENDPOINTS.auth.logout)
+    await eventBus.publish(
+      createSessionRevokedEvent({
+        sessionId: 'current-session',
+        userId: 'current-user',
+        reason: 'user_logout',
+        revokedAt: new Date().toISOString(),
+      })
+    )
+    return response
   },
 
-  refreshToken: (): Promise<FetchResponse> => {
-    return apiClient.post(ENDPOINTS.auth.refresh)
+  refreshToken: async (): Promise<FetchResponse> => {
+    const response = await apiClient.post(ENDPOINTS.auth.refresh)
+    const data: any = response?.data
+    if (data) {
+      await eventBus.publish(
+        createTokenRefreshedEvent({
+          oldTokenId: data?.oldTokenId || 'old-token',
+          newTokenId: data?.token || data?.newTokenId || 'new-token',
+          userId: String(data?.user?.id || data?.userId || 'current-user'),
+          refreshedAt: new Date().toISOString(),
+        })
+      )
+    }
+    return response
   },
 
   forgotPassword: (body: IForgetPassword): Promise<FetchResponse> => {
@@ -95,17 +197,43 @@ const authService = {
     return apiClient.get(ENDPOINTS.auth.sessions)
   },
 
-  revokeSession: (sessionId: string): Promise<FetchResponse> => {
-    return apiClient.delete(ENDPOINTS.auth.revokeSession(sessionId))
+  revokeSession: async (sessionId: string): Promise<FetchResponse> => {
+    const response = await apiClient.delete(ENDPOINTS.auth.revokeSession(sessionId))
+    await eventBus.publish(
+      createSessionRevokedEvent({
+        sessionId,
+        userId: 'current-user',
+        reason: 'admin_revoked',
+        revokedAt: new Date().toISOString(),
+      })
+    )
+    return response
   },
 
-  revokeAllSessions: (): Promise<FetchResponse> => {
-    return apiClient.post(ENDPOINTS.auth.revokeAllSessions)
+  revokeAllSessions: async (): Promise<FetchResponse> => {
+    const response = await apiClient.post(ENDPOINTS.auth.revokeAllSessions)
+    await eventBus.publish(
+      createSessionRevokedEvent({
+        sessionId: 'all-sessions',
+        userId: 'current-user',
+        reason: 'user_logout',
+        revokedAt: new Date().toISOString(),
+      })
+    )
+    return response
   },
 
-  trackFailedLogin: (body: { email: string }): Promise<FetchResponse> => {
-    return apiClient.post(ENDPOINTS.auth.trackFailedLogin, body)
+  trackFailedLogin: async (body: { email: string }): Promise<FetchResponse> => {
+    const response = await apiClient.post(ENDPOINTS.auth.trackFailedLogin, body)
+    await eventBus.publish(
+      createAuthenticationFailedEvent({
+        email: body.email,
+        reason: 'invalid_credentials',
+      })
+    )
+    return response
   },
+
 
   // ========================================================================
   // Login History & Security Logs

@@ -24,6 +24,6 @@ export * from './types/tenant'
 export * from './hooks/useNetworkSync'
 export * from './hooks/useAuth'
 export * from './hooks/useNavigation'
-
+export * from './components'
 
 export * from './registry/PluginRegistry'

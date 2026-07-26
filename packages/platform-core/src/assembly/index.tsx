@@ -3,6 +3,9 @@ import { Routes, Route } from 'react-router-dom'
 import i18next from 'i18next'
 import { CAPModule, SearchItemConfig } from '../types'
 import { useAppStore } from '@cap/platform-store'
+import { LayoutRouteWrapper } from '@cap/layout'
+import { NotFound } from '../components/NotFound'
+
 
 interface AssembleAppProps {
   modules: Array<CAPModule>
@@ -47,12 +50,27 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   useAppStore.getState().clearNavigation()
   const seenSearchIds = new Set<string>()
 
-  // Register module i18n resources
+  // Register module i18n resources isolated strictly by module name/id
+  const addModuleResourceBundle = (lang: string, ns: string, resources: any) => {
+    const target =
+      typeof i18next?.addResourceBundle === 'function'
+        ? i18next
+        : typeof (i18next as any)?.default?.addResourceBundle === 'function'
+          ? (i18next as any).default
+          : typeof (i18next as any)?.default?.default?.addResourceBundle === 'function'
+            ? (i18next as any).default.default
+            : i18next
+
+    if (typeof target?.addResourceBundle === 'function') {
+      target.addResourceBundle(lang.toLowerCase(), ns, resources, true, true)
+    }
+  }
+
   modules.forEach((module) => {
+    const moduleNs = module.id || (module as any).name || 'common'
     if (module.i18n) {
       Object.entries(module.i18n).forEach(([lang, resources]) => {
-        i18next.addResourceBundle(lang.toLowerCase(), 'translation', resources, true, true)
-        i18next.addResourceBundle(lang.toLowerCase(), 'common', resources, true, true)
+        addModuleResourceBundle(lang, moduleNs, resources)
       })
     }
 
@@ -89,13 +107,18 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   const App = () => {
     return (
       <Routes>
-        {allRouteConfigs.map(({ path, element }) => (
-          <Route key={path} path={path} element={element} />
+        {allRouteConfigs.map(({ path, element, layout }) => (
+          <Route
+            key={path}
+            path={path}
+            element={<LayoutRouteWrapper element={element} layout={layout} />}
+          />
         ))}
-        <Route path='*' element={null} />
+        <Route path='*' element={<LayoutRouteWrapper element={<NotFound />} />} />
       </Routes>
     )
   }
+
 
   return App
 }

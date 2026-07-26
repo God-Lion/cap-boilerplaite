@@ -56,3 +56,5 @@ export class RbacSubscriber {
 }
 
 export const rbacSubscriber = new RbacSubscriber()
+rbacSubscriber.subscribe()
+

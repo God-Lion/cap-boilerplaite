@@ -40,26 +40,18 @@ if (!i18next.isInitialized) {
     ar: { common: { ...common_ar } },
   }
 
-  // Dynamically merge i18n from all registered modules
+  // Dynamically merge i18n from all registered modules isolated by module name/id
   const modules = getModules()
 
   modules.forEach((module: any) => {
+    const moduleNs = module.id || module.name || 'common'
     if (module.i18n) {
-      Object.entries(module.i18n).forEach(([lang, namespaces]: [string, any]) => {
+      Object.entries(module.i18n).forEach(([lang, resources]: [string, any]) => {
         if (initialResources[lang]) {
-          Object.entries(namespaces).forEach(([ns, data]: [string, any]) => {
-            // 1. Keep in its own namespace
-            initialResources[lang][ns] = {
-              ...(initialResources[lang][ns] || {}),
-              ...data
-            }
-
-            // 2. Flatten into 'common' so keys work globally (e.g. t('auth.login'))
-            initialResources[lang].common = {
-              ...initialResources[lang].common,
-              ...data
-            }
-          })
+          initialResources[lang][moduleNs] = {
+            ...(initialResources[lang][moduleNs] || {}),
+            ...resources
+          }
         }
       })
     }
@@ -154,7 +146,7 @@ const TenantAwareDesignSystemProvider: React.FC<
 
   return (
     <DesignSystemProvider
-      theme={theme}
+      theme={theme as any}
       isLoading={isLoadingTheme}
       error={errorTheme}
       refetch={refetchTheme}

@@ -9,7 +9,8 @@ import React from 'react'
 import { Route, RoutesProps } from 'react-router-dom'
 import { AuthRouteConfig } from '@cap/platform-core'
 import AuthLoadingScreen from '../modules/authentication-core/components/shared/AuthLoadingScreen'
-import { LayoutRouteWrapper } from './routeHelpers'
+import { LayoutRouteWrapper } from '@cap/layout'
+
 
 import { authCoreRouteConfig }             from '../modules/authentication-core/routes/routes'
 import { authorizationEngineRouteConfig }  from '../modules/authorization-engine/routes/routes'
