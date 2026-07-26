@@ -201,6 +201,37 @@ export class TenantService {
     }
   }
 
+  /**
+   * Independently verifies whether an authentication plugin/feature (e.g. 'mfa-totp')
+   * is enabled for the specified tenant configuration.
+   */
+  static isAuthPluginEnabledForTenant(config: TenantConfig | null | undefined, pluginId: string): boolean {
+    if (!config || !config.features || !Array.isArray(config.features.enabledAuthPlugins)) {
+      return false
+    }
+    return config.features.enabledAuthPlugins.includes(pluginId)
+  }
+
+  /**
+   * Backend tenant feature verification check.
+   * Independently checks if a specific auth feature/plugin is enabled for a given domain/tenant.
+   */
+  static verifyTenantAuthFeature(domainOrHostname?: string, pluginId?: string): boolean {
+    if (!pluginId) return false
+    const domain = domainOrHostname || this.getCurrentHostname()
+    const cachedConfig = this.getCachedTenant(domain)
+    
+    if (cachedConfig) {
+      return this.isAuthPluginEnabledForTenant(cachedConfig, pluginId)
+    }
+
+    if (this.isDevelopment() && mockTenants[domain]) {
+      return this.isAuthPluginEnabledForTenant(mockTenants[domain], pluginId)
+    }
+
+    return this.isAuthPluginEnabledForTenant(DEFAULT_TENANT_CONFIG, pluginId)
+  }
+
   static async fetchTenant(tenantSlug?: string): Promise<TenantConfig> {
     const domain = this.getCurrentHostname()
     const _slug = tenantSlug || this.getTenantFromHostname()

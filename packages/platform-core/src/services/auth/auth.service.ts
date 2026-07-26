@@ -23,8 +23,7 @@ export const authService = {
       throw new Error('No access token received')
     }
 
-    // TODO: Migrate sensitive token storage (like refresh tokens) to HttpOnly cookies for enhanced security
-    // Store tokens
+    // Access token stored in memory; refresh token is handled automatically via HttpOnly cookie
     secureTokenManager.setTokens({
       accessToken,
       expiresAt: Date.now() + (Number(expiresIn) || 3600) * 1000,

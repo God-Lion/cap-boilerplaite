@@ -300,17 +300,21 @@ class StorageManager {
   }
 
   /**
-   * Real AES-GCM Encryption using Web Crypto API
+   * AES-GCM Encryption using Web Crypto API.
+   *
+   * SECURITY WARNING: Encrypting localStorage data with VITE_STORAGE_ENCRYPTION_KEY acts as data
+   * obfuscation for client-side persistence, NOT a true cryptographic security boundary, because
+   * build-time environment variables are embedded directly into client JavaScript bundles.
+   * Sensitive secrets and refresh tokens MUST be managed via backend-enforced HttpOnly cookies.
    */
   private static async encryptData(data: string): Promise<string> {
-    // In a real application, this should be a stable key derived from a user secret or environment
     const masterKey =
       (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'cap-platform-default-secure-key'
     return encryption.encryptData(data, masterKey)
   }
 
   /**
-   * Real AES-GCM Decryption using Web Crypto API
+   * AES-GCM Decryption using Web Crypto API
    */
   private static async decryptData(data: string): Promise<string> {
     const masterKey =
@@ -319,7 +323,6 @@ class StorageManager {
       return await encryption.decryptData(data, masterKey)
     } catch (error) {
       console.error('Decryption failed, data might be legacy Base64 or corrupted')
-      // Fallback to legacy atob for migration period if needed, or just fail
       throw error
     }
   }
@@ -376,7 +379,8 @@ export default StorageManager
 // Storage keys
 export const STORAGE_KEYS = {
   AUTH_TOKEN: 'cap-platform-auth-tokens',
-  REFRESH_TOKEN: 'refresh_token',
+  /** @deprecated Refresh tokens are handled via HttpOnly cookies and MUST NOT be stored in localStorage */
+  REFRESH_TOKEN: undefined,
   USER_DATA: 'user_data',
   USER_PREFERENCES: 'user_preferences',
   SAVED_JOBS: 'saved_jobs',

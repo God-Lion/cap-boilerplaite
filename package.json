@@ -6,7 +6,6 @@
     "app",
     "packages/api-contracts",
     "packages/layout",
-    "packages/platform-api",
     "packages/platform-core",
     "packages/platform-store",
     "packages/platform-ui",

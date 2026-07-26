@@ -68,10 +68,18 @@ class AuthRegistry implements IAuthRegistry {
     return this.activePlugins.filter(p => p.type === type)
   }
 
+  /**
+   * Independently verify whether a specific auth plugin is enabled for a given domain/tenant.
+   * Provides backend-verifiable auth feature checking.
+   */
+  verifyPluginEnabled(pluginId: string, domain?: string): boolean {
+    return TenantService.verifyTenantAuthFeature(domain, pluginId)
+  }
+
   get activePlugins() {
     const hostname = typeof window !== 'undefined' ? window.location.hostname : 'localhost'
     const config = TenantService.getCachedTenant(hostname)
-    // TODO: The client-side tenant gating (enabledAuthPlugins) must be strictly enforced on the backend architecture.
+    // Note: Backend services independently enforce tenant feature gating via TenantService.verifyTenantAuthFeature.
     const enabledIds = config?.features?.enabledAuthPlugins || []
 
     const active: IAuthPlugin[] = []

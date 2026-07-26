@@ -4,7 +4,7 @@ import importPlugin from 'eslint-plugin-import'
 const Layers = {
   FOUNDATION: ['@cap/shared-types', '@cap/api-contracts'],
   LAYER_1: ['@cap/auth-contracts', '@cap/theme'],
-  LAYER_2: ['@cap/platform-store', '@cap/platform-ui', '@cap/platform-api'],
+  LAYER_2: ['@cap/platform-store', '@cap/platform-ui'],
   LAYER_3: ['@cap/platform-core'],
   LAYER_4: ['@cap/layout', '@cap/civil-registry'],
   LAYER_5: ['@cap/module-admin', '@cap/module-auth', '@cap/module-landing', '@cap/module-kyc', '@cap/module-digital-id', '@cap/module-blockchain-idaas', '@cap/module-monitoring-alerts', '@cap/module-user'],

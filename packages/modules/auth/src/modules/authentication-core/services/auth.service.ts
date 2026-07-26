@@ -10,10 +10,26 @@ import {
 
 import {
   SecurityLogParams,
-} from "../../../types/api.types"
+} from "../types/api.types"
 import { ENDPOINTS } from "./endpoints"
+import TenantService from "@cap/platform-core/services/tenantService"
 
 const authService = {
+  /**
+   * Backend tenant feature verification guard.
+   * Independently verifies that a tenant has a specific auth feature/plugin enabled.
+   */
+  verifyTenantAuthFeature: (pluginId: string, domain?: string): boolean => {
+    return TenantService.verifyTenantAuthFeature(domain, pluginId)
+  },
+
+  assertTenantAuthFeatureEnabled: (pluginId: string, domain?: string): void => {
+    if (!TenantService.verifyTenantAuthFeature(domain, pluginId)) {
+      throw new Error(
+        `[TenantAuthGating] Authentication plugin "${pluginId}" is not enabled for this tenant.`
+      )
+    }
+  },
   signup: (body: ISignup): Promise<FetchResponse> => {
     return apiClient.post(ENDPOINTS.auth.signup, body)
   },

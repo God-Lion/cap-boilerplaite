@@ -125,10 +125,8 @@
       "@idaas": ["../packages/modules/auth/src/modules", "../packages/platform-core/src/stubs/auth-shim.tsx"],
       "@idaas/*": ["../packages/modules/auth/src/modules/*", "../packages/platform-core/src/stubs/auth-shim.tsx"],
       "src/configs/*": ["../packages/platform-core/src/configs/*"],
-      "src/store/*": ["../packages/platform-core/src/store/*"],
       "src/types/*": ["../packages/platform-core/src/types/*"],
-      "src/theme/*": ["../packages/platform-core/src/theme/*"],
-      "@/store/*": ["../packages/platform-core/src/store/*"]
+      "src/theme/*": ["../packages/platform-core/src/theme/*"]
     },
     "types": ["react", "vite/client", "node"]
   },

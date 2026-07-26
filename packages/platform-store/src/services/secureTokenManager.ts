@@ -1,7 +1,7 @@
 export interface TokenData {
   accessToken: string
-  // Refresh token is now handled via HttpOnly cookie, but kept for legacy compatibility
-  refreshToken?: string
+  /** Refresh token is strictly handled via HttpOnly cookies and never stored in memory or client storage */
+  refreshToken?: never
   expiresAt: number
 }
 

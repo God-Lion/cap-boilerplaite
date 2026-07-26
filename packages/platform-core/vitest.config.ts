@@ -17,6 +17,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
+      '@cap/layout': resolve(__dirname, '../layout/src'),
+      '@cap/theme': resolve(__dirname, '../theme/src'),
+      '@cap/platform-store': resolve(__dirname, '../platform-store/src'),
+      '@cap/shared-types': resolve(__dirname, '../shared-types/src'),
+      'virtual:pwa-register/react': resolve(__dirname, './src/stubs/pwa-stub.ts'),
     },
   },
 })

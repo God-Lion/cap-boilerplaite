@@ -5,15 +5,18 @@ import React from 'react'
 import { usePermissions } from './usePermissions'
 import { useAppStore } from '@cap/platform-store'
 
-const mockStore = vi.fn((selector) => {
-  const state = mockStore.getState()
-  return selector ? selector(state) : state
-}) as any
-let currentState = { user: null, isAuthenticated: false }
-mockStore.getState = () => currentState
-mockStore.mockReturnValue = (val: any) => {
-  currentState = val
-}
+const { mockStore } = vi.hoisted(() => {
+  let currentState = { user: null, isAuthenticated: false }
+  const fn: any = vi.fn((selector: any) => {
+    const state = fn.getState()
+    return selector ? selector(state) : state
+  })
+  fn.getState = () => currentState
+  fn.mockReturnValue = (val: any) => {
+    currentState = val
+  }
+  return { mockStore: fn }
+})
 
 vi.mock('@cap/platform-store', () => ({
   useAppStore: mockStore,

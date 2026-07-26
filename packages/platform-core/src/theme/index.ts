@@ -7,20 +7,15 @@ import type { Skin, Settings } from '../types'
 // Re-export SystemMode from @cap/theme for convenience
 export type { SystemMode } from '@cap/theme'
 
-// Theme Options Imports
-import { coreOverrides } from '@cap/theme'
-import spacing from './spacing'
-import shadows from './shadows'
-import customShadows from './customShadows'
-import { zIndexScale } from '@cap/theme'
-
+// Theme Options Imports directly from @cap/theme
+import { coreOverrides, themeShadows, themeCustomShadows, zIndexScale } from '@cap/theme'
 import type { SystemMode } from '@cap/theme'
 
 const theme = (settings: Settings, mode: SystemMode, direction: Theme['direction']): Theme => {
   return {
     direction,
     components: coreOverrides(settings.skin as Skin),
-    ...spacing,
+    spacing: (factor: number) => `${0.25 * factor}rem`,
     shape: {
       borderRadius: 6,
       customBorderRadius: {
@@ -31,8 +26,8 @@ const theme = (settings: Settings, mode: SystemMode, direction: Theme['direction
         xl: 10,
       },
     },
-    shadows: shadows(mode),
-    customShadows: customShadows(mode),
+    shadows: themeShadows(mode),
+    customShadows: themeCustomShadows(mode),
     zIndex: zIndexScale,
     mainColorChannels: {
       light: '47 43 61',

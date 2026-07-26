@@ -203,7 +203,6 @@ export const createAuthSlice: StateCreator<
           if (response.data.access_token || response.data.token) {
             const newTokens: AuthTokens = {
               accessToken: response.data.access_token || response.data.token,
-              refreshToken: response.data.refresh_token || tokens?.refreshToken,
               expiresAt: Date.now() + (response.data.expires_in || 3600) * 1000,
             }
             secureTokenManager.setTokens(newTokens)
@@ -240,36 +239,19 @@ export const createAuthSlice: StateCreator<
     return refreshAuthPromise
   },
 
-  // Refresh Token (get new access token using refresh token)
-  // This is kept for backward compatibility but is now handled by fetch interceptor
+  // Refresh Token (get new access token via HttpOnly cookie)
   refreshToken: async () => {
     try {
-      const tokens = secureTokenManager.getTokens()
-
-      if (!tokens || !tokens.refreshToken) {
-        throw new Error('No refresh token available')
-      }
-
       interface RefreshResponse {
         access_token: string
-        refresh_token: string
         token?: string
         expires_in: number
       }
 
-      const response = await fetchClient.post<RefreshResponse>(
-        '/api/auth/refresh',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${tokens.refreshToken}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      )
+      // Refresh token is sent automatically via HttpOnly cookie (credentials: 'include')
+      const response = await fetchClient.post<RefreshResponse>('/api/auth/refresh')
 
       const accessToken = response.data.access_token || response.data.token
-      const refreshToken = response.data.refresh_token || tokens.refreshToken
       const expiresIn = response.data.expires_in || 3600
 
       if (!accessToken) {
@@ -280,7 +262,6 @@ export const createAuthSlice: StateCreator<
 
       const newTokens: AuthTokens = {
         accessToken,
-        refreshToken,
         expiresAt,
       }
 
@@ -329,18 +310,15 @@ export const createAuthSlice: StateCreator<
           hasAdminRole(normalizedUser.roleName))
       state.error = null
 
-      // Check if user object contains tokens and persist them
-      if (normalizedUser && ((normalizedUser as any).token || (normalizedUser as any).refreshToken)) {
+      // Check if user object contains access token and persist in memory
+      if (normalizedUser && (normalizedUser as any).token) {
         const tokens: AuthTokens = {
           accessToken: (normalizedUser as any).token || '',
-          refreshToken: (normalizedUser as any).refreshToken || '',
           expiresAt: Date.now() + 3600 * 1000, // Default 1h
         }
         state.tokens = tokens
 
-        // Use persist preference if available in user object or default to true
-        const persist = (normalizedUser as any).rememberMe !== false
-        secureTokenManager.setTokens(tokens, persist)
+        secureTokenManager.setTokens(tokens)
       } else if (!normalizedUser) {
         state.tokens = null
         secureTokenManager.clearTokens()
