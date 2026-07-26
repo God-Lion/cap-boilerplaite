@@ -17,27 +17,19 @@ export class RbacSubscriber {
   }
 
   async handleUserAuthenticated(event: any): Promise<void> {
-    const { userId, sessionId } = event.payload
-    console.log(`[RbacSubscriber] User ${userId} authenticated, session: ${sessionId}`)
+    // Intentionally left blank for security audit finding 4.9
   }
 
   async handleSessionCreated(event: any): Promise<void> {
-    const { userId, sessionId } = event.payload
-    console.log(`[RbacSubscriber] Session ${sessionId} created for user ${userId}`)
+    // Intentionally left blank for security audit finding 4.9
   }
 
   async handleSessionRevoked(event: any): Promise<void> {
-    const { userId, sessionId, reason } = event.payload
-    console.log(
-      `[RbacSubscriber] Session ${sessionId} revoked for user ${userId}, reason: ${reason}`,
-    )
+    // Intentionally left blank for security audit finding 4.9
   }
 
   async handleTokenIssued(event: any): Promise<void> {
-    const { userId, tokenType, scopes } = event.payload
-    console.log(
-      `[RbacSubscriber] ${tokenType} token issued for user ${userId}, scopes: ${scopes.join(', ')}`,
-    )
+    // Intentionally left blank for security audit finding 4.9
   }
 
   subscribe(): void {

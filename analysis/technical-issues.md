@@ -22,7 +22,13 @@ Technical findings and resolution status tracking across the platform.
 - **Status:** FIXED
 - **Resolution:** Bound `@tanstack/react-virtual`'s `measureElement` ref to `TableRow` elements in `VirtualizedTable.tsx` so dynamic row heights are accurately measured, eliminating layout shifts and height jumping.
 
-## 6. Workspace/dependency drift (Open / Low Priority)
-- **Status:** OPEN (Expected Monorepo Scaffolding)
-- Root `package.json` references `packages/platform-api` as a workspace.
-- `app/package.json` lists optional/uninstalled modules (`@cap/module-admin`, `@cap/module-user`, `@cap/module-civil-registry`, etc.) matching commented imports in `AppAssembly.tsx`.
+## 6. Workspace/dependency drift
+- **Status:** RESOLVED
+- **Resolution:** Removed legacy npm `workspaces` from `package.json` and dropped the nonexistent `platform-api` from `pnpm-workspace.yaml`. The `app/package.json` dependencies on unimplemented modules remain commented out in code as scaffolding.
+
+## 7. Security Audit Remediation
+- **Status:** RESOLVED
+- **Resolution:** All 15 findings from the `CAP_Boilerplate_Security_Audit_Report.txt` have been addressed:
+  - **Critical:** Untracked `.env` files; implemented strict RBAC in `PermissionCheckerService`.
+  - **High:** Deprecated the plaintext `SecureSessionManagementService` in favor of `authSlice`; enforced `VITE_STORAGE_ENCRYPTION_KEY` checks.
+  - **Medium/Low:** Enforced `POST` requests for sensitive actions (logout, verifications); exact route matching in `PrivateRoute`; replaced `Math.random` with `crypto.randomUUID()`; implemented strict NIST-style password policies and `SameSite/Secure` cookies; removed sensitive `console.log` statements.

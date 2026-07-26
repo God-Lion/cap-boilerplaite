@@ -182,11 +182,11 @@ const authService = {
   },
 
   verifyResetPassword: (email: string, signature: string): Promise<FetchResponse> => {
-    return apiClient.get(ENDPOINTS.auth.verifyResetPassword(email, signature))
+    return apiClient.post(ENDPOINTS.auth.verifyResetPassword, { email, signature })
   },
 
   verifyEmail: (email: string, signature: string): Promise<FetchResponse> => {
-    return apiClient.get(ENDPOINTS.auth.verifyEmail(email, signature))
+    return apiClient.post(ENDPOINTS.auth.verifyEmail, { email, signature })
   },
 
   resendVerification: (email: string): Promise<FetchResponse> => {
@@ -194,7 +194,7 @@ const authService = {
   },
 
   verifyEmailToken: (email: string, signature: string): Promise<FetchResponse> => {
-    return apiClient.get(ENDPOINTS.auth.verifyEmailToken(email, signature))
+    return apiClient.post(ENDPOINTS.auth.verifyEmailToken, { email, signature })
   },
 
   verifyEmailChange: (token: string): Promise<FetchResponse> => {

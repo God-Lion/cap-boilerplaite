@@ -68,6 +68,7 @@ Manage the monorepo using commands from the root directory:
 | `pnpm build` | Builds all packages and compile assets for production. |
 | `pnpm lint` | Runs ESLint analysis across all project packages. |
 | `pnpm test:e2e` | Runs Playwright end-to-end integration tests. |
+| `pnpm run audit:ci` | Runs high-level vulnerability checks across dependencies. |
 | `node scripts/analyze-coupling.cjs` | Analyzes module coupling and checks for architectural boundary violations. |
 | `node scripts/i18n-sync.js` | Synchronizes translation keys across locale dictionaries. |
 | `node scripts/i18n-lint.js` | Audits translation keys and checks for missing entries. |
@@ -77,5 +78,6 @@ Manage the monorepo using commands from the root directory:
 ## ⚙️ Development Guidelines
 
 1. **Strict Coupling Isolation**: Do not import modules directly from one another. Use `@cap/platform-core` or dependency injection to coordinate actions between modules. Use the `scripts/analyze-coupling.cjs` script to verify your changes.
-2. **Translation Key Integrity**: Keep translations in sync across English, French, and Arabic. Run `node scripts/i18n-sync.js` after introducing new keys.
-3. **Commit Hooks**: Pre-commit linting and type checking are configured via Husky to ensure high code quality.
+2. **Domain-Driven Event Bus**: Publish explicit domain events (e.g. `UserAuthenticated`, `SessionRevoked`) via `eventBus.publish()` when triggering significant state changes across module boundaries.
+3. **Translation Key Integrity**: Keep translations in sync across English, French, and Arabic. Run `node scripts/i18n-sync.js` after introducing new keys.
+4. **Commit Hooks & Security**: Pre-commit linting and type checking are configured via Husky. Ensure you regularly run `pnpm run audit:ci` to catch vulnerable dependencies.

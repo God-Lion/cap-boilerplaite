@@ -3,10 +3,10 @@ import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Backdrop, CircularProgress } from '@mui/material'
 import { isObjectEmpty, useAuth, Roles } from '@cap/platform-core'
-import type { IUserResponse } from '@cap/platform-core'
+import type { IResponse } from '@cap/platform-core'
 import Path from '../../../routes/path'
 
-const access = (pathname: string, user: IUserResponse) => {
+const access = (pathname: string, user: any) => {
   if (!isObjectEmpty(user)) {
     const roleId = user.role
     const all = [`/settings`, '/drawingcontest', '/account', '/profile']
@@ -23,9 +23,11 @@ const access = (pathname: string, user: IUserResponse) => {
       case Roles.JUDGE:
       case Roles.PROVIDEREMPLOYEE:
       case Roles.SUPERADMINEMPLOYEE:
-        return routesSuperAdminAccess.some((value) =>
-          value === pathname || value === normalizedPath || pathname.startsWith(value)
-        )
+        return routesSuperAdminAccess.some((value) => {
+          if (value === pathname || value === normalizedPath) return true
+          const prefix = value.endsWith('/') ? value : `${value}/`
+          return pathname.startsWith(prefix) || normalizedPath.startsWith(prefix)
+        })
       default:
         return false
     }
@@ -57,7 +59,7 @@ export default function PrivateRoute({ element }: { element: React.ReactNode }) 
       ]
 
       if (
-        adminLandingRoles.includes(roleId)
+        roleId && adminLandingRoles.includes(roleId as Roles)
       ) {
         navigate('/admin/')
       } else {

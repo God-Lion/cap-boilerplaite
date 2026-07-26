@@ -1,4 +1,5 @@
 import { secureTokenManager, TokenData } from '../secureTokenManager'
+import StorageManager from '../storage/storage.service'
 
 export { ENDPOINTS, QUERY_KEYS } from '@cap/shared-types'
 
@@ -170,9 +171,7 @@ class TokenRefreshManager {
     secureTokenManager.clearTokens()
 
     try {
-      const storageKey = (import.meta as { env?: { VITE_STORAGE_KEY?: string } }).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
-      localStorage.removeItem(storageKey)
-      sessionStorage.clear()
+      StorageManager.clearAllUserData()
     } catch (error) {
       if (import.meta.env.DEV) {
         console.log(`exception: ${error}`)

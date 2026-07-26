@@ -28,6 +28,10 @@
 - **Files:** `packages/layout/src/components/ui/virtualized/VirtualizedTable.tsx`
 - **Details:** Bound `measureElement` ref to `TableRow` elements to accurately calculate dynamic row heights in TanStack Virtualizer, resolving table height jumps.
 
+### 6. Security Audit Remediation (Critical & High)
+- **Files:** `packages/platform-core/SECURITY.md`, `packages/platform-store/src/services/storage/*`, `packages/modules/auth/*`, `*.env`
+- **Details:** Addressed all 15 findings from the `CAP_Boilerplate_Security_Audit_Report.txt` including untracking secrets, deprecating plaintext session storage in favor of `authSlice`, enforcing exact route matching, implementing strict RBAC in `PermissionCheckerService`, upgrading PRNG to `crypto.randomUUID()`, and enforcing `POST` for sensitive operations.
+
 ---
 
 ## Documentation Artifacts

@@ -44,12 +44,9 @@ auth/src/
 
 ## i18n Composition
 `Providers.tsx` manually merges each module's `i18n` resources into i18next at startup:
-1. Keeps each module's translations in its own namespace
-2. Also flattens them into a shared `common` namespace so `t('auth.login')`-style global keys work
+1. Strict namespacing by module ID (e.g., `moduleNs = module.id || 'common'`) prevents cross-module key collisions.
 
-This avoids needing every consumer to know which module a translation key came from, at the cost of a global-namespace collision risk as more modules are added — worth watching as more modules (civil registry, KYC, etc.) come online.
+This isolation means that consumers must either reference the explicit namespace or rely on correctly bound local instances of the translation hook.
 
 ## Observed Risks / Open Questions (non-blocking, for Phase 2)
-- **Workspace/dependency drift:** `app/package.json` depends on 7 `@cap/module-*` packages that don't exist in `packages/modules` in this checkout, and root `package.json` lists `packages/platform-api` as a workspace that isn't present. Needs confirming whether this is a deliberate "boilerplate" trimmed-down copy or an incomplete checkout.
 - **Compile-time-only module toggling:** since disabled modules are commented out rather than config-driven, enabling a module requires a code change + rebuild, not a runtime flag.
-- **`.env` files present at both repo root and `app/`** — not opened as part of this analysis per the safety protocol (may contain secrets); flagging their existence only.

@@ -29,13 +29,10 @@ export const API_ENDPOINTS = {
     refresh: '/api/auth/refresh',
     session: '/api/auth/session',
     trackFailedLogin: '/api/auth/track-failed-login',
-    verifyEmail: (email: string, signature: string) =>
-      `/api/auth/verification/email/${email}?signature=${signature}`,
-    verifyResetPassword: (email: string, signature: string) =>
-      `/api/auth/reset-password/${email}?signature=${signature}`,
+    verifyEmail: '/api/auth/verification/email',
+    verifyResetPassword: '/api/auth/reset-password',
     resendVerification: '/api/auth/verification/email/resend',
-    verifyEmailToken: (email: string, signature: string) =>
-      `/api/auth/verification/email/${email}?signature=${signature}`,
+    verifyEmailToken: '/api/auth/verification/email',
     validateUser: (id: string | number, token: string) => `/api/auth/validate/${id}/${token}`,
     passkey: {
       registerStart: '/api/auth/passkey/register/start',

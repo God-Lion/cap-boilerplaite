@@ -32,7 +32,7 @@ export function setCookie(
 
   const expires = new Date()
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
-  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=${path}`
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=${path};SameSite=Lax;Secure`
 }
 
 /**

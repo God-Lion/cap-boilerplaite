@@ -28,14 +28,10 @@ export const ENDPOINTS = {
     sso: {
       discover: '/api/auth/sso/discover',
     },
-    verifyResetPassword: (email: string, signature: string) =>
-      `/api/auth/reset-password/${email}?signature=${signature}`,
-
-    verifyEmail: (email: string, signature: string) =>
-      `/api/auth/verification/email/${email}?signature=${signature}`,
-    resendVerification: '/api/auth/verification/email/resend',
-    verifyEmailToken: (email: string, signature: string) =>
-      `/api/auth/verification/email/${email}?signature=${signature}`,
+    verifyResetPassword: '/api/auth/verify-reset-password',
+    verifyEmail: '/api/auth/verify-email',
+    resendVerification: '/api/auth/resend-verification',
+    verifyEmailToken: '/api/auth/verify-email-token',
 
     validateUser: (id: string | number, token: string) => `/api/auth/validate/${id}/${token}`,
     loginHistory: '/api/auth/login-history',

@@ -138,7 +138,7 @@ export const createAuthSlice: StateCreator<
   // Sign Out
   signOut: async (callback?: (status: number) => void) => {
     try {
-      const response = await fetchClient.get(ENDPOINTS.auth.logout)
+      const response = await fetchClient.post(ENDPOINTS.auth.logout)
 
       set((state: AuthSlice) => {
         state.user = null

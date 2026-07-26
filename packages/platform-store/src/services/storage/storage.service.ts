@@ -268,6 +268,14 @@ class StorageManager {
    */
   static clearAllUserData(): void {
     try {
+      // Explicitly remove legacy plaintext session keys (from deprecated session-management.service.ts)
+      // These are scrubbed first so even if the broad clear() below throws, the most sensitive data is gone.
+      const legacyKeys = ['app_session', 'active_sessions', 'last_activity']
+      for (const key of legacyKeys) {
+        localStorage.removeItem(key)
+        sessionStorage.removeItem(key)
+      }
+
       // Clear localStorage
       localStorage.clear()
 
@@ -300,6 +308,25 @@ class StorageManager {
   }
 
   /**
+   * Get the master encryption key from the build environment.
+   * Throws loudly if the key is not configured — this is intentional.
+   * A missing key must be a build-time error, not a silent fallback to a shared constant.
+   *
+   * @see api.client.ts getBaseURL() for the same fail-loud pattern.
+   */
+  private static getMasterKey(): string {
+    const key = (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY
+    if (!key) {
+      throw new Error(
+        '[StorageManager] VITE_STORAGE_ENCRYPTION_KEY is not configured. ' +
+        'Client-side storage encryption cannot proceed without a key. ' +
+        'Set this variable in your .env file or deployment secret store.',
+      )
+    }
+    return key
+  }
+
+  /**
    * AES-GCM Encryption using Web Crypto API.
    *
    * SECURITY WARNING: Encrypting localStorage data with VITE_STORAGE_ENCRYPTION_KEY acts as data
@@ -308,19 +335,15 @@ class StorageManager {
    * Sensitive secrets and refresh tokens MUST be managed via backend-enforced HttpOnly cookies.
    */
   private static async encryptData(data: string): Promise<string> {
-    const masterKey =
-      (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'cap-platform-default-secure-key'
-    return encryption.encryptData(data, masterKey)
+    return encryption.encryptData(data, this.getMasterKey())
   }
 
   /**
    * AES-GCM Decryption using Web Crypto API
    */
   private static async decryptData(data: string): Promise<string> {
-    const masterKey =
-      (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY || 'cap-platform-default-secure-key'
     try {
-      return await encryption.decryptData(data, masterKey)
+      return await encryption.decryptData(data, this.getMasterKey())
     } catch (error) {
       console.error('Decryption failed, data might be legacy Base64 or corrupted')
       throw error

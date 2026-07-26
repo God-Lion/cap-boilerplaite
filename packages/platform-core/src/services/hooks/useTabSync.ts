@@ -38,7 +38,7 @@ interface UseTabSyncReturn<T> {
  * Generate unique tab ID
  */
 const generateTabId = (): string => {
-  return `tab_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  return `tab_${crypto.randomUUID()}`
 }
 
 export function useTabSync<T = any>(

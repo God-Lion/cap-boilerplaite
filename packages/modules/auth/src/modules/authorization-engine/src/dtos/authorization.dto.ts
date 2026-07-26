@@ -20,9 +20,10 @@ export interface PermissionDto {
 }
 
 export interface CheckPermissionRequest {
-  userId: string
-  resource: string
-  action: string
+  userId?: string | number
+  resource?: string
+  action?: string
+  permission?: string
   organizationId?: number
 }
 

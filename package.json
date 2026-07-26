@@ -2,23 +2,13 @@
   "name": "cap-monorepo",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "app",
-    "packages/api-contracts",
-    "packages/layout",
-    "packages/platform-core",
-    "packages/platform-store",
-    "packages/platform-ui",
-    "packages/shared-types",
-    "packages/theme",
-    "packages/modules/*"
-  ],
   "scripts": {
-    "dev": "npm run dev --workspace=@cap/app",
-    "build": "npm run build --workspaces",
-    "lint": "npm run lint --workspaces",
-    "test:e2e": "npm run test:e2e --workspace=@cap/app",
-    "cspell": "cspell --no-progress --show-suggestions --relative --dot --gitignore \"**\""
+    "dev": "pnpm --filter @cap/app run dev",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "test:e2e": "pnpm --filter @cap/app run test:e2e",
+    "cspell": "cspell --no-progress --show-suggestions --relative --dot --gitignore \"**\"",
+    "audit:ci": "pnpm audit --audit-level=high"
   },
   "dependencies": {
     "@mui/utils": "^7.3.9",

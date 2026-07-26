@@ -1,4 +1,5 @@
 import { adminService, Role, Permission } from "../../services/adminService"
+import { useAppStore } from '@cap/platform-store'
 import type {
   IRoleReader,
   IRoleWriter,
@@ -127,11 +128,109 @@ export class PermissionService implements IPermissionReader, IPermissionWriter {
   }
 }
 
+
+export interface UserPermissionsContext {
+  userId?: string | number
+  role?: string
+  roleObject?: { name?: string; permissions?: (string | { name?: string })[] }
+  permissions?: (string | { name?: string })[]
+  isAuthenticated?: boolean
+}
+
 export class PermissionCheckerService implements IPermissionChecker {
+  constructor(
+    private readonly getCurrentUserPermissionsContext?: () => UserPermissionsContext | null,
+  ) {}
+
   async checkPermission(request: CheckPermissionRequest): Promise<CheckPermissionResponse> {
-    return {
-      allowed: true,
+    // 1. Fail closed on missing/malformed request
+    if (!request || typeof request !== 'object') {
+      return { allowed: false, reason: 'Invalid or missing permission check request' }
     }
+
+    const permissionTarget =
+      request.permission ||
+      (request.resource && request.action ? `${request.resource}.${request.action}` : request.resource)
+
+    if (!permissionTarget) {
+      return { allowed: false, reason: 'Missing permission or resource/action target in request' }
+    }
+
+    // 2. Obtain user context
+    let userContext: UserPermissionsContext | null = null
+    if (this.getCurrentUserPermissionsContext) {
+      userContext = this.getCurrentUserPermissionsContext()
+    } else {
+      try {
+        const storeState = useAppStore.getState()
+        if (storeState && storeState.isAuthenticated && storeState.user) {
+          const u = (storeState.user as any).user || storeState.user
+          userContext = {
+            userId: u.id || u.userId || u.sub,
+            role: u.role || u.roleName,
+            roleObject: u.roleObject,
+            permissions: Array.isArray(u.permissions) ? u.permissions : [],
+            isAuthenticated: storeState.isAuthenticated,
+          }
+        }
+      } catch {
+        // Ignored if store is uninitialized
+      }
+    }
+
+    // 3. Fail closed if unauthenticated or context missing
+    if (!userContext || userContext.isAuthenticated === false) {
+      return { allowed: false, reason: 'User is not authenticated or user context is missing' }
+    }
+
+    // If request specifies a userId, verify that it matches the authenticated user ID
+    if (
+      request.userId != null &&
+      userContext.userId != null &&
+      String(request.userId) !== String(userContext.userId)
+    ) {
+      return { allowed: false, reason: 'Request userId does not match authenticated user context' }
+    }
+
+    // 4. Role-based evaluation
+    const userRoleStr = (userContext.role || userContext.roleObject?.name || '').toString().toLowerCase()
+
+    // Super-admin / admin role bypass (fail-open for full admins)
+    if (
+      userRoleStr === 'admin' ||
+      userRoleStr === 'super-admin' ||
+      userRoleStr === 'super_admin' ||
+      userRoleStr === 'superadmin'
+    ) {
+      return { allowed: true }
+    }
+
+    // 5. Explicit permissions evaluation
+    const rawPermissions = [
+      ...(Array.isArray(userContext.permissions) ? userContext.permissions : []),
+      ...(Array.isArray(userContext.roleObject?.permissions) ? userContext.roleObject!.permissions! : []),
+    ]
+
+    const userPermissions = rawPermissions
+      .map((p) => (typeof p === 'string' ? p : p?.name))
+      .filter((p): p is string => typeof p === 'string' && p.length > 0)
+
+    const isAllowed = userPermissions.some((perm) => {
+      if (perm === '*' || perm === permissionTarget) return true
+      if (request.resource && request.action) {
+        if (perm === `${request.resource}.${request.action}` || perm === `${request.resource}:${request.action}`)
+          return true
+        if (perm === `${request.resource}.*` || perm === `${request.resource}:*`)
+          return true
+      }
+      return false
+    })
+
+    if (isAllowed) {
+      return { allowed: true }
+    }
+
+    return { allowed: false, reason: `Permission '${permissionTarget}' denied` }
   }
 }
 

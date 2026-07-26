@@ -57,7 +57,7 @@ const loadGuestFromSession = (): GuestSessionData | null => {
 }
 
 const generateSessionId = (): string => {
-  return `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  return `guest_${crypto.randomUUID()}`
 }
 
 export const createGuestSlice: StateCreator<

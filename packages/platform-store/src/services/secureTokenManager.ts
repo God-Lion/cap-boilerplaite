@@ -10,7 +10,7 @@ class SecureTokenManager {
   private expiresAt: number | null = null
   // Always initialized as we don't load from storage
   // Debug: unique instance ID to detect multiple instances
-  private readonly instanceId = Math.random().toString(36).substring(7)
+  private readonly instanceId = crypto.randomUUID().substring(0, 8)
 
   constructor() {
     console.log(`[SecureTokenManager] Instance created: ${this.instanceId}`)
@@ -52,17 +52,10 @@ class SecureTokenManager {
 
   async setTokens(tokens: TokenData | string, _persistOrRefreshToken?: boolean | string): Promise<void> {
     if (typeof tokens === 'string') {
-      console.log(`[SecureTokenManager:${this.instanceId}] setTokens called with string token:`, {
-        accessToken: tokens.substring(0, 20) + '...',
-      })
       this.accessToken = tokens
       this.expiresAt = Date.now() + 3600000
       return
     }
-    console.log(`[SecureTokenManager:${this.instanceId}] setTokens called:`, {
-      accessToken: tokens.accessToken?.substring(0, 20) + '...',
-      expiresAt: tokens.expiresAt,
-    })
     this.accessToken = tokens.accessToken
     this.expiresAt = tokens.expiresAt
   }
