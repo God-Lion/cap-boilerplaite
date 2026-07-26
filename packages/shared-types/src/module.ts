@@ -29,7 +29,7 @@ export interface CAPModule {
   id: string
   version: string
   routes?: any                      // Relaxing type for now to avoid circular deps
-  authRouteConfig?: any
+  storeReducers?: Record<string, any>
   i18n?: Record<string, any>
   plugins?: CAPPlugin[]
   /** @deprecated use navItems */

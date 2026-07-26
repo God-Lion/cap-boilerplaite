@@ -44,6 +44,7 @@ const fr = getMergedDictionary('fr')
 
 export * from './registry/AuthRegistry'
 export * from './plugins/MFATOTPPlugin'
+import { MFATOTPPlugin } from './plugins/MFATOTPPlugin'
 
 // Core Exports (Prioritized)
 export * from './modules/authentication-core/types/api.types'
@@ -138,8 +139,7 @@ export type { IIdaasFacade } from './idaas-facade/src'
 export const AuthModule: CAPModule = {
   id: 'auth-module',
   version: '1.0.0',
-  routes: authRoutes as any,
-  authRouteConfig: authRouteConfig as any,
+  routes: authRouteConfig as any,
   i18n: { en, ar, fr },
   plugins: [],
   navItems: [
@@ -213,3 +213,6 @@ export const AuthModule: CAPModule = {
 export const initAuthPlugins = (plugins: any[]) => {
   plugins.forEach((plugin) => authRegistry.register(plugin))
 }
+
+// Auto-initialize plugins for this module
+initAuthPlugins([MFATOTPPlugin])

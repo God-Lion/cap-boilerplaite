@@ -10,6 +10,9 @@
     "build": "tsc",
     "dev": "tsc -w"
   },
+  "dependencies": {
+    "@cap/shared-types": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.0.0"
   }

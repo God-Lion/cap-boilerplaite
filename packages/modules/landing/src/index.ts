@@ -36,6 +36,5 @@ import { landingRoutes, landingRouteConfig } from './routes/routes'
 export const LandingModule: CAPModule = {
   id: 'landing-module',
   version: '1.0.0',
-  routes: landingRoutes,
-  authRouteConfig: landingRouteConfig,
+  routes: landingRouteConfig,
 }

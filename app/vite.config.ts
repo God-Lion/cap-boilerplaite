@@ -44,6 +44,7 @@ export default defineConfig({
               enabled: true,
             },
             workbox: {
+              maximumFileSizeToCacheInBytes: 5000000,
               runtimeCaching: [
                 {
                   urlPattern: /\.(?:js|css|json)$/i,

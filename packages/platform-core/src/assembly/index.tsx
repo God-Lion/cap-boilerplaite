@@ -88,8 +88,8 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   const seenPaths = new Set<string>()
 
   modules.forEach((module) => {
-    if (module.authRouteConfig) {
-      module.authRouteConfig.forEach((route: any) => {
+    if (module.routes) {
+      module.routes.forEach((route: any) => {
         if (!seenPaths.has(route.path)) {
           seenPaths.add(route.path)
           allRouteConfigs.push(route)

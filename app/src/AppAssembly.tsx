@@ -1,29 +1,31 @@
 import { assembleApp } from '@cap/platform-core'
-import { LandingModule } from '@cap/module-landing'
-import { AuthModule, initAuthPlugins, MFATOTPPlugin } from '@cap/module-auth'
-// import { AdminModule } from '@cap/module-admin'
-// import { UserModule } from '@cap/module-user'
-// import { CivilRegistryModule } from '@cap/module-civil-registry'
-// import { DigitalIdModule } from '@cap/module-digital-id'
-// import { KycModule } from '@cap/module-kyc'
-// import { MonitoringAlertsModule } from '@cap/module-monitoring-alerts'
-// import { BlockchainIdaasModule } from '@cap/module-blockchain-idaas'
+import type { CAPModule } from '@cap/shared-types'
 
-// Initialize plugin infrastructure
-initAuthPlugins([MFATOTPPlugin])
+// The glob automatically imports all index.ts files it finds in the modules directory
+const moduleImports = import.meta.glob('../../packages/modules/*/src/index.ts', { eager: true })
+
+export const assembleModules = (): CAPModule[] => {
+  const assembledModules: CAPModule[] = []
+
+  for (const path in moduleImports) {
+    const mod = moduleImports[path] as Record<string, any>
+    
+    // Iterate over all exports to find the module contract
+    for (const key in mod) {
+      const exportVal = mod[key]
+      if (exportVal && typeof exportVal === 'object' && exportVal.id && exportVal.version) {
+        assembledModules.push(exportVal as CAPModule)
+      }
+    }
+  }
+
+  return assembledModules
+}
+
+export const globalModules = assembleModules()
 
 export const App = assembleApp({
-  modules: [
-    LandingModule,
-    AuthModule,
-    // AdminModule,
-    // UserModule,
-    // CivilRegistryModule,
-    // DigitalIdModule,
-    // KycModule,
-    // MonitoringAlertsModule,
-    // BlockchainIdaasModule,
-  ],
+  modules: globalModules,
 })
 
 export default App

@@ -8,6 +8,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@cap/shared-types": ["../shared-types/src"],
+      "@cap/shared-types/*": ["../shared-types/src/*"]
+    },
     "types": []
   },
   "include": ["src/**/*"]

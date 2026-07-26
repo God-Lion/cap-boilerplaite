@@ -1,0 +1,22 @@
+import type { IModuleContract } from '@cap/api-contracts'
+import { {{camelCase name}}RouteConfig } from './routes/routes'
+
+export const {{pascalCase name}}Module: IModuleContract = {
+  id: '{{dashCase name}}-module',
+  version: '1.0.0',
+  routes: {{camelCase name}}RouteConfig as any,
+  i18n: {}, // Add dictionaries here
+  plugins: [],
+  navItems: [
+    {
+      id: '{{dashCase name}}-dashboard',
+      label: 'navigation.{{camelCase name}}',
+      icon: 'tabler-apps',
+      path: '/{{dashCase name}}',
+      variant: ['vertical', 'horizontal'],
+      order: 10,
+    },
+  ],
+  searchItems: [],
+  storeReducers: {},
+}
