@@ -50,10 +50,11 @@ describe('assembleApp i18n namespace isolation', () => {
 
     assembleApp({ modules: [moduleA, moduleB] })
 
-    expect(i18next.getResource('en', 'module-a', 'title')).toBe('Module A Title')
-    expect(i18next.getResource('en', 'module-b', 'title')).toBe('Module B Title')
-    expect(i18next.getResource('en', 'module-a', 'welcome')).toBe('Welcome to A')
-    expect(i18next.getResource('en', 'module-b', 'welcome')).toBe('Welcome to B')
+    const i18nInstance = typeof (i18next as any)?.getResource === 'function' ? i18next : (i18next as any)?.default || i18next
+    expect(i18nInstance.getResource('en', 'module-a', 'title')).toBe('Module A Title')
+    expect(i18nInstance.getResource('en', 'module-b', 'title')).toBe('Module B Title')
+    expect(i18nInstance.getResource('en', 'module-a', 'welcome')).toBe('Welcome to A')
+    expect(i18nInstance.getResource('en', 'module-b', 'welcome')).toBe('Welcome to B')
   })
 })
 
