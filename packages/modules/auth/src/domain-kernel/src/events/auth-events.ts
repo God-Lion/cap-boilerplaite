@@ -138,3 +138,46 @@ export type TokenEvent = DomainEvent<
 >
 
 export type AuthDomainEvent = AuthEvent | SessionEvent | TokenEvent
+
+export interface UserAuthenticatedInit {
+  userId: string
+  role?: string
+  tenantId?: string
+  timestamp?: string
+  correlationId?: string
+  causationId?: string
+  email?: string
+  factors?: string[]
+  method?: 'password' | 'mfa' | 'passkey' | 'sso'
+  sessionId?: string
+  ipAddress?: string
+  userAgent?: string
+}
+
+export class UserAuthenticated implements DomainEvent<UserAuthenticatedPayload & { role?: string }> {
+  id: string
+  type: string = AuthEventTypes.USER_AUTHENTICATED
+  version: string = EventVersions.V1
+  timestamp: string
+  correlationId?: string
+  causationId?: string
+  payload: UserAuthenticatedPayload & { role?: string }
+
+  constructor(init: UserAuthenticatedInit) {
+    this.id = crypto.randomUUID()
+    this.timestamp = init.timestamp || new Date().toISOString()
+    this.correlationId = init.correlationId || crypto.randomUUID()
+    this.causationId = init.causationId
+    this.payload = {
+      userId: init.userId,
+      email: init.email || '',
+      factors: init.factors || ['password'],
+      method: init.method || 'password',
+      sessionId: init.sessionId || 'default-session',
+      tenantId: init.tenantId,
+      ipAddress: init.ipAddress,
+      userAgent: init.userAgent,
+      ...(init.role ? { role: init.role } : {}),
+    }
+  }
+}

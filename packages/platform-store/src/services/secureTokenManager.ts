@@ -50,7 +50,15 @@ class SecureTokenManager {
     }
   }
 
-  async setTokens(tokens: TokenData, _persist?: boolean): Promise<void> {
+  async setTokens(tokens: TokenData | string, _persistOrRefreshToken?: boolean | string): Promise<void> {
+    if (typeof tokens === 'string') {
+      console.log(`[SecureTokenManager:${this.instanceId}] setTokens called with string token:`, {
+        accessToken: tokens.substring(0, 20) + '...',
+      })
+      this.accessToken = tokens
+      this.expiresAt = Date.now() + 3600000
+      return
+    }
     console.log(`[SecureTokenManager:${this.instanceId}] setTokens called:`, {
       accessToken: tokens.accessToken?.substring(0, 20) + '...',
       expiresAt: tokens.expiresAt,

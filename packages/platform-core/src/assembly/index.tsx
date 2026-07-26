@@ -51,26 +51,21 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   const seenSearchIds = new Set<string>()
 
   // Register module i18n resources isolated strictly by module name/id
-  const addModuleResourceBundle = (lang: string, ns: string, resources: any) => {
-    const target =
-      typeof i18next?.addResourceBundle === 'function'
-        ? i18next
-        : typeof (i18next as any)?.default?.addResourceBundle === 'function'
-          ? (i18next as any).default
-          : typeof (i18next as any)?.default?.default?.addResourceBundle === 'function'
-            ? (i18next as any).default.default
-            : i18next
-
-    if (typeof target?.addResourceBundle === 'function') {
-      target.addResourceBundle(lang.toLowerCase(), ns, resources, true, true)
-    }
+  const i18nInstance = (i18next as any)?.default || i18next
+  if (!i18nInstance.isInitialized && typeof i18nInstance.init === 'function') {
+    i18nInstance.init({
+      lng: 'en',
+      fallbackLng: 'en',
+      resources: {},
+      interpolation: { escapeValue: false },
+    })
   }
 
   modules.forEach((module) => {
     const moduleNs = module.id || (module as any).name || 'common'
     if (module.i18n) {
       Object.entries(module.i18n).forEach(([lang, resources]) => {
-        addModuleResourceBundle(lang, moduleNs, resources)
+        i18nInstance.addResourceBundle(lang.toLowerCase(), moduleNs, resources, true, false)
       })
     }
 
@@ -111,10 +106,14 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
           <Route
             key={path}
             path={path}
-            element={<LayoutRouteWrapper element={element} layout={layout} />}
+            element={
+              <LayoutRouteWrapper layout={layout || 'none'}>
+                {element}
+              </LayoutRouteWrapper>
+            }
           />
         ))}
-        <Route path='*' element={<LayoutRouteWrapper element={<NotFound />} />} />
+        <Route path='*' element={<LayoutRouteWrapper layout='none'><NotFound /></LayoutRouteWrapper>} />
       </Routes>
     )
   }

@@ -2,8 +2,9 @@ import React from 'react'
 import { useAppStore, type RouteLayout } from '@cap/platform-core'
 
 export interface LayoutRouteWrapperProps {
-  element: React.ReactNode
-  layout?: RouteLayout
+  element?: React.ReactNode
+  children?: React.ReactNode
+  layout?: RouteLayout | string
 }
 
 /**
@@ -16,6 +17,7 @@ export interface LayoutRouteWrapperProps {
  */
 export const LayoutRouteWrapper: React.FC<LayoutRouteWrapperProps> = ({
   element,
+  children,
   layout,
 }) => {
   const updateLayoutOverride = useAppStore((state) => state.updateLayoutOverride)
@@ -28,9 +30,11 @@ export const LayoutRouteWrapper: React.FC<LayoutRouteWrapperProps> = ({
     // 'admin' override is set by AdminRoute itself — no action needed here
   }, [layout, updateLayoutOverride])
 
+  const content = children ?? element
+
   return (
     <div className='premium-auth-container' style={{ display: 'contents' }}>
-      {element}
+      {content}
     </div>
   )
 }

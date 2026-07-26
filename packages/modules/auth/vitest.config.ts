@@ -20,6 +20,9 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
       '@auth': resolve(__dirname, './src'),
+      '@cap/platform-core': resolve(__dirname, '../../platform-core/src'),
+      '@cap/platform-store': resolve(__dirname, '../../platform-store/src'),
+      '@cap/shared-types': resolve(__dirname, '../../shared-types/src'),
     },
   },
 })

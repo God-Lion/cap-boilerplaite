@@ -15,6 +15,8 @@ import { ENDPOINTS } from "./endpoints"
 import { TenantService } from "@cap/platform-core"
 
 import { eventBus } from '../../../domain-kernel/src/events/event-bus'
+import { UserAuthenticated } from '../../../domain-kernel/src/events/auth-events'
+import { secureTokenManager } from '@cap/platform-store'
 import {
   createUserAuthenticatedEvent,
   createAuthenticationFailedEvent,
@@ -24,7 +26,24 @@ import {
   createTokenRefreshedEvent,
 } from '../../../domain-kernel/src/events/event-factory'
 
+export const handleLoginSuccess = async (userPayload: any) => {
+  if (userPayload?.accessToken || userPayload?.refreshToken) {
+    await secureTokenManager.setTokens(userPayload.accessToken, userPayload.refreshToken)
+  }
+
+  await eventBus.publish(
+    new UserAuthenticated({
+      userId: userPayload?.user?.id || userPayload?.userId || 'unknown',
+      role: userPayload?.user?.role || userPayload?.role,
+      tenantId: userPayload?.tenantId,
+      timestamp: new Date().toISOString(),
+      correlationId: crypto.randomUUID(),
+    })
+  )
+}
+
 const authService = {
+  handleLoginSuccess,
   /**
    * Backend tenant feature verification guard.
    * Independently verifies that a tenant has a specific auth feature/plugin enabled.

@@ -114,4 +114,23 @@ describe('authService EventBus Integration', () => {
     expect(publishedEvents[0].payload.newTokenId).toBe('new-jwt-token')
     expect(publishedEvents[0].payload.userId).toBe('usr-123')
   })
+
+  it('publishes UserAuthenticated event and commits tokens when handleLoginSuccess is called', async () => {
+    const publishedEvents: any[] = []
+    eventBus.subscribe('UserAuthenticated', (evt) => {
+      publishedEvents.push(evt)
+    })
+
+    await authService.handleLoginSuccess({
+      accessToken: 'test-access-token',
+      refreshToken: 'test-refresh-token',
+      user: { id: 'user-789', role: 'admin' },
+      tenantId: 'tenant-001',
+    })
+
+    expect(publishedEvents.length).toBe(1)
+    expect(publishedEvents[0].payload.userId).toBe('user-789')
+    expect(publishedEvents[0].payload.role).toBe('admin')
+    expect(publishedEvents[0].payload.tenantId).toBe('tenant-001')
+  })
 })
