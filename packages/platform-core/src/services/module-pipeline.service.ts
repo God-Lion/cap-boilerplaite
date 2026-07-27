@@ -8,13 +8,13 @@ import type {
   CAPModule,
 } from '@cap/shared-types'
 
-const isBrowser = typeof window !== 'undefined'
-
 function getNodeModule<T = any>(moduleName: string): T | null {
-  if (isBrowser) return null
+  if (typeof window !== 'undefined' && (typeof process === 'undefined' || !process.versions?.node)) {
+    return null
+  }
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require(moduleName)
+    const req = typeof eval !== 'undefined' ? eval('require') : null
+    return req ? req(moduleName) : null
   } catch {
     return null
   }
@@ -222,7 +222,8 @@ export class ModulePipelineService {
 
     // Inspect index.ts / index.js for contract exports
     const rootIndexPath = pathUtil.join(moduleDir, 'index.ts')
-    if (!isBrowser && !checkExistsSync(indexPath) && !checkExistsSync(rootIndexPath)) {
+    const hasNode = typeof process !== 'undefined' && process.versions?.node != null
+    if (hasNode && !checkExistsSync(indexPath) && !checkExistsSync(rootIndexPath)) {
       errors.push('Missing entry point: expected src/index.ts or index.ts')
     }
 
