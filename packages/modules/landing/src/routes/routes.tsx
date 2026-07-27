@@ -8,9 +8,11 @@ import ContactUs from '../screens/ContactUs'
 import AboutUs from '../screens/AboutUs'
 import Pricing from '../screens/Pricing'
 import Home from '../screens/Home'
+import ChronosMycelium from '../screens/ChronosMycelium'
 
 export const landingRouteConfig: AuthRouteConfig[] = [
   { path: '/', element: <Home /> },
+  { path: '/chronos-mycelium', element: <ChronosMycelium /> },
   { path: '/features', element: <FeatureComparison /> },
   { path: '/privacy-policy', element: <PrivacyPolicy /> },
   { path: '/terms-of-service', element: <TermsOfService /> },

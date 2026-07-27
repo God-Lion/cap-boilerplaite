@@ -88,15 +88,17 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   const seenPaths = new Set<string>()
 
   modules.forEach((module) => {
-    if (module.routes) {
-      module.routes.forEach((route: any) => {
-        if (!seenPaths.has(route.path)) {
+    const routesToRegister = module.routes || module.authRouteConfig
+    if (routesToRegister) {
+      routesToRegister.forEach((route: any) => {
+        if (route && route.path && !seenPaths.has(route.path)) {
           seenPaths.add(route.path)
           allRouteConfigs.push(route)
         }
       })
     }
   })
+
 
   // Return the App component with a SINGLE Routes component matching.
   const App = () => {

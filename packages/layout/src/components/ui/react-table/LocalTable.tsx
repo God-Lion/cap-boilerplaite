@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useCallback, useEffect } from 'react'
 import {
   Box,
   Card,
@@ -25,6 +25,7 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFacetedMinMaxValues,
+  Row,
 } from '@tanstack/react-table'
 import fuzzyFilter from './fuzzyFilter'
 import type { DensityState, IPerson } from './types'
@@ -34,188 +35,197 @@ import DensityFeature from './DensityFeature'
 import useSkipper from './useSkipper'
 import defaultColumn from './defaultColumn'
 
-export default function LocalTable({
-  data,
-  columns,
-  loading = false,
-}: {
+// Stable references for TanStack Table factories
+const coreRowModel = getCoreRowModel<any>()
+const filteredRowModel = getFilteredRowModel<any>()
+const sortedRowModel = getSortedRowModel<any>()
+const paginationRowModel = getPaginationRowModel<any>()
+const facetedRowModel = getFacetedRowModel<any>()
+const facetedUniqueValues = getFacetedUniqueValues<any>()
+const facetedMinMaxValues = getFacetedMinMaxValues<any>()
+const filterFns = { fuzzy: fuzzyFilter }
+const features = [DensityFeature]
+
+interface LocalTableRowProps {
+  row: Row<IPerson>
+  density: DensityState
+}
+
+function LocalTableRowComponent({ row, density }: LocalTableRowProps) {
+  const padding = density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px'
+
+  return (
+    <TableRow hover>
+      {row.getVisibleCells().map((cell) => (
+        <TableCell
+          key={cell.id}
+          style={{
+            padding,
+            transition: 'padding 0.2s',
+          }}
+        >
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TableCell>
+      ))}
+    </TableRow>
+  )
+}
+
+const MemoizedLocalTableRow = React.memo(LocalTableRowComponent)
+
+interface LocalTableProps {
   data: Array<IPerson>
   columns: Array<ColumnDef<IPerson>>
   loading?: boolean
-}) {
+}
+
+function LocalTableInner({ data, columns, loading = false }: LocalTableProps) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [globalFilter, setGlobalFilter] = React.useState('')
-  const [tableData, setTableData] = React.useState(...[data])
+  const [tableData, setTableData] = React.useState<Array<IPerson>>([...data])
   const [density, setDensity] = React.useState<DensityState>('md')
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
 
-  const table = useReactTable({
-    data: tableData as Array<IPerson>,
-    columns,
-    defaultColumn,
-    filterFns: {
-      fuzzy: fuzzyFilter,
+  useEffect(() => {
+    setTableData([...data])
+  }, [data])
+
+  const updateData = useCallback(
+    (rowIndex: number, columnId: string, value: unknown) => {
+      skipAutoResetPageIndex()
+      setTableData((old) =>
+        old.map((row, index) => {
+          if (index === rowIndex) {
+            return {
+              ...old[rowIndex]!,
+              [columnId]: value,
+            }
+          }
+          return row
+        }),
+      )
     },
-    state: {
-      rowSelection,
-      globalFilter,
-      density,
-    },
-    initialState: {
+    [skipAutoResetPageIndex],
+  )
+
+  const metaObj = useMemo(
+    () => ({
+      updateData,
+    }),
+    [updateData],
+  )
+
+  const initialStateObj = useMemo(
+    () => ({
       pagination: {
         pageSize: 10,
       },
-    },
+    }),
+    [],
+  )
+
+  const stateObj = useMemo(
+    () => ({
+      rowSelection,
+      globalFilter,
+      density,
+    }),
+    [rowSelection, globalFilter, density],
+  )
+
+  const table = useReactTable({
+    data: tableData,
+    columns,
+    defaultColumn,
+    filterFns,
+    state: stateObj,
+    initialState: initialStateObj,
     autoResetPageIndex,
-    // Pipeline
     globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
     onGlobalFilterChange: setGlobalFilter,
-
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    //
-    _features: [DensityFeature],
+    getCoreRowModel: coreRowModel,
+    getFilteredRowModel: filteredRowModel,
+    getSortedRowModel: sortedRowModel,
+    getPaginationRowModel: paginationRowModel,
+    getFacetedRowModel: facetedRowModel,
+    getFacetedUniqueValues: facetedUniqueValues,
+    getFacetedMinMaxValues: facetedMinMaxValues,
+    _features: features,
     onDensityChange: setDensity,
-    // Provide our updateData function to our table meta
-    meta: {
-      updateData: (rowIndex, columnId, value) => {
-        // Skip page index reset until after next rerender
-        skipAutoResetPageIndex()
-        setTableData((old) =>
-          old.map((row, index) => {
-            if (index === rowIndex) {
-              return {
-                ...old[rowIndex]!,
-                [columnId]: value,
-              }
-            }
-            return row
-          }),
-        )
-      },
-    },
+    meta: metaObj,
     enableRowSelection: true,
-    debugTable: true,
-    debugHeaders: true,
-    debugColumns: true,
+    debugTable: false,
+    debugHeaders: false,
+    debugColumns: false,
   })
 
-  //   const { pageSize, pageIndex } = table.getState().pagination
-  const fillArray = Array.apply(null, Array(5)).map((_, idx) => idx)
+  const fillArray = useMemo(() => Array.from({ length: 5 }, (_, idx) => idx), [])
+
+  const handleToggleDensity = useCallback(() => {
+    table.toggleDensity()
+  }, [table])
+
+  const handleSearchChange = useCallback((value: string | number) => {
+    setGlobalFilter(String(value))
+  }, [])
+
+  const cellPaddingStyle = useMemo(
+    () => (density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px'),
+    [density],
+  )
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Card
-      // {...ref}
-      // padding='0'
-      >
+      <Card>
         <CardContent>
-          <Button
-            variant='contained'
-            onClick={() => table.toggleDensity()}
-            // className="border rounded p-1 bg-blue-500 text-white mb-2 w-64"
-          >
+          <Button variant='contained' onClick={handleToggleDensity}>
             Toggle Density
           </Button>
           <TableFilters setData={setTableData} tableData={data} />
-          <Box
-            display='flex'
-            justifyContent='space-between'
-            //   className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'
-          >
-            {/* <TextField
-            select
-            value={table.getState().pagination.pageSize}
-            onChange={e => table.setPageSize(Number(e.target.value))}
-            className='is-[70px]'
-          >
-            <MenuItem value='10'>10</MenuItem>
-            <MenuItem value='25'>25</MenuItem>
-            <MenuItem value='50'>50</MenuItem>
-          </TextField> */}
+          <Box display='flex' justifyContent='space-between'>
             <Box className='flex flex-col sm:flex-row is-full sm:is-auto items-start sm:items-center gap-4'>
               <DebouncedInput
                 value={globalFilter ?? ''}
-                onChange={(value) => setGlobalFilter(String(value))}
+                onChange={handleSearchChange}
                 placeholder='Search User'
                 className='is-full sm:is-auto'
               />
-              {/* <Button
-              color='secondary'
-              variant='contained'
-              startIcon={<i className='tabler-upload' />}
-              className='is-full sm:is-auto'
-            >
-              Export
-            </Button> */}
-              {/* <Button
-              variant='contained'
-              startIcon={<i className='tabler-plus' />}
-              onClick={() => setAddUserOpen(!addUserOpen)}
-              className='is-full sm:is-auto'
-            >
-              Add New User
-            </Button> */}
             </Box>
           </Box>
 
-          <TableContainer
-          // component={Paper}
-          >
-            <Table
-              sx={{ minWidth: 650 }}
-              //  aria-label='simple table'
-              stickyHeader
-              aria-label='sticky table'
-            >
+          <TableContainer>
+            <Table sx={{ minWidth: 650 }} stickyHeader aria-label='sticky table'>
               <TableHead>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableCell
-                          key={header.id}
-                          colSpan={header.colSpan}
-                          style={{
-                            //using our new feature
-                            padding: density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px',
-                            transition: 'padding 0.2s',
-                          }}
-                        >
-                          {header.isPlaceholder ? null : (
-                            <div onClick={header.column.getToggleSortingHandler()}>
-                              {flexRender(header.column.columnDef.header, header.getContext())}
-                              {{
-                                asc: <ArrowUpward />,
-                                desc: <ArrowDownward />,
-                              }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
-                              {/* {header.column.getCanFilter() ? (
-                              <div>
-                                <Filter column={header.column} table={table} />
-                              </div>
-                            ) : null} */}
-                            </div>
-                          )}
-                        </TableCell>
-                      )
-                    })}
+                    {headerGroup.headers.map((header) => (
+                      <TableCell
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        style={{
+                          padding: cellPaddingStyle,
+                          transition: 'padding 0.2s',
+                        }}
+                      >
+                        {header.isPlaceholder ? null : (
+                          <div onClick={header.column.getToggleSortingHandler()}>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {{
+                              asc: <ArrowUpward />,
+                              desc: <ArrowDownward />,
+                            }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
+                          </div>
+                        )}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableHead>
               {table.getFilteredRowModel().rows.length === 0 ? (
                 <TableBody>
                   <TableRow>
-                    <TableCell
-                      colSpan={table.getVisibleFlatColumns().length}
-                      //   className='text-center'
-                      align='center'
-                    >
+                    <TableCell colSpan={table.getVisibleFlatColumns().length} align='center'>
                       No data available
                     </TableCell>
                   </TableRow>
@@ -223,66 +233,30 @@ export default function LocalTable({
               ) : (
                 <TableBody>
                   {loading &&
-                    fillArray.map(() => (
-                      <TableRow key={`TableRow${Math.random()}`}>
-                        {table.getHeaderGroups().map((_) => (
-                          <TableCell key={`${Math.random()}`}>
-                            <Skeleton variant='text' sx={{ fontSize: '1rem' }} />
-                          </TableCell>
-                        ))}
+                    fillArray.map((idx) => (
+                      <TableRow key={`skeleton-local-${idx}`}>
+                        {table.getHeaderGroups().map((group) =>
+                          group.headers.map((header) => (
+                            <TableCell key={`skeleton-local-cell-${idx}-${header.id}`}>
+                              <Skeleton variant='text' sx={{ fontSize: '1rem' }} />
+                            </TableCell>
+                          )),
+                        )}
                       </TableRow>
                     ))}
                   {!loading &&
-                    table.getRowModel().rows.map((row) => {
-                      return (
-                        <TableRow hover key={row.id}>
-                          {row.getVisibleCells().map((cell) => {
-                            return (
-                              <TableCell
-                                key={cell.id}
-                                style={{
-                                  //using our new feature
-                                  padding:
-                                    density === 'sm' ? '4px' : density === 'md' ? '8px' : '16px',
-                                  transition: 'padding 0.2s',
-                                }}
-                              >
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              </TableCell>
-                            )
-                          })}
-                        </TableRow>
-                      )
-                    })}
+                    table.getRowModel().rows.map((row) => (
+                      <MemoizedLocalTableRow key={row.id} row={row} density={density} />
+                    ))}
                 </TableBody>
               )}
             </Table>
           </TableContainer>
         </CardContent>
-
-        {/* <TablePagination
-          rowsPerPageOptions={[5, 10, 25, { label: 'All', value: data.length }]}
-          component='div'
-          count={table.getFilteredRowModel().rows.length}
-          rowsPerPage={pageSize}
-          page={pageIndex}
-          slotProps={{
-            select: {
-              inputProps: { 'aria-label': 'rows per page' },
-              native: true,
-            },
-          }}
-          onPageChange={(_, page) => {
-            table.setPageIndex(page)
-          }}
-          onRowsPerPageChange={(e) => {
-            const size = e.target.value ? Number(e.target.value) : 10
-            table.setPageSize(size)
-          }}
-          ActionsComponent={TablePaginationActions}
-        /> */}
       </Card>
-      {/* <pre>{JSON.stringify(table.getState().pagination, null, 2)}</pre> */}
     </Box>
   )
 }
+
+export const LocalTable = React.memo(LocalTableInner)
+export default LocalTable

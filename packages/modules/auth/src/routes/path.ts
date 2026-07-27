@@ -158,6 +158,7 @@ export const Path = {
     apiExplorer: '/admin/api-explorer',
     apiTokens: '/admin/api-tokens',
     webhooks: '/admin/webhooks',
+    moduleManagement: '/admin/modules',
     provisioning: '/admin/provisioning',
     scim: '/admin/provisioning/scim',
     syncLogs: '/admin/provisioning/logs',

@@ -4,7 +4,7 @@ import { {{camelCase name}}RouteConfig } from './routes/routes'
 export const {{pascalCase name}}Module: IModuleContract = {
   id: '{{dashCase name}}-module',
   version: '1.0.0',
-  routes: {{camelCase name}}RouteConfig as any,
+  routes: {{camelCase name}}RouteConfig,
   i18n: {}, // Add dictionaries here
   plugins: [],
   navItems: [
@@ -20,3 +20,4 @@ export const {{pascalCase name}}Module: IModuleContract = {
   searchItems: [],
   storeReducers: {},
 }
+

@@ -146,6 +146,77 @@ function TabPanel({ children, value, index }: TabPanelProps) {
   )
 }
 
+function generateCurlSnippet(ep: APIEndpoint): string {
+  return `curl -X ${ep.method} "https://api.trustkey.com${ep.path}" \\\n  -H "Authorization: Bearer <TOKEN>"`
+}
+
+function generateJsSnippet(ep: APIEndpoint): string {
+  const isRead = ep.method === 'GET'
+  const method = ep.method.toLowerCase()
+  return `import { apiClient } from '@cap/platform-core'
+
+apiClient.${method}("${ep.path}"${isRead ? '' : ', { /* data */ }'})
+  .then(response => {
+    console.log(response.data);
+  });`
+}
+
+function generatePythonSnippet(ep: APIEndpoint): string {
+  const isRead = ep.method === 'GET'
+  return `import requests
+
+url = "https://api.trustkey.com${ep.path}"
+headers = {
+    "Authorization": "Bearer <TOKEN>",
+    "Content-Type": "application/json"
+}
+
+response = requests.${ep.method.toLowerCase()}(
+    url, 
+    headers=headers${isRead ? '' : ',\n    json={}'}
+)
+print(response.json())`
+}
+
+function parseRequestBodyJson(requestBody: string): { data: Record<string, unknown>; error?: string } {
+  if (!requestBody.trim()) {
+    return { data: {} }
+  }
+  try {
+    const data = JSON.parse(requestBody)
+    return { data }
+  } catch {
+    return { data: {}, error: 'Invalid JSON request body' }
+  }
+}
+
+interface SandboxResponseState {
+  status: number
+  data: any
+}
+
+async function executeSandboxCall(
+  endpoint: APIEndpoint,
+  parsedData: Record<string, unknown>,
+): Promise<SandboxResponseState> {
+  try {
+    const response = await apiExplorerService.executeSandbox({
+      path: endpoint.path,
+      method: endpoint.method,
+      data: parsedData,
+    })
+    return {
+      status: response.data?.status || 200,
+      data: response.data?.data || response.data,
+    }
+  } catch (err: any) {
+    return {
+      status: err.response?.status || 500,
+      data: err.response?.data || { error: 'Execution failed', message: err.message },
+    }
+  }
+}
+
 export default function APIExplorerDashboard() {
   const theme = useTheme()
   const { t } = useTranslation('common')
@@ -157,7 +228,7 @@ export default function APIExplorerDashboard() {
   const [detailTab, setDetailTab] = useState(0)
   const [copied, setCopied] = useState(false)
   const [sandboxLoading, setSandboxLoading] = useState(false)
-  const [sandboxResponse, setSandboxResponse] = useState<{ status: number; data: any } | null>(null)
+  const [sandboxResponse, setSandboxResponse] = useState<SandboxResponseState | null>(null)
   const [requestBody, setRequestBody] = useState('')
 
   useEffect(() => {
@@ -215,38 +286,19 @@ export default function APIExplorerDashboard() {
   }, [filteredEndpoints])
 
   const curlSnippet = useCallback(
-    (ep: APIEndpoint) =>
-      `curl -X ${ep.method} "https://api.trustkey.com${ep.path}" \\\n  -H "Authorization: Bearer <TOKEN>"`,
+    (ep: APIEndpoint) => generateCurlSnippet(ep),
     [],
   )
 
-  const jsSnippet = useCallback((ep: APIEndpoint) => {
-    const isRead = ep.method === 'GET'
-    const method = ep.method.toLowerCase()
-    return `import { apiClient } from '@cap/platform-core'
+  const jsSnippet = useCallback(
+    (ep: APIEndpoint) => generateJsSnippet(ep),
+    [],
+  )
 
-apiClient.${method}("${ep.path}"${isRead ? '' : ', { /* data */ }'})
-  .then(response => {
-    console.log(response.data);
-  });`
-  }, [])
-
-  const pythonSnippet = useCallback((ep: APIEndpoint) => {
-    const isRead = ep.method === 'GET'
-    return `import requests
-
-url = "https://api.trustkey.com${ep.path}"
-headers = {
-    "Authorization": "Bearer <TOKEN>",
-    "Content-Type": "application/json"
-}
-
-response = requests.${ep.method.toLowerCase()}(
-    url, 
-    headers=headers${isRead ? '' : ',\n    json={}'}
-)
-print(response.json())`
-  }, [])
+  const pythonSnippet = useCallback(
+    (ep: APIEndpoint) => generatePythonSnippet(ep),
+    [],
+  )
 
   const handleCopy = useCallback(async (text: string) => {
     await navigator.clipboard.writeText(text)
@@ -256,37 +308,20 @@ print(response.json())`
 
   const handleExecuteSandbox = async () => {
     if (!selectedEndpoint) return
+
+    const { data: parsedData, error: jsonError } = parseRequestBodyJson(requestBody)
+    if (jsonError) {
+      setError(t('auth.developer.invalidJsonBody', jsonError))
+      return
+    }
+
     setSandboxLoading(true)
     setSandboxResponse(null)
+    setError(null)
+
     try {
-      let parsedData = {}
-      if (requestBody.trim()) {
-        try {
-          parsedData = JSON.parse(requestBody)
-        } catch (e) {
-          setError(t('auth.developer.invalidJsonBody', 'Invalid JSON request body'))
-          setSandboxLoading(false)
-          return
-        }
-      }
-
-      setError(null)
-      const response = await apiExplorerService.executeSandbox({
-        path: selectedEndpoint.path,
-        method: selectedEndpoint.method,
-        data: parsedData,
-      })
-
-      // The backend now wraps the response in { status, data } and returns 200 OK
-      setSandboxResponse({
-        status: response.data?.status || 200,
-        data: response.data?.data || response.data,
-      })
-    } catch (err: any) {
-      setSandboxResponse({
-        status: err.response?.status || 500,
-        data: err.response?.data || { error: 'Execution failed', message: err.message },
-      })
+      const responseState = await executeSandboxCall(selectedEndpoint, parsedData)
+      setSandboxResponse(responseState)
     } finally {
       setSandboxLoading(false)
     }

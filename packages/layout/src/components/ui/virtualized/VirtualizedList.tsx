@@ -12,7 +12,19 @@ interface VirtualizedListProps<T> {
   className?: string
 }
 
-export function VirtualizedList<T>({
+interface ItemWrapperProps<T> {
+  item: T
+  index: number
+  renderItem: (item: T, index: number) => React.ReactNode
+}
+
+function ItemWrapperComponent<T>({ item, index, renderItem }: ItemWrapperProps<T>) {
+  return <>{renderItem(item, index)}</>
+}
+
+const MemoizedItemWrapper = React.memo(ItemWrapperComponent) as typeof ItemWrapperComponent
+
+export function VirtualizedListInner<T>({
   items,
   renderItem,
   estimatedItemHeight = 50,
@@ -36,7 +48,6 @@ export function VirtualizedList<T>({
   const virtualItems = rowVirtualizer.getVirtualItems()
 
   if (!shouldVirtualize) {
-    // Render normally for small lists
     return (
       <Paper
         ref={parentRef}
@@ -49,7 +60,7 @@ export function VirtualizedList<T>({
         <List>
           {items.map((item, index) => (
             <ListItem key={index} disablePadding>
-              {renderItem(item, index)}
+              <MemoizedItemWrapper item={item} index={index} renderItem={renderItem} />
             </ListItem>
           ))}
         </List>
@@ -57,7 +68,6 @@ export function VirtualizedList<T>({
     )
   }
 
-  // Virtual scrolling for large lists
   return (
     <Paper
       ref={parentRef}
@@ -87,7 +97,11 @@ export function VirtualizedList<T>({
               transform: `translateY(${virtualItem.start}px)`,
             }}
           >
-            {renderItem(items[virtualItem.index], virtualItem.index)}
+            <MemoizedItemWrapper
+              item={items[virtualItem.index]}
+              index={virtualItem.index}
+              renderItem={renderItem}
+            />
           </Box>
         ))}
       </Box>
@@ -95,4 +109,5 @@ export function VirtualizedList<T>({
   )
 }
 
+export const VirtualizedList = React.memo(VirtualizedListInner) as typeof VirtualizedListInner
 export default VirtualizedList

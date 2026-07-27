@@ -2,6 +2,14 @@ import type { CAPPlugin } from './contracts/plugin.contracts'
 
 export type NavVariant = 'vertical' | 'admin' | 'horizontal' | 'all'
 
+export type ModuleRouteLayout = 'public' | 'vertical' | 'horizontal' | 'noLayout' | 'admin' | 'none'
+
+export interface ModuleRouteConfig {
+  path: string
+  element: any
+  layout?: ModuleRouteLayout
+}
+
 export interface NavItemConfig {
   id: string                        // unique key for React
   label: string                     // i18n key or fallback string
@@ -28,7 +36,11 @@ export interface SearchItemConfig {
 export interface CAPModule {
   id: string
   version: string
-  routes?: any                      // Relaxing type for now to avoid circular deps
+  name?: string
+  description?: string
+  routes?: ModuleRouteConfig[]
+  /** Optional fallback for legacy route configs */
+  authRouteConfig?: ModuleRouteConfig[]
   storeReducers?: Record<string, any>
   i18n?: Record<string, any>
   plugins?: CAPPlugin[]
@@ -37,3 +49,4 @@ export interface CAPModule {
   navItems?: NavItemConfig[]
   searchItems?: SearchItemConfig[]
 }
+

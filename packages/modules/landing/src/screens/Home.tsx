@@ -19,8 +19,9 @@ import BusinessIcon from '@mui/icons-material/Business'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import SpeedIcon from '@mui/icons-material/Speed'
 import SecurityIcon from '@mui/icons-material/Security'
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
 import Banner from '../components/Banner'
-import { GuestBanner } from '@cap/theme'
+import { GuestBanner } from '@cap/layout'
 import { useGuest } from '@cap/platform-core'
 
 const aboutSection = {
@@ -32,6 +33,12 @@ const aboutSection = {
 }
 
 const features = [
+  {
+    icon: <AutoAwesomeIcon sx={{ fontSize: 48, color: '#38bdf8' }} />,
+    title: 'Chronos Mycelium',
+    description: 'Gallery-quality generative art engine exploring radial time & hyphae growth',
+    link: '/chronos-mycelium',
+  },
   {
     icon: <SearchIcon sx={{ fontSize: 48 }} />,
     title: 'Smart Job Search',

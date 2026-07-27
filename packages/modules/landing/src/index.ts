@@ -14,6 +14,7 @@ export { default as PrivacyPolicy } from './screens/PrivacyPolicy'
 export { default as TermsOfService } from './screens/TermsOfService'
 export { default as AboutUs } from './screens/AboutUs'
 export { default as Pricing } from './screens/Pricing'
+export { default as ChronosMycelium } from './screens/ChronosMycelium'
 
 // Context - Workflow Pipeline
 export {

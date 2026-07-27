@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { type TextFieldProps, TextField } from '@mui/material'
 
-const DebouncedInput = ({
+const DebouncedInputComponent = ({
   value: initialValue,
   onChange,
   debounce = 500,
@@ -11,7 +11,6 @@ const DebouncedInput = ({
   onChange: (value: string | number) => void
   debounce?: number
 } & Omit<TextFieldProps, 'onChange'>) => {
-  // States
   const [value, setValue] = React.useState(initialValue)
 
   React.useEffect(() => {
@@ -24,10 +23,14 @@ const DebouncedInput = ({
     }, debounce)
 
     return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  }, [value, onChange, debounce])
 
-  return <TextField {...props} value={value} onChange={(e) => setValue(e.target.value)} />
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  }, [])
+
+  return <TextField {...props} value={value} onChange={handleChange} />
 }
 
+export const DebouncedInput = React.memo(DebouncedInputComponent)
 export default DebouncedInput

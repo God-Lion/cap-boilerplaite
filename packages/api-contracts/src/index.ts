@@ -515,3 +515,5 @@ export type API_ENDPOINTS = typeof API_ENDPOINTS
 export type API_QUERY_KEYS = typeof API_QUERY_KEYS
 
 export { API_ENDPOINTS as ENDPOINTS, API_QUERY_KEYS as QUERY_KEYS }
+export * from './types/module-contract'
+

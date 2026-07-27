@@ -184,6 +184,14 @@ export const AuthModule: CAPModule = {
       order: 100,
     },
     {
+      id: 'auth-modules',
+      label: 'Module Management',
+      icon: 'tabler-box',
+      path: '/developer/modules',
+      variant: ['vertical'],
+      order: 105,
+    },
+    {
       id: 'auth-calendar',
       label: 'navigation.calendar',
       icon: 'tabler-calendar',

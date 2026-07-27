@@ -3,6 +3,12 @@ import { alpha } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { zIndexScale } from '../assets/themes/definitions/zIndex';
 
+declare module '@mui/material/styles' {
+  interface PaletteColor {
+    mainChannel?: string;
+  }
+}
+
 const GlobalStyles = () => {
   return (
     <MuiGlobalStyles
@@ -63,38 +69,30 @@ const GlobalStyles = () => {
             },
           },
           '& .MuiButton-containedPrimary': {
-            //@ts-ignore
             background: `rgba(${theme.palette.primary.mainChannel || '212 175 55'} / 0.15) !important`,
             color: theme.palette.primary.main + ' !important',
             '&:hover': {
-              //@ts-ignore
               background: `rgba(${theme.palette.primary.mainChannel || '212 175 55'} / 0.25) !important`,
             },
           },
           '& .MuiButton-containedInfo': {
-            //@ts-ignore
             background: `rgba(${theme.palette.info.mainChannel || '47 79 79'} / 0.15) !important`,
             color: theme.palette.info.main + ' !important',
             '&:hover': {
-              //@ts-ignore
               background: `rgba(${theme.palette.info.mainChannel || '47 79 79'} / 0.25) !important`,
             },
           },
           '& .MuiButton-containedError': {
-            //@ts-ignore
             background: `rgba(${theme.palette.error.mainChannel || '220 53 69'} / 0.15) !important`,
             color: theme.palette.error.main + ' !important',
             '&:hover': {
-              //@ts-ignore
               background: `rgba(${theme.palette.error.mainChannel || '220 53 69'} / 0.25) !important`,
             },
           },
           '& .MuiButton-containedSuccess': {
-            //@ts-ignore
             background: `rgba(${theme.palette.success.mainChannel || '40 167 69'} / 0.15) !important`,
             color: theme.palette.success.main + ' !important',
             '&:hover': {
-              //@ts-ignore
               background: `rgba(${theme.palette.success.mainChannel || '40 167 69'} / 0.25) !important`,
             },
           },
