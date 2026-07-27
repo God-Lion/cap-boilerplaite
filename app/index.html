@@ -5,6 +5,9 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0d0d12" />
+    <!-- Security Headers (Audit Finding 4.8) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <!-- Anti-flash: critical styles applied before any JS runs to prevent FOUC -->
     <style>
       /* Prevent white flash on dark-mode users before MUI theme loads */

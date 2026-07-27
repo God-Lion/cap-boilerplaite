@@ -414,43 +414,6 @@ importers:
         specifier: '>=5'
         version: 5.0.12(@types/react@19.2.14)(immer@11.1.4)(react@19.2.5)(use-sync-external-store@1.6.0(react@19.2.5))
 
-  packages/modules/analytics:
-    dependencies:
-      '@cap/api-contracts':
-        specifier: workspace:*
-        version: link:../../api-contracts
-      '@cap/layout':
-        specifier: workspace:*
-        version: link:../../layout
-      '@cap/platform-core':
-        specifier: workspace:*
-        version: link:../../platform-core
-      '@cap/shared-types':
-        specifier: workspace:*
-        version: link:../../shared-types
-      '@cap/theme':
-        specifier: workspace:*
-        version: link:../../theme
-      '@mui/icons-material':
-        specifier: ^7.0.0
-        version: 7.3.10(@mui/material@7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)
-      '@mui/material':
-        specifier: ^7.0.0
-        version: 7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.5
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.5(react@19.2.5)
-      react-router-dom:
-        specifier: ^7.1.1
-        version: 7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-    devDependencies:
-      typescript:
-        specifier: ^5.7.2
-        version: 5.7.3
-
   packages/modules/auth:
     dependencies:
       '@cap/layout':
@@ -593,82 +556,65 @@ importers:
         specifier: ^4.0.16
         version: 4.1.4(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(jsdom@28.1.0(@noble/hashes@1.8.0))(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
 
+  packages/modules/auth/src/domain-kernel:
+    dependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
+  packages/modules/auth/src/modules/authentication-core:
+    dependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
+  packages/modules/auth/src/modules/authorization-engine:
+    dependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
+  packages/modules/auth/src/modules/identity-broker:
+    dependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
+  packages/modules/auth/src/modules/mfa-orchestrator:
+    dependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
+  packages/modules/auth/src/modules/passwordless-service:
+    dependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
+  packages/modules/auth/src/modules/platform-cluster:
+    dependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
+  packages/modules/auth/src/modules/session-manager:
+    dependencies:
+      '@mui/lab':
+        specifier: 7.0.1-beta.23
+        version: 7.0.1-beta.23(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@mui/material@7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
+  packages/modules/auth/src/modules/user-directory:
+    dependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
   packages/modules/landing:
     dependencies:
-      '@cap/layout':
-        specifier: workspace:*
-        version: link:../../layout
-      '@cap/platform-core':
-        specifier: workspace:*
-        version: link:../../platform-core
-      '@cap/shared-types':
-        specifier: workspace:*
-        version: link:../../shared-types
-      '@cap/theme':
-        specifier: workspace:*
-        version: link:../../theme
-      '@mui/icons-material':
-        specifier: ^7.0.0
-        version: 7.3.10(@mui/material@7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)
-      '@mui/material':
-        specifier: ^7.0.0
-        version: 7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.5
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.5(react@19.2.5)
-      react-router-dom:
-        specifier: ^7.1.1
-        version: 7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-    devDependencies:
-      typescript:
-        specifier: ^5.7.2
-        version: 5.7.3
-
-  packages/modules/reports:
-    dependencies:
-      '@cap/api-contracts':
-        specifier: workspace:*
-        version: link:../../api-contracts
-      '@cap/layout':
-        specifier: workspace:*
-        version: link:../../layout
-      '@cap/platform-core':
-        specifier: workspace:*
-        version: link:../../platform-core
-      '@cap/shared-types':
-        specifier: workspace:*
-        version: link:../../shared-types
-      '@cap/theme':
-        specifier: workspace:*
-        version: link:../../theme
-      '@mui/icons-material':
-        specifier: ^7.0.0
-        version: 7.3.10(@mui/material@7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)
-      '@mui/material':
-        specifier: ^7.0.0
-        version: 7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.5
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.5(react@19.2.5)
-      react-router-dom:
-        specifier: ^7.1.1
-        version: 7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-    devDependencies:
-      typescript:
-        specifier: ^5.7.2
-        version: 5.7.3
-
-  packages/modules/test:
-    dependencies:
-      '@cap/api-contracts':
-        specifier: workspace:*
-        version: link:../../api-contracts
       '@cap/layout':
         specifier: workspace:*
         version: link:../../layout

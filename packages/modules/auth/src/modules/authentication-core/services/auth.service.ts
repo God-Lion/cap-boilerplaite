@@ -27,8 +27,10 @@ import {
 } from '../../../domain-kernel/src/events/event-factory'
 
 export const handleLoginSuccess = async (userPayload: any) => {
-  if (userPayload?.accessToken || userPayload?.refreshToken) {
-    await secureTokenManager.setTokens(userPayload.accessToken, userPayload.refreshToken)
+  if (userPayload?.accessToken) {
+    // Refresh tokens are exclusively handled via HttpOnly cookies set by the backend —
+    // never read from or stored in client-side memory/payloads.
+    await secureTokenManager.setTokens(userPayload.accessToken)
   }
 
   await eventBus.publish(

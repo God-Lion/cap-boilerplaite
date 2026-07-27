@@ -8,4 +8,4 @@ packages:
   - "packages/platform-ui"
   - "packages/shared-types"
   - "packages/theme"
-  - "packages/modules/*"
+  - "packages/modules/**"

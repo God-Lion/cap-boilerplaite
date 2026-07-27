@@ -13,7 +13,9 @@ class SecureTokenManager {
   private readonly instanceId = crypto.randomUUID().substring(0, 8)
 
   constructor() {
-    console.log(`[SecureTokenManager] Instance created: ${this.instanceId}`)
+    if (import.meta.env.DEV) {
+      console.log(`[SecureTokenManager] Instance created: ${this.instanceId}`)
+    }
   }
 
   /**
@@ -50,7 +52,7 @@ class SecureTokenManager {
     }
   }
 
-  async setTokens(tokens: TokenData | string, _persistOrRefreshToken?: boolean | string): Promise<void> {
+  async setTokens(tokens: TokenData | string): Promise<void> {
     if (typeof tokens === 'string') {
       this.accessToken = tokens
       this.expiresAt = Date.now() + 3600000

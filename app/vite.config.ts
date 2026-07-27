@@ -155,6 +155,9 @@ export default defineConfig({
         target: 'http://127.0.0.1:3333',
         changeOrigin: true,
         configure: (proxy) => {
+          // SECURITY NOTE (Finding 4.4): This dev proxy forwards client Host as x-tenant-host for local dev.
+          // Production reverse proxies / edge ingress MUST NOT trust or forward client-supplied Host headers
+          // as tenant identifiers without edge signature or session-token claims.
           proxy.on('proxyReq', (proxyReq, req) => {
             if (req.headers.host) {
               proxyReq.setHeader('x-tenant-host', req.headers.host)

@@ -282,6 +282,9 @@ class StorageManager {
       // Clear sessionStorage
       sessionStorage.clear()
 
+      // Clear in-memory session cache key
+      this.clearSessionCacheKey()
+
       // Clear IndexedDB
       this.clearAllIndexedDB()
     } catch (error) {
@@ -307,14 +310,31 @@ class StorageManager {
     }
   }
 
+  private static sessionCacheKey: string | null = null
+
+  /** Set dynamic session-scoped cache encryption key issued post-authentication */
+  static setSessionCacheKey(key: string): void {
+    this.sessionCacheKey = key
+  }
+
+  /** Clear session cache encryption key on logout */
+  static clearSessionCacheKey(): void {
+    this.sessionCacheKey = null
+  }
+
   /**
-   * Get the master encryption key from the build environment.
-   * Throws loudly if the key is not configured — this is intentional.
-   * A missing key must be a build-time error, not a silent fallback to a shared constant.
+   * Get the master encryption key for local storage.
+   * Prefers dynamic in-memory session key if set; falls back to build-time VITE_STORAGE_ENCRYPTION_KEY.
    *
-   * @see api.client.ts getBaseURL() for the same fail-loud pattern.
+   * SECURITY WARNING (Audit Finding 4.1, CWE-321 / CWE-798):
+   * Build-time environment variables (VITE_*) are embedded directly into public client JavaScript bundles.
+   * Static key storage acts as client-side data obfuscation for persistence, NOT a true cryptographic
+   * security boundary. Sensitive secrets and refresh tokens MUST be managed via HttpOnly cookies.
    */
   private static getMasterKey(): string {
+    if (this.sessionCacheKey) {
+      return this.sessionCacheKey
+    }
     const key = (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY
     if (!key) {
       throw new Error(
@@ -325,15 +345,6 @@ class StorageManager {
     }
     return key
   }
-
-  /**
-   * AES-GCM Encryption using Web Crypto API.
-   *
-   * SECURITY WARNING: Encrypting localStorage data with VITE_STORAGE_ENCRYPTION_KEY acts as data
-   * obfuscation for client-side persistence, NOT a true cryptographic security boundary, because
-   * build-time environment variables are embedded directly into client JavaScript bundles.
-   * Sensitive secrets and refresh tokens MUST be managed via backend-enforced HttpOnly cookies.
-   */
   private static async encryptData(data: string): Promise<string> {
     return encryption.encryptData(data, this.getMasterKey())
   }

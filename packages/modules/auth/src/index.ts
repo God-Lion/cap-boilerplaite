@@ -95,7 +95,7 @@ export type { CreateJWKSKeyRequest, DeveloperApiKey } from './modules/authorizat
 
 // Re-export types from domain-kernel for cross-package use
 export type { SAMLConfig, JWKSKey, JWKSKeyDetail, SSFConfig } from './domain-kernel/src/types'
-export { AuthRoute, GuestRoute, PrivateRoute } from './modules/authentication-core'
+export { AuthRoute, GuestRoute } from './modules/authentication-core'
 export * from './modules/mfa-orchestrator'
 export * from './modules/identity-broker'
 export * from './modules/passwordless-service'
