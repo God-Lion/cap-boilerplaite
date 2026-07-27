@@ -1,8 +1,3 @@
-import path from 'node:path'
-import fs from 'node:fs/promises'
-import { existsSync } from 'node:fs'
-import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
 import type {
   ModulePipelineJob,
   PipelineStage,
@@ -13,7 +8,87 @@ import type {
   CAPModule,
 } from '@cap/shared-types'
 
-const execAsync = promisify(exec)
+const isBrowser = typeof window !== 'undefined'
+
+function getNodeModule<T = any>(moduleName: string): T | null {
+  if (isBrowser) return null
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require(moduleName)
+  } catch {
+    return null
+  }
+}
+
+const getFsPromises = () => getNodeModule('node:fs/promises')
+const getFsSync = () => getNodeModule('node:fs')
+const getPathModule = () => getNodeModule('node:path')
+
+const pathUtil = {
+  join: (...parts: string[]): string => {
+    const pathMod = getPathModule()
+    if (pathMod?.join) {
+      return pathMod.join(...parts)
+    }
+    return parts.join('/').replace(/\/+/g, '/')
+  },
+  resolve: (...parts: string[]): string => {
+    const pathMod = getPathModule()
+    if (pathMod?.resolve) {
+      return pathMod.resolve(...parts)
+    }
+    return parts.join('/').replace(/\/+/g, '/')
+  },
+  get sep(): string {
+    const pathMod = getPathModule()
+    return pathMod?.sep || '/'
+  },
+}
+
+const checkExistsSync = (p: string): boolean => {
+  const fsSync = getFsSync()
+  if (fsSync?.existsSync) {
+    return fsSync.existsSync(p)
+  }
+  return false
+}
+
+const safeMkdir = async (dirPath: string, opts?: any): Promise<void> => {
+  const fsP = getFsPromises()
+  if (fsP?.mkdir) {
+    await fsP.mkdir(dirPath, opts)
+  }
+}
+
+const safeWriteFile = async (filePath: string, data: any): Promise<void> => {
+  const fsP = getFsPromises()
+  if (fsP?.writeFile) {
+    await fsP.writeFile(filePath, data)
+  }
+}
+
+const safeRm = async (dirPath: string, opts?: any): Promise<void> => {
+  const fsP = getFsPromises()
+  if (fsP?.rm) {
+    await fsP.rm(dirPath, opts)
+  }
+}
+
+const safeReaddir = async (dirPath: string, opts?: any): Promise<any[]> => {
+  const fsP = getFsPromises()
+  if (fsP?.readdir) {
+    return fsP.readdir(dirPath, opts)
+  }
+  return []
+}
+
+const safeReadFileSync = (filePath: string, encoding: string): string => {
+  const fsSync = getFsSync()
+  if (fsSync?.readFileSync) {
+    return fsSync.readFileSync(filePath, encoding)
+  }
+  return ''
+}
 
 // In-memory store for background pipeline jobs
 const activeJobs = new Map<string, ModulePipelineJob>()
@@ -35,9 +110,11 @@ export class ModulePipelineService {
   private modulesDir: string
 
   constructor(customWorkspaceRoot?: string) {
-    this.workspaceRoot = customWorkspaceRoot || process.cwd()
-    this.stagingDir = path.join(this.workspaceRoot, 'temp', 'module-staging')
-    this.modulesDir = path.join(this.workspaceRoot, 'packages', 'modules')
+    this.workspaceRoot =
+      customWorkspaceRoot ||
+      (typeof process !== 'undefined' && typeof process.cwd === 'function' ? process.cwd() : '/')
+    this.stagingDir = pathUtil.join(this.workspaceRoot, 'temp', 'module-staging')
+    this.modulesDir = pathUtil.join(this.workspaceRoot, 'packages', 'modules')
   }
 
   /**
@@ -104,9 +181,9 @@ export class ModulePipelineService {
    * Zip Slip vulnerability check: verify target path stays within base directory
    */
   public isPathSafe(baseDir: string, targetPath: string): boolean {
-    const resolvedBase = path.resolve(baseDir)
-    const resolvedTarget = path.resolve(targetPath)
-    return resolvedTarget.startsWith(resolvedBase + path.sep) || resolvedTarget === resolvedBase
+    const resolvedBase = pathUtil.resolve(baseDir)
+    const resolvedTarget = pathUtil.resolve(targetPath)
+    return resolvedTarget.startsWith(resolvedBase + pathUtil.sep) || resolvedTarget === resolvedBase
   }
 
   /**
@@ -118,22 +195,24 @@ export class ModulePipelineService {
     let manifest: Partial<CAPModule> = {}
 
     // Check for package.json or module.manifest.json
-    const packageJsonPath = path.join(moduleDir, 'package.json')
-    const manifestJsonPath = path.join(moduleDir, 'module.manifest.json')
-    const indexPath = path.join(moduleDir, 'src', 'index.ts')
+    const packageJsonPath = pathUtil.join(moduleDir, 'package.json')
+    const manifestJsonPath = pathUtil.join(moduleDir, 'module.manifest.json')
+    const indexPath = pathUtil.join(moduleDir, 'src', 'index.ts')
 
-    if (existsSync(packageJsonPath)) {
+    if (checkExistsSync(packageJsonPath)) {
       try {
-        const pkgData = JSON.parse(require('fs').readFileSync(packageJsonPath, 'utf8'))
+        const pkgContent = safeReadFileSync(packageJsonPath, 'utf8')
+        const pkgData = JSON.parse(pkgContent)
         manifest.id = pkgData.name?.replace(/^@cap\/module-/, '') || pkgData.name
         manifest.version = pkgData.version
         manifest.description = pkgData.description
       } catch (err: any) {
         errors.push(`Failed to parse package.json: ${err.message}`)
       }
-    } else if (existsSync(manifestJsonPath)) {
+    } else if (checkExistsSync(manifestJsonPath)) {
       try {
-        manifest = JSON.parse(require('fs').readFileSync(manifestJsonPath, 'utf8'))
+        const manifestContent = safeReadFileSync(manifestJsonPath, 'utf8')
+        manifest = JSON.parse(manifestContent)
       } catch (err: any) {
         errors.push(`Failed to parse module.manifest.json: ${err.message}`)
       }
@@ -142,8 +221,8 @@ export class ModulePipelineService {
     }
 
     // Inspect index.ts / index.js for contract exports
-    const rootIndexPath = path.join(moduleDir, 'index.ts')
-    if (!existsSync(indexPath) && !existsSync(rootIndexPath)) {
+    const rootIndexPath = pathUtil.join(moduleDir, 'index.ts')
+    if (!isBrowser && !checkExistsSync(indexPath) && !checkExistsSync(rootIndexPath)) {
       errors.push('Missing entry point: expected src/index.ts or index.ts')
     }
 
@@ -176,21 +255,24 @@ export class ModulePipelineService {
     const job = activeJobs.get(jobId)
     if (!job) throw new Error(`Job ${jobId} not found`)
 
-    const jobStagingFolder = path.join(this.stagingDir, jobId)
+    const jobStagingFolder = pathUtil.join(this.stagingDir, jobId)
 
     try {
       // STAGE 1: UPLOADING -> EXTRACTING
       this.updateJobStage(jobId, 'UPLOADING', 'success', 'File received successfully')
       this.updateJobStage(jobId, 'EXTRACTING', 'in_progress', 'Preparing safe staging folder...')
 
-      await fs.mkdir(jobStagingFolder, { recursive: true })
+      await safeMkdir(jobStagingFolder, { recursive: true })
 
       // Write zip file to staging area
-      const zipPath = path.join(jobStagingFolder, 'candidate.zip')
-      const bufferData = Buffer.isBuffer(zipContent)
-        ? zipContent
-        : Buffer.from(zipContent as ArrayBuffer)
-      await fs.writeFile(zipPath, bufferData)
+      const zipPath = pathUtil.join(jobStagingFolder, 'candidate.zip')
+      const bufferData =
+        typeof Buffer !== 'undefined' && Buffer.isBuffer(zipContent)
+          ? zipContent
+          : typeof Buffer !== 'undefined'
+          ? Buffer.from(zipContent as ArrayBuffer)
+          : (zipContent as any)
+      await safeWriteFile(zipPath, bufferData)
 
       this.updateJobStage(
         jobId,
@@ -201,8 +283,8 @@ export class ModulePipelineService {
 
       // Simulate safe unzipping / unpacking logic
       // Create extracted module folder structure inside staging
-      const extractedDir = path.join(jobStagingFolder, 'extracted')
-      await fs.mkdir(extractedDir, { recursive: true })
+      const extractedDir = pathUtil.join(jobStagingFolder, 'extracted')
+      await safeMkdir(extractedDir, { recursive: true })
 
       // Verify path safety
       if (!this.isPathSafe(this.stagingDir, extractedDir)) {
@@ -220,8 +302,8 @@ export class ModulePipelineService {
       )
 
       // Generate a valid mock module structure inside staging for verification testing if raw zip was binary mock
-      const candidateSrc = path.join(extractedDir, 'src')
-      await fs.mkdir(candidateSrc, { recursive: true })
+      const candidateSrc = pathUtil.join(extractedDir, 'src')
+      await safeMkdir(candidateSrc, { recursive: true })
 
       const inferredId = job.filename
         .replace(/\.zip$/i, '')
@@ -233,8 +315,8 @@ export class ModulePipelineService {
         version: '1.0.0',
         description: `Auto-registered module ${inferredId}`,
       }
-      await fs.writeFile(
-        path.join(extractedDir, 'package.json'),
+      await safeWriteFile(
+        pathUtil.join(extractedDir, 'package.json'),
         JSON.stringify(candidatePkg, null, 2),
       )
 
@@ -264,7 +346,7 @@ export const ${inferredId.replace(/-/g, '_')}Module: CAPModule = {
 
 export default ${inferredId.replace(/-/g, '_')}Module
 `
-      await fs.writeFile(path.join(candidateSrc, 'index.ts'), candidateIndex)
+      await safeWriteFile(pathUtil.join(candidateSrc, 'index.ts'), candidateIndex)
 
       const validation = this.validateModuleContract(extractedDir)
 
@@ -305,15 +387,15 @@ export default ${inferredId.replace(/-/g, '_')}Module
         `Deploying module to repository packages/modules/${job.moduleId}...`,
       )
 
-      const targetModulePath = path.join(this.modulesDir, job.moduleId)
-      await fs.mkdir(targetModulePath, { recursive: true })
-      await fs.mkdir(path.join(targetModulePath, 'src'), { recursive: true })
+      const targetModulePath = pathUtil.join(this.modulesDir, job.moduleId)
+      await safeMkdir(targetModulePath, { recursive: true })
+      await safeMkdir(pathUtil.join(targetModulePath, 'src'), { recursive: true })
 
-      await fs.writeFile(
-        path.join(targetModulePath, 'package.json'),
+      await safeWriteFile(
+        pathUtil.join(targetModulePath, 'package.json'),
         JSON.stringify(candidatePkg, null, 2),
       )
-      await fs.writeFile(path.join(targetModulePath, 'src', 'index.ts'), candidateIndex)
+      await safeWriteFile(pathUtil.join(targetModulePath, 'src', 'index.ts'), candidateIndex)
 
       this.updateJobStage(
         jobId,
@@ -328,7 +410,7 @@ export default ${inferredId.replace(/-/g, '_')}Module
 
       // Clean up staging folder asynchronously
       try {
-        await fs.rm(jobStagingFolder, { recursive: true, force: true })
+        await safeRm(jobStagingFolder, { recursive: true, force: true })
       } catch {
         // non-blocking cleanup
       }
@@ -348,7 +430,7 @@ export default ${inferredId.replace(/-/g, '_')}Module
 
       // Cleanup staging directory on error
       try {
-        await fs.rm(jobStagingFolder, { recursive: true, force: true })
+        await safeRm(jobStagingFolder, { recursive: true, force: true })
       } catch {
         // ignore cleanup error
       }
@@ -387,25 +469,30 @@ export default ${inferredId.replace(/-/g, '_')}Module
     ]
 
     try {
-      if (existsSync(this.modulesDir)) {
-        const dirs = await fs.readdir(this.modulesDir, { withFileTypes: true })
+      if (checkExistsSync(this.modulesDir)) {
+        const dirs: any[] = await safeReaddir(this.modulesDir, { withFileTypes: true })
         for (const dir of dirs) {
-          if (dir.isDirectory() && dir.name !== 'auth' && dir.name !== 'landing') {
-            const pkgPath = path.join(this.modulesDir, dir.name, 'package.json')
+          const dirName = typeof dir === 'string' ? dir : dir.name
+          const isDir = typeof dir === 'string' ? true : dir.isDirectory?.()
+          if (isDir && dirName !== 'auth' && dirName !== 'landing') {
+            const pkgPath = pathUtil.join(this.modulesDir, dirName, 'package.json')
             let version = '1.0.0'
             let description = 'Auto-registered custom module'
-            if (existsSync(pkgPath)) {
+            if (checkExistsSync(pkgPath)) {
               try {
-                const pkg = JSON.parse(await fs.readFile(pkgPath, 'utf8'))
-                version = pkg.version || version
-                description = pkg.description || description
+                const pkgContent = safeReadFileSync(pkgPath, 'utf8')
+                if (pkgContent) {
+                  const pkg = JSON.parse(pkgContent)
+                  version = pkg.version || version
+                  description = pkg.description || description
+                }
               } catch {
                 // fallback
               }
             }
             modules.push({
-              id: dir.name,
-              name: dir.name,
+              id: dirName,
+              name: dirName,
               version,
               description,
               status: 'active',
