@@ -1,35 +1,15 @@
 // cspell:ignore Customizer Navbars tabler
-import React from 'react'
-import type { ChildrenType } from '@cap/platform-core'
-import {
-  LayoutWrapper,
-  PublicLayout,
-  VerticalLayout,
-  HorizontalLayout,
-  VerticalNavigation,
-  HorizontalNavigation,
-  Header,
-  VerticalFooter,
-  HorizontalFooter,
-  Footer as PublicFooter,
-} from '@cap/layout'
-// import { Avatar as CustomAvatar } from '@cap/theme'
-// import Customizer from 'src/core/components/customizer'
-import Button from '@mui/material/Button'
-import ArrowUpward from '@mui/icons-material/ArrowUpward'
-import { 
-  VerticalNavbar as Navbar, 
-  HorizontalNavbarContent,
-  ScrollToTop,
-  PublicNavbar,
-  GuestNavbar,
-  VerticalMenu,
-  AdminMenu,
-  HorizontalMenu
-} from '@cap/layout'
-import { useAppStore, Locale, getMode, getSystemMode, type AppStore, useAuth } from '@cap/platform-core'
-import { useTranslation } from 'react-i18next'
-import { useLang, getDictionary } from './utils/getDictionary'
+import React from 'react';
+import type { ChildrenType } from '@cap/platform-core';
+import { LayoutWrapper, PublicLayout, VerticalLayout, HorizontalLayout, VerticalNavigation, HorizontalNavigation, Header, VerticalFooter, HorizontalFooter, Footer as PublicFooter } from '@cap/layout';
+// 
+// 
+import Button from '@mui/material/Button';
+import ArrowUpward from '@mui/icons-material/ArrowUpward';
+import { VerticalNavbar as Navbar, HorizontalNavbarContent, ScrollToTop, PublicNavbar, GuestNavbar, VerticalMenu, AdminMenu, HorizontalMenu } from '@cap/layout';
+import { useAppStore, Locale, getMode, getSystemMode, type AppStore, useAuth } from '@cap/platform-core';
+import { useTranslation } from 'react-i18next';
+import { useLang, getDictionary } from './utils/getDictionary';
 
 const NavbarWrapper = React.memo(function NavbarWrapper() {
   const isAuthenticated = useAppStore((state: AppStore) => state.isAuthenticated)

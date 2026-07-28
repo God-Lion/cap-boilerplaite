@@ -1,13 +1,9 @@
-import { Box, Typography, Paper, alpha, useTheme } from '@mui/material'
-import {
-  AuthPageLayout,
-  AuthScreenIcon,
-  AuthActionButton,
-} from "@idaas/authentication-core/components/shared/auth"
-import { Engineering, Construction, Info } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
-import { themeConfig } from '@cap/platform-core'
+import { Box, Typography, Paper, alpha, useTheme } from '@mui/material';
+import { AuthPageLayout } from '@idaas/authentication-core/components/shared/auth';
+import { Engineering, Construction, Info } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { themeConfig } from '@cap/platform-core';
 
 export default function MaintenanceScreen() {
   const { t } = useTranslation('auth')
@@ -53,5 +49,4 @@ export default function MaintenanceScreen() {
     </AuthPageLayout>
   )
 }
-
 

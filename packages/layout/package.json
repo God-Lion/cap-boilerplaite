@@ -23,16 +23,19 @@
     "kbar": "^0.1.0-beta.45",
     "react-dropzone": "^14.3.8",
     "react-i18next": "^16.5.0",
-    "recharts": "^3.6.0",
     "react-perfect-scrollbar": "^1.5.8",
+    "react-phone-input-2": "^2.15.1",
     "react-router-dom": "^7.13.1",
     "react-toastify": "^11.0.5",
     "react-use": "^17.6.0",
-    "react-phone-input-2": "^2.15.1"
+    "recharts": "^3.6.0"
   },
   "peerDependencies": {
     "react": ">=19",
     "react-dom": ">=19",
     "zustand": ">=5"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
   }
 }

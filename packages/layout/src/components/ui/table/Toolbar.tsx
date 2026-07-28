@@ -1,20 +1,8 @@
-import React from 'react'
-import {
-  Box,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-} from '@mui/material'
-import type { IFilter, IHandleChange, ITabsHeader } from './types'
-// import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
-// import DialogQRcode from '../QRcode/DialogQRcode'
+import React from 'react';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Tab, Tabs, TextField } from '@mui/material';
+import type { IFilter, IHandleChange, ITabsHeader } from './types';
+// 
+// 
 
 // interface ToolbarProps {
 //     button: any

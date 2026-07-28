@@ -8,13 +8,13 @@
  */
 
 // MUI Imports
-import type { Theme } from '@mui/material/styles'
+import type { Theme } from '@mui/material/styles';
 
 // Type Imports
 /* Enable following line and the `settings` parameter in the below `userTheme`
    function in order to access `settings` context value in your custom theme object
  */
-// import type { settingsContext as Settings } from '@cap/theme'
+// 
 
 const userTheme = (/* settings: Settings */): Theme => {
   return {

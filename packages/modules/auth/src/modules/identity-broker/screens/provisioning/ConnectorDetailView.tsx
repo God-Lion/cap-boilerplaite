@@ -1,64 +1,12 @@
-import React, { useState, useMemo } from 'react'
-import {
-  Box,
-  Typography,
-  Button,
-  Grid,
-  Paper,
-  Avatar,
-  Card,
-  IconButton,
-  Chip,
-  Tooltip,
-  CircularProgress,
-  Stack,
-  useTheme,
-  alpha,
-  Tabs,
-  Tab,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Pagination,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material'
-import {
-  ArrowBack,
-  Refresh,
-  CheckCircle,
-  Error as ErrorIcon,
-  Update,
-  Delete,
-  Settings,
-  Storage,
-  Info,
-  History,
-  Hub,
-  CompareArrows,
-  Security,
-  ChevronRight,
-  Save,
-} from '@mui/icons-material'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { useTranslation } from 'react-i18next'
-import {
-  useProvisioningConnector,
-  useSyncProvisioningConnector,
-  useUpdateProvisioningConnector,
-  useDeleteProvisioningConnector,
-  useProvisioningConnectorLogs,
-} from "@idaas/authentication-core/hooks/useAdminQuery"
-import Path from '../path'
-import logger from '@idaas/authentication-core/utils/logger'
+import React, { useState } from 'react';
+import { Box, Typography, Button, Grid, Avatar, Card, IconButton, Chip, Tooltip, CircularProgress, Stack, useTheme, alpha, Tabs, Tab, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { ArrowBack, Refresh, CheckCircle, Error as ErrorIcon, Update, Delete, Settings, Storage, Info, History, Hub, CompareArrows, Security, ChevronRight, Save } from '@mui/icons-material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
+import { useProvisioningConnector, useSyncProvisioningConnector, useUpdateProvisioningConnector, useDeleteProvisioningConnector, useProvisioningConnectorLogs } from '@idaas/authentication-core/hooks/useAdminQuery';
+import Path from '../path';
+import logger from '@idaas/authentication-core/utils/logger';
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -165,13 +113,13 @@ const ConnectorDetailView: React.FC = () => {
     isLoading,
     error,
     refetch: refetchConnector,
-  } = useProvisioningConnector(connectorId)
-  const connector = connectorData?.data
+  } = (useProvisioningConnector as any)(connectorId)
+  const connector = (connectorData as any)?.data as any
 
-  const { data: logsData, isLoading: isLogsLoading } = useProvisioningConnectorLogs(connectorId, {
+  const { data: logsData, isLoading: isLogsLoading } = (useProvisioningConnectorLogs as any)(connectorId, {
     page,
     limit: pageSize,
-  })
+  } as any)
   const logs = (logsData as any)?.data?.data ?? (logsData as any)?.data ?? []
   const pagination = (logsData as any)?.data?.meta ?? { total: 0, last_page: 1 }
 
@@ -887,5 +835,4 @@ const ConnectorDetailView: React.FC = () => {
 }
 
 export default ConnectorDetailView
-
 

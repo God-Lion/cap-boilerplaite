@@ -1,7 +1,7 @@
-import { createTheme, alpha } from '@mui/material/styles'
-import { orange, red } from '@mui/material/colors'
-import { primary, surface, surfaceMixed } from './palette/index'
-import { colors as functional } from './palette/functional'
+import { createTheme, alpha } from '@mui/material/styles';
+
+import { primary, surface, surfaceMixed } from './palette/index';
+import { colors as functional } from './palette/functional';
 
 const darkTheme = createTheme({
   palette: {

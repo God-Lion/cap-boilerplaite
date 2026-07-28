@@ -172,7 +172,7 @@ export const generateThemeVariables = (theme: TenantThemeConfig): AppliedThemeVa
     effects['--brutal-border'] = brutalStyles.border;
     
     if (theme.effects.globalType === 'brutalism') {
-      effects['--effect-bg'] = brutal.backgroundColor;
+      effects['--effect-bg'] = brutal.backgroundColor || 'transparent';
       effects['--effect-border'] = brutalStyles.border;
       effects['--effect-shadow'] = brutalStyles.boxShadow;
     }
@@ -196,10 +196,10 @@ export const generateThemeVariables = (theme: TenantThemeConfig): AppliedThemeVa
     effects['--bento-border'] = bentoStyles.border;
     
     if (theme.effects.globalType === 'bento') {
-      effects['--effect-bg'] = bento.background;
+      effects['--effect-bg'] = bento.background || 'transparent';
       effects['--effect-border'] = bentoStyles.border;
-      effects['--effect-shadow'] = bento.shadow;
-      effects['--effect-radius'] = bento.borderRadius;
+      effects['--effect-shadow'] = bento.shadow || 'none';
+      effects['--effect-radius'] = bento.borderRadius || '0px';
     }
   } else {
     effects['--bento-enabled'] = '0';
@@ -216,11 +216,11 @@ export const generateThemeVariables = (theme: TenantThemeConfig): AppliedThemeVa
 
     if (theme.effects.globalType === 'organic') {
       const radius = (organic.curvature ?? 80) > 50 
-        ? `${organic.curvature}% ${100 - (organic.curvature ?? 80)}%` 
-        : `${organic.curvature}px`;
-      effects['--effect-bg'] = organic.backgroundColor;
+        ? `${organic.curvature ?? 80}% ${100 - (organic.curvature ?? 80)}%` 
+        : `${organic.curvature ?? 80}px`;
+      effects['--effect-bg'] = organic.backgroundColor || 'transparent';
       effects['--effect-radius'] = radius;
-      effects['--effect-border'] = `${organic.borderWidth} solid ${organic.borderColor}`;
+      effects['--effect-border'] = `${organic.borderWidth || '0px'} solid ${organic.borderColor || 'transparent'}`;
     }
   } else {
     effects['--organic-enabled'] = '0';
@@ -236,8 +236,10 @@ export const generateThemeVariables = (theme: TenantThemeConfig): AppliedThemeVa
     effects['--immersive-shadow-color'] = immersive.shadowColor || 'rgba(0,0,0,0.2)';
 
     if (theme.effects.globalType === 'immersive') {
-      effects['--effect-perspective'] = immersive.perspective;
-      effects['--effect-shadow'] = `0 ${immersive.depth / 4}px ${immersive.depth / 2}px ${immersive.shadowColor}`;
+      const depth = immersive.depth ?? 20;
+      const shadowColor = immersive.shadowColor || 'rgba(0,0,0,0.2)';
+      effects['--effect-perspective'] = immersive.perspective || '1000px';
+      effects['--effect-shadow'] = `0 ${depth / 4}px ${depth / 2}px ${shadowColor}`;
     }
   } else {
     effects['--immersive-enabled'] = '0';

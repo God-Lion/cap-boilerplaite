@@ -3,40 +3,20 @@
 // FIXES: Added header; implemented entry motion; modernized component attributes (slotProps); standardized Card/Paper/Avatar styles; translated all strings; added aria-label support
 // AUDIT: CRITICAL âœ“  HIGH âœ“  MEDIUM âœ“
 
-import { useMemo, useState, type KeyboardEvent } from 'react'
-import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  TextField,
-  InputAdornment,
-  alpha,
-  useTheme,
-  Grid,
-  Chip,
-  Paper,
-  Divider,
-  Breadcrumbs,
-  Avatar,
-  Link,
-  Stack,
-  CircularProgress,
-} from '@mui/material'
-import Search from '@mui/icons-material/Search'
-import Dns from '@mui/icons-material/Dns'
-import Description from '@mui/icons-material/Description'
-import Public from '@mui/icons-material/Public'
-import ChevronRight from '@mui/icons-material/ChevronRight'
-import Language from '@mui/icons-material/Language'
-import Business from '@mui/icons-material/Business'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useSnackbar } from 'notistack'
-import { useFetchRemoteMetadata, useRecentSAMLEntities, Path } from "@auth"
+import { useMemo, useState, type KeyboardEvent } from 'react';
+import { Box, Button, Container, Typography, Card, CardContent, TextField, InputAdornment, alpha, useTheme, Grid, Chip, Paper, Breadcrumbs, Avatar, Link, Stack, CircularProgress } from '@mui/material';
+import Search from '@mui/icons-material/Search';
+import Dns from '@mui/icons-material/Dns';
+import Description from '@mui/icons-material/Description';
+import Public from '@mui/icons-material/Public';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import Language from '@mui/icons-material/Language';
+import Business from '@mui/icons-material/Business';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useSnackbar } from 'notistack';
+import { useFetchRemoteMetadata, useRecentSAMLEntities, Path } from '@auth';
 
 export default function SAMLMetadataBrowser() {
   const { t } = useTranslation()
@@ -66,7 +46,7 @@ export default function SAMLMetadataBrowser() {
       ].slice(0, 10)
       localStorage.setItem('recent_saml_entities', JSON.stringify(updated))
 
-      navigate(`${Path.auth.samlMetadataDisplay}?url=${encodeURIComponent(data.entityId)}`)
+      navigate(`${Path.identity.samlMetadataDisplay}?url=${encodeURIComponent(data.entityId)}`)
     },
   })
 
@@ -87,7 +67,7 @@ export default function SAMLMetadataBrowser() {
   }
 
   const handleViewDetails = (entityId: string) => {
-    navigate(`${Path.auth.samlMetadataDisplay}?url=${encodeURIComponent(entityId)}`)
+    navigate(`${Path.identity.samlMetadataDisplay}?url=${encodeURIComponent(entityId)}`)
   }
 
   const entities = useMemo(() => {
@@ -484,6 +464,4 @@ export default function SAMLMetadataBrowser() {
     </Container>
   )
 }
-
-
 

@@ -1,40 +1,14 @@
-import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Avatar,
-  Switch,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Container,
-  Card,
-  CardContent,
-  Tabs,
-  Tab,
-  Divider,
-  CircularProgress,
-} from '@mui/material'
-import { Person, Settings, ExpandMore, CloudUpload, Edit, Shield } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
-import { Controller, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useUserProfile, useUpdateMe, useExportMutation, useErasureMutation } from "../../hooks/useUserQuery"
-import { useAuth, useNotifications } from '@cap/platform-core'
-import { Path } from "@cap/module-auth/routes/path"
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Alert,
-  InputAdornment,
-} from '@mui/material'
-import { CloudDownload, Delete, Lock } from '@mui/icons-material'
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { Box, Button, TextField, Typography, Switch, Select, MenuItem, FormControl, InputLabel, Container, Card, CardContent, Tabs, Tab, Divider, CircularProgress } from '@mui/material';
+import { Person, Settings, ExpandMore, Shield } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useUserProfile, useUpdateMe, useExportMutation, useErasureMutation } from '../../hooks/useUserQuery';
+import { useAuth, useNotifications } from '@cap/platform-core';
+import { Path } from '@cap/module-auth/routes/path';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Alert, InputAdornment } from '@mui/material';
+import { CloudDownload, Delete, Lock } from '@mui/icons-material';
 
 interface EditProfileProps {
   onSave?: () => void
@@ -193,8 +167,8 @@ export default function EditProfile({ onSave, onCancel }: EditProfileProps) {
   // Populate form when profile data loads
   useEffect(() => {
     // Only reset if we have data AND a profile object (to avoid resetting to defaults on partial loads)
-    if (profileData?.data && profileData.data.profile) {
-      const data = profileData.data
+    if (profileData?.data && (profileData.data as any).profile) {
+      const data = profileData.data as any
       const profile = data.profile
       controlForm.reset({
         firstName: data.firstName || data.firstname || '',
@@ -1195,6 +1169,4 @@ export default function EditProfile({ onSave, onCancel }: EditProfileProps) {
     </Box>
   )
 }
-
-
 

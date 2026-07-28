@@ -423,7 +423,7 @@ function AppealsQueue() {
   const [resolvingAppealId, setResolvingAppealId] = useState<number | null>(null)
 
   const resolveMutation = useResolveAppeal({
-    onSuccess: (_, variables) => {
+    onSuccess: (_: any, variables: any) => {
       enqueueSnackbar(
         variables.action === 'approved'
           ? t('auth.admin.appealApproved')
@@ -432,7 +432,7 @@ function AppealsQueue() {
       )
       refetch()
     },
-    onError: (err) => {
+    onError: (err: any) => {
       enqueueSnackbar(err.message || t('auth.common.errorOccurred'), {
         variant: 'error',
       })

@@ -1,49 +1,24 @@
-import { useState, useEffect } from 'react'
-import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  TextField,
-  Switch,
-  FormControlLabel,
-  MenuItem,
-  alpha,
-  useTheme,
-  Paper,
-  Chip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Avatar,
-  Stack,
-  IconButton,
-  CircularProgress,
-  Alert,
-  Divider,
-} from '@mui/material'
-import ExpandMore from '@mui/icons-material/ExpandMore'
-import Save from '@mui/icons-material/Save'
-import Security from '@mui/icons-material/Security'
-import Language from '@mui/icons-material/Language'
-import SwapHoriz from '@mui/icons-material/SwapHoriz'
-import Fingerprint from '@mui/icons-material/Fingerprint'
-import ArrowForward from '@mui/icons-material/ArrowForward'
-import ArrowBack from '@mui/icons-material/ArrowBack'
-import InfoOutlined from '@mui/icons-material/InfoOutlined'
-import Add from '@mui/icons-material/Add'
-import DeleteOutline from '@mui/icons-material/DeleteOutline'
-import ContentCopy from '@mui/icons-material/ContentCopy'
-import CloudDownload from '@mui/icons-material/CloudDownload'
-import Explore from '@mui/icons-material/Explore'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useSnackbar } from 'notistack'
-import { useSAMLConfig, useUpdateSAMLConfig, useSAMLMetadata, Path } from "@auth"
+import { useState, useEffect } from 'react';
+import { Box, Button, Container, Typography, Card, CardContent, Grid, TextField, Switch, FormControlLabel, alpha, useTheme, Chip, Avatar, Stack, IconButton, CircularProgress, Alert, Divider } from '@mui/material';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Save from '@mui/icons-material/Save';
+import Security from '@mui/icons-material/Security';
+import Language from '@mui/icons-material/Language';
+import SwapHoriz from '@mui/icons-material/SwapHoriz';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import Add from '@mui/icons-material/Add';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import ContentCopy from '@mui/icons-material/ContentCopy';
+import CloudDownload from '@mui/icons-material/CloudDownload';
+import Explore from '@mui/icons-material/Explore';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useSnackbar } from 'notistack';
+import { useSAMLConfig, useUpdateSAMLConfig, Path } from '@auth';
 
 export default function SAMLConfigDashboard() {
   const { t } = useTranslation()
@@ -535,7 +510,7 @@ export default function SAMLConfigDashboard() {
                   fullWidth
                   variant="outlined"
                   startIcon={<Explore />}
-                  onClick={() => navigate(Path.auth.samlMetadataBrowser)}
+                  onClick={() => navigate(Path.identity.samlMetadataBrowser)}
                   sx={{
                     borderRadius: '12px',
                     height: 44,
@@ -636,7 +611,7 @@ export default function SAMLConfigDashboard() {
               <Button
                 fullWidth
                 variant='outlined'
-                onClick={() => navigate(Path.auth.jwksManagement)}
+                onClick={() => navigate(Path.identity.jwksManagement)}
                 sx={{
                   mt: 3,
                   borderRadius: '12px',
@@ -660,6 +635,4 @@ export default function SAMLConfigDashboard() {
     </Container>
   )
 }
-
-
 

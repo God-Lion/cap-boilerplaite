@@ -1,8 +1,8 @@
-import classnames from 'classnames'
-// import { useVerticalNav } from 'src/menu/contexts/verticalNavContext'
-// import { useHorizontalNav } from 'src/menu/contexts/horizontalNavContext'
-// import { useSettings } from 'src/core/contexts/settingsContext'
-import { horizontalLayoutClasses } from '../../utils/layoutClasses'
+import classnames from 'classnames';
+// 
+// 
+// 
+import { horizontalLayoutClasses } from '../../utils/layoutClasses';
 
 const FooterContent = () => {
   // const { settings } = useSettings()

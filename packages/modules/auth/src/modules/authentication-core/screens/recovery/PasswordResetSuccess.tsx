@@ -1,18 +1,9 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useNavigate, Link as RouterLink } from 'react-router-dom'
-import {
-  Box,
-  Button,
-  Typography,
-  alpha,
-  useTheme,
-  Avatar,
-  Link as MuiLink,
-  CircularProgress,
-} from '@mui/material'
-import { CheckCircle, ArrowForward, Lock } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Typography, alpha, useTheme, Avatar, Link as MuiLink, CircularProgress } from '@mui/material';
+import { CheckCircle, ArrowForward, Lock } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function PasswordResetSuccess() {
   const { t } = useTranslation('auth')

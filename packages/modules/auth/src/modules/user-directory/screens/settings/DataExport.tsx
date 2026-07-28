@@ -1,31 +1,9 @@
-import React, { useCallback, useState, useMemo } from 'react'
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  CircularProgress,
-  Alert,
-  Paper,
-  Avatar,
-} from '@mui/material'
-import { useTheme, alpha } from '@mui/material/styles'
-import {
-  Download as DownloadIcon,
-  FilePresent as FileIcon,
-  History as HistoryIcon,
-  Schedule as ScheduleIcon,
-  ChevronRight,
-  Info,
-} from '@mui/icons-material'
-// import { useTranslation } from 'react-i18next'
-import { useComplianceExport, useExportMutation } from '../../hooks/useUserQuery'
+import React, { useCallback, useState, useMemo } from 'react';
+import { Box, Button, Card, CardContent, Typography, Divider, List, ListItem, ListItemText, ListItemIcon, CircularProgress, Alert, Paper, Avatar } from '@mui/material';
+import { useTheme, alpha } from '@mui/material/styles';
+import { Download as DownloadIcon, FilePresent as FileIcon, History as HistoryIcon, Schedule as ScheduleIcon } from '@mui/icons-material';
+// 
+import { useComplianceExport, useExportMutation } from '../../hooks/useUserQuery';
 
 export const DataExport: React.FC = () => {
   const theme = useTheme()

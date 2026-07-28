@@ -33,6 +33,7 @@
     "@types/node": "^24.10.4",
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/coverage-v8": "^4.0.16",
+    "typescript": "^7.0.2",
     "vitest": "^4.0.16"
   }
 }

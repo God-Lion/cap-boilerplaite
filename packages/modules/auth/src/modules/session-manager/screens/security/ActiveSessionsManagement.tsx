@@ -1,44 +1,10 @@
-import React from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Avatar,
-  Button,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Chip,
-  Divider,
-  Container,
-  Paper,
-  IconButton,
-  Alert,
-  AlertTitle,
-  Tooltip,
-  Stack,
-  Skeleton,
-} from '@mui/material'
-import {
-  Computer,
-  Smartphone,
-  Laptop,
-  Tablet,
-  LocationOn,
-  Security,
-  ArrowForward,
-  DeleteOutline,
-  InfoOutlined,
-  Fingerprint,
-  Refresh,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { useSessions, useRevokeSession, useRevokeAllSessions, Path, UserSession } from "@auth"
+import React from 'react';
+import { Box, Typography, Card, CardContent, Avatar, Button, Grid, List, ListItem, ListItemIcon, ListItemText, Chip, Divider, Container, Paper, IconButton, Alert, AlertTitle, Tooltip, Stack, Skeleton } from '@mui/material';
+import { Computer, Smartphone, Laptop, Tablet, LocationOn, Security, ArrowForward, DeleteOutline, InfoOutlined, Refresh } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useSessions, useRevokeSession, useRevokeAllSessions, Path, UserSession } from '@auth';
 
 interface ActiveSessionsProps {
   adminView?: boolean
@@ -331,7 +297,4 @@ const ActiveSessionsManagement = ({ adminView, userName, userId }: ActiveSession
 }
 
 export default ActiveSessionsManagement
-
-
-
 

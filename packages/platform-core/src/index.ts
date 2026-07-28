@@ -3,6 +3,7 @@ import './types/pwa.d.ts'
 import './types/mui.d.ts'
 
 export * from '@cap/platform-store'
+export { AdaptiveLogo, Alert, Copyright } from '@cap/theme'
 
 export { default as defaultCoreTheme } from './theme'
 export type { Settings } from '@cap/shared-types'

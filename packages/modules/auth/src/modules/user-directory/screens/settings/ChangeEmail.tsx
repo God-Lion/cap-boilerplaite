@@ -1,36 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Button,
-  Container,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-  Card,
-  CardContent,
-  CssBaseline,
-  Alert,
-  CircularProgress,
-  Link,
-} from '@mui/material'
-import {
-  Lock,
-  Visibility,
-  VisibilityOff,
-  VpnKey,
-  LockReset,
-  Mail,
-  AlternateEmail,
-  Info,
-  CheckCircle,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { themeConfig, useNotifications } from '@cap/platform-core'
-import { Controller, useForm } from 'react-hook-form'
-import { Path } from '@cap/module-auth/routes/path'
-import { useCurrentUserQuery, useChangeEmail } from '../../hooks/useUserQuery'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Container, IconButton, InputAdornment, TextField, Typography, Card, CardContent, CssBaseline, Alert, CircularProgress, Link } from '@mui/material';
+import { Visibility, VisibilityOff, VpnKey, LockReset, Mail, AlternateEmail, Info, CheckCircle } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { themeConfig, useNotifications } from '@cap/platform-core';
+import { Controller, useForm } from 'react-hook-form';
+import { Path } from '@cap/module-auth/routes/path';
+import { useCurrentUserQuery, useChangeEmail } from '../../hooks/useUserQuery';
 
 interface ChangeEmailRequestFormData {
   CurrentEmail: string
@@ -42,7 +18,7 @@ function ChangeEmail() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { addNotification } = useNotifications()
-  const { user } = useCurrentUserQuery()
+  const { data: user } = useCurrentUserQuery()
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [successData, setSuccessData] = useState<{ message: string; verifyUrl?: string } | null>(
     null,
@@ -60,15 +36,15 @@ function ChangeEmail() {
 
   // Pre-fill current email when user data is available
   useEffect(() => {
-    if (user?.email) {
-      controlForm.setValue('CurrentEmail', user.email)
+    if (user?.data?.email) {
+      controlForm.setValue('CurrentEmail', user.data.email)
     }
   }, [user, controlForm])
 
   const { mutate: changeEmail, isPending } = useChangeEmail({
     onSuccess: (response) => {
       setSuccessData({
-        message: response.data?.message || t('auth.account.change_email_success_message'),
+        message: (response.data as any)?.message || t('auth.account.change_email_success_message'),
         verifyUrl: (response.data as any).verifyUrl,
       })
       addNotification({
@@ -138,7 +114,7 @@ function ChangeEmail() {
           <Button
             variant='contained'
             fullWidth
-            onClick={() => navigate(Path.security)}
+            onClick={() => navigate(Path.user.security)}
             sx={{ bgcolor: 'info.main', fontWeight: 700 }}
           >
             {t('auth.account.back_to_security', 'Back to Security')}
@@ -497,7 +473,7 @@ function ChangeEmail() {
                   <Button
                     variant='text'
                     fullWidth
-                    onClick={() => navigate(Path.security)}
+                    onClick={() => navigate(Path.user.security)}
                     sx={{
                       textTransform: 'none',
                       fontWeight: 600,
@@ -525,6 +501,4 @@ function ChangeEmail() {
 }
 
 export default ChangeEmail
-
-
 

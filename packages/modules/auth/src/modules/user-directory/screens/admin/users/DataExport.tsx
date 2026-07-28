@@ -1,38 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  IconButton,
-  Alert,
-  CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from '@mui/material'
-import {
-  Download,
-  History,
-  Info,
-  CheckCircle,
-  Pending,
-  CloudDownload,
-  Delete,
-} from '@mui/icons-material'
-import { adminService } from '../../../../authorization-engine/services/adminService'
-import { useSnackbar } from 'notistack'
-import { useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react';
+import { Box, Typography, Card, CardContent, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Alert, CircularProgress } from '@mui/material';
+import { Download, History, CheckCircle, Pending, CloudDownload, Delete } from '@mui/icons-material';
+import { adminService } from '../../../../authorization-engine/services/adminService';
+import { useSnackbar } from 'notistack';
+import { useParams } from 'react-router-dom';
 
 const DataExport = () => {
   const { id: userId } = useParams()

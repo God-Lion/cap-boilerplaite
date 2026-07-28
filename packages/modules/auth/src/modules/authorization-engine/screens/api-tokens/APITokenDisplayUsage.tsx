@@ -1,45 +1,12 @@
-import React, { useState, useMemo } from 'react'
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Alert,
-  AlertTitle,
-  Paper,
-  IconButton,
-  Tooltip,
-  Stepper,
-  Step,
-  StepLabel,
-  Divider,
-  Grid,
-  Chip,
-  Skeleton,
-} from '@mui/material'
-import {
-  ContentCopy as CopyIcon,
-  Check as CheckIcon,
-  CheckCircle as CheckCircleIcon,
-  ArrowForward as ArrowForwardIcon,
-  ArrowBack as ArrowBackIcon,
-  Security as SecurityIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
-  Terminal as TerminalIcon,
-  VpnKey as VpnKeyIcon,
-  Shield as ShieldIcon,
-  CalendarToday as CalendarTodayIcon,
-  AccessTime as AccessTimeIcon,
-  Info as InfoIcon,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { alpha, useTheme } from '@mui/material/styles'
-import { useUserTokens } from "@auth/user-directory/hooks/useUserQuery"
-import { Path } from "@auth/routes/path"
+import React, { useState, useMemo } from 'react';
+import { Box, Typography, Button, Card, CardContent, Alert, AlertTitle, Paper, IconButton, Tooltip, Stepper, Step, StepLabel, Divider, Grid, Chip, Skeleton } from '@mui/material';
+import { ContentCopy as CopyIcon, Check as CheckIcon, CheckCircle as CheckCircleIcon, ArrowForward as ArrowForwardIcon, ArrowBack as ArrowBackIcon, Security as SecurityIcon, Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon, Terminal as TerminalIcon, VpnKey as VpnKeyIcon, Shield as ShieldIcon, Info as InfoIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { alpha, useTheme } from '@mui/material/styles';
+import { useUserTokens } from '@auth/user-directory/hooks/useUserQuery';
+import { Path } from '@auth/routes/path';
 
 interface DisplayState {
   token: string
@@ -739,6 +706,4 @@ const APITokenDisplayUsage: React.FC = () => {
 }
 
 export default APITokenDisplayUsage
-
-
 

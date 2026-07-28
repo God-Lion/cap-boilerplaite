@@ -26,6 +26,8 @@ export type Direction = 'ltr' | 'rtl';
 export type LayoutComponentWidth = 'compact' | 'wide' | 'full';
 export type LayoutComponentPosition = 'fixed' | 'static';
 
+export type UIEffect = 'standard' | 'glass' | 'neu' | 'brutalism' | 'bento' | 'organic' | 'immersive';
+
 export interface ChildrenType {
   children: ReactNode;
 }
@@ -37,6 +39,7 @@ export type Dictionary = Record<string, any>;
 export interface Settings {
   mode?: Mode;
   skin?: Skin;
+  effect?: UIEffect;
   semiDark?: boolean;
   layout?: Layout;
   navbarContentWidth?: LayoutComponentWidth;

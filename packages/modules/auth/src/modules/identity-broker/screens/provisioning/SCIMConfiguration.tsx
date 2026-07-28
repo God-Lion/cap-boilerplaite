@@ -1,62 +1,13 @@
-import { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  TextField,
-  InputAdornment,
-  alpha,
-  useTheme,
-  Stack,
-  Chip,
-  IconButton,
-  Switch,
-  FormControlLabel,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Avatar,
-  Tooltip,
-  Alert,
-  Grid,
-} from '@mui/material'
-import {
-  ContentCopy,
-  VpnKey,
-  Save,
-  Refresh,
-  Security,
-  Code,
-  SwapHoriz,
-  ArrowBack,
-  CheckCircle,
-  CloudSync,
-  People,
-  Info,
-  OpenInNew,
-  Visibility,
-  VisibilityOff,
-} from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { useTranslation } from 'react-i18next'
-import {
-  useSCIMTokens,
-  useCreateSCIMToken,
-  useRevokeSCIMToken,
-  useOrganizationScimConfig,
-  useUpdateOrganizationScimConfig,
-  useTestSCIMConnection,
-} from "@auth/authorization-engine/hooks/useAdminQuery"
-import Path from '../path'
-import type { SCIMToken } from "@auth/authorization-engine/services/adminService"
-import logger from '@cap/module-auth/modules/authentication-core/utils/logger'
+import { useState } from 'react';
+import { Box, Typography, Card, CardContent, Button, TextField, InputAdornment, alpha, useTheme, Stack, Chip, IconButton, Switch, FormControlLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Tooltip, Alert, Grid } from '@mui/material';
+import { ContentCopy, VpnKey, Save, Refresh, Security, Code, SwapHoriz, ArrowBack, CloudSync, People, Info, OpenInNew, Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
+import { useSCIMTokens, useCreateSCIMToken, useRevokeSCIMToken, useOrganizationScimConfig, useUpdateOrganizationScimConfig, useTestSCIMConnection } from '@auth/authorization-engine/hooks/useAdminQuery';
+
+import type { SCIMToken } from '@auth/authorization-engine/services/adminService';
+import logger from '@cap/module-auth/modules/authentication-core/utils/logger';
 
 function StatCard({
   label,
@@ -186,12 +137,12 @@ export default function SCIMConfiguration() {
   // Sync state during render when scimConfig changes from the server
   if (scimConfig && scimConfig !== prevConfig) {
     setPrevConfig(scimConfig)
-    setScimEnabled(scimConfig.enabled ?? false)
-    if (scimConfig.attributeMapping && Object.keys(scimConfig.attributeMapping).length > 0) {
+    setScimEnabled((scimConfig as any).enabled ?? false)
+    if ((scimConfig as any).attributeMapping && Object.keys((scimConfig as any).attributeMapping).length > 0) {
       setMappings((prev) =>
         prev.map((m) => ({
           ...m,
-          internal: (scimConfig.attributeMapping as Record<string, string>)[m.scim] || m.internal,
+          internal: ((scimConfig as any).attributeMapping as Record<string, string>)[m.scim] || m.internal,
         })),
       )
     }
@@ -263,7 +214,7 @@ export default function SCIMConfiguration() {
     updateConfigMutation.mutate({
       enabled: scimEnabled,
       attributeMapping,
-    })
+    } as any)
   }
 
   const handleRotateToken = () => {
@@ -952,5 +903,4 @@ export default function SCIMConfiguration() {
     </Box>
   )
 }
-
 

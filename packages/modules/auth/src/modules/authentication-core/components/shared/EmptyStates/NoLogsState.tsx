@@ -1,7 +1,7 @@
-import React from 'react'
-import { Box, Typography, Button, Stack } from '@mui/material'
-import { HistoryToggleOff, Refresh } from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
+
+import { Box, Typography, Button, Stack } from '@mui/material';
+import { HistoryToggleOff, Refresh } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 interface NoLogsStateProps {
   title?: string

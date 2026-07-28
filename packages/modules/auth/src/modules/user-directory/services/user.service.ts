@@ -3,19 +3,10 @@
 // User Service - User Profile & Account Management
 // ============================================================================
 
-import { apiClient, FetchResponse } from '@cap/platform-core'
+import { apiClient, FetchResponse } from '@cap/platform-core';
 
-import {
-  UpdateNamesRequest,
-  UpdateEmailRequest,
-  UpdatePhotoRequest,
-  ChangePasswordRequest,
-  UpdatePreferencesRequest,
-  UpdateMeRequest,
-  SecurityStatusResponse,
-  AuditLog,
-} from "@idaas/authentication-core/types/api.types"
-import { ENDPOINTS } from "@idaas/authentication-core/services/endpoints"
+import { UpdateEmailRequest, UpdatePhotoRequest, ChangePasswordRequest, UpdatePreferencesRequest, UpdateMeRequest, SecurityStatusResponse, AuditLog } from '@idaas/authentication-core/types/api.types';
+import { ENDPOINTS } from '@idaas/authentication-core/services/endpoints';
 
 const userService = {
   getMe: (): Promise<FetchResponse> => {
@@ -173,6 +164,4 @@ const userService = {
 }
 
 export default userService
-
-
 

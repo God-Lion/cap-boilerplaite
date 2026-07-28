@@ -1,7 +1,6 @@
-import React from 'react'
-import { Button, Stack } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@cap/platform-core'
+import React from 'react';
+import { Button, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Shared component for authentication buttons (Login/Register)

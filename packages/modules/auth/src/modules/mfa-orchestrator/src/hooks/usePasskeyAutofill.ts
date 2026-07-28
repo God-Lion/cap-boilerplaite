@@ -1,12 +1,8 @@
-import { useEffect, useState, useRef } from 'react'
-import {
-  startAuthentication,
-  browserSupportsWebAuthn,
-  browserSupportsWebAuthnAutofill,
-} from '@simplewebauthn/browser'
-import { mfaService } from '../../services/mfa.service'
-import { useAuthStore } from '@cap/module-auth/modules/authentication-core/store'
-import { secureTokenManager, sessionStorageManager } from '@cap/platform-core'
+import { useEffect, useState, useRef } from 'react';
+import { startAuthentication, browserSupportsWebAuthnAutofill } from '@simplewebauthn/browser';
+import { mfaService } from '../../services/mfa.service';
+import { useAuthStore } from '@cap/module-auth/modules/authentication-core/store';
+import { secureTokenManager, sessionStorageManager } from '@cap/platform-core';
 
 /**
  * Hook to implement WebAuthn Conditional UI (Passkey Autofill)
@@ -115,6 +111,4 @@ export function usePasskeyAutofill(onSuccess?: () => void) {
 
   return { isAvailable, isLoading, error }
 }
-
-
 

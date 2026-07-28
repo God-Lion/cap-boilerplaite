@@ -1,43 +1,6 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react'
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  IconButton,
-  Button,
-  Slider,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Tooltip,
-  Chip,
-  Paper,
-  Divider,
-  Grid,
-  Stack,
-  Switch,
-  FormControlLabel,
-} from '@mui/material'
-import {
-  PlayArrow as PlayArrowIcon,
-  Pause as PauseIcon,
-  Replay as ReplayIcon,
-  SkipNext as SkipNextIcon,
-  Download as DownloadIcon,
-  VolumeUp as VolumeUpIcon,
-  VolumeOff as VolumeOffIcon,
-  Shuffle as ShuffleIcon,
-  AutoAwesome as AutoAwesomeIcon,
-  CenterFocusStrong as CenterFocusStrongIcon,
-  Settings as SettingsIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
-  ColorLens as ColorLensIcon,
-  Grain as GrainIcon,
-  Timeline as TimelineIcon,
-} from '@mui/icons-material'
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Box, Typography, IconButton, Button, Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, Chip, Paper, Divider, Grid, Stack, Switch, FormControlLabel } from '@mui/material';
+import { PlayArrow as PlayArrowIcon, Pause as PauseIcon, Replay as ReplayIcon, SkipNext as SkipNextIcon, Download as DownloadIcon, VolumeUp as VolumeUpIcon, VolumeOff as VolumeOffIcon, Shuffle as ShuffleIcon, AutoAwesome as AutoAwesomeIcon, Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 // Seeded PRNG (Mulberry32)

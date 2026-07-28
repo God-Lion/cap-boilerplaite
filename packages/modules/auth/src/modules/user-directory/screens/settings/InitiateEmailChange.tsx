@@ -1,31 +1,9 @@
-import React from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Avatar,
-  Button,
-  Grid,
-  TextField,
-  Alert,
-  AlertTitle,
-  Container,
-  IconButton,
-  Stack,
-} from '@mui/material'
-import {
-  Mail,
-  Security,
-  Warning,
-  ArrowForward,
-  Lock,
-  CalendarToday,
-  ArrowBack,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import { Path } from "@auth/routes/path"
+
+import { Box, Typography, Card, CardContent, Avatar, Button, Grid, TextField, Alert, AlertTitle, Container, IconButton, Stack } from '@mui/material';
+import { Mail, Security, Warning, ArrowForward, Lock, CalendarToday, ArrowBack } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Path } from '@auth/routes/path';
 
 const InitiateEmailChange = () => {
   const { t } = useTranslation()

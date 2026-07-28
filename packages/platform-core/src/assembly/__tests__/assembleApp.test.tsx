@@ -1,8 +1,8 @@
-import React from 'react'
-import { describe, it, expect } from 'vitest'
-import i18next from 'i18next'
-import { assembleApp } from '../index'
-import { CAPModule } from '../../types'
+
+import { describe, it, expect } from 'vitest';
+import i18next from 'i18next';
+import { assembleApp } from '../index';
+import { CAPModule } from '../../types';
 
 describe('assembleApp layout association', () => {
   it('compiles app with routes wrapped in LayoutRouteWrapper', () => {
@@ -75,5 +75,4 @@ describe('assembleApp catch-all route', () => {
     expect(screen.getByText('Page Not Found')).toBeInTheDocument()
   })
 })
-
 

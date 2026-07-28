@@ -1,68 +1,16 @@
-import React, { useState, useRef } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Chip,
-  Button,
-  Avatar,
-  Divider,
-  Stack,
-  Tab,
-  Tabs,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Switch,
-  FormControlLabel,
-  alpha,
-  CircularProgress,
-  Alert,
-  Paper,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-} from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-import {
-  AdminPanelSettings,
-  Security,
-  History,
-  Block,
-  VpnKey,
-  Login,
-  Info,
-  Edit,
-  Gavel,
-  Verified,
-  Add,
-  Shield,
-  Delete,
-  PriorityHigh,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useSnackbar } from 'notistack'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Path } from '@cap/module-auth/routes/path'
+import React, { useState, useRef } from 'react';
+import { Box, Typography, Card, CardContent, Grid, Chip, Button, Avatar, Divider, Stack, Tab, Tabs, List, ListItem, ListItemText, ListItemIcon, Switch, FormControlLabel, alpha, CircularProgress, Alert, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 
-import {
-  useUser,
-  useBanUser,
-  useUnbanUser,
-  useImpersonateUser,
-  useResetUserMfa,
-  useAuditLogs,
-  useUpdateUser,
-} from '@idaas/authentication-core/hooks/useAdminQuery'
-import { ConfirmationDialog } from '@idaas/authentication-core/components/shared'
-import ResetPasswordDialog from './ResetPasswordDialog'
-import { adminService, MemberOverride } from '../../../../authorization-engine/services/adminService'
+import { AdminPanelSettings, Security, History, Block, VpnKey, Login, Info, Edit, Gavel, Verified, Add, Shield, Delete, PriorityHigh } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Path } from '@cap/module-auth/routes/path';
+
+import { useUser, useBanUser, useUnbanUser, useImpersonateUser, useResetUserMfa, useAuditLogs, useUpdateUser } from '@idaas/authentication-core/hooks/useAdminQuery';
+import { ConfirmationDialog } from '@idaas/authentication-core/components/shared';
+import ResetPasswordDialog from './ResetPasswordDialog';
+import { adminService } from '../../../../authorization-engine/services/adminService';
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -995,5 +943,4 @@ function AuditHistoryTab({ userId }: { userId: number }) {
     </Card>
   )
 }
-
 

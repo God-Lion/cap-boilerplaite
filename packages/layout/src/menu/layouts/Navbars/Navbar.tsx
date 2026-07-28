@@ -1,33 +1,13 @@
-import React from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import {
-  Box,
-  Container,
-  Toolbar,
-  IconButton,
-  Link as HLink,
-  List,
-  ListItemButton,
-  ListItemText,
-  Menu,
-  Stack,
-  Theme,
-  useTheme,
-  InputBase,
-} from '@mui/material'
-import MuiAppBar from '@mui/material/AppBar'
-import { alpha, styled } from '@mui/material/styles'
-import MenuIcon from '@mui/icons-material/Menu'
-import SearchIcon from '@mui/icons-material/Search'
-import { AuthButtons, AuthProfile } from '../../../components/auth'
-import {
-  useAuth,
-  isObjectEmpty
-} from '@cap/platform-core'
-import {
-  Logo,
-  ModeDropdown
-} from '../../shared'
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Box, Container, Toolbar, IconButton, List, ListItemButton, ListItemText, Menu, Stack, Theme, useTheme, InputBase } from '@mui/material';
+import MuiAppBar from '@mui/material/AppBar';
+import { alpha, styled } from '@mui/material/styles';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import { AuthButtons, AuthProfile } from '../../../components/auth';
+import { useAuth, isObjectEmpty } from '@cap/platform-core';
+import { Logo, ModeDropdown } from '../../shared';
 
 const AppBar = styled(MuiAppBar)(({ theme }: { theme: Theme }) => ({
   backgroundColor: 'var(--mui-palette-background-paper)',

@@ -1,7 +1,7 @@
-import { Box, Typography, Grid, Link, Stack, Avatar, alpha, useTheme } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { WarningAmber, CheckCircleOutline } from '@mui/icons-material'
-import { motion } from 'framer-motion'
+import { Box, Typography, Grid, Link, Avatar, alpha, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { WarningAmber, CheckCircleOutline } from '@mui/icons-material';
+import { motion } from 'framer-motion';
 
 const browsers = [
   { name: 'Google Chrome', url: 'https://www.google.com/chrome/' },

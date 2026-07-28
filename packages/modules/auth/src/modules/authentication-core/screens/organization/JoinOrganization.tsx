@@ -1,16 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import {
-  Box, Button, Typography, CircularProgress, Chip, Avatar, Stack,
-  Divider, alpha, useTheme,
-} from '@mui/material'
-import {
-  CheckCircle, Groups, BadgeOutlined, TimerOutlined,
-  ErrorOutline, Close, ArrowForward,
-} from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
-import { adminService } from "@auth/authorization-engine/services/adminService"
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Box, Button, Typography, CircularProgress, Avatar, Stack, Divider, alpha, useTheme } from '@mui/material';
+import { CheckCircle, Groups, BadgeOutlined, TimerOutlined, ErrorOutline, Close, ArrowForward } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { adminService } from '@auth/authorization-engine/services/adminService';
 
 interface InvitationDetails {
   id: number; email: string; role: string; status: string; expiresAt: string
@@ -163,5 +157,4 @@ export default function JoinOrganization() {
     </Box>
   )
 }
-
 

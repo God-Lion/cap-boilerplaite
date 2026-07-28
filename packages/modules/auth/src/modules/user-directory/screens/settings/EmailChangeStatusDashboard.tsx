@@ -1,21 +1,7 @@
-import React from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  StepContent,
-  Container,
-  Paper,
-  Divider,
-  Stack,
-} from '@mui/material'
-import { CheckCircle, Info } from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
+
+import { Box, Typography, Card, CardContent, Button, Stepper, Step, StepLabel, StepContent, Container, Paper, Divider, Stack } from '@mui/material';
+import { CheckCircle, Info } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 const EmailChangeStatusDashboard = () => {
   const { t } = useTranslation()

@@ -1,62 +1,13 @@
-import React, { useState, useRef } from 'react'
-import {
-  Box,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  TextField,
-  Button,
-  Avatar,
-  alpha,
-  useTheme,
-  Stack,
-  Switch,
-  Divider,
-  Tabs,
-  Tab,
-  Chip,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  CircularProgress,
-  Alert,
-  FormControlLabel,
-  InputAdornment,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from '@mui/material'
-import {
-  Save,
-  Business,
-  Palette,
-  Security,
-  Language,
-  CloudUpload,
-  ArrowBack,
-  CheckCircle,
-  Info,
-  Mail,
-  Groups,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { Path } from '@cap/module-auth/routes/path'
+import React, { useState, useRef } from 'react';
+import { Box, Typography, Grid, Card, CardContent, TextField, Button, Avatar, alpha, useTheme, Stack, Switch, Divider, Tabs, Tab, Chip, CircularProgress, Alert, FormControlLabel, InputAdornment, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Save, Business, Palette, Security, Language, ArrowBack, Info, Mail, Groups } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { Path } from '@cap/module-auth/routes/path';
 
-import {
-  useOrganization,
-  useUpdateOrganization,
-  useVerifyDomain,
-  useUploadOrganizationLogo,
-  adminKeys,
-} from '@idaas/authentication-core/hooks/useAdminQuery'
-import { useQueryClient } from '@tanstack/react-query'
+import { useOrganization, useUpdateOrganization, useVerifyDomain, useUploadOrganizationLogo, adminKeys } from '@idaas/authentication-core/hooks/useAdminQuery';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -1188,6 +1139,4 @@ export default function OrganizationProfile() {
     </Box>
   )
 }
-
-
 

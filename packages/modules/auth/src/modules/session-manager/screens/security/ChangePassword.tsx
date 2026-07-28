@@ -1,24 +1,10 @@
-import React, { useState, useMemo } from 'react'
-import {
-  Box,
-  Button,
-  Container,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-  Card,
-  CardContent,
-  CssBaseline,
-  useTheme,
-  alpha,
-  CircularProgress,
-} from '@mui/material'
-import { Lock, Visibility, VisibilityOff, LockReset, ArrowBack, Mail } from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { themeConfig, useNotifications } from '@cap/platform-core'
-import { Controller, useForm, useWatch } from 'react-hook-form'
-import { useChangePassword } from "@auth"
+import { useState, useMemo } from 'react';
+import { Box, Button, Container, IconButton, InputAdornment, TextField, Typography, Card, CardContent, CssBaseline, useTheme, alpha, CircularProgress } from '@mui/material';
+import { Lock, Visibility, VisibilityOff, LockReset, ArrowBack } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { themeConfig, useNotifications } from '@cap/platform-core';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { useChangePassword } from '@auth';
 
 interface ChangePasswordFormData {
   currentPassword: string
@@ -527,5 +513,4 @@ function ChangePassword() {
 }
 
 export default ChangePassword
-
 

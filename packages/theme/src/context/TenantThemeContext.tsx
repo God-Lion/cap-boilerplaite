@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo } from 'react';
-import type { TenantThemeConfig, TenantThemeContextValue, TenantThemeState, TenantThemeStatus, TenantThemeActions, TenantThemeProviderProps } from '../types';
+import type { TenantThemeContextValue, TenantThemeState, TenantThemeStatus, TenantThemeActions, TenantThemeProviderProps } from '../types';
 import { DEFAULT_THEME_CONFIG } from '../types';
 
 const TenantThemeStateContext = createContext<TenantThemeState | null>(null);

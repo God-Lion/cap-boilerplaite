@@ -2,44 +2,22 @@
 // RULES APPLIED: mui-component-standards.md, react-component-patterns.md
 // This screen uses React Hook Form and Zod to enforce valid OIDC specs and displays the returned client credentials ONCE upon creation.
 
-import { useState } from 'react'
-import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  TextField,
-  IconButton,
-  Chip,
-  alpha,
-  useTheme,
-  Avatar,
-  Breadcrumbs,
-  Stack,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormHelperText,
-  Alert,
-  AlertTitle,
-  Tooltip,
-} from '@mui/material'
-import Add from '@mui/icons-material/Add'
-import ContentCopy from '@mui/icons-material/ContentCopy'
-import VpnKey from '@mui/icons-material/VpnKey'
-import ChevronRight from '@mui/icons-material/ChevronRight'
-import ArrowBack from '@mui/icons-material/ArrowBack'
-import Warning from '@mui/icons-material/Warning'
-import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
-import { useForm, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { useSnackbar } from 'notistack'
-import { Path, useCreateOIDCClient } from "@auth"
+import { useState } from 'react';
+import { Box, Button, Container, Typography, Card, TextField, IconButton, alpha, useTheme, Avatar, Breadcrumbs, FormControl, InputLabel, Select, MenuItem, FormHelperText, Alert, AlertTitle, Tooltip } from '@mui/material';
+import Add from '@mui/icons-material/Add';
+import ContentCopy from '@mui/icons-material/ContentCopy';
+import VpnKey from '@mui/icons-material/VpnKey';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import Warning from '@mui/icons-material/Warning';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useSnackbar } from 'notistack';
+import { Path, useCreateOIDCClient } from '@auth';
 
 const createOidcSchema = z.object({
   name: z.string().min(3, 'Client Name must be at least 3 characters').max(50),
@@ -121,7 +99,7 @@ export default function OIDCClientCreate() {
       <Box sx={{ mb: 4 }}>
         <Button
           component={RouterLink}
-          to={Path.auth.oidcConfigBrowser}
+          to={Path.identity.oidcConfigBrowser}
           startIcon={<ArrowBack />}
           sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'transparent' } }}
         >
@@ -237,7 +215,7 @@ export default function OIDCClientCreate() {
           </Box>
 
           <Box sx={{ mt: 5, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-            <Button variant="outlined" component={RouterLink} to={Path.auth.oidcConfigBrowser}>
+            <Button variant="outlined" component={RouterLink} to={Path.identity.oidcConfigBrowser}>
               {t('common.done', 'Done')}
             </Button>
           </Box>
@@ -335,7 +313,7 @@ export default function OIDCClientCreate() {
             </Alert>
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
-              <Button component={RouterLink} to={Path.auth.oidcConfigBrowser} color="inherit" sx={{ fontWeight: 600 }}>
+              <Button component={RouterLink} to={Path.identity.oidcConfigBrowser} color="inherit" sx={{ fontWeight: 600 }}>
                 {t('common.cancel', 'Cancel')}
               </Button>
               <Button type="submit" variant="contained" disabled={isSubmitting} sx={{ fontWeight: 700, px: 4, borderRadius: 2, boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)' }}>
@@ -348,6 +326,4 @@ export default function OIDCClientCreate() {
     </Container>
   )
 }
-
-
 

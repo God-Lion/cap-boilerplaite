@@ -23,8 +23,8 @@ export * from '../../utils/rgbaToHex'
 export * from '../../utils/getDictionary'
 
 // Legacy JS modules (import directly when needed)
-// - Encrypt: import Encrypt from '../../utils/Encrypt'
-// - Functions: import Functions from '../../utils/Functions'
-// - color: import color from '../../utils/color'
-// - initVirtualTable: import initVirtualTable from '../../utils/initVirtualTable'
-// - AlertReact: import AlertReact from '../../utils/AlertReact'
+// - Encrypt: 
+// - Functions: 
+// - color: 
+// - initVirtualTable: 
+// - AlertReact: 

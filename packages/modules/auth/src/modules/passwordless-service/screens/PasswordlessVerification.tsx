@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import {
-  Box, Button, Typography, Avatar, CircularProgress, Stack,
-  LinearProgress, alpha, useTheme,
-} from '@mui/material'
-import { Lock, LinkOff, ArrowForward } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Typography, Avatar, Stack, LinearProgress, alpha, useTheme } from '@mui/material';
+import { Lock, LinkOff, ArrowForward } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 type VerificationState = 'loading' | 'expired'
 

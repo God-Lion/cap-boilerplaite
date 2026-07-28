@@ -1,5 +1,5 @@
-import type { FetchResponse, PaginatedResponse } from '@cap/platform-core'
-import type { AccessPolicy } from '@cap/shared-types'
+
+import type { AccessPolicy } from '@cap/shared-types';
 
 export type { SCIMConfig } from '@cap/shared-types'
 

@@ -1,9 +1,9 @@
-import React from 'react'
-import { AuthRouteConfig } from '@cap/platform-core'
-import { Roles, useAppStore } from '@cap/platform-core'
-import AdminRoute from '../modules/authorization-engine/middlewares/AdminRoute'
-import AuthRoute from '../modules/authentication-core/middlewares/AuthRoute'
-import GuestRoute from '../modules/authentication-core/middlewares/GuestRoute'
+import React from 'react';
+import { AuthRouteConfig } from '@cap/platform-core';
+import { Roles } from '@cap/platform-core';
+import AdminRoute from '../modules/authorization-engine/middlewares/AdminRoute';
+import AuthRoute from '../modules/authentication-core/middlewares/AuthRoute';
+import GuestRoute from '../modules/authentication-core/middlewares/GuestRoute';
 
 // ---------------------------------------------------------------------------
 // Route factory helpers

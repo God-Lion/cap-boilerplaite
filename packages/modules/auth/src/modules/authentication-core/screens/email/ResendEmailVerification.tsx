@@ -1,14 +1,11 @@
-import React, { useState, useCallback } from 'react'
-import {
-  Box, Button, Typography, TextField, Link as MuiLink, Alert,
-  CircularProgress, Avatar, InputAdornment, Stack, alpha, useTheme,
-} from '@mui/material'
-import { EmailOutlined, MailOutline, ArrowBack, ArrowForward } from '@mui/icons-material'
-import { Link as RouterLink } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
-import { AdaptiveLogo } from '@cap/platform-core'
-import authService from "@idaas/authentication-core/services/auth.service"
+import React, { useState, useCallback } from 'react';
+import { Box, Button, Typography, TextField, Link as MuiLink, Alert, CircularProgress, Avatar, InputAdornment, Stack, alpha, useTheme } from '@mui/material';
+import { EmailOutlined, MailOutline, ArrowForward } from '@mui/icons-material';
+import { Link as RouterLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { AdaptiveLogo } from '@cap/theme';
+import authService from '@idaas/authentication-core/services/auth.service';
 
 const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 

@@ -1,24 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
-import { useTheme } from '@mui/material/styles'
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import { 
-  useSettings,
-  type Dictionary 
-} from '@cap/platform-core'
-import { useVerticalNav } from '../../hooks/useVerticalNav'
-import { 
-  VerticalNav, 
-  Menu 
-} from '../vertical-menu'
-import type { 
-  VerticalMenuContextProps 
-} from '../components/vertical-menu/Menu'
-import StyledVerticalNavExpandIcon from '../styles/vertical/StyledVerticalNavExpandIcon'
-import menuItemStyles from '../../styles/core/vertical/menuItemStyles'
-import menuSectionStyles from '../../styles/core/vertical/menuSectionStyles'
-import ChevronRight from '@mui/icons-material/ChevronRight'
-import ModuleMenuRenderer from './ModuleMenuRenderer'
+import React from 'react';
+import { useTheme } from '@mui/material/styles';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useSettings, type Dictionary } from '@cap/platform-core';
+import { useVerticalNav } from '../../hooks/useVerticalNav';
+import { Menu } from '../vertical-menu';
+import type { VerticalMenuContextProps } from '../components/vertical-menu/Menu';
+import StyledVerticalNavExpandIcon from '../styles/vertical/StyledVerticalNavExpandIcon';
+import menuItemStyles from '../../styles/core/vertical/menuItemStyles';
+import menuSectionStyles from '../../styles/core/vertical/menuSectionStyles';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import ModuleMenuRenderer from './ModuleMenuRenderer';
 
 type RenderExpandIconProps = {
   open?: boolean

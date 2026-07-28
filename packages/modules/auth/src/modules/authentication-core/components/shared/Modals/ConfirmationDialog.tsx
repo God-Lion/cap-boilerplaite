@@ -1,7 +1,7 @@
-import React from 'react'
-import { Dialog, Button, Box, Typography, alpha, useTheme, CircularProgress } from '@mui/material'
-import { InfoOutlined, WarningAmberOutlined, ErrorOutline } from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
+
+import { Dialog, Button, Box, Typography, alpha, useTheme, CircularProgress } from '@mui/material';
+import { InfoOutlined, WarningAmberOutlined, ErrorOutline } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmationDialogProps {
   open: boolean

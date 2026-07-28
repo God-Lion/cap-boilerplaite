@@ -51,19 +51,19 @@ export const getComponentCustomValue = (
 ) => getTenantComponentConfig(theme, componentName).customProperties?.[key];
 
 export const resolveGlassThemeStyles = (theme: Theme) =>
-  getGlassmorphismStyles(getTenantThemeEffects(theme).glassmorphism);
+  getGlassmorphismStyles(getTenantThemeEffects(theme).glassmorphism, theme);
 
 export const resolveBrutalismThemeStyles = (theme: Theme) =>
-  getBrutalismStyles(getTenantThemeEffects(theme).brutalism || DEFAULT_EFFECT_CONFIG.brutalism!);
+  getBrutalismStyles(getTenantThemeEffects(theme).brutalism || DEFAULT_EFFECT_CONFIG.brutalism!, theme);
 
 export const resolveBentoThemeStyles = (theme: Theme) =>
-  getBentoStyles(getTenantThemeEffects(theme).bento || DEFAULT_EFFECT_CONFIG.bento!);
+  getBentoStyles(getTenantThemeEffects(theme).bento || DEFAULT_EFFECT_CONFIG.bento!, theme);
 
 export const resolveOrganicThemeStyles = (theme: Theme) =>
-  getOrganicStyles(getTenantThemeEffects(theme).organic || DEFAULT_EFFECT_CONFIG.organic!);
+  getOrganicStyles(getTenantThemeEffects(theme).organic || DEFAULT_EFFECT_CONFIG.organic!, theme);
 
 export const resolveImmersiveThemeStyles = (theme: Theme) =>
-  getImmersiveStyles(getTenantThemeEffects(theme).immersive || DEFAULT_EFFECT_CONFIG.immersive!);
+  getImmersiveStyles(getTenantThemeEffects(theme).immersive || DEFAULT_EFFECT_CONFIG.immersive!, theme);
 
 export const getThemeFocusRing = (theme: Theme, color = theme.palette.primary.main) =>
   `0 0 0 3px ${alpha(color, 0.16)}`;

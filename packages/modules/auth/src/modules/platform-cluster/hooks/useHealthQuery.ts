@@ -1,13 +1,7 @@
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  UseQueryOptions,
-  UseMutationOptions,
-} from '@tanstack/react-query'
-import { FetchResponse, HttpError } from '@cap/platform-core'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { FetchResponse, HttpError } from '@cap/platform-core';
 
-import healthService from "../services/health.service"
+import healthService from '../services/health.service';
 
 const USER_KEYS = {
   basic: ['user', 'basic'] as const,
@@ -17,7 +11,7 @@ const USER_KEYS = {
   startup: ['user', 'startup'] as const,
 }
 
-export function useBasicHealth(options?: UseQueryOptions<FetchResponse, HttpError>) {
+export function useBasicHealth(options?: UseQueryOptions<FetchResponse<any>, HttpError>) {
   return useQuery({
     queryKey: USER_KEYS.basic,
     queryFn: () => healthService.getBasic(),
@@ -26,7 +20,7 @@ export function useBasicHealth(options?: UseQueryOptions<FetchResponse, HttpErro
   })
 }
 
-export function useLiveHealth(options?: UseQueryOptions<FetchResponse, HttpError>) {
+export function useLiveHealth(options?: UseQueryOptions<FetchResponse<any>, HttpError>) {
   return useQuery({
     queryKey: USER_KEYS.live,
     queryFn: () => healthService.getLive(),
@@ -35,7 +29,7 @@ export function useLiveHealth(options?: UseQueryOptions<FetchResponse, HttpError
   })
 }
 
-export function useReadyHealth(options?: UseQueryOptions<FetchResponse, HttpError>) {
+export function useReadyHealth(options?: UseQueryOptions<FetchResponse<any>, HttpError>) {
   return useQuery({
     queryKey: USER_KEYS.ready,
     queryFn: () => healthService.getReady(),
@@ -44,7 +38,7 @@ export function useReadyHealth(options?: UseQueryOptions<FetchResponse, HttpErro
   })
 }
 
-export function useDetailedHealth(options?: UseQueryOptions<FetchResponse, HttpError>) {
+export function useDetailedHealth(options?: UseQueryOptions<FetchResponse<any>, HttpError>) {
   return useQuery({
     queryKey: USER_KEYS.detailed,
     queryFn: () => healthService.getDetailed(),
@@ -53,7 +47,7 @@ export function useDetailedHealth(options?: UseQueryOptions<FetchResponse, HttpE
   })
 }
 
-export function useStartupHealth(options?: UseQueryOptions<FetchResponse, HttpError>) {
+export function useStartupHealth(options?: UseQueryOptions<FetchResponse<any>, HttpError>) {
   return useQuery({
     queryKey: USER_KEYS.startup,
     queryFn: () => healthService.getStartup(),
@@ -61,5 +55,4 @@ export function useStartupHealth(options?: UseQueryOptions<FetchResponse, HttpEr
     ...options,
   })
 }
-
 

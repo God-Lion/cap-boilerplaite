@@ -1,33 +1,9 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  TextField,
-  FormControlLabel,
-  Switch,
-  Breadcrumbs,
-  Link,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-} from '@mui/material'
-import {
-  NavigateNext as NavigateNextIcon,
-  Save as SaveIcon,
-  Delete as DeleteIcon,
-  Settings as SettingsIcon,
-  Security as SecurityIcon,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Path } from "@cap/module-auth/routes/path"
+import React, { useState } from 'react';
+import { Box, Typography, Button, Card, CardContent, Divider, TextField, FormControlLabel, Switch, Breadcrumbs, Link, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { NavigateNext as NavigateNextIcon, Save as SaveIcon, Delete as DeleteIcon, Settings as SettingsIcon, Security as SecurityIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Path } from '@cap/module-auth/routes/path';
 
 const APITokenActions: React.FC = () => {
   const { t } = useTranslation()

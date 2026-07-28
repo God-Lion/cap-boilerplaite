@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import {
-  Box, Button, Typography, Avatar, CircularProgress, Link as MuiLink,
-  alpha, useTheme,
-} from '@mui/material'
-import { CheckCircle, ErrorOutline, ArrowForward } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
-import { FetchResponse, HttpError, AdaptiveLogo } from '@cap/platform-core'
-import authService from "@idaas/authentication-core/services/auth.service"
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Box, Button, Typography, Avatar, CircularProgress, Link as MuiLink, alpha, useTheme } from '@mui/material';
+import { CheckCircle, ErrorOutline, ArrowForward } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { FetchResponse, HttpError } from '@cap/platform-core';
+import { AdaptiveLogo } from '@cap/theme';
+import authService from '@idaas/authentication-core/services/auth.service';
 
 const SUPPORT_EMAIL = 'support@example.com'
 

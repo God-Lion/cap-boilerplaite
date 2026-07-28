@@ -99,17 +99,17 @@ export default function OidcWaitScreen() {
 
       const details = interactionResponse?.data
       if (details?.prompt?.name === 'login') {
-        navigate(`${Path.admin.oidcLoginPrompt}?interaction=${interactionUid}`, { replace: true })
+        navigate(`${Path.identity.oidcLoginPrompt}?interaction=${interactionUid}`, { replace: true })
         return
       }
       if (details?.prompt?.name === 'consent') {
-        navigate(`${Path.permissionConsent}?uid=${interactionUid}`, { replace: true })
+        navigate(`${Path.identity.permissionConsent}?uid=${interactionUid}`, { replace: true })
         return
       }
 
       // If no specific prompt, try to confirm directly
       if (details) {
-        navigate(`${Path.admin.oidcLoginPrompt}?interaction=${interactionUid}`, { replace: true })
+        navigate(`${Path.identity.oidcLoginPrompt}?interaction=${interactionUid}`, { replace: true })
       }
       return
     }

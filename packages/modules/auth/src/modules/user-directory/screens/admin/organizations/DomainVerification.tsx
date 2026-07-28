@@ -1,31 +1,7 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  Stack,
-  TextField,
-  InputAdornment,
-  Alert,
-  Divider,
-  Stepper,
-  Step,
-  StepLabel,
-  Paper,
-  CircularProgress,
-  IconButton,
-} from '@mui/material'
-import {
-  Domain,
-  CheckCircle,
-  ContentCopy,
-  Info,
-  Dns,
-  Verified,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
+import { useState } from 'react';
+import { Box, Typography, Card, CardContent, Button, Stack, TextField, InputAdornment, Alert, Divider, Stepper, Step, StepLabel, CircularProgress, IconButton } from '@mui/material';
+import { Domain, ContentCopy, Info, Dns, Verified } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 const DomainVerification = () => {
   const { t } = useTranslation()

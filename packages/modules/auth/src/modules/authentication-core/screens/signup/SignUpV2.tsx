@@ -1,20 +1,12 @@
-import { useState, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import {
-  Box, Button, TextField, Typography, Alert, Divider, Avatar,
-  IconButton, InputAdornment, CircularProgress, Stack, Link as MuiLink, alpha, useTheme,
-} from '@mui/material'
-import { LockPerson, Visibility, VisibilityOff, ArrowForward, Google } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
-import { RegisterRequest } from "../../../../types/api.types"
-import { useRegister } from "@idaas/authentication-core/hooks/useAuthQuery"
-import {
-  AuthPageLayout,
-  AuthScreenIcon,
-  AuthInputLabel,
-  AuthActionButton,
-} from "@idaas/authentication-core/components/shared/auth"
+import { useState, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Box, Button, TextField, Typography, Alert, Divider, IconButton, InputAdornment, Stack, Link as MuiLink, alpha, useTheme } from '@mui/material';
+import { LockPerson, Visibility, VisibilityOff, Google } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { RegisterRequest } from '../../../../types/api.types';
+import { useRegister } from '@idaas/authentication-core/hooks/useAuthQuery';
+import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
 
 const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 
@@ -161,5 +153,4 @@ export default function SignUpV2() {
     </AuthPageLayout>
   )
 }
-
 

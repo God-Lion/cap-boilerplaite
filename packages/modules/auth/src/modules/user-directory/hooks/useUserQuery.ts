@@ -3,29 +3,12 @@
 // React Query Hooks for User Service
 // ============================================================================
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  UseQueryOptions,
-  UseMutationOptions,
-} from '@tanstack/react-query'
-import { FetchResponse, HttpError } from '@cap/platform-core'
+import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { FetchResponse, HttpError } from '@cap/platform-core';
 
-import {
-  UpdateNamesRequest,
-  UpdateEmailRequest,
-  UpdatePhotoRequest,
-  ChangePasswordRequest,
-  UpdatePreferencesRequest,
-  UpdateMeRequest,
-  SecurityStatusResponse,
-  AuditLog,
-  ActivityTimelineResponse,
-  EmailChangesResponse,
-} from "@idaas/authentication-core/types/api.types"
-import { QUERY_KEYS } from '@idaas/authentication-core/services/query'
-import userService from "../services/user.service"
+import { UpdateEmailRequest, UpdatePhotoRequest, ChangePasswordRequest, UpdatePreferencesRequest, UpdateMeRequest, SecurityStatusResponse, AuditLog } from '@idaas/authentication-core/types/api.types';
+
+import userService from '../services/user.service';
 
 // ============================================================================
 // Query Keys
@@ -79,7 +62,7 @@ export function useActivityTimeline(
 /**
  * Update user profile
  */
-export function useGetUser(options?: UseQueryOptions<FetchResponse, HttpError>) {
+export function useGetUser(options?: UseQueryOptions<FetchResponse<any>, HttpError>) {
   return useQuery({
     queryKey: USER_KEYS.profile,
     queryFn: () => userService.getProfile(),
@@ -89,7 +72,7 @@ export function useGetUser(options?: UseQueryOptions<FetchResponse, HttpError>) 
 }
 
 export function useUpdateMe(
-  options?: UseMutationOptions<FetchResponse, HttpError, UpdateMeRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, UpdateMeRequest, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -105,7 +88,7 @@ export function useUpdateMe(
 }
 
 export function useUpdateUser(
-  options?: UseMutationOptions<FetchResponse, HttpError, UpdateMeRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, UpdateMeRequest, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -123,7 +106,7 @@ export function useUpdateUser(
  * Update user photo
  */
 export function useUpdatePhoto(
-  options?: UseMutationOptions<FetchResponse, HttpError, UpdatePhotoRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, UpdatePhotoRequest, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -141,7 +124,7 @@ export function useUpdatePhoto(
  * Change email
  */
 export function useChangeEmail(
-  options?: UseMutationOptions<FetchResponse, HttpError, UpdateEmailRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, UpdateEmailRequest, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -160,7 +143,7 @@ export function useChangeEmail(
  * Change password
  */
 export function useChangePassword(
-  options?: UseMutationOptions<FetchResponse, HttpError, ChangePasswordRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, ChangePasswordRequest, unknown>,
 ) {
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
 
@@ -177,7 +160,7 @@ export function useChangePassword(
  * Get user profile
  */
 export function useUserProfile(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: USER_KEYS.profile,
@@ -189,12 +172,11 @@ export function useUserProfile(
 
 export const useCurrentUserQuery = useUserProfile
 
-
 /**
  * Delete account
  */
 export function useDeleteAccount(
-  options?: UseMutationOptions<FetchResponse, HttpError, void, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, void, unknown>,
 ) {
   return useMutation({
     mutationFn: () => userService.delete(),
@@ -203,7 +185,7 @@ export function useDeleteAccount(
 }
 
 export function useActivateAccount(
-  options?: UseMutationOptions<FetchResponse, HttpError, string | number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | number, unknown>,
 ) {
   return useMutation({
     mutationFn: (id: string | number) => userService.activate(id),
@@ -212,7 +194,7 @@ export function useActivateAccount(
 }
 
 export function useDeactivateAccount(
-  options?: UseMutationOptions<FetchResponse, HttpError, string | number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | number, unknown>,
 ) {
   return useMutation({
     mutationFn: (id: string | number) => userService.deactivate(id),
@@ -221,7 +203,7 @@ export function useDeactivateAccount(
 }
 
 export function useSuspendAccount(
-  options?: UseMutationOptions<FetchResponse, HttpError, string | number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | number, unknown>,
 ) {
   return useMutation({
     mutationFn: (id: string | number) => userService.suspend(id),
@@ -230,7 +212,7 @@ export function useSuspendAccount(
 }
 
 export function useUnsuspendAccount(
-  options?: UseMutationOptions<FetchResponse, HttpError, string | number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | number, unknown>,
 ) {
   return useMutation({
     mutationFn: (id: string | number) => userService.unsuspend(id),
@@ -242,7 +224,7 @@ export function useUnsuspendAccount(
  * Get MFA methods
  */
 export function useMfaMethods(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: USER_KEYS.mfaMethods,
@@ -256,7 +238,7 @@ export function useMfaMethods(
  * Get user passkeys
  */
 export function useUserPasskeys(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: USER_KEYS.passkeys,
@@ -294,7 +276,7 @@ export function useUpdatePasskey(
  * Delete passkey
  */
 export function useDeletePasskey(
-  options?: UseMutationOptions<FetchResponse, HttpError, string | number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -337,7 +319,7 @@ export function useLinkAccount(
  * Get linked accounts
  */
 export function useLinkedAccounts(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: USER_KEYS.linkedAccounts,
@@ -351,7 +333,7 @@ export function useLinkedAccounts(
  * Unlink account
  */
 export function useUnlinkAccount(
-  options?: UseMutationOptions<FetchResponse, HttpError, string | number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -367,7 +349,7 @@ export function useUnlinkAccount(
 }
 
 export function useUserTokens(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: USER_KEYS.tokens,
@@ -405,7 +387,7 @@ export function useCreateToken(
  * Revoke token
  */
 export function useRevokeToken(
-  options?: UseMutationOptions<FetchResponse, HttpError, string | number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -421,7 +403,7 @@ export function useRevokeToken(
 }
 
 export function useComplianceExport(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: USER_KEYS.complianceExport,
@@ -432,7 +414,7 @@ export function useComplianceExport(
 }
 
 export function useExportMutation(
-  options?: UseMutationOptions<FetchResponse, HttpError, void, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, void, unknown>,
 ) {
   return useMutation({
     mutationFn: () => userService.compliance.exportRequest(),
@@ -441,7 +423,7 @@ export function useExportMutation(
 }
 
 export function useErasureMutation(
-  options?: UseMutationOptions<FetchResponse, HttpError, { password: string; hardDelete?: boolean }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { password: string; hardDelete?: boolean }, unknown>,
 ) {
   return useMutation({
     mutationFn: (data) => userService.compliance.erasure(data),
@@ -450,7 +432,7 @@ export function useErasureMutation(
 }
 
 export function useUpdatePreferences(
-  options?: UseMutationOptions<FetchResponse, HttpError, UpdatePreferencesRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, UpdatePreferencesRequest, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -466,7 +448,7 @@ export function useUpdatePreferences(
 }
 
 export function useUserPreferences(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: ['user', 'preferences'],
@@ -480,7 +462,7 @@ export function useUserPreferences(
  * Get email change requests
  */
 export function useEmailChanges(
-  options?: Omit<UseQueryOptions<FetchResponse<EmailChangesResponse>, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: USER_KEYS.emailChanges,
@@ -489,5 +471,4 @@ export function useEmailChanges(
     ...options,
   })
 }
-
 

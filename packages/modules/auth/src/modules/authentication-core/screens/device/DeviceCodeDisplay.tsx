@@ -1,13 +1,10 @@
-﻿import React, { useState, useEffect } from 'react'
-import {
-  Box, Typography, TextField, Button, Alert, Stack, CircularProgress,
-  IconButton, InputAdornment, Avatar, alpha, useTheme,
-} from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { Devices, ArrowBack, CheckCircleOutline, ArrowForward } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
-import { useDeviceAuth } from "@idaas/authentication-core/hooks"
-import { motion } from 'framer-motion'
+﻿import React, { useState, useEffect } from 'react';
+import { Box, Typography, TextField, Button, Alert, Stack, CircularProgress, IconButton, Avatar, alpha, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Devices, ArrowBack, CheckCircleOutline } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useDeviceAuth } from '@idaas/authentication-core/hooks';
+import { motion } from 'framer-motion';
 
 const DeviceCodeDisplay = () => {
   const { t } = useTranslation('auth')

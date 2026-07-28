@@ -4,7 +4,7 @@ export { default as PublicLayout } from './PublicLayout'
 export { default as BlankLayout } from './BlankLayout'
 export { default as LayoutWrapper } from './LayoutWrapper'
 export { default as LayoutRouteWrapper } from './components/wrappers/LayoutRouteWrapper'
-export * from './components/wrappers/LayoutRouteWrapper'
+export * from './components/wrappers'
 
 
 // Components
@@ -70,6 +70,7 @@ export { useLayoutTokens } from './hooks/useLayoutTokens'
 export { buildLayoutSurfaceEffect } from './utils/buildLayoutSurfaceEffect'
 
 // Styles
+export { default as ThemeBridge, generateTheme } from './styles/ThemeBridge'
 export { default as verticalMenuItemStyles } from './styles/core/vertical/menuItemStyles'
 export { default as verticalMenuSectionStyles } from './styles/core/vertical/menuSectionStyles'
 export { default as verticalNavigationCustomStyles } from './styles/core/vertical/navigationCustomStyles'

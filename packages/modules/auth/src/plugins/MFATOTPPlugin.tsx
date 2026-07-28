@@ -1,7 +1,7 @@
-import React from 'react'
-import { IAuthPlugin } from '@cap/platform-core'
-import { Button } from '@mui/material'
-import { PhonelinkLock } from '@mui/icons-material'
+
+import { IAuthPlugin } from '@cap/platform-core';
+import { Button } from '@mui/material';
+import { PhonelinkLock } from '@mui/icons-material';
 
 /**
  * MFA TOTP Plugin (Demonstration of Module Magnetism)

@@ -3,40 +3,21 @@
 // FIXES: Added header; implemented entry motion; unified notification system with notistack; standardized Card/Tabs styles to match project design language; translated all labels; added accessibility aria-labels
 // AUDIT: CRITICAL âœ“  HIGH âœ“  MEDIUM âœ“
 
-import { useMemo, useState, type ReactNode } from 'react'
-import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  Tabs,
-  Tab,
-  IconButton,
-  alpha,
-  useTheme,
-  Tooltip,
-  Alert,
-  CircularProgress,
-  Avatar,
-  Stack,
-  Chip,
-  Divider,
-} from '@mui/material'
-import ContentCopy from '@mui/icons-material/ContentCopy'
-import Download from '@mui/icons-material/Download'
-import Code from '@mui/icons-material/Code'
-import LinkIcon from '@mui/icons-material/Link'
-import VerifiedUser from '@mui/icons-material/VerifiedUser'
-import Info from '@mui/icons-material/Info'
-import ArrowBack from '@mui/icons-material/ArrowBack'
-import Security from '@mui/icons-material/Security'
-import { useTranslation } from 'react-i18next'
-import { useSnackbar } from 'notistack'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { useSAMLConfig, useSAMLMetadata, useRemoteMetadata } from "@auth"
+import { useMemo, useState, type ReactNode } from 'react';
+import { Box, Button, Container, Typography, Card, CardContent, Tabs, Tab, IconButton, alpha, useTheme, Tooltip, Alert, CircularProgress, Avatar, Stack, Chip } from '@mui/material';
+import ContentCopy from '@mui/icons-material/ContentCopy';
+import Download from '@mui/icons-material/Download';
+import Code from '@mui/icons-material/Code';
+import LinkIcon from '@mui/icons-material/Link';
+import VerifiedUser from '@mui/icons-material/VerifiedUser';
+import Info from '@mui/icons-material/Info';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import Security from '@mui/icons-material/Security';
+import { useTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useSAMLConfig, useSAMLMetadata, useRemoteMetadata } from '@auth';
 
 interface TabPanelProps {
   children?: ReactNode
@@ -565,5 +546,4 @@ export default function SAMLMetadataDisplay() {
     </Container>
   )
 }
-
 

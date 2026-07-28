@@ -1,35 +1,12 @@
-import React, { useMemo } from 'react'
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  Chip,
-  Skeleton,
-  Alert,
-  Avatar,
-  Stack,
-} from '@mui/material'
-import {
-  Delete as DeleteIcon,
-  ArrowBack as ArrowBackIcon,
-  AccessTime as AccessTimeIcon,
-  CalendarToday as CalendarTodayIcon,
-  Language as GlobeIcon,
-  VpnKey as VpnKeyIcon,
-  Shield as ShieldIcon,
-  Info as InfoIcon,
-  Terminal as TerminalIcon,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { alpha, useTheme } from '@mui/material/styles'
-import { useUserTokens, useRevokeToken } from "@auth/user-directory/hooks/useUserQuery"
-import { Path } from "@auth/routes/path"
+import React, { useMemo } from 'react';
+import { Box, Typography, Button, Card, CardContent, Grid, Chip, Skeleton, Alert, Avatar, Stack } from '@mui/material';
+import { Delete as DeleteIcon, ArrowBack as ArrowBackIcon, Language as GlobeIcon, VpnKey as VpnKeyIcon, Shield as ShieldIcon, Info as InfoIcon, Terminal as TerminalIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { alpha, useTheme } from '@mui/material/styles';
+import { useUserTokens, useRevokeToken } from '@auth/user-directory/hooks/useUserQuery';
+import { Path } from '@auth/routes/path';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -488,6 +465,4 @@ const APITokenDetails: React.FC = () => {
 }
 
 export default APITokenDetails
-
-
 

@@ -1,56 +1,14 @@
 // FILE: packages/modules/auth/src/screens/admin/ImpersonationLogs.tsx
 // STYLE AUDIT: Aligned to OrganizationProfile.tsx design system
 // FIXES: [CRITICAL] Modernized InputProps to slotProps.input, applied info.main to CTAs [HIGH] Added animate-scale-in [MEDIUM] Added divider opacity and avatar 24px radius [LOW] Added aria-labels and i18n fallbacks
-import React, { useState, useMemo } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  IconButton,
-  Chip,
-  alpha,
-  useTheme,
-  Stack,
-  Divider,
-  Paper,
-  Tooltip,
-  Avatar,
-  TextField,
-  InputAdornment,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  Menu,
-  MenuItem,
-  CircularProgress,
-} from '@mui/material'
-import {
-  Search,
-  FilterList,
-  Download,
-  Security,
-  History,
-  Person,
-  Laptop,
-  Warning,
-  CheckCircle,
-  MoreVert,
-  Block,
-  AssignmentTurnedIn,
-  Refresh,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
-import { ImpersonationSession } from "@cap/shared-types"
-import { useImpersonationLogs } from "../../../../authentication-core"
-import { format, formatDistanceToNow } from 'date-fns'
+import React, { useState, useMemo } from 'react';
+import { Box, Typography, Card, CardContent, Button, IconButton, Chip, alpha, useTheme, Stack, Divider, Paper, Tooltip, Avatar, TextField, InputAdornment, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Menu, MenuItem, CircularProgress } from '@mui/material';
+import { Search, FilterList, Download, Security, History, Person, CheckCircle, MoreVert, Block, AssignmentTurnedIn, Refresh } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import { ImpersonationSession } from '@cap/shared-types';
+import { useImpersonationLogs } from '../../../../authentication-core';
+import { format, formatDistanceToNow } from 'date-fns';
 
 export default function ImpersonationLogs() {
   const { t } = useTranslation('common')
@@ -516,5 +474,4 @@ export default function ImpersonationLogs() {
     </Box>
   )
 }
-
 

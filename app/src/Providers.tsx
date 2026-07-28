@@ -1,28 +1,20 @@
 // cspell:ignore languagedetector reactour Toastify
-import React from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { I18nextProvider } from 'react-i18next'
-import i18next from 'i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
-import { BrowserRouter } from 'react-router-dom'
-import {
-  TenantProvider,
-  themeConfig,
-  i18n,
-  onForbiddenError,
-  useNetworkSync,
-  getModules,
-  useTenant,
-  useSettings,
-} from '@cap/platform-core'
-import type { ChildrenType } from '@cap/platform-core'
-import { TourProvider } from '@reactour/tour'
-import { toast } from 'react-toastify'
-import common_us from './data/dictionaries/en.json'
-import common_fr from './data/dictionaries/fr.json'
-import common_ar from './data/dictionaries/ar.json'
-import { DesignSystemProvider, AppReactToastify, GlobalZIndexStyles } from '@cap/theme'
+import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { I18nextProvider } from 'react-i18next';
+import i18next from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import { BrowserRouter } from 'react-router-dom';
+import { TenantProvider, themeConfig, i18n, onForbiddenError, useNetworkSync, getModules } from '@cap/platform-core';
+import type { ChildrenType } from '@cap/platform-core';
+import { TourProvider } from '@reactour/tour';
+import { toast } from 'react-toastify';
+import common_us from './data/dictionaries/en.json';
+import common_fr from './data/dictionaries/fr.json';
+import common_ar from './data/dictionaries/ar.json';
+import { ThemeBridge, AppReactToastify } from '@cap/layout';
+import { GlobalZIndexStyles } from '@cap/theme';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -78,7 +70,6 @@ const tourConfig = [
   },
 ]
 
-
 const ForbiddenListener = () => {
   React.useEffect(() => {
     const unregister = onForbiddenError(() => {
@@ -106,7 +97,7 @@ const NetworkSync = () => {
   return null
 }
 
-import { useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles';
 
 const ThemedTourProvider: React.FC<ChildrenType> = ({ children }) => {
   const theme = useTheme()
@@ -131,61 +122,21 @@ const ThemedTourProvider: React.FC<ChildrenType> = ({ children }) => {
   )
 }
 
-const TenantAwareDesignSystemProvider: React.FC<
-  ChildrenType
-> = ({ children }) => {
-  const { 
-    theme, 
-    isLoadingTheme, 
-    errorTheme, 
-    refetchTheme, 
-    updateTheme, 
-    saveTheme 
-  } = useTenant()
-  const { settings } = useSettings()
-
-  return (
-    <DesignSystemProvider
-      theme={theme as any}
-      isLoading={isLoadingTheme}
-      error={errorTheme}
-      refetch={refetchTheme}
-      updateTheme={async (updates) => {
-        if (theme) {
-          await updateTheme({ ...theme, ...updates })
-        } else {
-          await updateTheme(updates as any)
-        }
-      }}
-      saveTheme={async (updatedConfig) => {
-        if (theme) {
-          await saveTheme({ ...theme, ...updatedConfig })
-        } else {
-          await saveTheme(updatedConfig as any)
-        }
-      }}
-      settings={settings}
-    >
-      <GlobalZIndexStyles />
-      <BrowserRouter>
-        <ForbiddenListener />
-        <NetworkSync />
-        <ThemedTourProvider>{children}</ThemedTourProvider>
-      </BrowserRouter>
-      <AppReactToastify position={themeConfig.toastPosition} hideProgressBar />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </DesignSystemProvider>
-  )
-}
-
 const Providers: React.FC<ChildrenType> = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nextProvider i18n={i18next}>
         <TenantProvider>
-          <TenantAwareDesignSystemProvider>
-            {children}
-          </TenantAwareDesignSystemProvider>
+          <ThemeBridge>
+            <GlobalZIndexStyles />
+            <BrowserRouter>
+              <ForbiddenListener />
+              <NetworkSync />
+              <ThemedTourProvider>{children}</ThemedTourProvider>
+            </BrowserRouter>
+            <AppReactToastify position={themeConfig.toastPosition} hideProgressBar />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </ThemeBridge>
         </TenantProvider>
       </I18nextProvider>
     </QueryClientProvider>

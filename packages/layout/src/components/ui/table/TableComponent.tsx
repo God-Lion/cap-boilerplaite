@@ -1,8 +1,8 @@
-import React from 'react'
-import { Table, TableHead, TableRow, TableCell, TableBody, Skeleton } from '@mui/material'
-import TableValue from './TableValue'
-import type { ITableData, ITableHeader, ITableRow } from './types'
-// import { FixedSizeList } from 'react-window'
+import React from 'react';
+import { Table, TableHead, TableRow, TableCell, TableBody, Skeleton } from '@mui/material';
+import TableValue from './TableValue';
+import type { ITableData, ITableHeader, ITableRow } from './types';
+// 
 
 type ITableComponentI = {
   loading: boolean

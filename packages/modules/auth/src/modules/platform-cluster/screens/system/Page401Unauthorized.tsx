@@ -1,11 +1,9 @@
-import { useNavigate } from 'react-router-dom'
-import {
-  Box, Button, Typography, Avatar, alpha, useTheme, Stack,
-} from '@mui/material'
-import { LockOutlined, Home, ArrowBack, ArrowForward } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
-import { Path } from "@cap/module-auth/routes/path"
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Typography, Avatar, alpha, useTheme, Stack } from '@mui/material';
+import { LockOutlined, Home, ArrowForward } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { Path } from '@cap/module-auth/routes/path';
 
 export default function Page401Unauthorized() {
   const { t } = useTranslation('auth')

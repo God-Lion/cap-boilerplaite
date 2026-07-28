@@ -1,4 +1,4 @@
-import type { IRole, UserDto, UserRole, UserStatus, AnyRole } from './auth'
+import type { UserDto, UserStatus, AnyRole } from './auth';
 
 export interface AdminOrganization {
   id: number

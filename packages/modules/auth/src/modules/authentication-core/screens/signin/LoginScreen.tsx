@@ -1,42 +1,13 @@
 // FILE: packages/modules/auth/src/screens/auth/signin/LoginScreen.tsx
 // STYLE AUDIT: Aligned to OrganizationProfile.tsx design system
 // FIXES: [CRITICAL] Modernized InputProps to slotProps.input, applied info.main to CTAs [HIGH] Added animate-scale-in [MEDIUM] Added divider opacity and avatar 24px radius [LOW] Added aria-labels and i18n fallbacks
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Divider,
-  alpha,
-  useTheme,
-  InputAdornment,
-  IconButton,
-  CircularProgress,
-  Stack,
-  Alert,
-  Avatar,
-} from '@mui/material'
-import {
-  Visibility,
-  VisibilityOff,
-  Email,
-  Lock,
-  ArrowForward,
-  VpnKey,
-  Google,
-  GitHub,
-  Microsoft,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate, useLocation } from 'react-router-dom'
-import {
-  AuthPageLayout,
-  AuthScreenIcon,
-  AuthInputLabel,
-  AuthActionButton,
-} from "@idaas/authentication-core/components/shared/auth"
-import { authRegistry } from "../../../../registry/AuthRegistry"
+import React, { useState } from 'react';
+import { Box, Typography, TextField, Button, Divider, alpha, useTheme, InputAdornment, IconButton, Stack, Alert } from '@mui/material';
+import { Visibility, VisibilityOff, Email, Lock, VpnKey, Google, GitHub, Microsoft } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
+import { authRegistry } from '../../../../registry/AuthRegistry';
 
 export default function LoginScreen() {
   const { t } = useTranslation('auth')

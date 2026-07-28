@@ -1,5 +1,5 @@
-import { apiClient, FetchResponse } from '@cap/platform-core'
-import { ENDPOINTS } from './endpoints'
+import { apiClient } from '@cap/platform-core';
+import { ENDPOINTS } from './endpoints';
 
 const adminService = {
   dashboard: () => apiClient.get(ENDPOINTS.admin.dashboard),

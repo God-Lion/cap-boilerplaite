@@ -3,51 +3,23 @@
 // FIXES: Added header; implemented entry motion; modernized component attributes (slotProps); standardized Avatar/Card/Stack styles; translated all scope labels and descriptions; added accessibility aria-labels; improved responsive layout
 // AUDIT: CRITICAL âœ“  HIGH âœ“  MEDIUM âœ“
 
-import { useEffect, useMemo } from 'react'
-import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  Avatar,
-  Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  alpha,
-  useTheme,
-  Link,
-  Stack,
-  CircularProgress,
-  IconButton,
-} from '@mui/material'
-import VpnKeyIcon from '@mui/icons-material/VpnKey'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import EmailIcon from '@mui/icons-material/Email'
-import BadgeIcon from '@mui/icons-material/Badge'
-import ShieldIcon from '@mui/icons-material/Shield'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { useTenant } from '@cap/platform-core'
-import { Path } from "@auth/routes/path"
-import {
-  useOidcInteraction,
-  useConfirmOidcInteraction,
-  useAbortOidcInteraction,
-} from '@idaas/identity-broker/hooks/useOidcCompliance'
-import {
-  AuthPageLayout,
-  AuthScreenIcon,
-  AuthInputLabel,
-  AuthActionButton,
-} from "@idaas/authentication-core/components/shared/auth"
+import { useEffect, useMemo } from 'react';
+import { Box, Button, Typography, Avatar, Divider, List, ListItem, ListItemIcon, ListItemText, alpha, useTheme, Link, Stack, CircularProgress, IconButton } from '@mui/material';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import BadgeIcon from '@mui/icons-material/Badge';
+import ShieldIcon from '@mui/icons-material/Shield';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useTenant } from '@cap/platform-core';
+import { Path } from '@auth/routes/path';
+import { useOidcInteraction, useConfirmOidcInteraction, useAbortOidcInteraction } from '@idaas/identity-broker/hooks/useOidcCompliance';
+import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
 
 export default function PermissionConsentScreen() {
   const { t } = useTranslation()
@@ -423,7 +395,4 @@ export default function PermissionConsentScreen() {
     </AuthPageLayout>
   )
 }
-
-
-
 

@@ -1,10 +1,5 @@
 import { produce } from 'immer';
-import type {
-  TenantThemeConfig,
-  PrimitiveTokens,
-  EffectConfig,
-  ComponentStyles,
-} from '../types';
+import type { TenantThemeConfig } from '../types';
 import { DEFAULT_THEME_CONFIG } from '../types';
 import { THEME_PRESETS } from '../types/presets';
 import type { ThemePresetId } from '../types/presets';

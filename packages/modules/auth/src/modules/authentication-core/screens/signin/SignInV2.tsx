@@ -1,48 +1,19 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  TextField,
-  Typography,
-  Card,
-  CardContent,
-  IconButton,
-  InputAdornment,
-  Snackbar,
-  Backdrop,
-  CircularProgress,
-  Link as MuiLink,
-  alpha,
-} from '@mui/material'
-import {
-  Visibility,
-  VisibilityOff,
-  Fingerprint,
-  LockPerson,
-  ArrowForward,
-  Timer,
-  VerifiedUser,
-} from '@mui/icons-material'
-import { useForm, Controller, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { Alert as MAlert, themeConfig, IStatus, Roles, useAppStore } from '@cap/platform-core'
-import { startAuthentication } from '@simplewebauthn/browser'
-import { useSignin, useSsoDiscovery } from '../../hooks/useAuthQuery'
-import { usePasskeyLogin, usePasskeyGetLoginOptions, useMfaLoginVerify } from '../../../mfa-orchestrator/hooks'
-import { useInterval } from '../../hooks/useInterval'
-import { usePasskeyAutofill } from '../../../mfa-orchestrator/hooks'
-import { LoginRequest } from '../../types/api.types'
-import authService from '../../services/auth.service'
-import { Path } from '@cap/module-auth/routes/path'
-import {
-  AuthPageLayout,
-  AuthScreenIcon,
-  AuthInputLabel,
-  AuthActionButton,
-} from '../../components/shared/auth'
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Box, Button, Grid, TextField, Typography, IconButton, InputAdornment, Snackbar, Backdrop, CircularProgress, Link as MuiLink, alpha } from '@mui/material';
+import { Visibility, VisibilityOff, Fingerprint, LockPerson, ArrowForward, Timer, VerifiedUser } from '@mui/icons-material';
+import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { Alert as MAlert, themeConfig, IStatus, Roles, useAppStore } from '@cap/platform-core';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { useSignin, useSsoDiscovery } from '../../hooks/useAuthQuery';
+import { usePasskeyLogin, usePasskeyGetLoginOptions, useMfaLoginVerify } from '../../../mfa-orchestrator/hooks';
+import { useInterval } from '../../hooks/useInterval';
+import { usePasskeyAutofill } from '../../../mfa-orchestrator/hooks';
+import { LoginRequest } from '../../types/api.types';
+import authService from '../../services/auth.service';
+import { Path } from '@cap/module-auth/routes/path';
+import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '../../components/shared/auth';
 
 const DEFAULT_FORM_VALUES: LoginRequest = {
   email: 'admin@example.com',
@@ -1043,6 +1014,4 @@ export default function SignInV2() {
     </>
   )
 }
-
-
 

@@ -3,7 +3,7 @@ import type { NeumorphismConfig, ComputedNeumorphismShadow } from '../types';
 export const computeNeumorphismShadows = (
   config: NeumorphismConfig
 ): ComputedNeumorphismShadow => {
-  const { intensity, distance, altitude } = config;
+  const { intensity = 0.15, distance = 5, altitude = 10 } = config;
   
   const angleRad = ((360 - altitude + 90) * Math.PI) / 180;
   
@@ -34,17 +34,21 @@ export const computeNeumorphismBoxShadow = (
   return `${lightShadow}, ${darkShadow}`;
 };
 
+import type { Theme } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
+
+
 export const getGlassmorphismStyles = (config: {
   blur?: string;
   background?: string;
   borderColor?: string;
   borderWidth?: string;
   opacity?: number;
-}) => {
+}, theme?: Theme) => {
   const {
     blur = '16px',
-    background = 'rgba(255, 255, 255, 0.1)',
-    borderColor = 'rgba(255, 255, 255, 0.2)',
+    background = theme ? alpha(theme.palette.background.paper, 0.4) : 'rgba(255, 255, 255, 0.1)',
+    borderColor = theme ? theme.palette.divider : 'rgba(255, 255, 255, 0.2)',
     borderWidth = '1px',
     opacity = 0.8,
   } = config;
@@ -64,13 +68,13 @@ export const getBrutalismStyles = (config: {
   shadowOffset?: string;
   shadowColor?: string;
   backgroundColor?: string;
-}) => {
+}, theme?: Theme) => {
   const {
     borderWidth = '2px',
-    borderColor = '#000000',
+    borderColor = theme ? theme.palette.text.primary : '#000000',
     shadowOffset = '4px',
-    shadowColor = '#000000',
-    backgroundColor = '#ffffff',
+    shadowColor = theme ? theme.palette.text.primary : '#000000',
+    backgroundColor = theme ? theme.palette.background.paper : '#ffffff',
   } = config;
 
   return {
@@ -86,13 +90,13 @@ export const getBentoStyles = (config: {
   borderWidth?: string;
   borderColor?: string;
   shadow?: string;
-}) => {
+}, theme?: Theme) => {
   const {
     borderRadius = '24px',
-    background = 'rgba(255, 255, 255, 0.8)',
+    background = theme ? theme.palette.background.paper : 'rgba(255, 255, 255, 0.8)',
     borderWidth = '1px',
-    borderColor = 'rgba(0, 0, 0, 0.05)',
-    shadow = '0 4px 12px rgba(0, 0, 0, 0.05)',
+    borderColor = theme ? theme.palette.divider : 'rgba(0, 0, 0, 0.05)',
+    shadow = theme ? theme.shadows[4] : '0 4px 12px rgba(0, 0, 0, 0.05)',
   } = config;
 
   return {
@@ -109,11 +113,11 @@ export const getOrganicStyles = (config: {
   backgroundColor?: string;
   borderColor?: string;
   borderWidth?: string;
-}) => {
+}, theme?: Theme) => {
   const {
     curvature = 80,
     fluidity = 50,
-    backgroundColor = '#ffffff',
+    backgroundColor = theme ? theme.palette.background.paper : '#ffffff',
     borderColor = 'transparent',
     borderWidth = '0px',
   } = config;
@@ -136,13 +140,13 @@ export const getImmersiveStyles = (config: {
   rotationY?: string;
   depth?: number;
   shadowColor?: string;
-}) => {
+}, theme?: Theme) => {
   const {
     perspective = '1000px',
     rotationX = '0deg',
     rotationY = '0deg',
     depth = 20,
-    shadowColor = 'rgba(0,0,0,0.2)',
+    shadowColor = theme ? alpha(theme.palette.common.black, 0.2) : 'rgba(0,0,0,0.2)',
   } = config;
 
   // Deep 3D perspective and layered shadows

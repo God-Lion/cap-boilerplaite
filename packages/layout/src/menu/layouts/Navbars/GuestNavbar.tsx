@@ -1,24 +1,10 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  IconButton,
-  Typography,
-  useTheme,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Stack,
-} from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import { Logo } from '../../shared'
-import { themeConfig } from '@cap/platform-core'
-import { Path } from '@cap/module-auth'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AppBar, Box, Button, Container, IconButton, Typography, useTheme, Drawer, List, ListItem, ListItemButton, ListItemText, Stack } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { Logo } from '../../shared';
+import { themeConfig } from '@cap/platform-core';
+import { Path } from '@cap/module-auth';
 
 const GuestNavbar = () => {
   const theme = useTheme()

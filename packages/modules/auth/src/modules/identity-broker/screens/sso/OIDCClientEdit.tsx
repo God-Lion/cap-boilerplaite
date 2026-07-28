@@ -112,7 +112,7 @@ export default function OIDCClientEdit() {
     updateMutation.mutate({ id, data: payload }, {
       onSuccess: () => {
         enqueueSnackbar(t('auth.sso.client_updated', 'OIDC Client updated successfully'), { variant: 'success' })
-        navigate(Path.auth.oidcConfigBrowser)
+        navigate(Path.identity.oidcConfigBrowser)
       },
       onError: (err: any) => {
         enqueueSnackbar(err.message || t('common.error', 'An error occurred'), { variant: 'error' })
@@ -157,7 +157,7 @@ export default function OIDCClientEdit() {
         </Alert>
         <Button
           component={RouterLink}
-          to={Path.auth.oidcConfigBrowser}
+          to={Path.identity.oidcConfigBrowser}
           startIcon={<ArrowBack />}
           sx={{ mt: 3 }}
         >
@@ -181,7 +181,7 @@ export default function OIDCClientEdit() {
       <Box sx={{ mb: 4 }}>
         <Button
           component={RouterLink}
-          to={Path.auth.oidcConfigBrowser}
+          to={Path.identity.oidcConfigBrowser}
           startIcon={<ArrowBack />}
           sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'transparent' } }}
         >
@@ -390,7 +390,7 @@ export default function OIDCClientEdit() {
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
-            <Button component={RouterLink} to={Path.auth.oidcConfigBrowser} color="inherit" sx={{ fontWeight: 600 }}>
+            <Button component={RouterLink} to={Path.identity.oidcConfigBrowser} color="inherit" sx={{ fontWeight: 600 }}>
               {t('common.cancel', 'Cancel')}
             </Button>
             <Button type="submit" variant="contained" disabled={!isDirty || isSubmitting} sx={{ fontWeight: 700, px: 4, borderRadius: 2, boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)' }}>

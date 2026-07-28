@@ -56,7 +56,7 @@ import {
   useImpersonateOrganization,
 } from '@idaas/authentication-core/hooks/useAdminQuery'
 
-import { Organization } from '../../../../../../modules/authorization-engine/services/adminService'
+import { Organization } from '@auth/authorization-engine/services/adminService'
 
 export default function OrganizationListDashboard() {
   const { t } = useTranslation('common')

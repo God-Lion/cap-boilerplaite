@@ -86,56 +86,10 @@ export const adminKeys = {
   systemMetrics: () => ['admin', 'systemMetrics'] as const,
 }
 // ============================================================================
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  UseQueryOptions,
-  UseMutationOptions,
-} from '@tanstack/react-query'
-import { FetchResponse, HttpError, PaginatedResponse } from '@cap/platform-core'
-import { adminService } from "../services/adminService"
-import type {
-  OIDCClient,
-  CreateOIDCClientRequest,
-  UpdateOIDCClientRequest,
-  AdminUser,
-  CreateUserRequest,
-  UpdateUserRequest,
-  SSFConfig,
-  MessageResponse,
-  Role,
-  Permission,
-  AccessPolicy,
-  Organization,
-  CreateOrganizationRequest,
-  OrganizationMember,
-  Connector,
-  ConnectorLog,
-  SCIMToken,
-  SAMLConfig,
-  EmailTemplate,
-  EmailTestRequest,
-  BroadcastSSFEventRequest,
-  BroadcastSSFEventResponse,
-  MFAStats,
-  UserStats,
-  BulkActionRequest,
-  BulkActionResult,
-  AuthScope,
-  CreateScopeRequest,
-  UpdateScopeRequest,
-  SCIMConfig,
-  DetailedHealthReport,
-  BasicMetrics,
-  JWKSKey,
-  JWKSKeyDetail,
-  CreateJWKSKeyRequest,
-  Webhook,
-  CreateWebhookRequest,
-  DomainVerification,
-  SecurityHealthResponse,
-} from '@cap/shared-types'
+import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { FetchResponse, HttpError, PaginatedResponse } from '@cap/platform-core';
+import { adminService } from '../services/adminService';
+import type { OIDCClient, CreateOIDCClientRequest, UpdateOIDCClientRequest, AdminUser, CreateUserRequest, UpdateUserRequest, SSFConfig, MessageResponse, Role, Permission, AccessPolicy, Organization, CreateOrganizationRequest, OrganizationMember, Connector, ConnectorLog, SCIMToken, SAMLConfig, EmailTemplate, EmailTestRequest, BroadcastSSFEventRequest, BroadcastSSFEventResponse, MFAStats, UserStats, BulkActionRequest, BulkActionResult, AuthScope, CreateScopeRequest, UpdateScopeRequest, SCIMConfig, DetailedHealthReport, BasicMetrics, JWKSKey, JWKSKeyDetail, CreateJWKSKeyRequest, DomainVerification } from '@cap/shared-types';
 // ============================================================================
 // OIDC Client Management Hooks
 // ============================================================================
@@ -1923,7 +1877,7 @@ export function useOrganizationScimConfig(
 ) {
   return useQuery({
     queryKey: adminKeys.organizations.scimConfig(),
-    queryFn: () => adminService.getOrganizationScimConfig(),
+    queryFn: () => adminService.getOrganizationScimConfig() as any,
     ...options,
   })
 }
@@ -1943,7 +1897,7 @@ export function useUpdateOrganizationScimConfig(
   const { onSuccess, ...restOptions } = options || {}
 
   return useMutation({
-    mutationFn: (data) => adminService.updateOrganizationScimConfig(data),
+    mutationFn: (data) => adminService.updateOrganizationScimConfig(data) as any,
     ...restOptions,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({

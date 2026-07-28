@@ -3,54 +3,48 @@
 // FIXES: Enforced 1200px max layout width, strict MUI v7 Cards and Avatars styling, removed inline styling, enforced Grid2 with size property, enforced useCallback, unified headers, full i18next coverage, framer-motion page entry transitions.
 // AUDIT: CRITICAL âœ“  HIGH âœ“  MEDIUM âœ“
 
-import React, { useState, useEffect, useCallback } from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Switch from '@mui/material/Switch'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Divider from '@mui/material/Divider'
-import Chip from '@mui/material/Chip'
-import TextField from '@mui/material/TextField'
-import InputAdornment from '@mui/material/InputAdornment'
-import MenuItem from '@mui/material/MenuItem'
-import CircularProgress from '@mui/material/CircularProgress'
-import Avatar from '@mui/material/Avatar'
-import Tooltip from '@mui/material/Tooltip'
-import Stack from '@mui/material/Stack'
-import Grid from '@mui/material/Grid'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import IconButton from '@mui/material/IconButton'
-import { alpha, useTheme } from '@mui/material/styles'
-import Sensors from '@mui/icons-material/Sensors'
-import Security from '@mui/icons-material/Security'
-import Hub from '@mui/icons-material/Hub'
-import Sync from '@mui/icons-material/Sync'
-import Add from '@mui/icons-material/Add'
-import Key from '@mui/icons-material/Key'
-import Http from '@mui/icons-material/Http'
-import Save from '@mui/icons-material/Save'
-import ArrowBack from '@mui/icons-material/ArrowBack'
-import Close from '@mui/icons-material/Close'
-import AddCircle from '@mui/icons-material/AddCircle'
-import { useTranslation } from 'react-i18next'
-import { useSnackbar } from 'notistack'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Link as RouterLink } from 'react-router-dom'
-import { SSFConfig, BroadcastSSFEventRequest, BroadcastSSFEventResponse } from "@auth/authorization-engine/services/adminService"
-import {
-  useSSFConfig,
-  useUpdateSSFConfig,
-  useTestSSFStream,
-  useBroadcastSSFEvent,
-  useSSFHistory
-} from "@auth"
-import { Path } from "@auth"
+import React, { useState, useEffect, useCallback } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import MenuItem from '@mui/material/MenuItem';
+import CircularProgress from '@mui/material/CircularProgress';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import { alpha, useTheme } from '@mui/material/styles';
+import Sensors from '@mui/icons-material/Sensors';
+import Security from '@mui/icons-material/Security';
+import Hub from '@mui/icons-material/Hub';
+import Sync from '@mui/icons-material/Sync';
+import Add from '@mui/icons-material/Add';
+import Key from '@mui/icons-material/Key';
+import Http from '@mui/icons-material/Http';
+import Save from '@mui/icons-material/Save';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import Close from '@mui/icons-material/Close';
+import AddCircle from '@mui/icons-material/AddCircle';
+import { useTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link as RouterLink } from 'react-router-dom';
+
+import { useSSFConfig, useUpdateSSFConfig, useTestSSFStream, useSSFHistory } from '@auth';
+import { Path } from '@auth';
 
 // Types
 interface SsfEventDefinition {
@@ -243,7 +237,7 @@ export default function SSFConfiguration() {
       <Box sx={{ mb: 2 }}>
         <Button
           component={RouterLink}
-          to={Path.auth.oidcConfigBrowser}
+          to={Path.identity.oidcConfigBrowser}
           startIcon={<ArrowBack />}
           sx={{
             p: 0,
@@ -658,6 +652,4 @@ export default function SSFConfiguration() {
     </Box>
   )
 }
-
-
 

@@ -26,7 +26,15 @@ export const composeMuiTheme = ({
   settings,
   tenantTheme,
 }: ComposeMuiThemeOptions) => {
-  const resolvedTenantTheme = tenantTheme || DEFAULT_THEME_CONFIG;
+  const baseTenantTheme = tenantTheme || DEFAULT_THEME_CONFIG;
+  const resolvedTenantTheme = {
+    ...baseTenantTheme,
+    effects: {
+      ...(baseTenantTheme.effects || DEFAULT_THEME_CONFIG.effects),
+      ...(settings.effect ? { globalType: settings.effect } : {})
+    }
+  } as TenantThemeConfig;
+
   const tokens = resolvedTenantTheme.tokens || DEFAULT_THEME_CONFIG.tokens;
   const baseStaticTheme = currentMode === 'dark' ? darkTheme : lightTheme;
   const primaryMain = tokens.colors.primary?.value || settings.primaryColor || baseStaticTheme.palette.primary.main;

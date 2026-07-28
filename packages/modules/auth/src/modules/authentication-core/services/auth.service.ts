@@ -1,30 +1,14 @@
-import type { RegistrationResponseJSON, AuthenticationResponseJSON } from '@simplewebauthn/browser'
-import {
-  apiClient,
-  FetchResponse,
-  IForgetPassword,
-  ILogin,
-  IResetPassword,
-  ISignup,
-} from '@cap/platform-core'
 
-import {
-  SecurityLogParams,
-} from "../types/api.types"
-import { ENDPOINTS } from "./endpoints"
-import { TenantService } from "@cap/platform-core"
+import { apiClient, FetchResponse, IForgetPassword, ILogin, IResetPassword, ISignup } from '@cap/platform-core';
 
-import { eventBus } from '../../../domain-kernel/src/events/event-bus'
-import { UserAuthenticated } from '../../../domain-kernel/src/events/auth-events'
-import { secureTokenManager } from '@cap/platform-store'
-import {
-  createUserAuthenticatedEvent,
-  createAuthenticationFailedEvent,
-  createSessionCreatedEvent,
-  createSessionRevokedEvent,
-  createTokenIssuedEvent,
-  createTokenRefreshedEvent,
-} from '../../../domain-kernel/src/events/event-factory'
+import { SecurityLogParams } from '../types/api.types';
+import { ENDPOINTS } from './endpoints';
+import { TenantService } from '@cap/platform-core';
+
+import { eventBus } from '../../../domain-kernel/src/events/event-bus';
+import { UserAuthenticated } from '../../../domain-kernel/src/events/auth-events';
+import { secureTokenManager } from '@cap/platform-store';
+import { createUserAuthenticatedEvent, createAuthenticationFailedEvent, createSessionCreatedEvent, createSessionRevokedEvent, createTokenIssuedEvent, createTokenRefreshedEvent } from '../../../domain-kernel/src/events/event-factory';
 
 export const handleLoginSuccess = async (userPayload: any) => {
   if (userPayload?.accessToken) {
@@ -255,7 +239,6 @@ const authService = {
     return response
   },
 
-
   // ========================================================================
   // Login History & Security Logs
   // ========================================================================
@@ -271,8 +254,6 @@ const authService = {
   },
 
   // MFA and Passkey logic is handled by plugins in packages/modules/auth/src/plugins/
-
-
 
   // ========================================================================
   // Passwordless (Magic Link)

@@ -823,15 +823,15 @@ export default function DirectorySyncDashboard() {
                           {conn.status === 'active'
                             ? t('admin.provisioning.dashboard.connector_card.healthy')
                             : conn.error_message ||
-                              t('admin.provisioning.dashboard.connector_card.standby') ||
-                              'STANDBY'}
+                            t('admin.provisioning.dashboard.connector_card.standby') ||
+                            'STANDBY'}
                         </Typography>
                       </Box>
                       <Button
                         size='small'
                         endIcon={<ArrowForward />}
                         onClick={() =>
-                          navigate(Path.connectorDetail.replace(':id', String(conn.id)))
+                          navigate(Path.admin.connectorDetail.replace(':id', String(conn.id)))
                         }
                         sx={{ textTransform: 'none', fontWeight: 800, borderRadius: 2 }}
                       >
@@ -894,7 +894,7 @@ export default function DirectorySyncDashboard() {
             <Button
               variant='contained'
               color='secondary'
-              onClick={() => navigate(Path.scim)}
+              onClick={() => navigate(Path.admin.scim)}
               sx={{
                 height: 52,
                 px: 5,

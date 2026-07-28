@@ -119,11 +119,11 @@ declare module '@mui/material/styles' {
       info?: string | { sm?: string; md?: string; lg?: string };
       success?: string | { sm?: string; md?: string; lg?: string };
     };
-    colorSchemes?: {
+    colorSchemes: {
       light: { palette: any }
       dark: { palette: any }
     };
-    mainColorChannels?: {
+    mainColorChannels: {
       light: string
       dark: string
       lightShadow: string
@@ -150,8 +150,8 @@ declare module '@mui/material/styles' {
       success?: string | { sm?: string; md?: string; lg?: string };
     };
     colorSchemes?: {
-      light?: { palette?: any }
-      dark?: { palette?: any }
+      light?: { palette: any }
+      dark?: { palette: any }
     };
     mainColorChannels?: {
       light?: string

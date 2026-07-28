@@ -1,13 +1,10 @@
-import { useCallback, useState } from 'react'
-import { useNavigate, useSearchParams, Link } from 'react-router-dom'
-import {
-  Box, Button, Typography, Alert, Avatar, Stack,
-  Link as MuiLink, CircularProgress, alpha, useTheme,
-} from '@mui/material'
-import { History, ArrowBack, Send } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
-import { Path } from "@cap/module-auth/routes/path"
+import { useCallback, useState } from 'react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { Box, Button, Typography, Alert, Avatar, Stack, Link as MuiLink, CircularProgress, alpha, useTheme } from '@mui/material';
+import { History, Send } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { Path } from '@cap/module-auth/routes/path';
 
 export default function VerificationLinkExpired() {
   const { t } = useTranslation('auth')

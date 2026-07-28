@@ -1,21 +1,11 @@
-import { useState, useCallback } from 'react'
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Alert,
-  CircularProgress,
-  useTheme,
-  alpha,
-  Link as MuiLink,
-} from '@mui/material'
-import { Warning, Info } from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import { useDeactivateAccount, useUserProfile } from "../../hooks/useUserQuery"
-import logger from "@idaas/authentication-core/utils/logger"
-import { Path } from "@cap/module-auth/routes/path"
+import { useState, useCallback } from 'react';
+import { Box, Button, TextField, Typography, Alert, CircularProgress, useTheme, Link as MuiLink } from '@mui/material';
+import { Warning } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useDeactivateAccount, useUserProfile } from '../../hooks/useUserQuery';
+import logger from '@idaas/authentication-core/utils/logger';
+import { Path } from '@cap/module-auth/routes/path';
 
 export default function DeactivateAccount() {
   const { t } = useTranslation()
@@ -26,7 +16,7 @@ export default function DeactivateAccount() {
   const deactivateAccountMutation = useDeactivateAccount()
 
   const { data: userProfile } = useUserProfile()
-  const user = userProfile?.data
+  const user = userProfile?.data as any
 
   const handleDeactivate = useCallback(async () => {
     if (confirmText !== 'DELETE') {
@@ -137,7 +127,6 @@ export default function DeactivateAccount() {
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 
-
             {/* Confirmation Input */}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Typography
@@ -247,7 +236,4 @@ export default function DeactivateAccount() {
     </Box>
   )
 }
-
-
-
 

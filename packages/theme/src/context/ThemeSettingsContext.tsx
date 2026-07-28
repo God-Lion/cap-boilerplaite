@@ -5,6 +5,7 @@ import { DEFAULT_THEME_CONFIG } from '../types'
 const DEFAULT_THEME_SETTINGS: Required<Settings> = {
   mode: 'light',
   skin: 'default',
+  effect: 'standard',
   semiDark: false,
   layout: 'vertical',
   navbarContentWidth: 'compact',

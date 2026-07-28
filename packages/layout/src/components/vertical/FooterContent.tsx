@@ -1,10 +1,10 @@
-import Box from '@mui/material/Box'
-import { Link } from 'react-router-dom'
-import classnames from 'classnames'
-// import { useVerticalNav } from 'src/menu/contexts/verticalNavContext'
-// import { useHorizontalNav } from 'src/menu/contexts/horizontalNavContext'
-// import { useSettings } from 'src/core/contexts/settingsContext'
-import { verticalLayoutClasses } from '../../utils/layoutClasses'
+import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
+import classnames from 'classnames';
+// 
+// 
+// 
+import { verticalLayoutClasses } from '../../utils/layoutClasses';
 // themeConfig.templateName hardcoded to avoid circular import
 const TEMPLATE_NAME = 'GLDeveloper'
 

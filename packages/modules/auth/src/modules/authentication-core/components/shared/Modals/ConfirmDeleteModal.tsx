@@ -1,7 +1,7 @@
-import React from 'react'
-import { Dialog, Button, Box, Typography } from '@mui/material'
-import { ErrorOutline } from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
+
+import { Dialog, Button, Box, Typography } from '@mui/material';
+import { ErrorOutline } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmDeleteModalProps {
   open: boolean

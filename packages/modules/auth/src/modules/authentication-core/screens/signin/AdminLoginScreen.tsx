@@ -1,29 +1,11 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  InputAdornment,
-  IconButton,
-  Stack,
-  Alert,
-  Avatar,
-  CircularProgress,
-  alpha,
-  useTheme,
-} from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { AdminPanelSettings, Visibility, VisibilityOff, ArrowForward, Security } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
-import { Path } from "@cap/module-auth/routes/path"
-import {
-  AuthPageLayout,
-  AuthScreenIcon,
-  AuthInputLabel,
-  AuthActionButton,
-} from "@idaas/authentication-core/components/shared/auth"
+import React, { useState } from 'react';
+import { Box, Typography, TextField, Button, InputAdornment, IconButton, Stack, Alert, alpha, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { AdminPanelSettings, Visibility, VisibilityOff, Security } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { Path } from '@cap/module-auth/routes/path';
+import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
 
 const AdminLoginScreen = () => {
   const { t } = useTranslation('auth')
@@ -163,5 +145,4 @@ const AdminLoginScreen = () => {
 }
 
 export default AdminLoginScreen
-
 

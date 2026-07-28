@@ -3,36 +3,22 @@
 // FIXES: Containerâ†’Box, motion entry, card variants, empty state, audit card
 // AUDIT: CRITICAL âœ“  HIGH âœ“  MEDIUM âœ“
 
-import React from 'react'
-import {
-  Box, Button, Typography, Card, CardContent, IconButton,
-  alpha, useTheme, Grid, Chip, Alert, Tooltip, LinearProgress,
-  Avatar, Stack, Divider, Skeleton, Dialog, DialogTitle,
-  DialogContent, DialogActions, TextField, MenuItem,
-  CircularProgress,
-} from '@mui/material'
-import Key from '@mui/icons-material/Key'
-import Add from '@mui/icons-material/Add'
-import Delete from '@mui/icons-material/Delete'
-import ContentCopy from '@mui/icons-material/ContentCopy'
-import Refresh from '@mui/icons-material/Refresh'
-import History from '@mui/icons-material/History'
-import Security from '@mui/icons-material/Security'
-import InfoOutlined from '@mui/icons-material/InfoOutlined'
-import ArrowBack from '@mui/icons-material/ArrowBack'
-import CloseIcon from '@mui/icons-material/Close'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import {
-  useJWKSKeys,
-  useRotateJWKSKeys,
-  useDeleteJWKSKey,
-  useCreateJWKSKey,
-  useGetJWKSKeyDetail,
-  CreateJWKSKeyRequest,
-  Path
-} from "@auth"
+import React from 'react';
+import { Box, Button, Typography, Card, CardContent, IconButton, alpha, useTheme, Grid, Chip, Alert, Tooltip, LinearProgress, Avatar, Stack, Divider, Skeleton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, CircularProgress } from '@mui/material';
+import Key from '@mui/icons-material/Key';
+import Add from '@mui/icons-material/Add';
+import Delete from '@mui/icons-material/Delete';
+import ContentCopy from '@mui/icons-material/ContentCopy';
+import Refresh from '@mui/icons-material/Refresh';
+import History from '@mui/icons-material/History';
+import Security from '@mui/icons-material/Security';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import CloseIcon from '@mui/icons-material/Close';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useJWKSKeys, useRotateJWKSKeys, useDeleteJWKSKey, useCreateJWKSKey, useGetJWKSKeyDetail, CreateJWKSKeyRequest } from '@auth';
 
 interface JWKSKey {
   kid: string
@@ -365,7 +351,7 @@ export default function JWKSManagement() {
                           </Typography>
                           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 0.5 }}>
                             <Chip
-                              label={key.status.toUpperCase()}
+                              label={(key.status || 'unknown').toUpperCase()}
                               size='small'
                               sx={{
                                 height: 20, fontSize: '0.65rem', fontWeight: 900, borderRadius: '6px',
@@ -854,5 +840,4 @@ export default function JWKSManagement() {
     </Box>
   )
 }
-
 

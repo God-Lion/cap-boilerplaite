@@ -1,6 +1,6 @@
-import React from 'react'
-import { Box, alpha, useTheme } from '@mui/material'
-import { motion } from 'framer-motion'
+import React from 'react';
+import { Box, useTheme } from '@mui/material';
+import { motion } from 'framer-motion';
 
 interface AuthPageLayoutProps {
   children: React.ReactNode

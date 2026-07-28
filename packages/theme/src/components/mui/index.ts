@@ -9,7 +9,7 @@ export {
   Tooltip,
   Paper,
   Divider,
-  Alert,
+  Alert as MuiAlert,
   Tabs,
   Tab,
   Slider,
@@ -61,5 +61,5 @@ export {
 
 export { default as Avatar } from './Avatar';
 export { default as Chip } from './Chip';
-
-// Add any other common MUI exports here as needed
+export { default as Icon } from './Icon';
+export { default as Alert } from './Alert';

@@ -1,18 +1,7 @@
-import { useForm, Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import {
-  Box,
-  Button,
-  FormControlLabel,
-  FormHelperText,
-  FormControl,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-  Checkbox,
-} from '@mui/material'
-// import { IUserResponse } from '@cap/platform-core'
+import { useForm, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { Box, Button, FormControlLabel, FormHelperText, FormControl, Grid, Paper, Stack, Typography, Checkbox } from '@mui/material';
+// 
 
 export default function DesactivateAccount() {
   const { t } = useTranslation()

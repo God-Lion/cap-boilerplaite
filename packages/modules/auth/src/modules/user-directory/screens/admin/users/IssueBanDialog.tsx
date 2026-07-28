@@ -44,7 +44,7 @@ export default function IssueBanDialog({ open, onClose }: IssueBanDialogProps) {
       setSelectedUser(null)
       setReason('')
     },
-    onError: (error) => {
+    onError: (error: any) => {
       enqueueSnackbar(error.message || t('auth.common.errorOccurred', 'An error occurred'), {
         variant: 'error',
       })

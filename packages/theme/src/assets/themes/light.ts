@@ -1,6 +1,6 @@
-import { createTheme, alpha } from '@mui/material/styles'
-import { orange, red } from '@mui/material/colors'
-import { colors as functional } from './palette/functional'
+import { createTheme, alpha } from '@mui/material/styles';
+
+import { colors as functional } from './palette/functional';
 
 // Define light-mode specific palette tokens locally to override the dark BaseTheme defaults
 const lightPrimary = {

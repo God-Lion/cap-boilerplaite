@@ -10,7 +10,6 @@ import {
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import useLayoutInit from './hooks/useLayoutInit'
-import ThemeBridge from './styles/ThemeBridge'
 
 type LayoutWrapperProps = {
   systemMode: SystemMode
@@ -50,7 +49,6 @@ const LayoutWrapper = ({
   if (isHydrating) {
     return (
       <Box sx={{ position: 'relative', minBlockSize: '100vh' }}>
-        <ThemeBridge />
         {/* Invisible pre-render of final layout — eliminates pop-in */}
         <Box sx={{ visibility: 'hidden', pointerEvents: 'none' }}>
           {isNoLayout
@@ -94,7 +92,6 @@ const LayoutWrapper = ({
   if (isAdminLayout)
     return (
       <>
-        <ThemeBridge />
         <Box
           sx={{
             display: 'flex',

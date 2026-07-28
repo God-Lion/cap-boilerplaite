@@ -1,25 +1,8 @@
-import React from 'react'
-import { Box, Typography, Container, Paper, Divider, Button } from '@mui/material'
-import {
-  Timeline,
-  TimelineItem,
-  TimelineSeparator,
-  TimelineConnector,
-  TimelineContent,
-  TimelineOppositeContent,
-  TimelineDot,
-} from '@mui/lab'
-import {
-  Login,
-  VpnKey,
-  Security,
-  Password,
-  NotificationImportant,
-  ManageAccounts,
-  History,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { themeConfig } from '@cap/platform-core'
+
+import { Box, Typography, Container, Paper, Button } from '@mui/material';
+import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineOppositeContent, TimelineDot } from '@mui/lab';
+import { Login, VpnKey, Security, Password, NotificationImportant, History } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 const UserActivityTimeline = () => {
   const { t } = useTranslation()

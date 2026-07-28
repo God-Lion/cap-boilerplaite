@@ -34,7 +34,7 @@ const NOTIFICATION_KEYS = {
  */
 export function useNotifications(
   params?: any,
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: NOTIFICATION_KEYS.list(params),
@@ -48,7 +48,7 @@ export function useNotifications(
  * Get unread count
  */
 export function useUnreadNotificationsCount(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: NOTIFICATION_KEYS.unreadCount,
@@ -63,7 +63,7 @@ export function useUnreadNotificationsCount(
  * Get notification preferences
  */
 export function useNotificationPreferences(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: NOTIFICATION_KEYS.preferences,
@@ -81,7 +81,7 @@ export function useNotificationPreferences(
  * Mark notification as read
  */
 export function useMarkNotificationAsRead(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -100,7 +100,7 @@ export function useMarkNotificationAsRead(
  * Mark all notifications as read
  */
 export function useMarkAllNotificationsAsRead(
-  options?: UseMutationOptions<FetchResponse, HttpError, void, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, void, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -119,7 +119,7 @@ export function useMarkAllNotificationsAsRead(
  * Delete notification
  */
 export function useDeleteNotification(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -138,7 +138,7 @@ export function useDeleteNotification(
  * Clear all notifications
  */
 export function useClearAllNotifications(
-  options?: UseMutationOptions<FetchResponse, HttpError, void, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, void, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -157,7 +157,7 @@ export function useClearAllNotifications(
  * Update notification preferences
  */
 export function useUpdateNotificationPreferences(
-  options?: UseMutationOptions<FetchResponse, HttpError, any, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, any, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}

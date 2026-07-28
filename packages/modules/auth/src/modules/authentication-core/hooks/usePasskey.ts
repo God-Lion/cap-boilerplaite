@@ -47,7 +47,7 @@ const passkeyService = {
 }
 
 export function usePasskeyRegister(
-  options?: UseMutationOptions<FetchResponse, HttpError, PasskeyRegistrationOptions, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, PasskeyRegistrationOptions, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -63,7 +63,7 @@ export function usePasskeyRegister(
 }
 
 export function usePasskeyRegisterFinish(
-  options?: UseMutationOptions<FetchResponse, HttpError, { attestation: any }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { attestation: any }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -116,7 +116,7 @@ export function usePasskeys(
 }
 
 export function useDeletePasskey(
-  options?: UseMutationOptions<FetchResponse, HttpError, string | number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string | number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -132,7 +132,7 @@ export function useDeletePasskey(
 }
 
 export function useUpdatePasskey(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: string | number; name: string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: string | number; name: string }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}

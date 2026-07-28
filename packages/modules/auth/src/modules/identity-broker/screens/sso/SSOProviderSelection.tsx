@@ -1,24 +1,20 @@
 // Apply standard: useTranslation('auth'), scale anim, namespace keys, theme-based shadows
 // All complex HRD/SSO discovery logic preserved intact.
-import { useState, useMemo, useCallback } from 'react'
-import {
-  Box, Button, Typography, Card, CardContent, Avatar, alpha, useTheme,
-  Grid, TextField, InputAdornment, Paper, Divider, Tooltip, IconButton,
-  CircularProgress, Stack,
-} from '@mui/material'
-import BusinessIcon from '@mui/icons-material/Business'
-import EmailIcon from '@mui/icons-material/Email'
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import ShieldIcon from '@mui/icons-material/Shield'
-import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useDebounce } from 'react-use'
-import { useNavigate } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { themeConfig } from '@cap/platform-core'
-import { useSsoDiscovery } from "@auth/authentication-core/hooks/useAuthQuery"
-import { Path } from "@auth/routes/path"
+import { useState, useMemo, useCallback } from 'react';
+import { Box, Button, Typography, Card, CardContent, Avatar, alpha, useTheme, Grid, TextField, InputAdornment, Paper, Divider, Tooltip, IconButton, CircularProgress } from '@mui/material';
+import BusinessIcon from '@mui/icons-material/Business';
+import EmailIcon from '@mui/icons-material/Email';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import ShieldIcon from '@mui/icons-material/Shield';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useDebounce } from 'react-use';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+
+import { useSsoDiscovery } from '@auth/authentication-core/hooks/useAuthQuery';
+import { Path } from '@auth/routes/path';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 interface SSODiscoveryResult {
@@ -52,14 +48,14 @@ export default function SSOProviderSelection() {
 
   const handleContinue = useCallback(() => {
     if (detectedProvider?.url) { window.location.assign(detectedProvider.url) }
-    else if (detectedProvider?.type === 'SAML') { navigate(`${Path.samlSSOInitiation}?domain=${emailDomain}${detectedProvider.organizationId ? `&organizationId=${detectedProvider.organizationId}` : ''}`) }
-    else if (detectedProvider?.type === 'OIDC') { navigate(`${Path.admin.oidcLoginPrompt}?domain=${emailDomain}${detectedProvider.clientId ? `&clientId=${detectedProvider.clientId}` : ''}`) }
+    else if (detectedProvider?.type === 'SAML') { navigate(`${Path.identity.samlSSOInitiation}?domain=${emailDomain}${detectedProvider.organizationId ? `&organizationId=${detectedProvider.organizationId}` : ''}`) }
+    else if (detectedProvider?.type === 'OIDC') { navigate(`${Path.identity.oidcLoginPrompt}?domain=${emailDomain}${detectedProvider.clientId ? `&clientId=${detectedProvider.clientId}` : ''}`) }
     else { enqueueSnackbar(t('sso.noProviderDetected', 'No SSO provider could be identified'), { variant: 'info' }) }
   }, [detectedProvider, emailDomain, navigate, enqueueSnackbar, t])
 
   const handleManualProviderClick = (provider: (typeof MANUAL_PROVIDERS)[number]) => {
     if (!isValidEmail) { enqueueSnackbar(t('sso.enterEmailFirst', 'Please enter your work email first'), { variant: 'warning' }); return }
-    navigate(`${Path.samlSSOInitiation}?provider=${provider.id}&domain=${emailDomain}`)
+    navigate(`${Path.identity.samlSSOInitiation}?provider=${provider.id}&domain=${emailDomain}`)
   }
 
   return (
@@ -162,7 +158,4 @@ export default function SSOProviderSelection() {
     </Box>
   )
 }
-
-
-
 

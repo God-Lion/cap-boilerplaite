@@ -1,44 +1,21 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  TextField,
-  InputAdornment,
-  alpha,
-  useTheme,
-  Stack,
-  Chip,
-  IconButton,
-  Divider,
-  Paper,
-  CircularProgress,
-  Alert,
-  Tabs,
-  Tab,
-  Tooltip,
-} from '@mui/material'
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { Box, Typography, Card, CardContent, Grid, Button, TextField, InputAdornment, alpha, useTheme, Stack, Chip, IconButton, Divider, Paper, CircularProgress, Alert, Tabs, Tab, Tooltip } from '@mui/material';
 
-import SearchIcon from '@mui/icons-material/Search'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import LockIcon from '@mui/icons-material/Lock'
-import TerminalIcon from '@mui/icons-material/Terminal'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import SecurityIcon from '@mui/icons-material/Security'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import CheckIcon from '@mui/icons-material/Check'
-import PublicIcon from '@mui/icons-material/Public'
-import ApiIcon from '@mui/icons-material/Api'
-import CodeIcon from '@mui/icons-material/Code'
-import LayersIcon from '@mui/icons-material/Layers'
+import SearchIcon from '@mui/icons-material/Search';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import LockIcon from '@mui/icons-material/Lock';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import SecurityIcon from '@mui/icons-material/Security';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import CheckIcon from '@mui/icons-material/Check';
+import PublicIcon from '@mui/icons-material/Public';
+import ApiIcon from '@mui/icons-material/Api';
+import CodeIcon from '@mui/icons-material/Code';
+import LayersIcon from '@mui/icons-material/Layers';
 
-import { useTranslation } from 'react-i18next'
-import apiExplorerService, { OpenAPISpec, OpenAPIPathItem } from '../../services/api-explorer.service'
-import { ENDPOINTS } from '@idaas/authentication-core/services/endpoints'
-
+import { useTranslation } from 'react-i18next';
+import apiExplorerService, { OpenAPISpec, OpenAPIPathItem } from '../../services/api-explorer.service';
 
 interface APIEndpoint {
   id: string
@@ -153,7 +130,7 @@ function generateCurlSnippet(ep: APIEndpoint): string {
 function generateJsSnippet(ep: APIEndpoint): string {
   const isRead = ep.method === 'GET'
   const method = ep.method.toLowerCase()
-  return `import { apiClient } from '@cap/platform-core'
+  return `import { apiClient } from '@cap/platform-core';
 
 apiClient.${method}("${ep.path}"${isRead ? '' : ', { /* data */ }'})
   .then(response => {
@@ -1141,5 +1118,4 @@ export default function APIExplorerDashboard() {
     </Box>
   )
 }
-
 

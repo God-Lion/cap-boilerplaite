@@ -28,7 +28,7 @@ export default function MFAVerificationScreen() {
   const handleSubmit = useCallback(() => {
     if (code.length !== 6) return
     setSuccessMsg(t('mfa.setupVerified', 'MFA method successfully verified!'))
-    setTimeout(() => navigate(Path.security), 2000)
+    setTimeout(() => navigate(Path.user.security), 2000)
   }, [code, navigate, t])
 
   return (

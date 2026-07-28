@@ -1,28 +1,10 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Stack,
-  Chip,
-  LinearProgress,
-  Alert,
-  AlertTitle,
-  Divider,
-} from '@mui/material'
-import { History, FileDownload, CloudDownload, Analytics } from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useExportAuditLogs } from "@idaas/authentication-core/hooks/useAdminQuery"
-import { useSnackbar } from 'notistack'
-import logger from '@idaas/authentication-core/utils/logger'
+import { useState } from 'react';
+import { Box, Typography, Card, CardContent, Grid, Button, FormControl, InputLabel, Select, MenuItem, TextField, Stack, Chip, LinearProgress, Alert, AlertTitle, Divider } from '@mui/material';
+import { History, FileDownload, CloudDownload, Analytics } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useExportAuditLogs } from '@idaas/authentication-core/hooks/useAdminQuery';
+import { useSnackbar } from 'notistack';
+import logger from '@idaas/authentication-core/utils/logger';
 
 export default function ExportAuditTrail() {
   const { t } = useTranslation('common')
@@ -266,5 +248,4 @@ export default function ExportAuditTrail() {
     </Box>
   )
 }
-
 

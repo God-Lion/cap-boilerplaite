@@ -33,7 +33,7 @@ const PROFILE_KEYS = {
  * Get all profiles
  */
 export function useProfiles(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: PROFILE_KEYS.list,
@@ -48,7 +48,7 @@ export function useProfiles(
  */
 export function useProfileById(
   id: number,
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: PROFILE_KEYS.byId(id),
@@ -64,7 +64,7 @@ export function useProfileById(
  */
 export function useProfileActiveStatus(
   id: number,
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: PROFILE_KEYS.activeStatus(id),
@@ -107,7 +107,7 @@ export function useUploadProfile(
  * Set active profile
  */
 export function useSetActiveProfile(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -126,7 +126,7 @@ export function useSetActiveProfile(
  * Update profile
  */
 export function useUpdateResumeProfile(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: any }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: number; data: any }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -145,7 +145,7 @@ export function useUpdateResumeProfile(
  * Delete profile
  */
 export function useDeleteProfile(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}

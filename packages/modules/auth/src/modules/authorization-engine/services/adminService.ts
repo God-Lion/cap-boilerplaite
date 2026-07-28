@@ -1,8 +1,8 @@
-import { apiClient, FetchResponse, PaginatedResponse } from '@cap/platform-core'
-import { ENDPOINTS } from "@cap/module-auth/modules/authentication-core/services/endpoints"
-import type { SCIMConfig } from '../../../domain-kernel/src/types'
-import type { SAMLConfig, JWKSKey, CreateJWKSKeyRequest, JWKSKeyDetail, SSFConfig, BroadcastSSFEventRequest, BroadcastSSFEventResponse } from '../../../domain-kernel/src/types'
-import { AccessPolicy, AccessPolicyRule } from '@cap/shared-types'
+import { apiClient, FetchResponse, PaginatedResponse } from '@cap/platform-core';
+import { ENDPOINTS } from '@cap/module-auth/modules/authentication-core/services/endpoints';
+import type { SCIMConfig } from '../../../domain-kernel/src/types';
+import type { SAMLConfig, JWKSKey, CreateJWKSKeyRequest, JWKSKeyDetail, SSFConfig, BroadcastSSFEventRequest, BroadcastSSFEventResponse } from '../../../domain-kernel/src/types';
+import { AccessPolicy } from '@cap/shared-types';
 
 export type { SCIMConfig }
 export type { SAMLConfig, JWKSKey, CreateJWKSKeyRequest, JWKSKeyDetail, SSFConfig, BroadcastSSFEventRequest, BroadcastSSFEventResponse }
@@ -624,7 +624,6 @@ export class AdminService {
     return apiClient.get('/api/admin/saml/metadata/recent')
   }
 
-
   // Consolidated into Domain Verification section below
 
   // ==========================================================================
@@ -958,7 +957,6 @@ export class AdminService {
     )
   }
 
-
   /**
    * Get developer API keys for an organization
    */
@@ -1045,7 +1043,6 @@ export class AdminService {
   async checkDomain(orgId: number, domainId: number): Promise<FetchResponse<DomainVerification>> {
     return apiClient.get(`/api/admin/organizations/${orgId}/domains/${domainId}/check`)
   }
-
 
   // ==========================================================================
   // Organizations
@@ -1413,6 +1410,4 @@ export interface SecurityHealthResponse {
 }
 
 export const adminService = new AdminService()
-
-
 

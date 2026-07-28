@@ -6,10 +6,10 @@
  * This file is retained only for backward compatibility with any external consumers.
  * New code should use `DEFAULT_THEME_CONFIG` or a specific `ThemePreset` instead.
  */
-import { createTheme, alpha } from '@mui/material/styles'
-import { orange, red } from '@mui/material/colors'
-import { primary, surface, surfaceMixed } from './palette/index'
-import { colors as functional } from './palette/functional'
+import { createTheme, alpha } from '@mui/material/styles';
+
+import { primary, surface, surfaceMixed } from './palette/index';
+import { colors as functional } from './palette/functional';
 
 const BaseTheme = createTheme({
   palette: {

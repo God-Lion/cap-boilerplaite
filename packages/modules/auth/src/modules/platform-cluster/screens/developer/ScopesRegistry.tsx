@@ -1,40 +1,10 @@
-import React, { useState, useMemo } from 'react'
-import {
-  Box,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  IconButton,
-  Button,
-  TextField,
-  InputAdornment,
-  alpha,
-  useTheme,
-  Stack,
-  Tooltip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  CircularProgress,
-  Skeleton,
-} from '@mui/material'
-import { Search, Add, Delete, Layers, Edit, VpnKey } from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useSnackbar } from 'notistack'
-import { AuthScope } from "@auth/modules/authorization-engine/services/adminService"
-import {
-  useScopes,
-  useCreateScope,
-  useUpdateScope,
-  useDeleteScope,
-} from "@idaas/authentication-core/hooks/useAdminQuery"
+import { useState, useMemo } from 'react';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Button, TextField, InputAdornment, alpha, useTheme, Stack, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Skeleton } from '@mui/material';
+import { Search, Add, Delete, Layers, Edit, VpnKey } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
+import { AuthScope } from '@auth/modules/authorization-engine/services/adminService';
+import { useScopes, useCreateScope, useUpdateScope, useDeleteScope } from '@idaas/authentication-core/hooks/useAdminQuery';
 
 export default function ScopesRegistry() {
   const theme = useTheme()
@@ -532,5 +502,4 @@ export default function ScopesRegistry() {
     </Box>
   )
 }
-
 

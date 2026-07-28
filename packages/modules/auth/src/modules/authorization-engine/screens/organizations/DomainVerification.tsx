@@ -1,42 +1,8 @@
-import React, { useState } from 'react'
-import {
-  Language,
-  CheckCircle,
-  Error as ErrorIcon,
-  Refresh,
-  Delete,
-  Add,
-  ContentCopy,
-  Verified,
-  Pending,
-} from '@mui/icons-material'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  IconButton,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  CircularProgress,
-  Divider,
-  Tooltip,
-} from '@mui/material'
-import { adminService, DomainVerification as DomainType } from '../../services/adminService'
-import { useSnackbar } from 'notistack'
+import React, { useState } from 'react';
+import { Language, Refresh, Delete, Add, ContentCopy, Verified, Pending } from '@mui/icons-material';
+import { Box, Typography, Card, CardContent, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Alert, CircularProgress, Tooltip } from '@mui/material';
+import { adminService, DomainVerification as DomainType } from '../../services/adminService';
+import { useSnackbar } from 'notistack';
 
 const DomainVerification = () => {
   const { enqueueSnackbar } = useSnackbar()

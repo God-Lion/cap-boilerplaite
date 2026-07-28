@@ -1,5 +1,4 @@
-import { useAppStore } from '@cap/platform-core'
-import { VerticalNavState } from '@cap/shared-types'
+import { useAppStore } from '@cap/platform-core';
 
 export const useVerticalNav = () => {
   const verticalNav = useAppStore((state) => state.verticalNav)

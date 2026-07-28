@@ -1,28 +1,8 @@
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  UseQueryOptions,
-  UseMutationOptions,
-} from '@tanstack/react-query'
-import { FetchResponse, HttpError, apiClient } from '@cap/platform-core'
-import { ENDPOINTS } from '../services/endpoints'
-import { QUERY_KEYS } from '../services/query'
+import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { FetchResponse, HttpError, apiClient } from '@cap/platform-core';
+import { ENDPOINTS } from '../services/endpoints';
 
-import {
-  User,
-  OIDCClient,
-  AuditLog,
-  Scope,
-  CreateOIDCClientRequest,
-  UpdateOIDCClientRequest,
-  AdminOrganization,
-  ActivityTimelineResponse,
-  SAMLConfig,
-  SCIMConfig,
-  JWKSKey,
-  ExportParams,
-} from '../types/api.types'
+import { User, OIDCClient, AuditLog, Scope, CreateOIDCClientRequest, AdminOrganization, ActivityTimelineResponse, SAMLConfig, SCIMConfig, JWKSKey, ExportParams } from '../types/api.types';
 
 // Re-export or alias if needed
 export type AdminUser = User
@@ -88,7 +68,7 @@ const ADMIN_KEYS = {
 export const adminKeys = ADMIN_KEYS
 
 export function useAdminDashboard(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: ['admin', 'dashboard'],
@@ -100,7 +80,7 @@ export function useAdminDashboard(
 
 export function useUsers(
   params?: { page?: number; limit?: number; search?: string; status?: string; role?: string },
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: [...ADMIN_KEYS.users, params],
@@ -124,7 +104,7 @@ export function useUserById(
 }
 
 export function useCreateUser(
-  options?: UseMutationOptions<FetchResponse, HttpError, any, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, any, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -140,7 +120,7 @@ export function useCreateUser(
 }
 
 export function useUpdateUser(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: any }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: number; data: any }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -156,7 +136,7 @@ export function useUpdateUser(
 }
 
 export function useDeleteUser(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -172,7 +152,7 @@ export function useDeleteUser(
 }
 
 export function useBanUser(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; reason?: string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: number; reason?: string }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -188,7 +168,7 @@ export function useBanUser(
 }
 
 export function useUnbanUser(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -204,7 +184,7 @@ export function useUnbanUser(
 }
 
 export function useResetUserPassword(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
 
@@ -216,7 +196,7 @@ export function useResetUserPassword(
 }
 
 export function useImpersonateUser(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   return useMutation({
     mutationFn: (id) => apiClient.post(ENDPOINTS.admin.users.impersonate(id)),
@@ -226,7 +206,7 @@ export function useImpersonateUser(
 
 export function useOrganizations(
   params?: { page?: number; limit?: number; search?: string },
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: [...ADMIN_KEYS.organizations, params],
@@ -237,7 +217,7 @@ export function useOrganizations(
 }
 
 export function useCreateOrganization(
-  options?: UseMutationOptions<FetchResponse, HttpError, { name: string; slug: string; domain?: string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { name: string; slug: string; domain?: string }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -273,7 +253,7 @@ export function useOrganizationById(
 }
 
 export function useDeleteOrganization(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -289,7 +269,7 @@ export function useDeleteOrganization(
 }
 
 export function useImpersonateOrganization(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   return useMutation({
     mutationFn: (id) => apiClient.post(ENDPOINTS.admin.organizations.impersonate(id)),
@@ -298,7 +278,7 @@ export function useImpersonateOrganization(
 }
 
 export function useUploadOrganizationLogo(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; logo: File }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: number; logo: File }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -315,7 +295,7 @@ export function useUploadOrganizationLogo(
 }
 
 export function useInviteOrganizationMember(
-  options?: UseMutationOptions<FetchResponse, HttpError, { orgId: number; email: string; role: string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { orgId: number; email: string; role: string }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -332,7 +312,7 @@ export function useInviteOrganizationMember(
 }
 
 export function useRevokeOrganizationInvitation(
-  options?: UseMutationOptions<FetchResponse, HttpError, { orgId: number; invitationId: number | string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { orgId: number; invitationId: number | string }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -361,7 +341,7 @@ export function useAuditLogs(
 }
 
 export function useExportAuditLogs(
-  options?: UseMutationOptions<FetchResponse, HttpError, ExportParams, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, ExportParams, unknown>,
 ) {
   return useMutation({
     mutationFn: (params) => apiClient.post(ENDPOINTS.admin.auditLogs.export, params),
@@ -371,7 +351,7 @@ export function useExportAuditLogs(
 
 export function useImpersonationLogs(
   params?: { page?: number; limit?: number },
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: ADMIN_KEYS.impersonationLogs,
@@ -382,7 +362,7 @@ export function useImpersonationLogs(
 }
 
 export function useAppeals(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: ADMIN_KEYS.appeals,
@@ -393,7 +373,7 @@ export function useAppeals(
 }
 
 export function useResolveAppeal(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; action: 'approved' | 'rejected' }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: number; action: 'approved' | 'rejected' }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -420,7 +400,7 @@ export function useOIDCClients(
 }
 
 export function useCreateOIDCClient(
-  options?: UseMutationOptions<FetchResponse, HttpError, CreateOIDCClientRequest, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, CreateOIDCClientRequest, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -436,7 +416,7 @@ export function useCreateOIDCClient(
 }
 
 export function useUpdateOIDCClient(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: string | number; data: Partial<OIDCClient> }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: string | number; data: Partial<OIDCClient> }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -452,7 +432,7 @@ export function useUpdateOIDCClient(
 }
 
 export function useDeleteOIDCClient(
-  options?: UseMutationOptions<FetchResponse, HttpError, string, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -468,7 +448,7 @@ export function useDeleteOIDCClient(
 }
 
 export function useRotateClientSecret(
-  options?: UseMutationOptions<FetchResponse, HttpError, string, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -495,7 +475,7 @@ export function useScopes(
 }
 
 export function useCreateScope(
-  options?: UseMutationOptions<FetchResponse, HttpError, { name: string; description?: string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { name: string; description?: string }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -511,7 +491,7 @@ export function useCreateScope(
 }
 
 export function useUpdateScope(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: Partial<Scope> }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: number; data: Partial<Scope> }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -527,7 +507,7 @@ export function useUpdateScope(
 }
 
 export function useDeleteScope(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -554,7 +534,7 @@ export function useSAMLConfig(
 }
 
 export function useUpdateSAMLConfig(
-  options?: UseMutationOptions<FetchResponse, HttpError, SAMLConfig, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, SAMLConfig, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -570,7 +550,7 @@ export function useUpdateSAMLConfig(
 }
 
 export function useUploadSAMLMetadata(
-  options?: UseMutationOptions<FetchResponse, HttpError, File, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, File, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -598,7 +578,7 @@ export function useSCIMConfig(
 }
 
 export function useUpdateOrganizationScimConfig(
-  options?: UseMutationOptions<FetchResponse, HttpError, { orgId: number; config: SCIMConfig }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { orgId: number; config: SCIMConfig }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -614,7 +594,7 @@ export function useUpdateOrganizationScimConfig(
 }
 
 export function useTestSCIMConnection(
-  options?: UseMutationOptions<FetchResponse, HttpError, SCIMConfig, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, SCIMConfig, unknown>,
 ) {
   return useMutation({
     mutationFn: (config) => apiClient.post(ENDPOINTS.admin.scim.config, { ...config, test: true }),
@@ -647,7 +627,7 @@ export function useGetJWKSKeyDetail(
 }
 
 export function useCreateJWKSKey(
-  options?: UseMutationOptions<FetchResponse, HttpError, { alg: string; use: string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { alg: string; use: string }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -663,7 +643,7 @@ export function useCreateJWKSKey(
 }
 
 export function useRotateJWKS(
-  options?: UseMutationOptions<FetchResponse, HttpError, void, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, void, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -679,7 +659,7 @@ export function useRotateJWKS(
 }
 
 export function useDeleteJWKSKey(
-  options?: UseMutationOptions<FetchResponse, HttpError, string, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, string, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -706,7 +686,7 @@ export function useProvisioningConnectors(
 }
 
 export function useCreateProvisioningConnector(
-  options?: UseMutationOptions<FetchResponse, HttpError, { name: string; type: string; config: any }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { name: string; type: string; config: any }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -722,7 +702,7 @@ export function useCreateProvisioningConnector(
 }
 
 export function useUpdateProvisioningConnector(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: any }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: number; data: any }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -738,7 +718,7 @@ export function useUpdateProvisioningConnector(
 }
 
 export function useDeleteProvisioningConnector(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -754,7 +734,7 @@ export function useDeleteProvisioningConnector(
 }
 
 export function useSyncProvisioningConnector(
-  options?: UseMutationOptions<FetchResponse, HttpError, number, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number, unknown>,
 ) {
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
 
@@ -779,7 +759,7 @@ export function useProvisioningConnectorLogs(
 }
 
 export function useSSFConfig(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: ['admin', 'ssf'],
@@ -790,7 +770,7 @@ export function useSSFConfig(
 }
 
 export function useUpdateSSFConfig(
-  options?: UseMutationOptions<FetchResponse, HttpError, any, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, any, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -806,7 +786,7 @@ export function useUpdateSSFConfig(
 }
 
 export function useTestSSFStream(
-  options?: UseMutationOptions<FetchResponse, HttpError, { message: string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { message: string }, unknown>,
 ) {
   return useMutation({
     mutationFn: (data) => apiClient.post(ENDPOINTS.admin.ssf.test, data),
@@ -815,7 +795,7 @@ export function useTestSSFStream(
 }
 
 export function useSSFHistory(
-  options?: Omit<UseQueryOptions<FetchResponse, HttpError>, 'queryKey' | 'queryFn'>,
+  options?: Omit<UseQueryOptions<FetchResponse<any>, HttpError>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery({
     queryKey: ['admin', 'ssf', 'history'],
@@ -834,7 +814,7 @@ export function useGetUser(id?: number | string) {
 }
 
 export function useResetUserMfa(
-  options?: UseMutationOptions<FetchResponse, HttpError, number | string, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, number | string, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -874,7 +854,7 @@ export function useSecurityHealth(
 }
 
 export function useUpdateOrganization(
-  options?: UseMutationOptions<FetchResponse, HttpError, { id: number; data: any }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { id: number; data: any }, unknown>,
 ) {
   const queryClient = useQueryClient()
   const { onSuccess: customOnSuccess, ...restOptions } = options || {}
@@ -890,7 +870,7 @@ export function useUpdateOrganization(
 }
 
 export function useVerifyDomain(
-  options?: UseMutationOptions<FetchResponse, HttpError, { domain: string }, unknown>,
+  options?: UseMutationOptions<FetchResponse<any>, HttpError, { domain: string }, unknown>,
 ) {
   return useMutation({
     mutationFn: (data) => apiClient.post(ENDPOINTS.admin.domains.verify, data),

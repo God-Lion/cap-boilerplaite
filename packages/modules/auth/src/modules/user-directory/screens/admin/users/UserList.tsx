@@ -186,8 +186,8 @@ export default function UserList() {
   const handleImpersonate = () => {
     if (selectedUser) {
       impersonateUserMutation.mutate(selectedUser.id, {
-        onSuccess: (response) => {
-          const token = (response.data as any).token || (response as any).token
+        onSuccess: (response: any) => {
+          const token = (response.data as any)?.token || (response as any)?.token
           if (token) {
             enqueueSnackbar(t('auth.admin.successImpersonate'), { variant: 'success' })
             window.open(`/impersonate?token=${encodeURIComponent(token)}`, '_blank')

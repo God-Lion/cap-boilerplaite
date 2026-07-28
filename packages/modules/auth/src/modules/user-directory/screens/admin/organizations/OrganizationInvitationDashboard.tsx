@@ -1,58 +1,11 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  IconButton,
-  Button,
-  TextField,
-  InputAdornment,
-  Avatar,
-  alpha,
-  useTheme,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  MenuItem,
-  Tooltip,
-  Menu,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material'
-import {
-  Search,
-  MoreVert,
-  Email,
-  PersonAdd,
-  Timer,
-  CheckCircle,
-  Cancel,
-  ArrowBack,
-  ContentCopy,
-  Replay,
-  BlockOutlined,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Path } from '@cap/module-auth/routes/path'
-import {
-  useOrganizationInvitations,
-  useInviteOrganizationMember,
-  useRevokeOrganizationInvitation,
-  useExportAuditLogs,
-} from '@idaas/authentication-core/hooks/useAdminQuery'
-import { useSnackbar } from 'notistack'
+import { useState } from 'react';
+import { Box, Typography, Card, CardContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Button, TextField, InputAdornment, Avatar, alpha, useTheme, Stack, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Tooltip, Menu, ListItemIcon, ListItemText } from '@mui/material';
+import { Search, MoreVert, Email, PersonAdd, Timer, CheckCircle, Cancel, ArrowBack, ContentCopy, Replay, BlockOutlined } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Path } from '@cap/module-auth/routes/path';
+import { useOrganizationInvitations, useInviteOrganizationMember, useRevokeOrganizationInvitation } from '@idaas/authentication-core/hooks/useAdminQuery';
+import { useSnackbar } from 'notistack';
 
 interface Invitation {
   id: string | number
@@ -93,7 +46,7 @@ export default function OrganizationInvitationDashboard() {
     )
   }
 
-  const invitations: Invitation[] = response?.data || []
+  const invitations: Invitation[] = (response?.data as any) || []
 
   // Derived stats
   const totalSent = invitations.length
@@ -111,7 +64,7 @@ export default function OrganizationInvitationDashboard() {
       return
     }
     inviteMutation.mutate(
-      { orgId: Number(id), data: { email: inviteEmail, role: inviteRole } },
+      { orgId: Number(id), email: inviteEmail, role: inviteRole },
       {
         onSuccess: () => {
           enqueueSnackbar(t('auth.admin.successInvitationSent'), {
@@ -409,7 +362,7 @@ export default function OrganizationInvitationDashboard() {
           onClick={() => {
             if (menuInvite) {
               inviteMutation.mutate(
-                { orgId: Number(id), data: { email: menuInvite.email, role: menuInvite.role } },
+                { orgId: Number(id), email: menuInvite.email, role: menuInvite.role },
                 {
                   onSuccess: () =>
                     enqueueSnackbar(t('auth.admin.successInvitationSent'), {
@@ -539,6 +492,4 @@ export default function OrganizationInvitationDashboard() {
     </Box>
   )
 }
-
-
 

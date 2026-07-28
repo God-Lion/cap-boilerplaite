@@ -1,40 +1,19 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  TextField,
-  InputAdornment,
-  alpha,
-  useTheme,
-  Stack,
-  Chip,
-  IconButton,
-  Paper,
-  CircularProgress,
-  Alert,
-  Switch,
-  Tooltip,
-  Divider,
-} from '@mui/material'
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Box, Typography, Card, CardContent, Grid, Button, TextField, InputAdornment, alpha, useTheme, Stack, Chip, Paper, CircularProgress, Alert, Switch, Divider } from '@mui/material';
 
-import SearchIcon from '@mui/icons-material/Search'
-import ExtensionIcon from '@mui/icons-material/Extension'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import RefreshIcon from '@mui/icons-material/Refresh'
-import RouteIcon from '@mui/icons-material/AltRoute'
-import MenuIcon from '@mui/icons-material/Menu'
-import ShieldIcon from '@mui/icons-material/Shield'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import SearchIcon from '@mui/icons-material/Search';
+import ExtensionIcon from '@mui/icons-material/Extension';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import RouteIcon from '@mui/icons-material/AltRoute';
+import MenuIcon from '@mui/icons-material/Menu';
+import ShieldIcon from '@mui/icons-material/Shield';
 
-import { useTranslation } from 'react-i18next'
-import { modulesRouterService } from '@cap/platform-core'
-import type { ModuleStatusInfo } from '@cap/shared-types'
-import ModuleUploadModal from './components/ModuleUploadModal'
+import { useTranslation } from 'react-i18next';
+import { modulesRouterService } from '@cap/platform-core';
+import type { ModuleStatusInfo } from '@cap/shared-types';
+import ModuleUploadModal from './components/ModuleUploadModal';
 
 export default function ModuleManagementDashboard() {
   const theme = useTheme()

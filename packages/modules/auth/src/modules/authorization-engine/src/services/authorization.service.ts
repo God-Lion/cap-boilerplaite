@@ -1,22 +1,7 @@
-import { adminService, Role, Permission } from "../../services/adminService"
-import { useAppStore } from '@cap/platform-store'
-import type {
-  IRoleReader,
-  IRoleWriter,
-  IRolePermissionManager,
-  IPermissionReader,
-  IPermissionWriter,
-  IPermissionChecker,
-  IUserRoleManager,
-  IAuthorizationFacade,
-} from '../ports'
-import type {
-  RoleDto,
-  PermissionDto,
-  CheckPermissionRequest,
-  CheckPermissionResponse,
-} from '../dtos/authorization.dto'
-import { ENDPOINTS } from '@cap/module-auth/modules/authentication-core/services/endpoints'
+import { adminService, Role, Permission } from '../../services/adminService';
+import { useAppStore } from '@cap/platform-store';
+import type { IRoleReader, IRoleWriter, IRolePermissionManager, IPermissionReader, IPermissionWriter, IPermissionChecker, IUserRoleManager, IAuthorizationFacade } from '../ports';
+import type { RoleDto, PermissionDto, CheckPermissionRequest, CheckPermissionResponse } from '../dtos/authorization.dto';
 
 const mapRoleToDto = (role: Role): RoleDto => ({
   id: role.id,
@@ -127,7 +112,6 @@ export class PermissionService implements IPermissionReader, IPermissionWriter {
     await adminService.deletePermission(permissionId)
   }
 }
-
 
 export interface UserPermissionsContext {
   userId?: string | number
@@ -265,7 +249,4 @@ export class AuthorizationService implements IAuthorizationFacade {
 }
 
 export const authorizationService = new AuthorizationService()
-
-
-
 

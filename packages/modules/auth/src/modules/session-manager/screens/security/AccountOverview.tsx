@@ -1,45 +1,10 @@
-import { useMemo } from 'react'
-import {
-  Box,
-  Button,
-  Typography,
-  Alert,
-  Card,
-  CardContent,
-  LinearProgress,
-  Chip,
-  useTheme,
-  Link as MuiLink,
-  CircularProgress,
-} from '@mui/material'
-import {
-  Home,
-  Shield,
-  CreditCard,
-  Group,
-  Settings,
-  Edit,
-  Warning,
-  Devices,
-  Link as LinkIcon,
-  Api,
-  LockOpen,
-  Login,
-  Key,
-  LockReset,
-  Block,
-  VerifiedUser,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import { Path } from "@auth/routes/path"
-import {
-  useGetUser,
-  useSecurityStatus,
-  useActivityTimeline,
-  useLinkedAccounts,
-  useUserTokens,
-} from "@auth"
+import { useMemo } from 'react';
+import { Box, Button, Typography, Alert, Card, CardContent, LinearProgress, Chip, useTheme, Link as MuiLink, CircularProgress } from '@mui/material';
+import { Shield, Edit, Warning, Devices, Link as LinkIcon, Api, LockOpen, Login, Key, LockReset, VerifiedUser } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Path } from '@auth/routes/path';
+import { useGetUser, useSecurityStatus, useActivityTimeline, useLinkedAccounts, useUserTokens } from '@auth';
 
 interface NavItem {
   id: string
@@ -548,6 +513,4 @@ export default function AccountOverview() {
     </Box>
   )
 }
-
-
 

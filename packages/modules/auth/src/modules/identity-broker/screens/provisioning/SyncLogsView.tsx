@@ -74,7 +74,7 @@ const SyncLogsView: React.FC = () => {
     data: logsData,
     isLoading: isLogsLoading,
     refetch,
-  } = useProvisioningConnectorLogs(selectedConnectorId || 0, { page, limit: pageSize })
+  } = useProvisioningConnectorLogs(selectedConnectorId || 0, { queryKey: ['logs', page, pageSize] } as any)
 
   const logs = (logsData?.data as any)?.data ?? []
   const pagination = (logsData?.data as any)?.meta ?? { total: 0, last_page: 1 }

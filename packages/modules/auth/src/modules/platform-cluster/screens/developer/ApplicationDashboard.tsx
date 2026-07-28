@@ -1,69 +1,13 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  TextField,
-  InputAdornment,
-  Avatar,
-  alpha,
-  useTheme,
-  Stack,
-  Chip,
-  IconButton,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  Paper,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  OutlinedInput,
-  SelectChangeEvent,
-  CircularProgress,
-  Alert,
-} from '@mui/material'
-import {
-  Search,
-  Add,
-  MoreVert,
-  AppRegistration,
-  VpnKey,
-  Launch,
-  History,
-  Code,
-  Web,
-  Smartphone,
-  Router,
-  Security,
-  Edit,
-  Delete,
-  Refresh,
-  ContentCopy,
-  Warning,
-  CheckCircle,
-} from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { useTranslation } from 'react-i18next'
-import {
-  useOIDCClients,
-  useCreateOIDCClient,
-  useUpdateOIDCClient,
-  useDeleteOIDCClient,
-  useRotateClientSecret,
-} from "@idaas/authentication-core/hooks/useAdminQuery"
-import { Path } from "@auth/routes/path"
-import { CreateOIDCClientRequest } from "@auth/modules/authentication-core/types/api.types"
-import logger from '@idaas/authentication-core/utils/logger'
+import React, { useState } from 'react';
+import { Box, Typography, Card, CardContent, Grid, Button, TextField, InputAdornment, Avatar, alpha, useTheme, Stack, Chip, IconButton, Menu, MenuItem, ListItemIcon, Paper, Divider, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, OutlinedInput, SelectChangeEvent, CircularProgress } from '@mui/material';
+import { Search, Add, MoreVert, AppRegistration, VpnKey, Launch, History, Code, Web, Smartphone, Router, Security, Edit, Delete, Refresh, ContentCopy, Warning } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
+import { useOIDCClients, useCreateOIDCClient, useUpdateOIDCClient, useDeleteOIDCClient, useRotateClientSecret } from '@idaas/authentication-core/hooks/useAdminQuery';
+import { Path } from '@auth/routes/path';
+import { CreateOIDCClientRequest } from '@auth/modules/authentication-core/types/api.types';
+import logger from '@idaas/authentication-core/utils/logger';
 
 export default function ApplicationDashboard() {
   const navigate = useNavigate()
@@ -889,6 +833,4 @@ export default function ApplicationDashboard() {
     </Box>
   )
 }
-
-
 

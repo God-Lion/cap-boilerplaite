@@ -1,28 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
-import {
-  Box,
-  Fab,
-  Drawer,
-  Typography,
-  IconButton,
-  TextField,
-  Paper,
-  Avatar,
-  Stack,
-  Fade,
-  InputAdornment,
-  CircularProgress,
-  alpha,
-  Zoom,
-} from '@mui/material'
-import {
-  Chat,
-  Close,
-  Send,
-  AutoAwesome,
-  SmartToy,
-  SupportAgent,
-} from '@mui/icons-material'
+import { useState, useRef, useEffect } from 'react';
+import { Box, Fab, Drawer, Typography, IconButton, TextField, Paper, Avatar, Stack, Fade, InputAdornment, CircularProgress, Zoom } from '@mui/material';
+import { Close, Send, AutoAwesome, SmartToy } from '@mui/icons-material';
 
 const AIChatWidget = () => {
   const [open, setOpen] = useState(false)

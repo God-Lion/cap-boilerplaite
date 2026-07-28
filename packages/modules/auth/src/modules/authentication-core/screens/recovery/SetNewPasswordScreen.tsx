@@ -1,32 +1,14 @@
-import { useState, useEffect, useCallback } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Alert,
-  InputAdornment,
-  IconButton,
-  CircularProgress,
-  alpha,
-  useTheme,
-  Avatar,
-  Stack,
-  Link as MuiLink,
-} from '@mui/material'
-import { LockReset, Visibility, VisibilityOff, ArrowBack, ArrowForward } from '@mui/icons-material'
-import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
-import {
-  FetchResponse,
-  HttpError,
-  IUserResponseEmailResetPassword,
-} from '@cap/platform-core'
-import { ResetPasswordRequest } from "../../../../types/api.types"
-import { useResetPassword } from "@cap/module-auth/modules/authentication-core/hooks/useAuthQuery"
-import authService from "@cap/module-auth/modules/authentication-core/services/auth.service"
-import { Path } from "@cap/module-auth/routes/path"
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Box, Button, TextField, Typography, Alert, InputAdornment, IconButton, CircularProgress, alpha, useTheme, Avatar, Stack, Link as MuiLink } from '@mui/material';
+import { LockReset, Visibility, VisibilityOff, ArrowBack, ArrowForward } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { FetchResponse, IUserResponseEmailResetPassword } from '@cap/platform-core';
+import { ResetPasswordRequest } from '../../../../types/api.types';
+import { useResetPassword } from '@cap/module-auth/modules/authentication-core/hooks/useAuthQuery';
+import authService from '@cap/module-auth/modules/authentication-core/services/auth.service';
+import { Path } from '@cap/module-auth/routes/path';
 
 const SUPPORT_EMAIL = 'support@example.com'
 
@@ -351,5 +333,4 @@ export default function SetNewPasswordScreen() {
     </Box>
   )
 }
-
 

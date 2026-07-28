@@ -1,48 +1,11 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Chip,
-  TextField,
-  InputAdornment,
-  Breadcrumbs,
-  Link,
-  Tooltip,
-  useTheme,
-  Grid,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material'
-import {
-  Add as AddIcon,
-  Search as SearchIcon,
-  MoreVert as MoreVertIcon,
-  ContentCopy as CopyIcon,
-  Visibility as ViewIcon,
-  NavigateNext as NavigateNextIcon,
-  VpnKey as KeyIcon,
-  Security as SecurityIcon,
-  Timer as TimerIcon,
-  Terminal as TerminalIcon,
-} from '@mui/icons-material'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
-import { useUserTokens, useRevokeToken } from "@auth/user-directory/hooks/useUserQuery"
-import { Path } from "@auth/routes/path"
+import React, { useState } from 'react';
+import { Box, Typography, Button, Card, CardContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Chip, TextField, InputAdornment, Breadcrumbs, Link, Tooltip, useTheme, Grid, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Add as AddIcon, Search as SearchIcon, MoreVert as MoreVertIcon, Visibility as ViewIcon, NavigateNext as NavigateNextIcon, VpnKey as KeyIcon, Security as SecurityIcon, Timer as TimerIcon, Terminal as TerminalIcon } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useUserTokens, useRevokeToken } from '@auth/user-directory/hooks/useUserQuery';
+import { Path } from '@auth/routes/path';
 
 interface APIToken {
   id: string | number
@@ -402,6 +365,4 @@ const APITokensDashboard: React.FC = () => {
 }
 
 export default APITokensDashboard
-
-
 
