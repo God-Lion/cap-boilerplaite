@@ -4,7 +4,7 @@ Technical findings and resolution status tracking across the platform.
 
 ## 1. [RESOLVED] `layout` tagging is dropped for plain auth routes
 - **Status:** FIXED
-- **Resolution:** Moved `LayoutRouteWrapper` to `@cap/layout` package and updated `assembleApp()` in `packages/platform-core/src/assembly/index.tsx` to wrap every route in `<LayoutRouteWrapper element={element} layout={layout} />`. Layout metadata (`layout: 'noLayout'`, `layout: 'admin'`, etc.) is now preserved across all route configurations.
+- **Resolution:** Moved `LayoutRouteWrapper` to `@cap/layout` package and updated `assembleApp()` in `packages/platform-core/src/assembly/index.tsx` to wrap every route in `<LayoutRouteWrapper layout={layout || 'none'}>{element}</LayoutRouteWrapper>`. Layout metadata (`layout: 'noLayout'`, `layout: 'admin'`, etc.) is now preserved across all route configurations.
 
 ## 2. [RESOLVED] i18n merge collision risk across modules
 - **Status:** FIXED
@@ -12,7 +12,7 @@ Technical findings and resolution status tracking across the platform.
 
 ## 3. [RESOLVED] Catch-all route renders `null`
 - **Status:** FIXED
-- **Resolution:** Created dedicated `NotFound` component in `@cap/platform-core` (`packages/platform-core/src/components/NotFound.tsx`) and mapped wildcard path `*` to `<Route path='*' element={<LayoutRouteWrapper element={<NotFound />} />} />`.
+- **Resolution:** Created dedicated `NotFound` component in `@cap/platform-core` (`packages/platform-core/src/components/NotFound.tsx`) and mapped wildcard path `*` to `<Route path='*' element={<LayoutRouteWrapper layout='none'><NotFound /></LayoutRouteWrapper>} />`.
 
 ## 4. [RESOLVED] Inert DDD Event Bus
 - **Status:** FIXED
@@ -25,6 +25,11 @@ Technical findings and resolution status tracking across the platform.
 ## 6. Workspace/dependency drift
 - **Status:** RESOLVED
 - **Resolution:** Removed legacy npm `workspaces` from `package.json` and dropped the nonexistent `platform-api` from `pnpm-workspace.yaml`. The `app/package.json` dependencies on unimplemented modules remain commented out in code as scaffolding.
+
+## 8. [OPEN] Orphaned `package.json` files inside `@cap/module-auth`'s DDD submodules
+- **Status:** NOT RESOLVED — newly identified
+- **Details:** Every submodule under `packages/modules/auth/src/modules/` (`authentication-core`, `authorization-engine`, `developer-console`, `identity-broker`, `mfa-orchestrator`, `passwordless-service`, `platform-cluster`, `session-manager`, `user-directory`) has its own `package.json` (scoped `@idaas/*`, e.g. `@idaas/session-manager`, `@idaas/user-directory`), each declaring independent `dependencies`/`peerDependencies`. None of these are linked into `node_modules` (no `@idaas` scope exists at the repo root) despite `pnpm-workspace.yaml` including `packages/modules/**` — pnpm's workspace glob only discovers the immediate `packages/modules/auth` and `packages/modules/landing` projects, not package.json files nested further inside an already-matched project. These submodule manifests are effectively inert: their declared dependencies are never installed or deduped by pnpm, so any version differences from the parent `@cap/module-auth` manifest (e.g. `@mui/lab@7.0.1-beta.23` in `session-manager` vs `^7.0.1-beta.20` in the parent) are silently ignored.
+- **Recommendation:** Either convert `packages/modules/auth` into a true multi-package workspace root (add `packages/modules/auth/src/modules/*` to `pnpm-workspace.yaml`) so these manifests are honored, or remove them entirely if they're vestigial scaffolding from an earlier extraction plan.
 
 ## 7. Security Audit Remediation
 - **Status:** RESOLVED

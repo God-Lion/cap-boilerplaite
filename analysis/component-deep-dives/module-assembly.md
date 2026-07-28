@@ -10,8 +10,8 @@ File: `packages/platform-core/src/assembly/index.tsx`
    - Registers `module.i18n` bundles into i18next strictly isolated by module namespace (`moduleNs = module.id || module.name || 'common'`). This eliminates global translation key collisions across modules.
    - Registers `module.navItems` into the store.
    - Appends `module.searchItems`, deduped by `item.id` (first occurrence wins).
-4. Flattens `module.authRouteConfig` from every module into one array, deduped by `path` (first occurrence wins).
-5. Returns a functional `App` component rendering a single `<Routes>` tree where each route is wrapped in `<LayoutRouteWrapper element={element} layout={layout} />`, plus a catch-all wildcard `<Route path='*' element={<LayoutRouteWrapper element={<NotFound />} />} />`.
+4. Flattens routes from every module into one array, deduped by `path` (first occurrence wins). Each module's route source is `module.routes || module.authRouteConfig` — `routes` takes priority when a module defines both.
+5. Returns a functional `App` component rendering a single `<Routes>` tree where each route is wrapped in `<LayoutRouteWrapper layout={layout || 'none'}>{element}</LayoutRouteWrapper>` (children pattern — `LayoutRouteWrapper` also accepts an `element` prop, but `children` takes priority when both are given), plus a catch-all wildcard `<Route path='*' element={<LayoutRouteWrapper layout='none'><NotFound /></LayoutRouteWrapper>} />`.
 
 ## Notable Implementation Details
 - **Module-level mutable arrays (`_modules`, `_searchItems`) instead of React state/context.** This works because `assembleApp` is called once at module-evaluation time in practice, but it means these registries are shared, non-reactive, global mutable state.

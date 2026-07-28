@@ -1,213 +1,101 @@
-# Developer Onboarding & Workflow Guide
+# Developer Onboarding & Architecture Guide
 
-Welcome to the development team! This guide will walk you through setting up your local environment, the conventions for creating new modules, and the standards for routing, localization, and testing.
-
----
-
-## 1. Local Setup & Environment
-
-The project is structured as a monorepo utilizing **pnpm workspaces**. Ensure you have Node.js (v18+) and pnpm (v8+) installed before continuing.
-
-### Initial Installation
-
-Run the following command at the root of the repository to install dependencies and link workspace packages:
-```bash
-pnpm install
-```
-
-### Dev Scripts
-
-*   **Start Local Dev Server**: Runs the Vite development server for the main application shell (`@cap/app`):
-    ```bash
-    pnpm run dev
-    ```
-*   **Build the Project**: Compiles all packages and bundles the host app for production:
-    ```bash
-    pnpm run build
-    ```
-*   **Run Linter**: Validates code quality across all packages:
-    ```bash
-    pnpm run lint
-    ```
+Welcome to the `cap-boilerplaite` development team. This document serves as the cohesive architectural onboarding guide, detailing the macro structure of the monorepo, our module boundaries, and deep dives into critical sub-systems.
 
 ---
 
-## 2. Module Development Conventions
+## 1. Architecture Analysis: Monorepo Boundaries
 
-All new features should be packaged as modules under `packages/modules/` to keep the host shell thin and maintainable.
+The repository is built around a **Pluggable Module Federation (Compile-Time)** pattern. The host application (`/app`) is a thin shell that orchestrates deeply isolated packages.
 
-### Step 1: Directory Structure
+### Dependency Graph
 
-Create your module folder (e.g., `packages/modules/kyc`) matching the standard structure:
-```
-packages/modules/kyc/
-├── package.json
-├── src/
-│   ├── index.ts                  # Export point for the CAPModule descriptor
-│   ├── assets/                   # Images, SVGs, etc.
-│   ├── components/               # Module-scoped components
-│   ├── screens/                  # Page-level screens
-│   ├── routes/
-│   │   ├── routes.tsx            # Route configurations
-│   │   └── path.ts               # Route path string constants
-│   └── data/
-│       └── dictionaries/         # Locales (en.json, fr.json, ar.json)
-```
+```mermaid
+graph TD
+    APP["/app (Host Shell)"]
+    CORE["/packages/platform-core"]
+    LAYOUT["/packages/layout (UI Shell)"]
+    AUTH_MOD["/packages/modules/auth (Domain Module)"]
+    API["/packages/api-contracts"]
+    AUTH_CONTRACTS["/packages/auth-contracts"]
 
-### Step 2: Configure `package.json`
-
-Set up the package name and link the shared core dependencies:
-```json
-{
-  "name": "@cap/module-kyc",
-  "version": "1.0.0",
-  "main": "./src/index.ts",
-  "dependencies": {
-    "@cap/platform-core": "workspace:*",
-    "@cap/shared-types": "workspace:*"
-  }
-}
+    APP --> LAYOUT
+    APP --> AUTH_MOD
+    APP --> CORE
+    AUTH_MOD --> CORE
+    AUTH_MOD --> AUTH_CONTRACTS
+    AUTH_MOD --> API
+    LAYOUT --> CORE
+    CORE --> API
 ```
 
-### Step 3: Define Routes and Paths
-
-1.  **`routes/path.ts`**: Declare path constants to avoid hardcoding routes:
-    ```typescript
-    export const KYCPath = {
-      identityUpload: '/kyc/upload',
-      status: '/kyc/status',
-    } as const
-    ```
-2.  **`routes/routes.tsx`**: Define the route configuration:
-    ```typescript
-    import React from 'react'
-    import { AuthRouteConfig } from '@cap/platform-core'
-    import { KYCPath } from './path'
-    import IdentityUpload from '../screens/IdentityUpload'
-    import KYCStatus from '../screens/KYCStatus'
-
-    export const kycRouteConfig: AuthRouteConfig[] = [
-      { path: KYCPath.identityUpload, element: <IdentityUpload />, layout: 'vertical' },
-      { path: KYCPath.status, element: <KYCStatus />, layout: 'vertical' }
-    ]
-    ```
-
-### Step 4: Localizations (i18n)
-
-Place translation files under `src/data/dictionaries/` (e.g. `en.json`):
-```json
-{
-  "kyc": {
-    "title": "Identity Verification",
-    "upload_button": "Upload Document"
-  }
-}
-```
-
-Import and register them in your main module entry using `registerDictionary`:
-```typescript
-import { registerDictionary, getMergedDictionary } from '@cap/platform-core/i18n/registry'
-import enKyc from './data/dictionaries/en.json'
-import frKyc from './data/dictionaries/fr.json'
-import arKyc from './data/dictionaries/ar.json'
-
-registerDictionary({ en: enKyc, fr: frKyc, ar: arKyc })
-
-export const en = getMergedDictionary('en')
-export const fr = getMergedDictionary('fr')
-export const ar = getMergedDictionary('ar')
-```
-
-### Step 5: Export the `CAPModule` Descriptor
-
-In `packages/modules/kyc/src/index.ts`, export the module object implementing the `CAPModule` type:
-```typescript
-import type { CAPModule } from '@cap/shared-types'
-import { kycRouteConfig } from './routes/routes'
-import { en, fr, ar } from './i18n-setup' // Merged dictionaries
-
-export const KYCModule: CAPModule = {
-  id: 'kyc-module',
-  version: '1.0.0',
-  authRouteConfig: kycRouteConfig,
-  i18n: { en, ar, fr },
-  navItems: [
-    {
-      id: 'kyc-section',
-      label: 'kyc.title',
-      path: '/kyc/upload',
-      icon: 'VerificationIcon'
-    }
-  ]
-}
-```
-
-### Step 6: Register in Host Shell
-
-To activate the module, open `app/src/AppAssembly.tsx`, import the descriptor, and add it to the `modules` list passed to `assembleApp`:
-```typescript
-import { KYCModule } from '@cap/module-kyc'
-
-export const App = assembleApp({
-  modules: [
-    LandingModule,
-    AuthModule,
-    KYCModule, // Register new module here
-  ]
-})
-```
+*   **`/app`:** Assembles the React tree, pulling in layout and modules.
+*   **`/packages/layout`:** Owns the visual chrome (Sidebar, Headers, Footers). It is decoupled from business logic and simply provides structural wrappers (`VerticalLayout`, `HorizontalLayout`).
+*   **`/packages/modules/*`:** Feature-specific verticals. Modules must **never** import from each other directly. They coordinate via shared events in `platform-core`.
 
 ---
 
-## 3. Routing & Layout Conventions
+## 2. Auth Module Deep Dive
 
-To ensure screens are rendered with the correct navigation chrome, follow these guidelines:
+The `packages/modules/auth` package is our enterprise-grade Identity and Access Management (IDaaS) module. It follows a Domain-Driven / Hexagonal Architecture.
 
-### Standard vs Decorated Route Guards
+### Internal Structure
 
-1.  **Guest / Public Pages**: Pages that should render without chrome should be tagged with `layout: 'noLayout'`.
-2.  **Decorated Routes**:
-    *   **Authenticated Routes**: Wrap your screen component using `createAuthRoute` to automatically handle authentication checks, email verification gates, and layout overrides.
-    *   **Admin Routes**: Wrap your screen component using `createAdminRoute` to enforce RBAC gates and layout overrides.
-    ```typescript
-    import { createAuthRoute } from '@cap/module-auth'
+*   **`domain-kernel`:** Contains the pure domain models, ports (abstract interfaces for infrastructure), and domain events (e.g., `UserAuthenticated`, `SessionRevoked`).
+*   **`idaas-facade`:** The implementation layer that interfaces with external Identity Providers (or our internal blockchain IDaaS systems).
 
-    // The decorator handles session guards and layouts automatically
-    export const DashboardScreen = createAuthRoute(() => <Dashboard />, {
-      layout: 'vertical',
-      requiresVerification: true
-    })
-    ```
+### Authentication Flows
+
+We support multiple modern authentication strategies via a plugin registry:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant AuthRoute
+    participant IDaaS Facade
+    participant Kernel
+
+    User->>AuthRoute: Request Access
+    AuthRoute->>Kernel: Check Session
+    alt Session Valid
+        Kernel-->>AuthRoute: Authorized
+        AuthRoute-->>User: Render View
+    else No Session
+        Kernel-->>AuthRoute: Unauthorized
+        AuthRoute->>User: Redirect to Login
+        User->>IDaaS Facade: Initiate Flow (Passkey / Passwordless / MFA)
+        IDaaS Facade-->>Kernel: Token Exchange
+        Kernel-->>User: Session Granted
+    end
+```
+
+*   **Passkey / Device Auth:** Biometric, hardware-backed authentication leveraging WebAuthn.
+*   **Passwordless:** Magic links via email, verified through the `idaas-facade`.
+*   **MFA (TOTP):** Pluggable Multi-Factor Auth strategies enforced post-primary authentication.
+
+### Authorization Engine
+
+Authorization is handled via explicit boundaries and middleware:
+*   **Role Management:** Role-Based Access Control (RBAC) enforced within `AdminRoute` wrappers.
+*   **API Token IP Restrictions:** Token minting and validation in the facade include IP binding logic for high-security tenants.
+*   **Organization Joining:** Multi-tenant organization contexts isolate user state. Users are authorized contextually per organization.
 
 ---
 
-## 4. Verification, Standards & Quality Assurance
+## 3. UI/Layout Deep Dive
 
-We maintain code quality using static analysis and automated test suites.
+The `packages/layout` and `packages/theme` libraries handle our visual presentation.
 
-### Testing Tools
+### Virtualized React Tables
 
-*   **Unit Tests (Vitest)**: Used for service logic, hooks, and utilities:
-    ```bash
-    pnpm run test
-    ```
-*   **E2E Tests (Playwright)**: Used to verify user journeys (e.g. login flows):
-    ```bash
-    pnpm run test:e2e
-    ```
+For high-performance data rendering, the layout provides **Virtualized React Tables**:
+*   **Usage:** Used in dashboards (e.g., API Explorer) to render thousands of rows without DOM bloat.
+*   **Mechanism:** Only visible rows (plus a small overscan buffer) are mounted.
+*   **Integration:** Relies on `@tanstack/react-virtual` under the hood, wrapped with our custom theme and pagination controls.
 
-### Git Workflow & Commit Hooks
+### Theme Wrappers & Multi-Tenancy
 
-We use **Husky** to lint files before committing:
-1.  On staging files (`git add`), a pre-commit hook runs `lint-staged`.
-2.  This triggers `eslint` (code style checks), `cspell` (spell check), and checks formatting via `prettier`.
-3.  Commit messages are validated against conventional commit guidelines. Ensure your commits follow the pattern: `feat(auth): add passkey support` or `fix(table): fix scroll offset`.
-
-### Structural Quality Rules
-
-*   **Barrel File Enforcement (`index.ts`)**: Every UI folder and package must export its interface elements via a central `index.ts` file (e.g., `/packages/layout/src/components/ui/index.ts`). Deep subdirectory imports (e.g., `import X from '@cap/layout/src/components/ui/virtualized/VirtualizedTable'`) are prohibited. Consumers must import via the barrel root:
-    ```typescript
-    import { VirtualizedTable } from '@cap/layout'
-    ```
-*   **Consolidated Configurations**: To prevent rule drift, ESLint, Prettier, and TypeScript configurations are anchored at the monorepo root. Use project reference inheritance in sub-project configs rather than declaring stand-alone configuration rules.
-
+Themes are completely dynamic to support multi-tenant white-labeling:
+*   **`TenantProvider`:** Exposes a tenant context that dynamically fetches and merges tenant-specific colors and fonts over the base `@cap/theme` tokens.
+*   **Material UI (MUI) Integration:** We utilize `ThemeProvider` from MUI to inject these resolved tokens down the React tree.
+*   **Theme Switcher:** Allows dynamic toggling and CSS variable injection to avoid expensive re-renders on simple color mode swaps.

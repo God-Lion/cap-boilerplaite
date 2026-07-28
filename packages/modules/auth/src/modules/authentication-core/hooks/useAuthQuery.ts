@@ -98,8 +98,8 @@ export function useSignin(
         // Normalize user role if it's an object for compatibility with layout role checks
         if (userData && typeof userData.role === 'object' && userData.role !== null) {
           userData.roleObject = userData.role
-          userData.roleName = userData.role.name
-          userData.role = userData.role.id // Convert to number (Roles enum)
+          userData.roleName = (userData.role as any).name
+          userData.role = (userData.role as any).id // Convert to number (Roles enum)
         }
 
         // Coerce numeric role strings to numbers
@@ -112,7 +112,7 @@ export function useSignin(
         setAuthStep('complete')
 
         // Synchronize with global AppStore atomically
-        useAppStore.getState().setUser(userData)
+        useAppStore.getState().setUser(userData as any)
 
         // sessionId handled if present in response
         if (response.data.userId) {
@@ -339,8 +339,8 @@ export function useSession(
         // Normalize user role if it's an object
         if (typeof userData.role === 'object' && userData.role !== null) {
           userData.roleObject = userData.role
-          userData.roleName = userData.role.name
-          userData.role = userData.role.id
+          userData.roleName = (userData.role as any).name
+          userData.role = (userData.role as any).id
         }
 
         // Coerce numeric role strings to numbers
@@ -441,7 +441,7 @@ export function useSecurityLogs(
   })
 }
 
-// MFA and Passkey hooks moved to @cap/module-mfa
+// MFA and Passkey hooks are handled by plugins in packages/modules/auth/src/plugins/
 
 /**
  * Revoke Session

@@ -1,83 +1,87 @@
-# TrustKey Monorepo
+# cap-boilerplaite
 
-Welcome to **TrustKey**, a premium, multi-tenant decentralized identity and digital services platform. Built with a highly modular, decoupled architecture, this workspace leverages React 19, Material UI (MUI) v7, React Router v7, and `pnpm` workspaces for local development.
+Welcome to the **cap-boilerplaite** monorepo, a highly modular, domain-driven decentralized identity and digital services platform. This project serves as the definitive architecture for building secure, scalable React applications with strict module isolation and enterprise-grade Identity and Access Management (IDaaS).
 
 ---
 
-## 🏛️ Architecture & Folder Structure
+## 🏛️ Project Overview
 
-This project is organized as a monorepo containing a host application, shared platform utilities, and distinct domain modules:
+This workspace uses a **Monorepo** architecture leveraging `pnpm` workspaces. It cleanly separates the host application shell from shared platform utilities and vertical domain modules.
 
-### 📱 Host Application
-* **[`app/`](file:///c:/Node.Js/proj/boilerplate/app)**: The entry point (Vite-based application) that orchestrates and serves all dynamic modules and platform settings.
+### Monorepo Structure
 
-### 🛡️ Shared Platform Packages (`packages/`)
-* **[`packages/platform-core`](file:///c:/Node.Js/proj/boilerplate/packages/platform-core)**: Core utilities, hooks (e.g., `useSessionGuard`, `useModuleComponent`), and shared business logic.
-* **[`packages/platform-store`](file:///c:/Node.Js/proj/boilerplate/packages/platform-store)**: Application state management including hydration, secure storage, optimistic updates, and Redux/Zustand slices.
-* **[`packages/platform-ui`](file:///c:/Node.Js/proj/boilerplate/packages/platform-ui)**: Reusable UI component library, wrappers, and types.
-* **[`packages/shared-types`](file:///c:/Node.Js/proj/boilerplate/packages/shared-types)**: Shared type definitions, constants, and API schemas.
-* **[`packages/theme`](file:///c:/Node.Js/proj/boilerplate/packages/theme)**: Global styles, design tokens, and Material UI configurations.
-* **[`packages/layout`](file:///c:/Node.Js/proj/boilerplate/packages/layout)**: App shell, sidebar, and layout templates.
+*   **Host Application (`/app`)**: The main entry point (Vite-based) that orchestrates, mounts, and serves dynamic domain modules.
+*   **Shared Platform Packages (`/packages/`)**:
+    *   `platform-core`: Utilities, hooks, and core business logic.
+    *   `platform-store`: State management (hydration, secure storage).
+    *   `platform-ui`: Reusable UI components.
+    *   `layout`: The dedicated UI layout package (App shell, sidebar, templates).
+    *   `theme`: Global styles and design tokens.
+    *   `api-contracts` & `auth-contracts`: Strict API and Auth type boundaries.
+*   **Domain Modules (`/packages/modules/`)**:
+    *   `auth`: Enterprise-grade Identity and Access Management (IDaaS), MFA, Passkey, Passwordless.
+    *   `landing`: Public landing pages.
+    *   `document-processing`: OCR and document verification logic.
 
-### 🧩 Domain Modules (`packages/modules/`)
-Each module encapsulates a specific vertical feature set with clean isolation boundaries:
-* **[`packages/modules/auth`](file:///c:/Node.Js/proj/boilerplate/packages/modules/auth)**: Multi-Factor Authentication (MFA), login/register flows, and Identity Broker integration.
-* **[`packages/modules/document-processing`](file:///c:/Node.Js/proj/boilerplate/packages/modules/document-processing)**: Processes OCR and verifies official documents.
-* **[`packages/modules/landing`](file:///c:/Node.Js/proj/boilerplate/packages/modules/landing)**: Public landing and informational pages.
+## 🛠️ Tech Stack
+
+*   **Core:** React 19, TypeScript
+*   **Build Tool:** Vite
+*   **Routing:** React Router v7
+*   **Styling & UI:** Material UI (MUI) v7, Virtualized React Tables
+*   **PWA:** Workbox for offline support and service workers
+*   **Testing:** Playwright for E2E testing, Vitest for unit testing
+*   **Package Management:** `pnpm` workspaces
 
 ---
 
 ## 🚀 Getting Started
 
-### 📋 Prerequisites
-- **Node.js**: `18.x` or higher
-- **pnpm**: `8.x` or higher (package manager)
+### Prerequisites
 
-### 1. Setup Local Tenants
-TrustKey is a multi-tenant platform. Run the setup script to update your local `/etc/hosts` file (requires Administrator/root privileges):
-```bash
-node scripts/setup-tenants.js
-```
-This adds the following local domains:
-* `tenant1.localhost`
-* `tenant2.localhost`
-* `tenant3.localhost`
+Ensure you have the following installed:
+*   Node.js (v18.x or higher)
+*   pnpm (v8.x or higher)
 
-### 2. Install Dependencies
-Initialize and link all workspaces in the monorepo:
-```bash
-pnpm install
-```
+### Setup & Installation
 
-### 3. Run Development Server
-Start the Vite development server:
-```bash
-pnpm dev
-```
-Open your browser and navigate to `http://tenant1.localhost:5173`.
+1.  **Install Dependencies:** Run this from the root directory to link workspaces and install dependencies.
+    ```bash
+    pnpm install
+    ```
+
+2.  **Configure Local Tenants (Required for Local Dev):** This platform supports multi-tenancy. Update your local hosts file (requires Admin/root):
+    ```bash
+    node scripts/setup-tenants.js
+    ```
+
+3.  **Run Development Server:**
+    ```bash
+    pnpm run dev
+    ```
+    Open your browser to `http://tenant1.localhost:5173`.
 
 ---
 
-## 🛠️ Workspace Commands
+## 🧪 Testing
 
-Manage the monorepo using commands from the root directory:
+We rely on **Playwright** for robust End-to-End (E2E) integration tests, specifically for our critical security and authentication flows.
 
-| Command | Action |
-| :--- | :--- |
-| `pnpm dev` | Starts the Vite dev server for the host application (`@cap/app`). |
-| `pnpm build` | Builds all packages and compile assets for production. |
-| `pnpm lint` | Runs ESLint analysis across all project packages. |
-| `pnpm test:e2e` | Runs Playwright end-to-end integration tests. |
-| `pnpm run audit:ci` | Runs high-level vulnerability checks across dependencies. |
-| `node scripts/analyze-coupling.cjs` | Analyzes module coupling and checks for architectural boundary violations. |
-| `node scripts/i18n-sync.js` | Synchronizes translation keys across locale dictionaries. |
-| `node scripts/i18n-lint.js` | Audits translation keys and checks for missing entries. |
+### Running E2E Tests
 
----
+1.  **Execute the Test Suite:**
+    ```bash
+    pnpm run test:e2e
+    ```
+2.  **Auth Module Testing:**
+    The E2E suite contains dedicated workflows testing our **IDaaS integration**:
+    *   Passkey and Device Authentication flows.
+    *   Multi-Factor Authentication (MFA) enforcement.
+    *   Passwordless login links and token exchanges.
+    *   Role-based route guarding (`GuestRoute`, `AuthRoute`, `AdminRoute`).
 
-## ⚙️ Development Guidelines
+### Code Quality & Audits
 
-1. **Strict Coupling Isolation**: Do not import modules directly from one another. Use `@cap/platform-core` or dependency injection to coordinate actions between modules. Use the `scripts/analyze-coupling.cjs` script to verify your changes.
-2. **Domain-Driven Event Bus**: Publish explicit domain events (e.g. `UserAuthenticated`, `SessionRevoked`) via `eventBus.publish()` when triggering significant state changes across module boundaries.
-3. **Translation Key Integrity**: Keep translations in sync across English, French, and Arabic. Run `node scripts/i18n-sync.js` after introducing new keys.
-4. **Commit Hooks & Security**: Pre-commit linting and type checking are configured via Husky. Ensure you regularly run `pnpm run audit:ci` to catch vulnerable dependencies.
+*   **Linting:** `pnpm run lint`
+*   **Security Audits:** `pnpm run audit:ci` checks dependencies for known vulnerabilities.
+*   **Coupling Analysis:** `node scripts/analyze-coupling.cjs` verifies that architectural boundaries between modules are respected.
