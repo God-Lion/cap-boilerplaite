@@ -31,8 +31,8 @@ export {
   type WorkflowState,
 } from './context'
 
-import type { CAPModule } from '@cap/shared-types';
-import { landingRouteConfig } from './routes/routes';
+import type { CAPModule } from '@cap/shared-types'
+import { landingRouteConfig } from './routes/routes'
 
 export const LandingModule: CAPModule = {
   id: 'landing-module',
