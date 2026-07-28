@@ -1,6 +1,36 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Box, Typography, IconButton, Button, Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, Chip, Paper, Divider, Grid, Stack, Switch, FormControlLabel } from '@mui/material';
-import { PlayArrow as PlayArrowIcon, Pause as PauseIcon, Replay as ReplayIcon, SkipNext as SkipNextIcon, Download as DownloadIcon, VolumeUp as VolumeUpIcon, VolumeOff as VolumeOffIcon, Shuffle as ShuffleIcon, AutoAwesome as AutoAwesomeIcon, Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
+import React, { useEffect, useRef, useState, useCallback } from 'react'
+import {
+  Box,
+  Typography,
+  IconButton,
+  Button,
+  Slider,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Tooltip,
+  Chip,
+  Paper,
+  Divider,
+  Grid,
+  Stack,
+  Switch,
+  FormControlLabel,
+} from '@mui/material'
+import {
+  PlayArrow as PlayArrowIcon,
+  Pause as PauseIcon,
+  Replay as ReplayIcon,
+  SkipNext as SkipNextIcon,
+  Download as DownloadIcon,
+  VolumeUp as VolumeUpIcon,
+  VolumeOff as VolumeOffIcon,
+  Shuffle as ShuffleIcon,
+  AutoAwesome as AutoAwesomeIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+} from '@mui/icons-material'
 
 // ----------------------------------------------------------------------
 // Seeded PRNG (Mulberry32)
@@ -75,13 +105,21 @@ class PerlinNoise3D {
       this.lerp(
         v,
         this.lerp(u, this.grad(this.p[AA], x, y, z), this.grad(this.p[BA], x - 1, y, z)),
-        this.lerp(u, this.grad(this.p[AB], x, y - 1, z), this.grad(this.p[BB], x - 1, y - 1, z))
+        this.lerp(u, this.grad(this.p[AB], x, y - 1, z), this.grad(this.p[BB], x - 1, y - 1, z)),
       ),
       this.lerp(
         v,
-        this.lerp(u, this.grad(this.p[AA + 1], x, y, z - 1), this.grad(this.p[BA + 1], x - 1, y, z - 1)),
-        this.lerp(u, this.grad(this.p[AB + 1], x, y - 1, z - 1), this.grad(this.p[BB + 1], x - 1, y - 1, z - 1))
-      )
+        this.lerp(
+          u,
+          this.grad(this.p[AA + 1], x, y, z - 1),
+          this.grad(this.p[BA + 1], x - 1, y, z - 1),
+        ),
+        this.lerp(
+          u,
+          this.grad(this.p[AB + 1], x, y - 1, z - 1),
+          this.grad(this.p[BB + 1], x - 1, y - 1, z - 1),
+        ),
+      ),
     )
   }
 }
@@ -101,46 +139,46 @@ const PALETTES: Record<ColorPaletteId, { name: string; stops: ColorStop[] }> = {
   bioluminescence: {
     name: 'Bioluminescent Midnight',
     stops: [
-      { r: 15, g: 18, b: 35 },   // Midnight Base
-      { r: 40, g: 70, b: 180 },  // Cobalt Blue
-      { r: 0, g: 210, b: 230 },   // Electric Cyan
+      { r: 15, g: 18, b: 35 }, // Midnight Base
+      { r: 40, g: 70, b: 180 }, // Cobalt Blue
+      { r: 0, g: 210, b: 230 }, // Electric Cyan
       { r: 255, g: 225, b: 120 }, // Luminescent Amber Tip
     ],
   },
   amber: {
     name: 'Chronos Amber Fossil',
     stops: [
-      { r: 18, g: 12, b: 8 },    // Obsidian
-      { r: 140, g: 60, b: 15 },  // Terracotta
-      { r: 240, g: 160, b: 40 },  // Warm Amber
+      { r: 18, g: 12, b: 8 }, // Obsidian
+      { r: 140, g: 60, b: 15 }, // Terracotta
+      { r: 240, g: 160, b: 40 }, // Warm Amber
       { r: 255, g: 245, b: 210 }, // Incandescent Gold White
     ],
   },
   emerald: {
     name: 'Fungal Emerald',
     stops: [
-      { r: 8, g: 20, b: 16 },    // Slate Abyss
-      { r: 20, g: 120, b: 70 },  // Emerald
+      { r: 8, g: 20, b: 16 }, // Slate Abyss
+      { r: 20, g: 120, b: 70 }, // Emerald
       { r: 40, g: 220, b: 130 }, // Neon Jade
-      { r: 200, g: 255, b: 220 },// Glowing Mint Tip
+      { r: 200, g: 255, b: 220 }, // Glowing Mint Tip
     ],
   },
   nebula: {
     name: 'Celestial Nebula',
     stops: [
-      { r: 25, g: 10, b: 30 },   // Deep Crimson Violet
+      { r: 25, g: 10, b: 30 }, // Deep Crimson Violet
       { r: 160, g: 30, b: 120 }, // Amethyst Magenta
       { r: 130, g: 90, b: 240 }, // Pulsing Violet
-      { r: 255, g: 220, b: 255 },// Starlight White
+      { r: 255, g: 220, b: 255 }, // Starlight White
     ],
   },
   solar: {
     name: 'Solar Flare',
     stops: [
-      { r: 30, g: 12, b: 10 },   // Umber Charcoal
-      { r: 200, g: 45, b: 20 },  // Fiery Red
-      { r: 250, g: 140, b: 0 },  // Tangerine
-      { r: 255, g: 240, b: 150 },// Solar Yellow
+      { r: 30, g: 12, b: 10 }, // Umber Charcoal
+      { r: 200, g: 45, b: 20 }, // Fiery Red
+      { r: 250, g: 140, b: 0 }, // Tangerine
+      { r: 255, g: 240, b: 150 }, // Solar Yellow
     ],
   },
 }
@@ -453,7 +491,13 @@ export const ChronosMycelium: React.FC = () => {
 
   // Update Web Audio dynamically based on simulation state
   const updateAudioSynthesizer = (activeCount: number, maxRadius: number) => {
-    if (!audioEnabled || !audioCtxRef.current || !filterRef.current || !osc1Ref.current || !osc2Ref.current) {
+    if (
+      !audioEnabled ||
+      !audioCtxRef.current ||
+      !filterRef.current ||
+      !osc1Ref.current ||
+      !osc2Ref.current
+    ) {
       return
     }
     const ctx = audioCtxRef.current
@@ -643,7 +687,9 @@ export const ChronosMycelium: React.FC = () => {
     frameCountRef.current++
     const now = performance.now()
     if (now - lastFpsCheckRef.current >= 500) {
-      const currentFps = Math.round((frameCountRef.current * 1000) / (now - lastFpsCheckRef.current))
+      const currentFps = Math.round(
+        (frameCountRef.current * 1000) / (now - lastFpsCheckRef.current),
+      )
       frameCountRef.current = 0
       lastFpsCheckRef.current = now
 
@@ -744,7 +790,10 @@ export const ChronosMycelium: React.FC = () => {
     }
   }
 
-  const handleConfigChange = <K extends keyof SimulationConfig>(key: K, value: SimulationConfig[K]) => {
+  const handleConfigChange = <K extends keyof SimulationConfig>(
+    key: K,
+    value: SimulationConfig[K],
+  ) => {
     const updated = { ...config, [key]: value }
     setConfig(updated)
     if (['seed', 'initialCount', 'epochInterval', 'maxGeneration'].includes(key)) {
@@ -792,39 +841,39 @@ export const ChronosMycelium: React.FC = () => {
           pointerEvents: 'auto',
         }}
       >
-        <Stack direction="row" spacing={2.5} alignItems="center">
+        <Stack direction='row' spacing={2.5} alignItems='center'>
           <Box>
-            <Typography variant="overline" sx={{ color: '#94a3b8', fontSize: '0.65rem' }}>
+            <Typography variant='overline' sx={{ color: '#94a3b8', fontSize: '0.65rem' }}>
               ACTIVE HYPHAE
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#38bdf8' }}>
+            <Typography variant='h6' sx={{ fontWeight: 700, color: '#38bdf8' }}>
               {metrics.activeHyphae.toLocaleString()}
             </Typography>
           </Box>
-          <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+          <Divider orientation='vertical' flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
           <Box>
-            <Typography variant="overline" sx={{ color: '#94a3b8', fontSize: '0.65rem' }}>
+            <Typography variant='overline' sx={{ color: '#94a3b8', fontSize: '0.65rem' }}>
               TOTAL NODES
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#f43f5e' }}>
+            <Typography variant='h6' sx={{ fontWeight: 700, color: '#f43f5e' }}>
               {metrics.totalNodes.toLocaleString()}
             </Typography>
           </Box>
-          <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+          <Divider orientation='vertical' flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
           <Box>
-            <Typography variant="overline" sx={{ color: '#94a3b8', fontSize: '0.65rem' }}>
+            <Typography variant='overline' sx={{ color: '#94a3b8', fontSize: '0.65rem' }}>
               MAX EPOCH
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#fbbf24' }}>
+            <Typography variant='h6' sx={{ fontWeight: 700, color: '#fbbf24' }}>
               E-{metrics.maxEpochReached}
             </Typography>
           </Box>
-          <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+          <Divider orientation='vertical' flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
           <Box>
-            <Typography variant="overline" sx={{ color: '#94a3b8', fontSize: '0.65rem' }}>
+            <Typography variant='overline' sx={{ color: '#94a3b8', fontSize: '0.65rem' }}>
               FPS
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#34d399' }}>
+            <Typography variant='h6' sx={{ fontWeight: 700, color: '#34d399' }}>
               {metrics.fps}
             </Typography>
           </Box>
@@ -847,26 +896,26 @@ export const ChronosMycelium: React.FC = () => {
           transition: 'right 0.3s ease',
         }}
       >
-        <Stack direction="row" spacing={1}>
+        <Stack direction='row' spacing={1}>
           <Tooltip title={isRunning ? 'Pause Simulation' : 'Play Simulation'}>
-            <IconButton color="primary" onClick={() => setIsRunning(!isRunning)}>
+            <IconButton color='primary' onClick={() => setIsRunning(!isRunning)}>
               {isRunning ? <PauseIcon /> : <PlayArrowIcon />}
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Step 1 Frame">
-            <IconButton color="info" onClick={() => stepSimulation()}>
+          <Tooltip title='Step 1 Frame'>
+            <IconButton color='info' onClick={() => stepSimulation()}>
               <SkipNextIcon />
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Reset Colony Engine">
-            <IconButton color="secondary" onClick={() => initEngine(config)}>
+          <Tooltip title='Reset Colony Engine'>
+            <IconButton color='secondary' onClick={() => initEngine(config)}>
               <ReplayIcon />
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Randomize Seed">
+          <Tooltip title='Randomize Seed'>
             <IconButton
               sx={{ color: '#a855f7' }}
               onClick={() => {
@@ -878,7 +927,7 @@ export const ChronosMycelium: React.FC = () => {
             </IconButton>
           </Tooltip>
 
-          <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+          <Divider orientation='vertical' flexItem sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
 
           <Tooltip title={audioEnabled ? 'Mute Soundscape' : 'Enable Generative Drone'}>
             <IconButton color={audioEnabled ? 'success' : 'default'} onClick={toggleAudio}>
@@ -886,14 +935,14 @@ export const ChronosMycelium: React.FC = () => {
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Export 4K PNG Snapshot">
-            <IconButton color="warning" onClick={exportSnapshot}>
+          <Tooltip title='Export 4K PNG Snapshot'>
+            <IconButton color='warning' onClick={exportSnapshot}>
               <DownloadIcon />
             </IconButton>
           </Tooltip>
 
           <Tooltip title={panelOpen ? 'Collapse Control Panel' : 'Expand Control Panel'}>
-            <IconButton color="default" onClick={() => setPanelOpen(!panelOpen)}>
+            <IconButton color='default' onClick={() => setPanelOpen(!panelOpen)}>
               {panelOpen ? <VisibilityOffIcon /> : <VisibilityIcon />}
             </IconButton>
           </Tooltip>
@@ -923,28 +972,28 @@ export const ChronosMycelium: React.FC = () => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction='row' spacing={1} alignItems='center'>
             <AutoAwesomeIcon sx={{ color: '#38bdf8' }} />
-            <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: '0.05em' }}>
+            <Typography variant='h6' sx={{ fontWeight: 700, letterSpacing: '0.05em' }}>
               CHRONOS MATRIX
             </Typography>
           </Stack>
-          <Chip label={`Seed #${config.seed}`} size="small" color="primary" variant="outlined" />
+          <Chip label={`Seed #${config.seed}`} size='small' color='primary' variant='outlined' />
         </Box>
 
         <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
 
         {/* Presets */}
         <Box>
-          <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 600 }}>
+          <Typography variant='caption' sx={{ color: '#94a3b8', fontWeight: 600 }}>
             PARAMETRIC PRESETS
           </Typography>
           <Grid container spacing={1} sx={{ mt: 1 }}>
             <Grid size={{ xs: 6 }}>
               <Button
                 fullWidth
-                size="small"
-                variant="outlined"
+                size='small'
+                variant='outlined'
                 onClick={() => applyPreset('bioluminescent_abyss')}
                 sx={{ textTransform: 'none', fontSize: '0.75rem' }}
               >
@@ -954,9 +1003,9 @@ export const ChronosMycelium: React.FC = () => {
             <Grid size={{ xs: 6 }}>
               <Button
                 fullWidth
-                size="small"
-                variant="outlined"
-                color="warning"
+                size='small'
+                variant='outlined'
+                color='warning'
                 onClick={() => applyPreset('amber_fossil')}
                 sx={{ textTransform: 'none', fontSize: '0.75rem' }}
               >
@@ -966,9 +1015,9 @@ export const ChronosMycelium: React.FC = () => {
             <Grid size={{ xs: 6 }}>
               <Button
                 fullWidth
-                size="small"
-                variant="outlined"
-                color="success"
+                size='small'
+                variant='outlined'
+                color='success'
                 onClick={() => applyPreset('emerald_network')}
                 sx={{ textTransform: 'none', fontSize: '0.75rem' }}
               >
@@ -978,9 +1027,9 @@ export const ChronosMycelium: React.FC = () => {
             <Grid size={{ xs: 6 }}>
               <Button
                 fullWidth
-                size="small"
-                variant="outlined"
-                color="secondary"
+                size='small'
+                variant='outlined'
+                color='secondary'
                 onClick={() => applyPreset('nebula_blossom')}
                 sx={{ textTransform: 'none', fontSize: '0.75rem' }}
               >
@@ -991,14 +1040,14 @@ export const ChronosMycelium: React.FC = () => {
         </Box>
 
         {/* Color Palette */}
-        <FormControl fullWidth size="small">
-          <InputLabel id="palette-label" sx={{ color: '#94a3b8' }}>
+        <FormControl fullWidth size='small'>
+          <InputLabel id='palette-label' sx={{ color: '#94a3b8' }}>
             Color Palette
           </InputLabel>
           <Select
-            labelId="palette-label"
+            labelId='palette-label'
             value={config.palette}
-            label="Color Palette"
+            label='Color Palette'
             onChange={(e) => handleConfigChange('palette', e.target.value as ColorPaletteId)}
           >
             {Object.entries(PALETTES).map(([id, p]) => (
@@ -1016,15 +1065,15 @@ export const ChronosMycelium: React.FC = () => {
           {/* Flow Field Speed */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+              <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
                 Growth Velocity
               </Typography>
-              <Typography variant="body2" sx={{ color: '#38bdf8' }}>
+              <Typography variant='body2' sx={{ color: '#38bdf8' }}>
                 {config.baseSpeed.toFixed(1)}
               </Typography>
             </Box>
             <Slider
-              size="small"
+              size='small'
               min={0.5}
               max={5.0}
               step={0.1}
@@ -1036,15 +1085,15 @@ export const ChronosMycelium: React.FC = () => {
           {/* Noise Frequency */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+              <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
                 Perlin Turbulence Scale
               </Typography>
-              <Typography variant="body2" sx={{ color: '#38bdf8' }}>
+              <Typography variant='body2' sx={{ color: '#38bdf8' }}>
                 {config.noiseScale.toFixed(4)}
               </Typography>
             </Box>
             <Slider
-              size="small"
+              size='small'
               min={0.001}
               max={0.015}
               step={0.0005}
@@ -1056,15 +1105,15 @@ export const ChronosMycelium: React.FC = () => {
           {/* Trigonometric Warp Factor */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+              <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
                 Trigonometric Polar Warp
               </Typography>
-              <Typography variant="body2" sx={{ color: '#38bdf8' }}>
+              <Typography variant='body2' sx={{ color: '#38bdf8' }}>
                 {config.trigWarpFactor.toFixed(1)}
               </Typography>
             </Box>
             <Slider
-              size="small"
+              size='small'
               min={0.0}
               max={3.0}
               step={0.1}
@@ -1076,15 +1125,15 @@ export const ChronosMycelium: React.FC = () => {
           {/* Epoch Threshold Interval */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+              <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
                 Radial Epoch Interval (px)
               </Typography>
-              <Typography variant="body2" sx={{ color: '#fbbf24' }}>
+              <Typography variant='body2' sx={{ color: '#fbbf24' }}>
                 {config.epochInterval}px
               </Typography>
             </Box>
             <Slider
-              size="small"
+              size='small'
               min={20}
               max={100}
               step={5}
@@ -1096,15 +1145,15 @@ export const ChronosMycelium: React.FC = () => {
           {/* Markov Bifurcation Probability */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+              <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
                 Bifurcation Probability
               </Typography>
-              <Typography variant="body2" sx={{ color: '#f43f5e' }}>
+              <Typography variant='body2' sx={{ color: '#f43f5e' }}>
                 {(config.bifurcationProb * 100).toFixed(0)}%
               </Typography>
             </Box>
             <Slider
-              size="small"
+              size='small'
               min={0.1}
               max={0.95}
               step={0.05}
@@ -1116,15 +1165,15 @@ export const ChronosMycelium: React.FC = () => {
           {/* Angle Deflection Range */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+              <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
                 Branch Deflection Angle
               </Typography>
-              <Typography variant="body2" sx={{ color: '#38bdf8' }}>
+              <Typography variant='body2' sx={{ color: '#38bdf8' }}>
                 {(config.angleDeflection * (180 / Math.PI)).toFixed(0)}°
               </Typography>
             </Box>
             <Slider
-              size="small"
+              size='small'
               min={0.1}
               max={1.2}
               step={0.05}
@@ -1136,15 +1185,15 @@ export const ChronosMycelium: React.FC = () => {
           {/* Opacity Fade / Trail Persistence */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+              <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
                 Amber Persistence (Fade)
               </Typography>
-              <Typography variant="body2" sx={{ color: '#34d399' }}>
+              <Typography variant='body2' sx={{ color: '#34d399' }}>
                 {config.opacityFade.toFixed(3)}
               </Typography>
             </Box>
             <Slider
-              size="small"
+              size='small'
               min={0.002}
               max={0.05}
               step={0.001}
@@ -1156,15 +1205,15 @@ export const ChronosMycelium: React.FC = () => {
           {/* Line Width */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+              <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
                 Hyphae Line Width
               </Typography>
-              <Typography variant="body2" sx={{ color: '#38bdf8' }}>
+              <Typography variant='body2' sx={{ color: '#38bdf8' }}>
                 {config.lineWidth.toFixed(1)}px
               </Typography>
             </Box>
             <Slider
-              size="small"
+              size='small'
               min={0.5}
               max={4.0}
               step={0.1}
@@ -1182,18 +1231,21 @@ export const ChronosMycelium: React.FC = () => {
             <Switch
               checked={config.showEpochRings}
               onChange={(e) => handleConfigChange('showEpochRings', e.target.checked)}
-              size="small"
+              size='small'
             />
           }
           label={
-            <Typography variant="body2" sx={{ color: '#cbd5e1' }}>
+            <Typography variant='body2' sx={{ color: '#cbd5e1' }}>
               Show Concentric Epoch Guides
             </Typography>
           }
         />
 
         <Box sx={{ mt: 'auto', pt: 1 }}>
-          <Typography variant="caption" sx={{ color: '#64748b', display: 'block', textAlign: 'center' }}>
+          <Typography
+            variant='caption'
+            sx={{ color: '#64748b', display: 'block', textAlign: 'center' }}
+          >
             Click anywhere on canvas to relocate or seed new hyphae.
           </Typography>
         </Box>
