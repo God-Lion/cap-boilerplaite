@@ -121,7 +121,7 @@ export class ModulePipelineService {
    * Create a new tracking job for zip processing
    */
   public createJob(filename: string, fileSizeBytes: number): ModulePipelineJob {
-    const jobId = `job_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
+    const jobId = `job_${Date.now()}_${crypto.randomUUID().substring(0, 8)}`
     const now = new Date().toISOString()
 
     const job: ModulePipelineJob = {
