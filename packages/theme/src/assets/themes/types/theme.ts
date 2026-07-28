@@ -1,9 +1,3 @@
-import type { ComponentsOverrides } from '@mui/material/styles'
-import type {
-  CustomInputHorizontalProps,
-  CustomInputVerticalProps,
-  CustomInputImgProps,
-} from '@cap/layout/components/ui/custom-inputs/types'
 import type { TenantThemeConfig } from '../../../types'
 
 declare module '@mui/material/styles' {
@@ -142,23 +136,23 @@ declare module '@mui/material/styles' {
   }
 
   interface ComponentsPropsList {
-    MuiCustomInputHorizontal: CustomInputHorizontalProps
-    MuiCustomInputVertical: CustomInputVerticalProps
-    MuiCustomImage: CustomInputImgProps
+    MuiCustomInputHorizontal: any
+    MuiCustomInputVertical: any
+    MuiCustomImage: any
   }
 
   interface Components {
     MuiCustomInputHorizontal?: {
-      defaultProps?: ComponentsPropsList['MuiCustomInputHorizontal']
-      styleOverrides?: ComponentsOverrides<Theme>['MuiCustomInputHorizontal']
+      defaultProps?: any
+      styleOverrides?: any
     }
     MuiCustomInputVertical?: {
-      defaultProps?: ComponentsPropsList['MuiCustomInputVertical']
-      styleOverrides?: ComponentsOverrides<Theme>['MuiCustomInputVertical']
+      defaultProps?: any
+      styleOverrides?: any
     }
     MuiCustomImage?: {
-      defaultProps?: ComponentsPropsList['MuiCustomImage']
-      styleOverrides?: ComponentsOverrides<Theme>['MuiCustomImage']
+      defaultProps?: any
+      styleOverrides?: any
     }
   }
 }

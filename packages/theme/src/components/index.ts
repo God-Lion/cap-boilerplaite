@@ -1,3 +1,6 @@
 export { default as Avatar } from './mui/Avatar'
 export { default as Chip } from './mui/Chip'
-export { OptionMenu } from '@cap/layout/components/ui'
+export { default as Icon } from './mui/Icon'
+export { default as Alert } from './mui/Alert'
+export { default as Copyright } from './common/Copyright'
+export { default as AdaptiveLogo } from './common/AdaptiveLogo'

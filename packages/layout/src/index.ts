@@ -81,15 +81,12 @@ export { default as StyledVerticalNavExpandIcon } from './menu/styles/vertical/S
 export { default as StyledHorizontalNavExpandIcon } from './menu/styles/horizontal/StyledHorizontalNavExpandIcon'
 
 // Internal layout components
-export { default as VerticalNavbarContent } from './menu/layouts/VerticalNavbarContent'
-
 // Shared Components (still imported by apps/web components)
 export { default as UserMenu } from './components/UserMenu'
 export { default as NavSearch } from './menu/search'
 export { default as Logo } from './assets/svg/Logo'
-export { Icon } from '@cap/theme' // Adjust this once we confirm where Icon is in theme
 
-// Header Styles
+
 export { default as StyledHeader } from './styles/vertical/StyledHeader'
 
 // Moved from app

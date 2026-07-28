@@ -17,7 +17,6 @@ boilerplate/
 │   │   └── landing/           # @cap/module-landing
 │   ├── platform-core/         # @cap/platform-core — module assembly, contexts, services
 │   ├── platform-store/        # @cap/platform-store
-│   ├── platform-ui/           # @cap/platform-ui
 │   ├── shared-types/          # @cap/shared-types
 │   └── theme/                 # @cap/theme — MUI-based design system
 ├── scripts/
@@ -48,5 +47,5 @@ boilerplate/
 ## Next Steps (Phase 2 candidates)
 - Deep dive into the module-assembly pattern (`@cap/platform-core/assembly`) — dedupe rules, route/nav/search merging
 - Deep dive into `@cap/module-auth` (domain-kernel, idaas-facade, plugins, registry) — appears to be a hexagonal/DDD-structured auth domain with a pluggable MFA system
-- Review `@cap/theme` and `@cap/platform-ui` for the design-system implementation
+- Review `@cap/theme` for the design-system implementation
 - Confirm build/dev workflows (`npm run dev`, `npm run build`) against actual workspace scripts

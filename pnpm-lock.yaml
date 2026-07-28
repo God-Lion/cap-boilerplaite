@@ -655,9 +655,6 @@ importers:
       '@cap/platform-store':
         specifier: workspace:*
         version: link:../platform-store
-      '@cap/platform-ui':
-        specifier: workspace:*
-        version: link:../platform-ui
       '@cap/shared-types':
         specifier: workspace:*
         version: link:../shared-types
@@ -819,55 +816,6 @@ importers:
       '@types/node':
         specifier: ^24.10.4
         version: 24.12.2
-      '@vitejs/plugin-react':
-        specifier: ^5.1.4
-        version: 5.2.0(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
-      '@vitest/coverage-v8':
-        specifier: ^4.0.16
-        version: 4.1.4(@vitest/browser@4.1.4)(vitest@4.1.4)
-      vitest:
-        specifier: ^4.0.16
-        version: 4.1.4(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(jsdom@28.1.0(@noble/hashes@1.8.0))(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
-
-  packages/platform-ui:
-    dependencies:
-      '@cap/shared-types':
-        specifier: workspace:*
-        version: link:../shared-types
-      '@cap/theme':
-        specifier: workspace:*
-        version: link:../theme
-      '@emotion/react':
-        specifier: ^11.14.0
-        version: 11.14.0(@types/react@19.2.14)(react@19.2.5)
-      '@emotion/styled':
-        specifier: ^11.14.1
-        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)
-      '@mui/icons-material':
-        specifier: ^7.3.6
-        version: 7.3.10(@mui/material@7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)
-      '@mui/lab':
-        specifier: ^7.0.1-beta.20
-        version: 7.0.1-beta.23(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@mui/material@7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@mui/material':
-        specifier: ^7.3.6
-        version: 7.3.10(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      react:
-        specifier: '>=19'
-        version: 19.2.5
-      react-dom:
-        specifier: '>=19'
-        version: 19.2.5(react@19.2.5)
-      react-router-dom:
-        specifier: '>=6'
-        version: 7.14.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      typescript:
-        specifier: ~5.9.3
-        version: 5.9.3
-    devDependencies:
-      '@testing-library/react':
-        specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@vitejs/plugin-react':
         specifier: ^5.1.4
         version: 5.2.0(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))

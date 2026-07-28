@@ -72,6 +72,34 @@ export interface AppliedThemeVariables {
 }
 
 declare module '@mui/material/styles' {
+  interface ZIndex {
+    base: number
+    content: number
+    elevated: number
+    local: {
+      behind: number
+      base: number
+      above: number
+      highlight: number
+      overlay: number
+    }
+    appBar: number
+    drawer: number
+    dropdown: number
+    modal: number
+    snackbar: number
+    tooltip: number
+    loadingBackdrop: number
+    search: number
+    layout: {
+      header: number
+      footer: number
+      navigation: number
+      backdrop: number
+      modal: number
+    }
+  }
+
   interface Theme {
     customShadows: {
       z1?: string;
@@ -90,6 +118,16 @@ declare module '@mui/material/styles' {
       warning?: string | { sm?: string; md?: string; lg?: string };
       info?: string | { sm?: string; md?: string; lg?: string };
       success?: string | { sm?: string; md?: string; lg?: string };
+    };
+    colorSchemes?: {
+      light: { palette: any }
+      dark: { palette: any }
+    };
+    mainColorChannels?: {
+      light: string
+      dark: string
+      lightShadow: string
+      darkShadow: string
     };
   }
   interface ThemeOptions {
@@ -110,6 +148,16 @@ declare module '@mui/material/styles' {
       warning?: string | { sm?: string; md?: string; lg?: string };
       info?: string | { sm?: string; md?: string; lg?: string };
       success?: string | { sm?: string; md?: string; lg?: string };
+    };
+    colorSchemes?: {
+      light?: { palette?: any }
+      dark?: { palette?: any }
+    };
+    mainColorChannels?: {
+      light?: string
+      dark?: string
+      lightShadow?: string
+      darkShadow?: string
     };
   }
 }

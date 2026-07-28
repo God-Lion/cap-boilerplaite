@@ -22,7 +22,6 @@
   "dependencies": {
     "@cap/layout": "workspace:*",
     "@cap/platform-store": "workspace:*",
-    "@cap/platform-ui": "workspace:*",
 
     "@cap/shared-types": "workspace:*",
     "@cap/theme": "workspace:*",

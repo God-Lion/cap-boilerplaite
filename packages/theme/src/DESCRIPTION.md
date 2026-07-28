@@ -115,9 +115,7 @@ Context management for tenant theme state.
 
 - `TenantThemeContext.tsx`
   - stores the active tenant theme
-  - reads cached theme data from local storage
-  - fetches fresh theme data with `themeService.getTheme()`
-  - saves updates with `themeService.saveTheme()`
+  - prop-driven tenant theme context and state management
   - exposes granular hooks:
     - `useTenantThemeState`
     - `useTenantThemeStatus`
@@ -213,18 +211,6 @@ Exports:
 Notable detail:
 
 - `styles/horizontal/` and `styles/vertical/` currently exist as directories but are empty.
-
-### `services/`
-
-Internal API access for tenant theme persistence.
-
-- `theme.service.ts`
-  - fetches theme data from `/api/admin/organizations/{orgId}/styles`
-  - supports a version-aware request path via `If-None-Match`
-  - deduplicates in-flight requests with an internal `pendingRequests` map
-  - saves theme updates back through `POST`
-
-This is used by the tenant theme context and is not a primary public API surface.
 
 ### `components/`
 

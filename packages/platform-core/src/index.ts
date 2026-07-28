@@ -2,7 +2,6 @@
 import './types/pwa.d.ts'
 import './types/mui.d.ts'
 
-export * from '@cap/platform-ui'
 export * from '@cap/platform-store'
 
 export { default as defaultCoreTheme } from './theme'

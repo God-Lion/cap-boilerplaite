@@ -5,7 +5,6 @@
  * (MUI, Zustand, TanStack Query, etc.). Use this for type-only imports in feature modules.
  */
 
-export type * from '@cap/platform-ui'
 export type * from '@cap/platform-store'
 export type * from '@cap/shared-types'
 

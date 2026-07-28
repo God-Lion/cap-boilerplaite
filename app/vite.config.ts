@@ -84,7 +84,6 @@ export default defineConfig({
       { find: '@cap/shared-types',    replacement: path.resolve(workspaceRoot, 'packages/shared-types/src') },
       { find: '@cap/platform-core',   replacement: path.resolve(workspaceRoot, 'packages/platform-core/src') },
       { find: '@cap/platform-store',  replacement: path.resolve(workspaceRoot, 'packages/platform-store/src') },
-      { find: '@cap/platform-ui',     replacement: path.resolve(workspaceRoot, 'packages/platform-ui/src') },
       
       // ── Other Modules ────────────────────────────────────────────────────────
       { find: '@cap/module-admin',    replacement: path.resolve(workspaceRoot, 'packages/modules/admin/src') },
@@ -133,7 +132,6 @@ export default defineConfig({
       '@cap/shared-types',
       '@cap/platform-core',
       '@cap/platform-store',
-      '@cap/platform-ui',
       '@cap/module-auth',
       '@cap/module-admin',
       '@cap/module-landing',
