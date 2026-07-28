@@ -32,13 +32,17 @@
 - **Files:** `packages/platform-core/SECURITY.md`, `packages/platform-store/src/services/storage/*`, `packages/modules/auth/*`, `*.env`
 - **Details:** Addressed all 15 findings from the `CAP_Boilerplate_Security_Audit_Report.txt` including untracking secrets, deprecating plaintext session storage in favor of `authSlice`, enforcing exact route matching, implementing strict RBAC in `PermissionCheckerService`, upgrading PRNG to `crypto.randomUUID()`, and enforcing `POST` for sensitive operations.
 
+### 7. Removed Orphaned Module package.json Files
+- **Files:** `packages/modules/auth/src/modules/*/package.json`, `packages/modules/auth/src/domain-kernel/package.json`
+- **Details:** Removed the vestigial package manifests from the auth submodules that were effectively inert and causing workspace dependency drift, fully resolving item #8. The modules correctly rely on the parent `@cap/module-auth` and TS path mapping.
+
 ---
 
 ## Accuracy Review (Latest Pass)
 - Verified tech stack claims in `project-overview.md` against actual `package.json` files (root, `app`, `platform-core`, `theme`, `layout`) — all confirmed accurate (React 19, Vite 7, React Router 7, MUI 7, TanStack Query 5, Zustand 5, Zod 4, i18next, Vitest 4, Playwright).
 - Corrected `module-assembly.md` and `technical-issues.md` (#1, #3): the actual `LayoutRouteWrapper` call in `assembly/index.tsx` uses the children pattern (`<LayoutRouteWrapper layout={...}>{element}</LayoutRouteWrapper>`), not the previously documented `element={element}` prop form. Also documented the undocumented `module.routes || module.authRouteConfig` fallback.
 - Confirmed the `app/src/menu/` migration is complete (folder no longer exists).
-- Confirmed and **expanded** the orphaned-package finding: it's not just `session-manager` — all 8 submodules under `packages/modules/auth/src/modules/` (`authentication-core`, `authorization-engine`, `developer-console`, `identity-broker`, `mfa-orchestrator`, `passwordless-service`, `platform-cluster`, `session-manager`, `user-directory`) have their own inert `@idaas/*`-scoped `package.json`, none linked by pnpm. Logged as new item #8 in `technical-issues.md`.
+- **Resolved** the orphaned-package finding: Removed the inert `package.json` files under `packages/modules/auth/src/modules/*` and `packages/modules/auth/src/domain-kernel`.
 - Fixed: `auth.service.ts` contained a comment claiming "MFA and Passkey logic moved to @cap/module-mfa", but no such package existed — `MFATOTPPlugin` actually lives at `packages/modules/auth/src/plugins/MFATOTPPlugin.tsx`. Corrected comments in `auth.service.ts` and `useAuthQuery.ts`.
 
 ## Documentation Artifacts
