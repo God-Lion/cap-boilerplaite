@@ -26,10 +26,10 @@ Technical findings and resolution status tracking across the platform.
 - **Status:** RESOLVED
 - **Resolution:** Removed legacy npm `workspaces` from `package.json` and dropped the nonexistent `platform-api` from `pnpm-workspace.yaml`. The `app/package.json` dependencies on unimplemented modules remain commented out in code as scaffolding.
 
-## 8. [OPEN] Orphaned `package.json` files inside `@cap/module-auth`'s DDD submodules
-- **Status:** NOT RESOLVED — newly identified
+## 8. [RESOLVED] Orphaned `package.json` files inside `@cap/module-auth`'s DDD submodules
+- **Status:** RESOLVED
 - **Details:** Every submodule under `packages/modules/auth/src/modules/` (`authentication-core`, `authorization-engine`, `developer-console`, `identity-broker`, `mfa-orchestrator`, `passwordless-service`, `platform-cluster`, `session-manager`, `user-directory`) has its own `package.json` (scoped `@idaas/*`, e.g. `@idaas/session-manager`, `@idaas/user-directory`), each declaring independent `dependencies`/`peerDependencies`. None of these are linked into `node_modules` (no `@idaas` scope exists at the repo root) despite `pnpm-workspace.yaml` including `packages/modules/**` — pnpm's workspace glob only discovers the immediate `packages/modules/auth` and `packages/modules/landing` projects, not package.json files nested further inside an already-matched project. These submodule manifests are effectively inert: their declared dependencies are never installed or deduped by pnpm, so any version differences from the parent `@cap/module-auth` manifest (e.g. `@mui/lab@7.0.1-beta.23` in `session-manager` vs `^7.0.1-beta.20` in the parent) are silently ignored.
-- **Recommendation:** Either convert `packages/modules/auth` into a true multi-package workspace root (add `packages/modules/auth/src/modules/*` to `pnpm-workspace.yaml`) so these manifests are honored, or remove them entirely if they're vestigial scaffolding from an earlier extraction plan.
+- **Resolution:** Removed the vestigial `package.json` files from `packages/modules/auth/src/modules/*` and `packages/modules/auth/src/domain-kernel` as they were causing workspace drift and their dependencies were not being honored by `pnpm`. The parent module (`@cap/module-auth`) properly manages all dependencies for these subdirectories, and imports rely on typescript path aliases (`@idaas/*`).
 
 ## 7. Security Audit Remediation
 - **Status:** RESOLVED
