@@ -18,6 +18,82 @@ interface TenantCache {
 }
 
 const mockTenants: Record<string, TenantConfig> = {
+  'localhost': {
+    _version: 1,
+    id: 'default',
+    slug: 'default',
+    domain: 'localhost',
+    name: 'Default Tenant',
+    theme: {
+      ...DEFAULT_TENANT_THEME,
+      mode: 'light',
+      skin: 'default',
+      semiDark: false,
+      primaryColor: '#1976D2',
+      secondaryColor: '#455A64',
+    },
+    layout: {
+      layout: 'vertical',
+      layoutPadding: 24,
+      compactContentWidth: 1440,
+      navbar: {
+        type: 'fixed',
+        contentWidth: 'compact',
+        floating: true,
+        detached: true,
+        blur: true,
+      },
+      footer: { type: 'static', contentWidth: 'compact', detached: true },
+      contentWidth: 'compact',
+      disableRipple: false,
+      toastPosition: 'top-right',
+    },
+    branding: {
+      appName: 'Acme Dashboard',
+      companyName: 'Acme Corporation',
+      welcomeText: 'Welcome to Acme Corp',
+    },
+    features: { darkMode: true, rtl: false, notifications: true, chat: true, enabledAuthPlugins: ['mfa-totp'] },
+    version: 1,
+  },
+  '127.0.0.1': {
+    _version: 1,
+    id: 'default',
+    slug: 'default',
+    domain: '127.0.0.1',
+    name: 'Default Tenant',
+    theme: {
+      ...DEFAULT_TENANT_THEME,
+      mode: 'light',
+      skin: 'default',
+      semiDark: false,
+      primaryColor: '#1976D2',
+      secondaryColor: '#455A64',
+    },
+    layout: {
+      layout: 'vertical',
+      layoutPadding: 24,
+      compactContentWidth: 1440,
+      navbar: {
+        type: 'fixed',
+        contentWidth: 'compact',
+        floating: true,
+        detached: true,
+        blur: true,
+      },
+      footer: { type: 'static', contentWidth: 'compact', detached: true },
+      contentWidth: 'compact',
+      disableRipple: false,
+      toastPosition: 'top-right',
+    },
+    branding: {
+      appName: 'Acme Dashboard',
+      companyName: 'Acme Corporation',
+      welcomeText: 'Welcome to Acme Corp',
+    },
+    features: { darkMode: true, rtl: false, notifications: true, chat: true, enabledAuthPlugins: ['mfa-totp'] },
+    version: 1,
+  },
   'tenant1.localhost': {
     _version: 1,
     id: 'tenant1',
@@ -161,6 +237,7 @@ export class TenantService {
 
   static getCache(): TenantCache {
     try {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return {}
       const cached = localStorage.getItem(TENANT_CACHE_KEY)
       return cached ? JSON.parse(cached) : {}
     } catch {
@@ -170,6 +247,7 @@ export class TenantService {
 
   static setCache(domain: string, config: TenantConfig): void {
     try {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return
       const cache = this.getCache()
       cache[domain] = {
         config,
@@ -184,6 +262,7 @@ export class TenantService {
 
   static getCachedTenant(domain: string): TenantConfig | null {
     try {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return null
       const cache = this.getCache()
       const cached = cache[domain]
       
@@ -298,12 +377,17 @@ export class TenantService {
   }
 
   static clearCache(): void {
-    localStorage.removeItem(TENANT_CACHE_KEY)
-    localStorage.removeItem(TENANT_VERSION_KEY)
+    try {
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        localStorage.removeItem(TENANT_CACHE_KEY)
+        localStorage.removeItem(TENANT_VERSION_KEY)
+      }
+    } catch {}
   }
 
   static getUserPreferences(): UserPreferences {
     try {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return {}
       const stored = localStorage.getItem(USER_PREFERENCES_KEY)
       return stored ? JSON.parse(stored) : {}
     } catch {
@@ -313,6 +397,7 @@ export class TenantService {
 
   static setUserPreferences(prefs: UserPreferences): void {
     try {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return
       const current = this.getUserPreferences()
       localStorage.setItem(USER_PREFERENCES_KEY, JSON.stringify({ ...current, ...prefs }))
     } catch (error) {
