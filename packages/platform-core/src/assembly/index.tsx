@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import i18next from 'i18next'
 import { CAPModule, SearchItemConfig } from '../types'
 import { useAppStore } from '@cap/platform-store'
-import { LayoutRouteWrapper } from '@cap/layout'
+import { LayoutRouteWrapper } from '../components/LayoutRouteWrapper'
 import { NotFound } from '../components/NotFound'
 
 
@@ -103,20 +103,46 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   // Return the App component with a SINGLE Routes component matching.
   const App = () => {
     return (
-      <Routes>
-        {allRouteConfigs.map(({ path, element, layout }) => (
-          <Route
-            key={path}
-            path={path}
-            element={
-              <LayoutRouteWrapper layout={layout || 'none'}>
-                {element}
-              </LayoutRouteWrapper>
-            }
-          />
-        ))}
-        <Route path='*' element={<LayoutRouteWrapper layout='none'><NotFound /></LayoutRouteWrapper>} />
-      </Routes>
+      <React.Suspense
+        fallback={
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '60vh',
+              width: '100%',
+            }}
+          >
+            <div
+              style={{
+                width: '32px',
+                height: '32px',
+                border: '3px solid rgba(0,0,0,0.1)',
+                borderTopColor: 'var(--color-primary, #635bff)',
+                borderRadius: '50%',
+                animation: 'cap-spin 0.8s linear infinite',
+              }}
+            />
+            <style>{`@keyframes cap-spin { to { transform: rotate(360deg); } }`}</style>
+          </div>
+        }
+      >
+        <Routes>
+          {allRouteConfigs.map(({ path, element, layout }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <LayoutRouteWrapper layout={layout || 'none'}>
+                  {element}
+                </LayoutRouteWrapper>
+              }
+            />
+          ))}
+          <Route path='*' element={<LayoutRouteWrapper layout='none'><NotFound /></LayoutRouteWrapper>} />
+        </Routes>
+      </React.Suspense>
     )
   }
 

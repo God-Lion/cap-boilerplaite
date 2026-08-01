@@ -85,16 +85,9 @@ export default defineConfig({
       { find: '@cap/platform-core',   replacement: path.resolve(workspaceRoot, 'packages/platform-core/src') },
       { find: '@cap/platform-store',  replacement: path.resolve(workspaceRoot, 'packages/platform-store/src') },
       
-      // ── Other Modules ────────────────────────────────────────────────────────
-      { find: '@cap/module-admin',    replacement: path.resolve(workspaceRoot, 'packages/modules/admin/src') },
+      // ── Feature Modules (Dynamic for existing modules) ──────────────────────
       { find: '@cap/module-landing',  replacement: path.resolve(workspaceRoot, 'packages/modules/landing/src') },
-      { find: '@cap/module-user',     replacement: path.resolve(workspaceRoot, 'packages/modules/user/src') },
-      { find: '@cap/module-kyc',      replacement: path.resolve(workspaceRoot, 'packages/modules/kyc/src') },
-      { find: '@cap/module-digital-id', replacement: path.resolve(workspaceRoot, 'packages/modules/digital-id/src') },
-      { find: '@cap/module-civil-registry', replacement: path.resolve(workspaceRoot, 'packages/modules/civil-registry/src') },
-      { find: '@cap/module-monitoring-alerts', replacement: path.resolve(workspaceRoot, 'packages/modules/monitoring-alerts/src') },
-      { find: '@cap/module-blockchain-idaas', replacement: path.resolve(workspaceRoot, 'packages/modules/blockchain-idaas/src') },
-      { find: '@cap/module-mfa',      replacement: path.resolve(workspaceRoot, 'packages/modules/mfa/src') },
+      { find: /^@cap\/module-([a-z0-9-]+)$/, replacement: path.resolve(workspaceRoot, 'packages/modules/$1/src') },
 
       // ── App-local catch-alls (LAST — least specific) ──────────────────────────
       { find: '@', replacement: path.resolve(__dirname, './src') },

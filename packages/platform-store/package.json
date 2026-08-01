@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@cap/shared-types": "workspace:*",
+    "@cap/theme": "workspace:*",
     "@tanstack/react-query": "^5.67.1",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",

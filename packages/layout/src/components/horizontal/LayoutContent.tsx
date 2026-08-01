@@ -1,7 +1,7 @@
 import React from 'react'
-import type { ChildrenType } from '@cap/platform-core'
-import { useSettings } from '@cap/platform-core'
-// themeConfig.layoutPadding = 24 (inlined to remove circular import dep)
+import type { ChildrenType } from '@cap/shared-types'
+import { useSettings } from '@cap/platform-store'
+import ErrorBoundary from '../ui/ErrorBoundary'
 import { horizontalLayoutClasses } from '../../utils/layoutClasses'
 import StyledMain from '../../styles/shared/StyledMain'
 import classnames from 'classnames'
@@ -24,7 +24,9 @@ const LayoutContent: React.FC<ChildrenType> = ({ children }) => {
         [horizontalLayoutClasses.contentWide]: contentWide,
       })}
     >
-      {children}
+      <ErrorBoundary>
+        {children}
+      </ErrorBoundary>
     </StyledMain>
   )
 }

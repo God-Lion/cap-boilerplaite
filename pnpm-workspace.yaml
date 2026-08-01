@@ -5,7 +5,6 @@ packages:
   - "packages/layout"
   - "packages/platform-core"
   - "packages/platform-store"
-  - "packages/platform-ui"
   - "packages/shared-types"
   - "packages/theme"
   - "packages/modules/**"

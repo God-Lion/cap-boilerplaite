@@ -1,8 +1,7 @@
 import type { ToastPosition } from 'react-toastify'
-
 import type { Mode, Skin, Layout, LayoutComponentPosition, LayoutComponentWidth } from './layout'
 
-type Navbar = {
+export type NavbarConfig = {
   type: LayoutComponentPosition
   contentWidth: LayoutComponentWidth
   floating: boolean
@@ -10,20 +9,20 @@ type Navbar = {
   blur: boolean
 }
 
-type Footer = {
+export type FooterConfig = {
   type: LayoutComponentPosition
   contentWidth: LayoutComponentWidth
   detached: boolean
 }
 
-type ColorPalette = {
+export type ColorPalette = {
   main: string
   light: string
   dark: string
   contrastText: string
 }
 
-type ThemeColors = {
+export type ThemeColors = {
   primary: ColorPalette
   secondary: ColorPalette
   error: ColorPalette
@@ -36,7 +35,7 @@ type ThemeColors = {
   brandCream: string
 }
 
-type ShapeConfig = {
+export type ShapeConfig = {
   borderRadius: number
   customBorderRadius: {
     xs: number
@@ -55,92 +54,12 @@ export type Config = {
   semiDark: boolean
   layout: Layout
   layoutPadding: number
-  navbar: Navbar
+  navbar: NavbarConfig
   contentWidth: LayoutComponentWidth
   compactContentWidth: number
-  footer: Footer
+  footer: FooterConfig
   disableRipple: boolean
   toastPosition: ToastPosition
   colors: ThemeColors
   shape: ShapeConfig
 }
-
-const themeConfig: Config = {
-  templateName: 'CapPlatform',
-  settingsCookieName: 'cap-platform-settings',
-  mode: 'light',
-  skin: 'default',
-  semiDark: false,
-  layout: 'vertical',
-  layoutPadding: 24,
-  compactContentWidth: 1440,
-  navbar: {
-    type: 'fixed',
-    contentWidth: 'compact',
-    floating: true,
-    detached: true,
-    blur: true,
-  },
-  contentWidth: 'compact',
-  footer: {
-    type: 'static',
-    contentWidth: 'compact',
-    detached: true,
-  },
-  disableRipple: false,
-  toastPosition: 'top-right',
-  colors: {
-    primary: {
-      main: '#D4AF37',
-      light: '#E0C55B',
-      dark: '#B8982F',
-      contrastText: '#1A1A1A',
-    },
-    secondary: {
-      main: '#8B4513',
-      light: '#A0522D',
-      dark: '#6B3410',
-      contrastText: '#FDFDFD',
-    },
-    error: {
-      main: '#DC3545',
-      light: '#E35D6A',
-      dark: '#C82333',
-      contrastText: '#FFF',
-    },
-    success: {
-      main: '#28A745',
-      light: '#48B461',
-      dark: '#1E7E34',
-      contrastText: '#FFF',
-    },
-    warning: {
-      main: '#FF9F43',
-      light: '#FFB269',
-      dark: '#E68F3C',
-      contrastText: '#1A1A1A',
-    },
-    info: {
-      main: '#2F4F4F',
-      light: '#4A6A6A',
-      dark: '#1F3333',
-      contrastText: '#FFF',
-    },
-    brandGold: '#D4AF37',
-    brandBrown: '#8B4513',
-    brandSlate: '#2F4F4F',
-    brandCream: '#F5F5DC',
-  },
-  shape: {
-    borderRadius: 6,
-    customBorderRadius: {
-      xs: 2,
-      sm: 4,
-      md: 6,
-      lg: 8,
-      xl: 10,
-    },
-  },
-}
-
-export default themeConfig

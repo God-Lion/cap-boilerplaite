@@ -1,6 +1,6 @@
 import type { StateCreator } from 'zustand'
 import type { AppStore } from '../index'
-import { default as themeConfig } from '@cap/shared-types/theme'
+import { themeConfig } from '@cap/theme'
 
 import type { Mode, Skin, Layout, LayoutComponentWidth } from '@cap/shared-types'
 

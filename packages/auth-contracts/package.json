@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@cap/api-contracts": "workspace:*",
-    "@cap/platform-core": "workspace:*",
+    "@cap/platform-store": "workspace:*",
     "@cap/shared-types": "workspace:*"
   },
   "peerDependencies": {

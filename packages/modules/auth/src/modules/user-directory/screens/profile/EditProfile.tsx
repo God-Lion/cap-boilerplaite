@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { Box, Button, TextField, Typography, Switch, Select, MenuItem, FormControl, InputLabel, Container, Card, CardContent, Tabs, Tab, Divider, CircularProgress } from '@mui/material';
-import { Person, Settings, ExpandMore, Shield } from '@mui/icons-material';
+import { Box, Button, TextField, Typography, Switch, Select, MenuItem, FormControl, InputLabel, Container, Card, CardContent, Tabs, Tab, Divider, CircularProgress, Avatar } from '@mui/material';
+import { Person, Settings, ExpandMore, Shield, Edit, CloudUpload } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';

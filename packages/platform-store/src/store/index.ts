@@ -72,42 +72,29 @@ export const useHasHydrated = () => {
  */
 const secureStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    console.log('[secureStorage] getItem called for:', name)
-    // For auth, we want to decrypt. For others, maybe not.
-    // However, Zustand expects the return to be a string that it then parses.
-    // So we should return the raw JSON string (potentially decrypted).
     const value = localStorage.getItem(name)
-    console.log('[secureStorage] raw value from localStorage:', value ? 'FOUND' : 'NULL')
     if (!value) return null
 
-    // Check if this is a key we want to decrypt
     const storageKey = (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
     if (name === storageKey) {
       try {
-        // Attempt to decrypt
         const masterKey = (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY
         if (!masterKey) {
           throw new Error('VITE_STORAGE_ENCRYPTION_KEY is not defined')
         }
-        const decrypted = await encryption.decryptData(value, masterKey)
-        console.log(
-          '[secureStorage] decryption success. Content:',
-          decrypted.substring(0, 100) + '...',
-        )
-        return decrypted
+        return await encryption.decryptData(value, masterKey)
       } catch (e) {
-        // Fallback to plain text if decryption fails (e.g. legacy data)
-        console.warn('[secureStorage] decryption failed, returning raw value', e)
+        if (import.meta.env.DEV) {
+          console.warn('[secureStorage] Decryption failed, falling back to raw value', e)
+        }
         return value
       }
     }
     return value
   },
   setItem: async (name: string, value: string): Promise<void> => {
-    console.log('[secureStorage] setItem called for:', name)
     const storageKey = (import.meta as any).env?.VITE_STORAGE_KEY || 'cap-platform-storage'
     if (name === storageKey) {
-      console.log('[secureStorage] payload to encrypt:', value.substring(0, 100) + '...')
       const masterKey = (import.meta as any).env?.VITE_STORAGE_ENCRYPTION_KEY
       if (!masterKey) {
         throw new Error('VITE_STORAGE_ENCRYPTION_KEY is not defined')
@@ -119,7 +106,6 @@ const secureStorage = {
     }
   },
   removeItem: (name: string): void => {
-    console.log('[secureStorage] removeItem called for:', name)
     localStorage.removeItem(name)
   },
 }
@@ -161,7 +147,7 @@ export const useAppStore = create<AppStore>()(
             } else {
               if (import.meta.env.DEV) {
                 console.log('[useAppStore] hydration finished')
-                console.log('[useAppStore] Hydrated Auth State:', state?.isAuthenticated, state?.user)
+                console.log('[useAppStore] Hydrated Auth State:', state?.isAuthenticated)
               }
               // Use queueMicrotask to ensure state is fully applied before marking hydration complete
               // This prevents race conditions where components check auth state before it's updated
@@ -174,12 +160,6 @@ export const useAppStore = create<AppStore>()(
           }
         },
         merge: (persistedState: any, currentState) => {
-          console.log('[useAppStore] merge called')
-          console.log(
-            '[useAppStore] persistedState structure keys:',
-            Object.keys(persistedState || {}),
-          )
-
           if (!persistedState) {
             return currentState
           }

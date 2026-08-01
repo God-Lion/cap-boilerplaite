@@ -54,7 +54,7 @@ export const assembleModules = (): CAPModule[] => {
 export const globalModules = assembleModules()
 
 export const App: React.FC = () => {
-  const [, setRevision] = useState(0)
+  const [revision, setRevision] = useState(0)
 
   useEffect(() => {
     const handleUpdate = () => setRevision((r) => r + 1)
@@ -64,8 +64,10 @@ export const App: React.FC = () => {
     }
   }, [])
 
-  const currentModules = assembleModules()
-  const AssembledAppComponent = assembleApp({ modules: currentModules })
+  const AssembledAppComponent = React.useMemo(() => {
+    const currentModules = assembleModules()
+    return assembleApp({ modules: currentModules })
+  }, [revision])
 
   return <AssembledAppComponent />
 }

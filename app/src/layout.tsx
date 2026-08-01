@@ -6,14 +6,14 @@ import { LayoutWrapper, PublicLayout, VerticalLayout, HorizontalLayout, Vertical
 // 
 import Button from '@mui/material/Button';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
-import { VerticalNavbar as Navbar, HorizontalNavbarContent, ScrollToTop, PublicNavbar, GuestNavbar, VerticalMenu, AdminMenu, HorizontalMenu } from '@cap/layout';
+import { VerticalNavbar as Navbar, HorizontalNavbarContent, ScrollToTop, PublicNavbar, GuestNavbar, VerticalMenu, AdminMenu, HorizontalMenu, SkipToContent } from '@cap/layout';
 import { useAppStore, Locale, getMode, getSystemMode, type AppStore, useAuth } from '@cap/platform-core';
 import { useTranslation } from 'react-i18next';
 import { useLang, getDictionary } from './utils/getDictionary';
 
 const NavbarWrapper = React.memo(function NavbarWrapper() {
   const isAuthenticated = useAppStore((state: AppStore) => state.isAuthenticated)
-  return isAuthenticated ? <PublicNavbar /> : <GuestNavbar />
+  return isAuthenticated ? <GuestNavbar /> : <PublicNavbar />
 })
 
 const Layout: React.FC<ChildrenType> = ({ children }) => {
@@ -29,6 +29,7 @@ const Layout: React.FC<ChildrenType> = ({ children }) => {
 
   return (
     <React.Fragment>
+      <SkipToContent />
       <LayoutWrapper
         systemMode={systemMode}
         publicLayout={

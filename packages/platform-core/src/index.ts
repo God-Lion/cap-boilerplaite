@@ -10,7 +10,7 @@ export type { Settings } from '@cap/shared-types'
 export * from './types'
 export * from './services'
 export * from './i18n/i18n'
-export { default as themeConfig } from '@cap/shared-types/theme'
+export { themeConfig } from '@cap/theme'
 
 export * from './utils'
 export * from './assembly'

@@ -1,11 +1,35 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider as MuiThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { useTenant, useSettings } from '@cap/platform-core';
-import { composeMuiTheme, TenantThemeProvider, ThemeSettingsProvider } from '@cap/theme';
+import { useSettings } from '@cap/platform-store';
+import { useTenant } from '@cap/platform-core';
+import { composeMuiTheme, TenantThemeProvider, ThemeSettingsProvider, applyThemeVariablesSync } from '@cap/theme';
 import type { TenantThemeConfig } from '@cap/theme';
-import type { Settings } from '@cap/shared-types';
+import type { Settings, Mode, SystemMode } from '@cap/shared-types';
+
+/**
+ * Hook to resolve mode including system prefers-color-scheme
+ */
+const useResolvedSystemMode = (mode: Mode = 'light'): SystemMode => {
+  const [systemPref, setSystemPref] = useState<SystemMode>(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => setSystemPref(e.matches ? 'dark' : 'light');
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  if (mode === 'system') return systemPref;
+  return mode as SystemMode;
+};
 
 /**
  * Generator function that compiles the MUI theme based on tenant overrides
@@ -38,10 +62,19 @@ export const ThemeBridge = ({ children }: { children: React.ReactNode }) => {
   
   const { settings } = useSettings();
   
-  const isDark = settings.mode === 'dark'; // Or logic matching system pref
+  const resolvedMode = useResolvedSystemMode(settings.mode);
+  const isDark = resolvedMode === 'dark';
 
   const theme = useMemo(() => {
-    return generateTheme(tenantConfig as any, settings, isDark);
+    const compiled = generateTheme(tenantConfig as any, settings, isDark);
+    if (typeof window !== 'undefined' && tenantConfig) {
+      try {
+        applyThemeVariablesSync(tenantConfig as any);
+      } catch {
+        // Fallback gracefully if DOM is not ready
+      }
+    }
+    return compiled;
   }, [tenantConfig, settings, isDark]);
 
   return (

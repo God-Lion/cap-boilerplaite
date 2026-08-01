@@ -26,10 +26,12 @@
       "react",
       "react-dom"
     ],
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "../../app/src/*"
+      ],
+      "@auth": [
+        "../modules/auth/src"
       ],
       "@auth/*": [
         "../modules/auth/src/*",

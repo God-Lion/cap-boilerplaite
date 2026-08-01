@@ -1,7 +1,7 @@
 import React from 'react'
-import { Box } from '@cap/theme'
+import { Box } from '@mui/material'
 import LayoutContent from './components/horizontal/LayoutContent'
-import type { ChildrenType } from '@cap/platform-core'
+import type { ChildrenType } from '@cap/shared-types'
 
 const PublicLayout: React.FC<
   ChildrenType & {
@@ -20,8 +20,9 @@ const PublicLayout: React.FC<
         padding: 0,
       }}
     >
-      {/* Header Section - Dark background */}
+      {/* Header Section */}
       <Box
+        component="header"
         sx={{
           color: 'white',
           width: '100%',
@@ -31,13 +32,14 @@ const PublicLayout: React.FC<
         {header || null}
       </Box>
 
-      {/* Main Content Area - Coral/Red background */}
-      <Box>
+      {/* Main Content Area */}
+      <Box component="main" sx={{ flex: '1 1 auto' }}>
         <LayoutContent>{children}</LayoutContent>
       </Box>
 
-      {/* Footer Section - Dark background */}
+      {/* Footer Section */}
       <Box
+        component="footer"
         sx={{
           backgroundColor: 'background.paper',
           color: 'text.primary',

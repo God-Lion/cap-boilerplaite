@@ -1,9 +1,9 @@
 import React from 'react'
-import type { ChildrenType } from '@cap/platform-core'
+import type { ChildrenType } from '@cap/shared-types'
+import { Box } from '@mui/material'
 import LayoutContent from './components/vertical/LayoutContent'
 import { verticalLayoutClasses } from './utils/layoutClasses'
 import classnames from 'classnames'
-import { Box } from '@cap/theme'
 
 const VerticalLayout: React.FC<
   ChildrenType & {
@@ -17,7 +17,7 @@ const VerticalLayout: React.FC<
       className={classnames(verticalLayoutClasses.root)}
       sx={{ display: 'flex', flex: '1 1 auto' }}
     >
-      {navigation || null}
+      {navigation ? <Box component="aside">{navigation}</Box> : null}
       <Box
         className={classnames(verticalLayoutClasses.contentWrapper)}
         sx={{
@@ -27,9 +27,9 @@ const VerticalLayout: React.FC<
           inlineSize: '100%',
         }}
       >
-        {navbar || null}
+        {navbar ? <Box component="header">{navbar}</Box> : null}
         <LayoutContent>{children}</LayoutContent>
-        {footer || null}
+        {footer ? <Box component="footer">{footer}</Box> : null}
       </Box>
     </Box>
   )

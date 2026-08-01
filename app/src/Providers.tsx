@@ -1,5 +1,6 @@
 // cspell:ignore languagedetector reactour Toastify
 import React from 'react';
+import { useTheme } from '@mui/material/styles';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { I18nextProvider } from 'react-i18next';
@@ -96,8 +97,6 @@ const NetworkSync = () => {
   useNetworkSync()
   return null
 }
-
-import { useTheme } from '@mui/material/styles';
 
 const ThemedTourProvider: React.FC<ChildrenType> = ({ children }) => {
   const theme = useTheme()

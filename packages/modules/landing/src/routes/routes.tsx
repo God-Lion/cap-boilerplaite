@@ -1,14 +1,15 @@
 import React from 'react'
 import { Route, type RoutesProps } from 'react-router-dom'
-import { AuthRouteConfig } from '@cap/platform-core'
-import FeatureComparison from '../screens/FeatureComparison'
-import PrivacyPolicy from '../screens/PrivacyPolicy'
-import TermsOfService from '../screens/TermsOfService'
-import ContactUs from '../screens/ContactUs'
-import AboutUs from '../screens/AboutUs'
-import Pricing from '../screens/Pricing'
-import Home from '../screens/Home'
-import ChronosMycelium from '../screens/ChronosMycelium'
+import type { AuthRouteConfig } from '@cap/platform-core'
+
+const Home = React.lazy(() => import('../screens/Home'))
+const ChronosMycelium = React.lazy(() => import('../screens/ChronosMycelium'))
+const FeatureComparison = React.lazy(() => import('../screens/FeatureComparison'))
+const PrivacyPolicy = React.lazy(() => import('../screens/PrivacyPolicy'))
+const TermsOfService = React.lazy(() => import('../screens/TermsOfService'))
+const ContactUs = React.lazy(() => import('../screens/ContactUs'))
+const AboutUs = React.lazy(() => import('../screens/AboutUs'))
+const Pricing = React.lazy(() => import('../screens/Pricing'))
 
 export const landingRouteConfig: AuthRouteConfig[] = [
   { path: '/', element: <Home /> },

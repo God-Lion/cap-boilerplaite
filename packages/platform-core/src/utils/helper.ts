@@ -1,7 +1,7 @@
 import { differenceInYears, parseISO } from 'date-fns'
 import type { DemoName } from '../types/core-types'
 import type { SystemMode, Settings } from '@cap/shared-types'
-import themeConfig from '@cap/shared-types/theme'
+import { themeConfig } from '@cap/theme'
 import demoConfigs from '../configs/demoConfigs'
 import { getCookie, getJsonCookie } from './cookieUtils'
 

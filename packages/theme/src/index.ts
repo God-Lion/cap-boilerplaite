@@ -17,3 +17,5 @@ export { ThemeSettingsProvider, useThemeSettings } from './context/ThemeSettings
 // Theme & Style Exports
 export * from './assets/themes'
 export { default as coreOverrides } from './overrides/core-overrides'
+export { default as themeConfig, type ThemeConfig } from './config/themeConfig'
+

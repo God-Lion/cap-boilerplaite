@@ -1,5 +1,5 @@
-import { apiClient } from '@cap/platform-core'
-import type { FetchResponse, PaginatedResponse } from '@cap/platform-core'
+import { apiClient } from '@cap/platform-store'
+import type { FetchResponse, PaginatedResponse } from '@cap/shared-types'
 import { ENDPOINTS } from '@cap/api-contracts'
 import type {
   SCIMConfig,

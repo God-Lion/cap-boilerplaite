@@ -10,10 +10,8 @@ const root = createRoot(document.getElementById('root')!)
 
 
 if (import.meta.env.PROD) {
-  // Disable console in production
+  // Silence verbose logs in production while retaining warnings and errors for diagnostics
   console.log = () => { }
-  console.warn = () => { }
-  console.error = () => { }
 }
 
 root.render(
