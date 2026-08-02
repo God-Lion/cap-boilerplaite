@@ -1,4 +1,5 @@
 import React from 'react'
+import i18next from 'i18next'
 import { useAppStore } from '@cap/platform-store'
 import type { RouteLayout } from '@cap/shared-types'
 
@@ -6,6 +7,7 @@ export interface LayoutRouteWrapperProps {
   element?: React.ReactNode
   children?: React.ReactNode
   layout?: RouteLayout | string
+  label?: string
 }
 
 /**
@@ -20,8 +22,9 @@ export const LayoutRouteWrapper: React.FC<LayoutRouteWrapperProps> = ({
   element,
   children,
   layout,
+  label,
 }) => {
-  const updateLayoutOverride = useAppStore((state) => state.updateLayoutOverride)
+  const updateLayoutOverride = useAppStore((state: any) => state.updateLayoutOverride)
 
   React.useEffect(() => {
     if (layout === 'noLayout') {
@@ -30,6 +33,16 @@ export const LayoutRouteWrapper: React.FC<LayoutRouteWrapperProps> = ({
     }
     // 'admin' override is set by AdminRoute itself — no action needed here
   }, [layout, updateLayoutOverride])
+
+  React.useEffect(() => {
+    if (label) {
+      const i18nInstance = (i18next as any)?.default || i18next
+      const translated = i18nInstance?.isInitialized && i18nInstance.exists?.(label)
+        ? i18nInstance.t(label)
+        : (i18nInstance?.t ? i18nInstance.t(label) : label)
+      document.title = translated || label
+    }
+  }, [label])
 
   const content = children ?? element
 

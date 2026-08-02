@@ -112,13 +112,7 @@ export const API_ENDPOINTS = {
 
   statistics: {
     overview: '/api/statistics/overview',
-    jobsByLocation: '/api/statistics/jobs-by-location',
-    jobsByCompany: '/api/statistics/jobs-by-company',
-    jobsByType: '/api/statistics/jobs-by-type',
-    jobsByExperience: '/api/statistics/jobs-by-experience',
     scrapingActivity: '/api/statistics/scraping-activity',
-    topSkills: '/api/statistics/top-skills',
-    recentJobs: '/api/statistics/recent-jobs',
     sessionStatistics: '/api/statistics/session-statistics',
     trends: '/api/statistics/trends',
   },

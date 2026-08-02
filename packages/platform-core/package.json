@@ -6,7 +6,9 @@
   "types": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./types/app-types": "./src/types/app-types.ts"
+    "./types/app-types": "./src/types/app-types.ts",
+    "./i18n/registry": "./src/i18n/registry.ts",
+    "./i18n/i18n": "./src/i18n/i18n.ts"
   },
   "description": "Barrel package re-exporting platform-store and platform-ui",
   "scripts": {

@@ -5,7 +5,14 @@
  */
 
 // Routes
-export { default as CommonRoutes, landingRouteConfig } from './routes/routes'
+export {
+  default as CommonRoutes,
+  landingRoutes,
+  LandingRoutes,
+  landingRouteConfig,
+  LandingPath,
+  LandingPath as Path,
+} from './routes'
 
 // Screens
 export { default as FeatureComparison } from './screens/FeatureComparison'
@@ -31,11 +38,23 @@ export {
   type WorkflowState,
 } from './context'
 
+// I18n Registry & Dictionaries
+export {
+  landingDictionaries,
+  registerDictionary,
+  getMergedDictionary,
+  getAvailableLocales,
+  i18n,
+  type Locale,
+} from './i18n/registry'
+
 import type { CAPModule } from '@cap/shared-types';
 import { landingRouteConfig } from './routes/routes';
+import { landingDictionaries } from './i18n/registry';
 
 export const LandingModule: CAPModule = {
   id: 'landing-module',
   version: '1.0.0',
   routes: landingRouteConfig,
+  i18n: landingDictionaries,
 }

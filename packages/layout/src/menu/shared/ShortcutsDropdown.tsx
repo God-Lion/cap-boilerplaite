@@ -1,7 +1,8 @@
-﻿import React, { ReactNode, useCallback, useState } from 'react'
+import React, { ReactNode, useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
+  Avatar,
   Box,
   ClickAwayListener,
   Divider,
@@ -25,7 +26,6 @@ import People from '@mui/icons-material/People'
 import DesktopWindows from '@mui/icons-material/DesktopWindows'
 import Settings from '@mui/icons-material/Settings'
 import { useSettings, themeConfig, i18n as i18nConfig } from '@cap/platform-core'
-import CustomAvatar from '@cap/module-auth/modules/user-directory/components/CustomAvatar'
 
 export type ShortcutsType = {
   url: string
@@ -76,7 +76,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
   const { settings } = useSettings()
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const locale = i18n.language
 
   const handleClose = useCallback(() => {
@@ -140,10 +140,10 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
                     }}
                   >
                     <Typography variant='h6' sx={{ flex: '1 1 auto' }}>
-                      Shortcuts
+                      {t('navigation.shortcuts', 'Shortcuts')}
                     </Typography>
                     <Tooltip
-                      title='Add Shortcut'
+                      title={t('navigation.addShortcut', 'Add Shortcut')}
                       placement={placement === 'bottom-end' ? 'left' : 'right'}
                       slotProps={{
                         popper: {
@@ -203,14 +203,16 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
                               textDecoration: 'none',
                             }}
                           >
-                            <CustomAvatar
-                              size={50}
-                              skin='light-static'
-                              color='secondary'
-                              sx={{ color: 'text.primary' }}
+                            <Avatar
+                              sx={{
+                                width: 50,
+                                height: 50,
+                                bgcolor: 'action.selected',
+                                color: 'text.primary',
+                              }}
                             >
                               {getShortcutIcon(shortcut.icon)}
-                            </CustomAvatar>
+                            </Avatar>
                             <Box
                               sx={{
                                 display: 'flex',

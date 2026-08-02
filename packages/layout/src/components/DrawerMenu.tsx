@@ -13,7 +13,7 @@ export type IMenu = {
   menu?: Array<IMenu>
 }
 
-export const useUserMenu = (roleId: number) => {
+export const useUserMenu = (roleId: any) => {
   const theme = useTheme()
   const colorIcon = theme.palette.text.primary
   const styleIcon = {

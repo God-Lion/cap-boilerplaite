@@ -6,8 +6,9 @@ import { alpha, styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { AuthButtons, AuthProfile } from '../../../components/auth';
-import { useAuth, isObjectEmpty } from '@cap/platform-core';
+import { useAuth, isObjectEmpty, useNavigationMenu } from '@cap/platform-core';
 import { Logo, ModeDropdown } from '../../shared';
+
 
 const AppBar = styled(MuiAppBar)(({ theme }: { theme: Theme }) => ({
   backgroundColor: 'var(--mui-palette-background-paper)',
@@ -91,55 +92,15 @@ function SearchBar() {
   )
 }
 
+
 export default function NavBar() {
   const theme: Theme = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
   const { user, isAuthenticated } = useAuth()
 
-  const guestPages = [
-    { name: 'Home', link: '' },
-    { name: 'Jobs', link: 'jobs' },
-    { name: 'Profile Analyzer', link: 'profile-analyzer' },
-  ]
-
-  const authenticatedPages = [
-    { name: 'Dashboard', link: 'dashboard' },
-    { name: 'My CVs', link: 'profile-management' },
-    { name: 'Profile Analyzer', link: 'profile-analyzer' },
-    { name: 'Scraper', link: 'scraper' },
-    { name: 'Jobs', link: 'jobs' },
-    { name: 'Job Analysis', link: 'job-analysis' },
-    { name: 'Automation', link: 'automation' },
-    { name: 'Applications', link: 'application-tracker' },
-    { name: 'Companies', link: 'companies' },
-    { name: 'Statistics', link: 'statistics' },
-  ]
-
-  const adminPages = [
-    { name: 'Admin Panel', link: 'admin' },
-    { name: 'Provider Management', link: 'admin-provider' },
-  ]
-
-  const providerPages = [{ name: 'Provider Portal', link: 'provider' }]
-
-  const getPages = () => {
-    if (!user || user === null || isObjectEmpty(user)) {
-      return guestPages
-    }
-
-    const userRole = user?.role
-    switch (userRole) {
-      case 1: // admin
-        return [...authenticatedPages, ...adminPages]
-      case 2: // provider
-        return [...authenticatedPages, ...providerPages]
-      default:
-        return authenticatedPages
-    }
-  }
-
-  const pages = getPages()
+  // Fetch dynamic navigation links
+  const pages = useNavigationMenu('public')
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -179,34 +140,35 @@ export default function NavBar() {
               display: { xs: 'none', md: 'flex' },
             }}
           >
-            {pages?.map((page) => (
-              <List key={page.name} onClick={handleCloseNavMenu}>
-                <ListItemButton
-                  key={page.name}
-                  selected={
-                    location.pathname === `/${page?.link}` ||
-                    (page?.link === '' && location.pathname === '/')
-                  }
-                  sx={{
-                    '&.MuiListItemButton-root.Mui-selected': {
-                      borderRight: '8px solid #fff',
-                      zIndex: 1,
-                    },
-                  }}
-                  onClick={() => {
-                    navigate(`/${page.link}`, { state: { from: location } })
-                  }}
-                >
-                  <ListItemText
-                    style={{
-                      textDecoration: 'none',
-                      color: theme.palette.primary.main,
+            {pages?.map((page) => {
+              const targetPath = page?.path ? (page.path.startsWith('/') ? page.path : `/${page.path}`) : '/'
+              const isSelected = location.pathname === targetPath
+              return (
+                <List key={page.id} onClick={handleCloseNavMenu}>
+                  <ListItemButton
+                    key={page.id}
+                    selected={isSelected}
+                    sx={{
+                      '&.MuiListItemButton-root.Mui-selected': {
+                        borderRight: `8px solid ${theme.palette.background.paper}`,
+                        zIndex: 1,
+                      },
                     }}
-                    primary={page?.name}
-                  />
-                </ListItemButton>
-              </List>
-            ))}
+                    onClick={() => {
+                      navigate(targetPath, { state: { from: location } })
+                    }}
+                  >
+                    <ListItemText
+                      style={{
+                        textDecoration: 'none',
+                        color: theme.palette.primary.main,
+                      }}
+                      primary={page?.label}
+                    />
+                  </ListItemButton>
+                </List>
+              )
+            })}
           </Box>
           <Box
             sx={{
@@ -248,33 +210,34 @@ export default function NavBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages?.map((page) => (
-                <List key={page.name} onClick={handleCloseNavMenu}>
-                  <ListItemButton
-                    key={page.name}
-                    selected={
-                      location.pathname === `/${page?.link}` ||
-                      (page?.link === '' && location.pathname === '/')
-                    }
-                    sx={{
-                      '&.MuiListItemButton-root.Mui-selected': {
-                        borderRight: '8px solid #fff',
-                        zIndex: 1,
-                      },
-                    }}
-                    onClick={() => {
-                      navigate(`/${page?.link}`)
-                    }}
-                  >
-                    <ListItemText
-                      style={{
-                        textDecoration: 'none',
+              {pages?.map((page) => {
+                const targetPath = page?.path ? (page.path.startsWith('/') ? page.path : `/${page.path}`) : '/'
+                const isSelected = location.pathname === targetPath
+                return (
+                  <List key={page.id} onClick={handleCloseNavMenu}>
+                    <ListItemButton
+                      key={page.id}
+                      selected={isSelected}
+                      sx={{
+                        '&.MuiListItemButton-root.Mui-selected': {
+                          borderRight: `8px solid ${theme.palette.background.paper}`,
+                          zIndex: 1,
+                        },
                       }}
-                      primary={page.name}
-                    />
-                  </ListItemButton>
-                </List>
-              ))}
+                      onClick={() => {
+                        navigate(targetPath)
+                      }}
+                    >
+                      <ListItemText
+                        style={{
+                          textDecoration: 'none',
+                        }}
+                        primary={page.label}
+                      />
+                    </ListItemButton>
+                  </List>
+                )
+              })}
             </Menu>
           </Box>
 

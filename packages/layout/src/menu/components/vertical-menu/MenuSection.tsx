@@ -58,7 +58,7 @@ const MenuSection: React.ForwardRefRenderFunction<HTMLLIElement, MenuSectionProp
   const getMenuSectionStyles = (element: MenuSectionElement): CSSObject | undefined => {
     // If the menuSectionStyles prop is provided, get the styles for the element from the prop
     if (menuSectionStyles) {
-      return menuSectionStyles[element]
+      return menuSectionStyles[element] as any
     }
   }
 

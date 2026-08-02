@@ -3,8 +3,11 @@ import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import FacebookIcon from '@mui/icons-material/Facebook'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export default function Footer() {
+  const { t } = useTranslation()
+
   return (
     <Box
       component='footer'
@@ -49,7 +52,7 @@ export default function Footer() {
               },
             }}
           >
-            Privacy Policy
+            {t('landing.privacyPolicy', 'Privacy Policy')}
           </HLInk>
           <HLInk
             component={Link}
@@ -64,7 +67,7 @@ export default function Footer() {
               },
             }}
           >
-            Terms of Service
+            {t('landing.termsOfService', 'Terms of Service')}
           </HLInk>
           <HLInk
             component={Link}
@@ -79,7 +82,7 @@ export default function Footer() {
               },
             }}
           >
-            Contact Us
+            {t('landing.contact', 'Contact Us')}
           </HLInk>
         </Box>
 
@@ -133,8 +136,11 @@ export default function Footer() {
         </Box>
 
         {/* Branding & Description */}
-        <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 480 }}>
-          Enterprise Platform - Build and scale your applications with speed and confidence.
+        <Typography variant='body2' sx={{ color: 'text.secondary', maxWidth: 480 }}>
+          {t(
+            'footer.description',
+            'Enterprise Platform - Build and scale your applications with speed and confidence.',
+          )}
         </Typography>
 
         {/* Copyright */}
@@ -145,9 +151,8 @@ export default function Footer() {
             color: 'text.secondary',
           }}
         >
-          © {new Date().getFullYear()} Enterprise Platform. All rights reserved.
+          {t('footer.copyright', `© ${new Date().getFullYear()} Enterprise Platform. All rights reserved.`)}
         </Typography>
-
       </Container>
     </Box>
   )

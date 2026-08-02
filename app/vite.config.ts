@@ -63,18 +63,19 @@ export default defineConfig({
   ],
   resolve: {
     alias: [
-      // ── Auth Module Catch-all (Regex) ──
-      // This catches @cap/module-auth and ANY sub-path, redirecting to the shim if missing.
-      { 
-        find: /^@cap\/module-auth(\/.*)?$/, 
-        replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src$1') : authShimPath 
-      },
-      // ── Internal Auth Aliases (Regex) ──
+      // ── Auth Module Catch-all ──
+      { find: '@cap/module-auth', replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src') : authShimPath },
+      { find: /^@cap\/module-auth\/(.*)$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/$1') : authShimPath },
+      // ── Internal Auth Aliases ──
       { find: /^@auth\/(authentication-core|authorization-engine|developer-console|identity-broker|mfa-orchestrator|passwordless-service|platform-cluster|session-manager|user-directory)(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/$1$2') : authShimPath },
-      { find: /^@auth(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src$1') : authShimPath },
-      { find: /^@idaas(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules$1') : authShimPath },
-      { find: /^@\/routes(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/routes$1') : authShimPath },
-      { find: /^@\/modules(\/.*)?$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules$1') : authShimPath },
+      { find: /^@auth\/(.*)$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/$1') : authShimPath },
+      { find: '@auth', replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src') : authShimPath },
+      { find: /^@idaas\/(.*)$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/$1') : authShimPath },
+      { find: '@idaas', replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules') : authShimPath },
+      { find: /^@\/routes\/(.*)$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/routes/$1') : authShimPath },
+      { find: '@\/routes', replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/routes') : authShimPath },
+      { find: /^@\/modules\/(.*)$/, replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules/$1') : authShimPath },
+      { find: '@\/modules', replacement: authExists ? path.resolve(workspaceRoot, 'packages/modules/auth/src/modules') : authShimPath },
 
       // ── Workspace source package aliases ─────────────────────────────────────
       { find: '@cap/layout',          replacement: path.resolve(workspaceRoot, 'packages/layout/src') },

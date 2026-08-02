@@ -78,7 +78,7 @@ const MenuItem: React.ForwardRefRenderFunction<HTMLLIElement, MenuItemProps> = (
       if (styleFunction) {
         // If the style function is a function, call it and return the result.
         // Otherwise, return the style function itself.
-        return typeof styleFunction === 'function' ? styleFunction(params) : styleFunction
+        return (typeof styleFunction === 'function' ? styleFunction(params) : styleFunction) as any
       }
     }
   }

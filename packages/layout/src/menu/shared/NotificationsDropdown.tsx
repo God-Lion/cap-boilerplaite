@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import type { MouseEvent, ReactNode } from 'react'
 
 import {
@@ -29,7 +29,7 @@ import Close from '@mui/icons-material/Close'
 import BarChart from '@mui/icons-material/BarChart'
 import Email from '@mui/icons-material/Email'
 import { themeConfig, useSettings, type ThemeColor } from '@cap/platform-core'
-import CustomAvatar, { CustomAvatarProps } from '@cap/module-auth/modules/user-directory/components/CustomAvatar'
+import { useTranslation } from 'react-i18next'
 
 // Util Imports
 const getInitials = (string: string) =>
@@ -51,14 +51,14 @@ export type NotificationsType = {
   | {
       avatarIcon?: ReactNode | string
       avatarColor?: ThemeColor
-      avatarSkin?: CustomAvatarProps['skin']
+      avatarSkin?: string
       avatarImage?: never
       avatarText?: never
     }
   | {
       avatarText?: string
       avatarColor?: ThemeColor
-      avatarSkin?: CustomAvatarProps['skin']
+      avatarSkin?: string
       avatarImage?: never
       avatarIcon?: never
     }
@@ -99,20 +99,21 @@ const getAvatar = (
     }
 
     return (
-      <CustomAvatar color={avatarColor} skin={avatarSkin || 'light-static'}>
+      <Avatar sx={{ bgcolor: avatarColor ? `${avatarColor}.main` : 'primary.main' }}>
         {icon}
-      </CustomAvatar>
+      </Avatar>
     )
   } else {
     return (
-      <CustomAvatar color={avatarColor} skin={avatarSkin || 'light-static'}>
+      <Avatar sx={{ bgcolor: avatarColor ? `${avatarColor}.main` : 'primary.main' }}>
         {avatarText || getInitials(title)}
-      </CustomAvatar>
+      </Avatar>
     )
   }
 }
 
 const NotificationDropdown = ({ notifications }: { notifications: Array<NotificationsType> }) => {
+  const { t } = useTranslation()
   // States
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [notificationsState, setNotificationsState] =
@@ -242,13 +243,13 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
                     }}
                   >
                     <Typography variant='h6' sx={{ flex: '1 1 auto' }}>
-                      Notifications
+                      {t('navigation.notifications', 'Notifications')}
                     </Typography>
                     {notificationCount > 0 && (
-                      <Chip size='small' color='primary' label={`${notificationCount} New`} />
+                      <Chip size='small' color='primary' label={`${notificationCount} ${t('navigation.new', 'New')}`} />
                     )}
                     <Tooltip
-                      title={readAll ? 'Mark all as unread' : 'Mark all as read'}
+                      title={readAll ? t('navigation.markAllUnread', 'Mark all as unread') : t('navigation.markAllRead', 'Mark all as read')}
                       placement={placement === 'bottom-end' ? 'left' : 'right'}
                       slotProps={{
                         popper: {
@@ -381,7 +382,7 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
                   <Divider />
                   <Box sx={{ p: 4 }}>
                     <Button fullWidth variant='contained' size='small'>
-                      View All Notifications
+                      {t('navigation.viewAllNotifications', 'View All Notifications')}
                     </Button>
                   </Box>
                 </Box>

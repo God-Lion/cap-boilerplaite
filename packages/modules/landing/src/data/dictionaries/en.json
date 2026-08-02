@@ -1,0 +1,28 @@
+{
+  "common": {
+    "guest": "Guest User",
+    "not_signed_in": "Not signed in",
+    "back": "Back",
+    "add": "Add",
+    "remove": "Remove",
+    "save": "Save",
+    "save_changes": "Save changes",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "or": "OR"
+  },
+  "landing": {
+    "home": "Home",
+    "chronosMycelium": "Chronos Mycelium",
+    "features": "Feature Comparison",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "about": "About Us",
+    "pricing": "Pricing"
+  }
+}

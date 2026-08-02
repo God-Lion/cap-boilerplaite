@@ -30,14 +30,10 @@ export const getSearchItems = () => _searchItems
  */
 export const getModules = () => _modules
 
-// LayoutOverride values that a route config entry can declare.
-// Kept in sync with LayoutOverride in store/slices/settingsSlice.ts.
-export type RouteLayout = 'public' | 'vertical' | 'horizontal' | 'noLayout' | 'admin'
+import type { RouteLayout, ModuleRouteConfig } from '@cap/shared-types'
 
-export type AuthRouteConfig = {
-  path: string
+export type AuthRouteConfig = ModuleRouteConfig & {
   element: React.JSX.Element
-  layout?: RouteLayout
 }
 
 export const assembleApp = ({ modules }: AssembleAppProps) => {
@@ -86,6 +82,7 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   // Collect all route configs from all modules
   const allRouteConfigs: AuthRouteConfig[] = []
   const seenPaths = new Set<string>()
+  const routeNavItems: typeof _modules[0]['navItems'] = []
 
   modules.forEach((module) => {
     const routesToRegister = module.routes || module.authRouteConfig
@@ -94,10 +91,30 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
         if (route && route.path && !seenPaths.has(route.path)) {
           seenPaths.add(route.path)
           allRouteConfigs.push(route)
+
+          // Auto-extract nav item from route if it has nav-specific properties
+          if (route.variant || route.roles || route.guestOnly || route.icon) {
+            routeNavItems.push({
+              id: route.id || route.path,
+              label: route.label || route.path,
+              path: route.path,
+              icon: route.icon,
+              section: route.section,
+              roles: route.roles,
+              permissions: route.permissions,
+              guestOnly: route.guestOnly,
+              variant: route.variant,
+              order: route.order,
+            })
+          }
         }
       })
     }
   })
+
+  if (routeNavItems.length > 0) {
+    useAppStore.getState().registerModuleNavigation(routeNavItems)
+  }
 
 
   // Return the App component with a SINGLE Routes component matching.
@@ -129,12 +146,12 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
         }
       >
         <Routes>
-          {allRouteConfigs.map(({ path, element, layout }) => (
+          {allRouteConfigs.map(({ path, element, layout, label }) => (
             <Route
               key={path}
               path={path}
               element={
-                <LayoutRouteWrapper layout={layout || 'none'}>
+                <LayoutRouteWrapper layout={layout || 'none'} label={label}>
                   {element}
                 </LayoutRouteWrapper>
               }

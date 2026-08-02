@@ -12,6 +12,7 @@ import { useInterval } from '../../hooks/useInterval';
 import { usePasskeyAutofill } from '../../../mfa-orchestrator/hooks';
 import { LoginRequest } from '../../types/api.types';
 import authService from '../../services/auth.service';
+import { resolveRedirectPathForUser } from '../../utils/resolveRedirect';
 import { Path } from '@cap/module-auth/routes/path';
 import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '../../components/shared/auth';
 
@@ -104,14 +105,7 @@ export default function SignInV2() {
       const userData = response?.data?.user || response?.data
       const userRole = userData?.role as unknown as Roles | undefined
 
-      let redirectPath = '/auth/account'
-      const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
-
-      if (userRole && ADMIN_ROLES.includes(userRole)) {
-        redirectPath = Path.admin.users
-      } else if (userRole === Roles.PARTICIPANT) {
-        redirectPath = '/provider'
-      }
+      const redirectPath = resolveRedirectPathForUser(userRole)
 
       setTimeout(() => navigate(redirectPath), 1500)
     },
@@ -170,14 +164,7 @@ export default function SignInV2() {
         const userData = useAppStore.getState().user as any
         const userRole = userData?.role || userData?.user?.role
 
-        let redirectPath = '/auth/account'
-        const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
-
-        if (ADMIN_ROLES.includes(userRole as any)) {
-          redirectPath = Path.admin.users
-        } else if (userRole === Roles.PARTICIPANT) {
-          redirectPath = '/provider'
-        }
+        const redirectPath = resolveRedirectPathForUser(userRole)
 
         navigate(redirectPath)
       }, 1200)
@@ -207,14 +194,7 @@ export default function SignInV2() {
         const userData = useAppStore.getState().user as any
         const userRole = (userData?.role || userData?.user?.role) as Roles
 
-        let redirectPath = '/auth/account'
-        const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
-
-        if (userRole && ADMIN_ROLES.includes(userRole)) {
-          redirectPath = Path.admin.users
-        } else if (userRole === Roles.PARTICIPANT) {
-          redirectPath = '/provider'
-        }
+        const redirectPath = resolveRedirectPathForUser(userRole)
 
         navigate(redirectPath)
       }, 1500)
@@ -243,14 +223,7 @@ export default function SignInV2() {
       const userData = useAppStore.getState().user as any
       const userRole = (userData?.role || userData?.user?.role) as Roles
 
-      let redirectPath = '/auth/account'
-      const ADMIN_ROLES: Roles[] = [Roles.ADMIN, Roles.SUPERADMINEMPLOYEE, Roles.SUPERADMIN]
-
-      if (userRole && ADMIN_ROLES.includes(userRole)) {
-        redirectPath = Path.admin.users
-      } else if (userRole === Roles.PARTICIPANT) {
-        redirectPath = '/provider'
-      }
+      const redirectPath = resolveRedirectPathForUser(userRole)
 
       navigate(redirectPath)
     }, 1000)

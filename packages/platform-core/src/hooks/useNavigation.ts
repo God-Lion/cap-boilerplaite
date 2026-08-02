@@ -9,6 +9,7 @@ import { NavVariant, NavItemConfig } from '@cap/shared-types/module'
  */
 export const useNavigationMenu = (variant: NavVariant) => {
   const navItems = useAppStore((state) => state.navItems)
+  console.log("navItems", navItems)
   const user = useAppStore((state) => state.user)
   const isAuthenticated = useAppStore((state) => state.isAuthenticated)
   const isAdmin = useAppStore((state) => state.isAdmin)
@@ -22,6 +23,9 @@ export const useNavigationMenu = (variant: NavVariant) => {
 
     // 2. Filter by roles and permissions reactively
     const checkAccess = (item: NavItemConfig): boolean => {
+      // Guest-only check
+      if (item.guestOnly && isAuthenticated) return false
+
       // Role check
       if (item.roles && item.roles.length > 0) {
         if (!hasRole(item.roles as any)) return false

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Card,
   CardContent,
@@ -23,6 +24,7 @@ export default React.forwardRef<any, { loading: boolean; data: ITableData }>(
     },
     ref,
   ) => {
+    const { t } = useTranslation()
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(5)
     const [page, setPage] = React.useState<number>(0)
     const handlePageChange = (_: unknown, newPagE: number) => setPage(newPagE)
@@ -34,7 +36,7 @@ export default React.forwardRef<any, { loading: boolean; data: ITableData }>(
     return (
       <>
         {loading && <LinearProgress />}
-        <Card ref={ref} sx={{ p: 0 }}>
+        <Card sx={{ p: 0 }}>
           <CardContent>
             <PerfectScrollbar>
               <TableContainer>
@@ -51,7 +53,7 @@ export default React.forwardRef<any, { loading: boolean; data: ITableData }>(
           <CardActions>
             <TablePagination
               component={Box}
-              labelRowsPerPage='Lignes par page'
+              labelRowsPerPage={t('table.rowsPerPage', 'Rows per page')}
               count={data.rows.length}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}

@@ -3,24 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { AppBar, Box, Button, Container, IconButton, Typography, useTheme, Drawer, List, ListItem, ListItemButton, ListItemText, Stack } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Logo } from '../../shared';
-import { themeConfig } from '@cap/platform-core';
-import { Path } from '@cap/module-auth';
+import { themeConfig, useNavigationMenu } from '@cap/platform-core';
+import { Path } from '@cap/module-auth/routes/path';
+import { useTranslation } from 'react-i18next';
 
 const GuestNavbar = () => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const navigate = useNavigate()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
-  const navLinks = [
-    { name: 'Profile Analyzer', path: 'profile-analyzer' },
-    { name: 'Features', path: '/features' },
-    { name: 'Pricing', path: '/pricing' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
-  ]
+  // Fetch dynamic public navigation links
+  const navLinks = useNavigationMenu('public')
 
-  const handleNavigate = (path: string) => {
-    navigate(path)
+  const handleNavigate = (path: string | undefined) => {
+    if (path !== undefined) {
+      navigate(path)
+    }
     setMobileMenuOpen(false)
   }
 
@@ -81,9 +80,9 @@ const GuestNavbar = () => {
                 gap: 4,
               }}
             >
-              {navLinks.map((link, index) => (
+              {navLinks.map((link) => (
                 <Button
-                  key={`${link.name}-${index}`}
+                  key={link.id}
                   onClick={() => handleNavigate(link.path)}
                   sx={{
                     color:
@@ -103,7 +102,7 @@ const GuestNavbar = () => {
                     },
                   }}
                 >
-                  {link.name}
+                  {link.label}
                 </Button>
               ))}
             </Box>
@@ -131,7 +130,7 @@ const GuestNavbar = () => {
                   },
                 }}
               >
-                Sign Up
+                {t('navigation.register', 'Sign Up')}
               </Button>
               <Button
                 variant='contained'
@@ -163,7 +162,7 @@ const GuestNavbar = () => {
                   },
                 }}
               >
-                Sign In
+                {t('navigation.login', 'Sign In')}
               </Button>
 
               {/* Mobile Menu Button */}
@@ -211,8 +210,8 @@ const GuestNavbar = () => {
       >
         <Box sx={{ pt: 2, pb: 2 }}>
           <List>
-            {navLinks.map((link, index) => (
-              <ListItem key={`${link.name}-${index}`} disablePadding>
+            {navLinks.map((link) => (
+              <ListItem key={link.id} disablePadding>
                 <ListItemButton
                   onClick={() => handleNavigate(link.path)}
                   sx={{
@@ -227,7 +226,7 @@ const GuestNavbar = () => {
                   }}
                 >
                   <ListItemText
-                    primary={link.name}
+                    primary={link.label}
                     primaryTypographyProps={{
                       fontSize: '0.875rem',
                       fontWeight: 500,
@@ -241,7 +240,7 @@ const GuestNavbar = () => {
               <Button
                 fullWidth
                 variant='contained'
-                onClick={() => handleNavigate('/auth/sign-in')}
+                onClick={() => handleNavigate(Path.auth.signin)}
                 sx={{
                   backgroundColor:
                     theme.palette.mode === 'dark'
@@ -262,7 +261,7 @@ const GuestNavbar = () => {
                   },
                 }}
               >
-                Sign In
+                {t('navigation.login', 'Sign In')}
               </Button>
             </ListItem>
           </List>

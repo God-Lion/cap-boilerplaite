@@ -24,7 +24,9 @@ import Person from '@mui/icons-material/Person'
 import Settings from '@mui/icons-material/Settings'
 import { useSettings, useAuth } from '@cap/platform-core'
 import { zIndexScale } from "@cap/theme";
-import { useSignOut, Path } from '@cap/module-auth'
+import { useSignOut } from '@cap/module-auth'
+import { Path } from '@cap/module-auth/routes/path'
+import { useTranslation } from 'react-i18next'
 
 const BadgeContentSpan = styled('span')({
   width: 8,
@@ -36,6 +38,7 @@ const BadgeContentSpan = styled('span')({
 })
 
 const UserDropdown = () => {
+  const { t } = useTranslation()
   const { user: authUser } = useAuth()
   const { signOut, isSigningOut } = useSignOut({
     onSuccess: () => {
@@ -175,7 +178,7 @@ const UserDropdown = () => {
                   >
                     <Person sx={{ fontSize: '22px', transition: 'color 0.2s' }} />
                     <Typography color='text.primary' sx={{ fontWeight: 500 }}>
-                      My Profile
+                      {t('navigation.profile', 'My Profile')}
                     </Typography>
                   </MenuItem>
                   <MenuItem
@@ -195,28 +198,28 @@ const UserDropdown = () => {
                   >
                     <Settings sx={{ fontSize: '22px', transition: 'color 0.2s' }} />
                     <Typography color='text.primary' sx={{ fontWeight: 500 }}>
-                      Settings
+                      {t('navigation.settings', 'Settings')}
                     </Typography>
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleDropdownClose(e, '/pages/pricing')}
+                    onClick={(e) => handleDropdownClose(e, '/pricing')}
                     sx={{
                       marginInline: '0.5rem',
                       gap: '0.75rem',
                     }}
                   >
                     <AttachMoney sx={{ fontSize: '22px' }} />
-                    <Typography color='text.primary'>Pricing</Typography>
+                    <Typography color='text.primary'>{t('landing.pricing', 'Pricing')}</Typography>
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleDropdownClose(e, '/pages/faq')}
+                    onClick={(e) => handleDropdownClose(e, '/about')}
                     sx={{
                       marginInline: '0.5rem',
                       gap: '0.75rem',
                     }}
                   >
                     <Help sx={{ fontSize: '22px' }} />
-                    <Typography color='text.primary'>FAQ</Typography>
+                    <Typography color='text.primary'>{t('landing.about', 'About Us')}</Typography>
                   </MenuItem>
                   <Box
                     sx={{
@@ -240,7 +243,7 @@ const UserDropdown = () => {
                         '& .MuiButton-endIcon': { marginInlineStart: 1.5 },
                       }}
                     >
-                      {isSigningOut ? 'Signing out...' : 'Logout'}
+                      {isSigningOut ? t('navigation.signingOut', 'Signing out...') : t('navigation.logout', 'Logout')}
                     </Button>
                   </Box>
                 </MenuList>

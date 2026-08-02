@@ -1,5 +1,5 @@
 import { Box, Divider } from '@mui/material'
-import { GuestBanner } from '@cap/theme'
+import { GuestBanner } from '@cap/layout'
 import { useGuest } from '@cap/platform-core'
 import { useNavigate } from 'react-router-dom'
 import {
