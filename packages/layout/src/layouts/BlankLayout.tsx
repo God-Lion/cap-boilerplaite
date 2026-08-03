@@ -1,6 +1,6 @@
-import type { ChildrenType, SystemMode } from '@cap/platform-core'
-import { useSettings } from '@cap/platform-core'
-import { blankLayoutClasses } from './utils/layoutClasses'
+import type { ChildrenType, SystemMode } from '@cap/shared-types'
+import { useSettings } from '@cap/platform-store'
+import { blankLayoutClasses } from '../utils/layoutClasses'
 import classnames from 'classnames'
 
 type Props = ChildrenType & {
@@ -10,8 +10,6 @@ type Props = ChildrenType & {
 const BlankLayout = (props: Props) => {
   const { children } = props
   const { settings } = useSettings()
-
-  // Theme initialization is now handled by ModeChanger component
 
   return (
     <div

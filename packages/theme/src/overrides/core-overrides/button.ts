@@ -77,7 +77,7 @@ const button: Theme['components'] = {
                   }),
             }),
       }),
-      sizeSmall: ({ theme }) => ({
+      sizeSmall: ({ theme: _theme }) => ({
         lineHeight: 1.38462,
         fontSize: 'var(--comp-button-font-size-small, 0.8125rem)',
         borderRadius: 'var(--comp-button-border-radius-small, var(--mui-shape-customBorderRadius-sm))',

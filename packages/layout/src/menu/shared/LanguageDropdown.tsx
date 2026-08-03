@@ -9,9 +9,10 @@ import {
   Popper,
 } from '@mui/material'
 import Translate from '@mui/icons-material/Translate'
-import type { Locale } from '@cap/platform-core'
+import { i18n as i18nConfig } from '@cap/platform-core'
+type Locale = (typeof i18nConfig)['locales'][number]
 import { useTranslation } from 'react-i18next'
-import { useSettings } from '@cap/platform-core'
+import { useSettings } from '@cap/platform-store'
 
 type LanguageDataType = {
   langCode: Locale
@@ -70,7 +71,7 @@ const LanguageDropdown = () => {
       <IconButton
         onClick={handleToggle}
         sx={{
-          color: 'var(--mui-palette-text-primary)',
+          color: 'text.primary',
         }}
       >
         <Translate />
@@ -98,18 +99,17 @@ const LanguageDropdown = () => {
               sx={{
                 ...(settings.skin === 'bordered'
                   ? {
-                      borderWidth: '1px',
-                      // --tw-shadow: 0 0 #0000;
-                      // --tw-shadow-colored: 0 0 #0000;
-                      boxShadow:
-                        'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)',
-                    }
+                    borderWidth: '1px',
+                    // --tw-shadow: 0 0 #0000;
+                    // --tw-shadow-colored: 0 0 #0000;
+                    boxShadow:
+                      'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)',
+                  }
                   : {
-                      //--tw-shadow: var(--mui-customShadows-lg);
-                      // --tw-shadow-colored: var(--mui-customShadows-lg);
-                      boxShadow:
-                        'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)',
-                    }),
+
+                    boxShadow:
+                      'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)',
+                  }),
               }}
             >
               <ClickAwayListener onClickAway={handleClose}>

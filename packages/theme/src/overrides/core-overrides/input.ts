@@ -78,7 +78,7 @@ const input: Theme['components'] = {
           boxShadow: 'var(--comp-input-box-shadow, var(--mui-customShadows-primary-sm))',
         },
       },
-      input: ({ theme, ownerState }) => ({
+      input: ({  ownerState }) => ({
         ...(ownerState?.size === 'medium' && {
           '&:not(.MuiInputBase-inputMultiline, .MuiInputBase-inputAdornedStart)': {
             padding: 'var(--comp-input-padding, var(--mui-spacing-4, 16px))',

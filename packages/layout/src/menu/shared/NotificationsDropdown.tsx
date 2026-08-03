@@ -28,7 +28,9 @@ import Drafts from '@mui/icons-material/Drafts'
 import Close from '@mui/icons-material/Close'
 import BarChart from '@mui/icons-material/BarChart'
 import Email from '@mui/icons-material/Email'
-import { themeConfig, useSettings, type ThemeColor } from '@cap/platform-core'
+import { useSettings } from '@cap/platform-store'
+import { themeConfig } from '@cap/theme'
+import type { ThemeColor } from '@cap/shared-types'
 import { useTranslation } from 'react-i18next'
 
 // Util Imports
@@ -41,28 +43,28 @@ export type NotificationsType = {
   time: string
   read: boolean
 } & (
-  | {
+    | {
       avatarImage?: string
       avatarIcon?: never
       avatarText?: never
       avatarColor?: never
       avatarSkin?: never
     }
-  | {
+    | {
       avatarIcon?: ReactNode | string
       avatarColor?: ThemeColor
       avatarSkin?: string
       avatarImage?: never
       avatarText?: never
     }
-  | {
+    | {
       avatarText?: string
       avatarColor?: ThemeColor
       avatarSkin?: string
       avatarImage?: never
       avatarIcon?: never
     }
-)
+  )
 
 const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
   if (hidden) {
@@ -186,7 +188,7 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
             '& .MuiBadge-dot': {
               top: 6,
               right: 5,
-              boxShadow: 'var(--mui-palette-background-paper) 0px 0px 0px 2px',
+              boxShadow: (theme) => `${theme.palette.background.paper} 0px 0px 0px 2px`,
             },
           }}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -308,7 +310,8 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
                               visibility: 'visible',
                             },
                             ...(index !== notificationsState.length - 1 && {
-                              borderBlockEnd: '1px solid var(--mui-palette-divider)',
+                              borderBlockEnd: 1,
+                              borderBlockEndColor: 'divider',
                             }),
                           }}
                           onClick={(e) => handleReadNotification(e, true, index)}

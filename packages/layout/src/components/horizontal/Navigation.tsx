@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import classnames from 'classnames'
-import { useSettings } from '@cap/platform-core'
+import { useSettings } from '@cap/platform-store'
 // themeConfig values inlined to avoid circular import
 const LAYOUT_PADDING = 24
 const COMPACT_CONTENT_WIDTH = 1440

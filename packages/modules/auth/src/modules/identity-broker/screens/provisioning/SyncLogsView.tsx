@@ -47,7 +47,7 @@ import {
   useProvisioningConnectors,
   useProvisioningConnectorLogs,
 } from "@cap/module-auth/modules/authentication-core/hooks/useAdminQuery"
-import logger from '@cap/module-auth/modules/authentication-core/utils/logger'
+
 
 const SyncLogsView: React.FC = () => {
   const theme = useTheme()

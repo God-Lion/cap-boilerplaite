@@ -16,7 +16,7 @@ const Root = styled('div', {
   flexDirection: 'column',
   padding: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${theme.palette.customColors.inputBorder}`,
+  border: `1px solid `,
   color: theme.palette.text.primary,
   transition: theme.transitions.create(['border-color'], {
     duration: theme.transitions.duration.shorter,
@@ -44,7 +44,7 @@ const Title = styled(Typography, {
   slot: 'title',
 })(({ theme }) => ({
   fontWeight: theme.typography.fontWeightMedium,
-  color: `${theme.palette.text.primary} !important`,
+  color: ` !important`,
 }))
 
 const Content = styled(Typography, {

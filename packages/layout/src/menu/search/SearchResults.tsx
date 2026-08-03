@@ -5,7 +5,7 @@ import type { ActionImpl } from 'kbar'
 import DefaultSuggestions from './DefaultSuggestions'
 import NoResult from './NoResult'
 import SearchResultItem from './SearchResultItem'
-import { SearchItemConfig } from '@cap/platform-core'
+import type { SearchItemConfig } from '@cap/shared-types'
 
 // type Results = (string | ActionImpl)[]
 type Results = Array<string | ActionImpl>

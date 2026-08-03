@@ -6,7 +6,7 @@ import {
   AuthActionButton,
 } from "@idaas/authentication-core/components/shared/auth"
 import { SecurityUpdateWarning, HelpOutline, Refresh, Home } from '@mui/icons-material'
-import { motion } from 'framer-motion'
+
 import { useTranslation } from 'react-i18next'
 import { apiClient } from '@cap/platform-core'
 import { ENDPOINTS } from '@idaas/authentication-core/services/endpoints'

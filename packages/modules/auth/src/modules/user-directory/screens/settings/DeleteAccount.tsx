@@ -60,7 +60,7 @@ export default function DeleteAccount() {
   const [showPassword, setShowPassword] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
 
-  const deleteAccountMutation = useDeleteAccount()
+  useDeleteAccount()
   const erasureMutation = useErasureMutation()
 
   const {

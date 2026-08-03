@@ -39,7 +39,7 @@ export default function EmailVerifiedSuccess() {
           sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)', boxShadow: (t) => `0 6px 20px ${alpha(t.palette.info.main, 0.23)}` } }}>
           {t('verify.getStarted', 'Explore Dashboard')}
         </Button>
-        <Button fullWidth variant="text" size="large" onClick={() => navigate(Path.account.profile)}
+        <Button fullWidth variant="text" size="large" onClick={() => navigate(Path.user.overview)}
           sx={{ py: 1.2, borderRadius: 3, fontWeight: 700, textTransform: 'none', color: 'text.secondary', '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) } }}>
           {t('verify.completeProfile', 'Complete Profile Setup')}
         </Button>

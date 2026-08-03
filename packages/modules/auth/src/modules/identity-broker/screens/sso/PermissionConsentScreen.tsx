@@ -13,7 +13,7 @@ import ShieldIcon from '@mui/icons-material/Shield';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useTenant } from '@cap/platform-core';

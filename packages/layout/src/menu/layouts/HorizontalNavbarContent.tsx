@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box'
+import { alpha, useTheme } from '@mui/material/styles'
 import classnames from 'classnames'
 import { horizontalLayoutClasses } from '@cap/theme'
 import HorizontalNavToggle from '../../components/horizontal/NavToggle'
@@ -101,6 +102,7 @@ const notifications: Array<NotificationsType> = [
 ]
 
 const NavbarContent = () => {
+  const theme = useTheme()
   const { isBreakpointReached } = useHorizontalNav()
 
   return (

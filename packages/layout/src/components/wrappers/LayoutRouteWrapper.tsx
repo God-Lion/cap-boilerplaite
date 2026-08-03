@@ -1,6 +1,6 @@
 import React from 'react'
 import i18next from 'i18next'
-import { useAppStore } from '@cap/platform-store'
+import { useAppStore, type AppStore } from '@cap/platform-store'
 import type { RouteLayout } from '@cap/shared-types'
 
 export interface LayoutRouteWrapperProps {
@@ -24,7 +24,7 @@ export const LayoutRouteWrapper: React.FC<LayoutRouteWrapperProps> = ({
   layout,
   label,
 }) => {
-  const updateLayoutOverride = useAppStore((state: any) => state.updateLayoutOverride)
+  const updateLayoutOverride = useAppStore((state: AppStore) => state.updateLayoutOverride)
 
   React.useEffect(() => {
     if (layout === 'noLayout') {

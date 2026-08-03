@@ -61,7 +61,7 @@ export const ModuleUploadModal: React.FC<ModuleUploadModalProps> = ({
   const [activeJob, setActiveJob] = useState<ModulePipelineJob | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [showLogs, setShowLogs] = useState(true)
-  const [logCopied, setLogCopied] = useState(false)
+  const [_logCopied, setLogCopied] = useState(false)
 
   const activeStepIndex = React.useMemo(() => {
     if (!activeJob) return 0

@@ -1,15 +1,16 @@
 import React from 'react'
 import type { ReactElement } from 'react'
+import type { SystemMode } from '@cap/shared-types'
 import {
   useSettings,
   useAppStore,
   useStateHydration,
   type AppStore,
-  type SystemMode,
-} from '@cap/platform-core'
+} from '@cap/platform-store'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
-import useLayoutInit from './hooks/useLayoutInit'
+import { useTheme } from '@mui/material/styles'
+import useLayoutInit from '../hooks/useLayoutInit'
 
 type LayoutWrapperProps = {
   systemMode: SystemMode
@@ -28,6 +29,7 @@ const LayoutWrapper = ({
 }: LayoutWrapperProps) => {
   const { settings } = useSettings()
   const { isHydrating } = useStateHydration()
+  const theme = useTheme()
 
   // Use direct selectors for better performance
   const layoutOverride = useAppStore((state: AppStore) => state.layoutOverride)
@@ -78,7 +80,7 @@ const LayoutWrapper = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'var(--mui-palette-background-default, inherit)',
+            backgroundColor: theme.palette.background.default || 'inherit',
           }}
         >
           <CircularProgress />

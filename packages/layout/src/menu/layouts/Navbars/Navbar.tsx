@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Box, Container, Toolbar, IconButton, List, ListItemButton, ListItemText, Menu, Stack, Theme, useTheme, InputBase } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import { alpha, styled } from '@mui/material/styles';
@@ -11,7 +12,7 @@ import { Logo, ModeDropdown } from '../../shared';
 
 
 const AppBar = styled(MuiAppBar)(({ theme }: { theme: Theme }) => ({
-  backgroundColor: 'var(--mui-palette-background-paper)',
+  backgroundColor: theme.palette.background.paper,
   maxWidth: '100%',
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
@@ -94,6 +95,7 @@ function SearchBar() {
 
 
 export default function NavBar() {
+  const { t } = useTranslation()
   const theme: Theme = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
@@ -102,6 +104,18 @@ export default function NavBar() {
   // Fetch dynamic navigation links
   const pages = useNavigationMenu('public')
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
+
+  const translateLabel = (label?: string) => {
+    if (!label) return ''
+    const clean = label.replace(/^navigation\./, '')
+    const tVal = t(label, { defaultValue: '' })
+    if (tVal && tVal !== label) return tVal
+    const tClean = t(`navigation.${clean}`, { defaultValue: '' })
+    if (tClean && tClean !== `navigation.${clean}`) return tClean
+    const tLanding = t(`landing.${clean}`, { defaultValue: '' })
+    if (tLanding && tLanding !== `landing.${clean}`) return tLanding
+    return clean
+  }
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -163,7 +177,7 @@ export default function NavBar() {
                         textDecoration: 'none',
                         color: theme.palette.primary.main,
                       }}
-                      primary={page?.label}
+                      primary={translateLabel(page?.label)}
                     />
                   </ListItemButton>
                 </List>
@@ -232,7 +246,7 @@ export default function NavBar() {
                         style={{
                           textDecoration: 'none',
                         }}
-                        primary={page.label}
+                        primary={translateLabel(page?.label)}
                       />
                     </ListItemButton>
                   </List>

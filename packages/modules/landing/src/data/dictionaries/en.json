@@ -24,5 +24,15 @@
     "contact": "Contact Us",
     "about": "About Us",
     "pricing": "Pricing"
+  },
+  "navigation": {
+    "home": "Home",
+    "chronosMycelium": "Chronos Mycelium",
+    "features": "Feature Comparison",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "about": "About Us",
+    "pricing": "Pricing"
   }
 }

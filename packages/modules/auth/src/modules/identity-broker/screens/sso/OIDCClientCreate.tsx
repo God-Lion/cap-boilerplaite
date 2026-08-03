@@ -6,13 +6,13 @@ import { useState } from 'react';
 import { Box, Button, Container, Typography, Card, TextField, IconButton, alpha, useTheme, Avatar, Breadcrumbs, FormControl, InputLabel, Select, MenuItem, FormHelperText, Alert, AlertTitle, Tooltip } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import ContentCopy from '@mui/icons-material/ContentCopy';
-import VpnKey from '@mui/icons-material/VpnKey';
+// import from '@mui/icons-material/VpnKey';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import Warning from '@mui/icons-material/Warning';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -31,7 +31,7 @@ type OidcFormData = z.infer<typeof createOidcSchema>
 export default function OIDCClientCreate() {
   const { t } = useTranslation()
   const theme = useTheme()
-  const navigate = useNavigate()
+
   const { enqueueSnackbar } = useSnackbar()
   const createMutation = useCreateOIDCClient()
 

@@ -15,7 +15,7 @@ export default function MFAVerificationScreen() {
   const navigate = useNavigate()
   const [code, setCode] = useState('')
   const [timeLeft, setTimeLeft] = useState(600)
-  const [error, setError] = useState<string | null>(null)
+  const [error, _setError] = useState<string | null>(null)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
 
   useEffect(() => {

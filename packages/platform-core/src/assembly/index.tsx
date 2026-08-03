@@ -3,9 +3,11 @@ import { Routes, Route } from 'react-router-dom'
 import i18next from 'i18next'
 import { CAPModule, SearchItemConfig } from '../types'
 import { useAppStore } from '@cap/platform-store'
-import { LayoutRouteWrapper } from '../components/LayoutRouteWrapper'
+import { LayoutRouteWrapper } from '@cap/layout'
 import { NotFound } from '../components/NotFound'
 
+
+import { registerDictionary } from '../i18n/registry'
 
 interface AssembleAppProps {
   modules: Array<CAPModule>
@@ -30,7 +32,7 @@ export const getSearchItems = () => _searchItems
  */
 export const getModules = () => _modules
 
-import type { RouteLayout, ModuleRouteConfig } from '@cap/shared-types'
+import type { ModuleRouteConfig } from '@cap/shared-types'
 
 export type AuthRouteConfig = ModuleRouteConfig & {
   element: React.JSX.Element
@@ -60,8 +62,12 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   modules.forEach((module) => {
     const moduleNs = module.id || (module as any).name || 'common'
     if (module.i18n) {
+      registerDictionary(module.i18n as any)
       Object.entries(module.i18n).forEach(([lang, resources]) => {
-        i18nInstance.addResourceBundle(lang.toLowerCase(), moduleNs, resources, true, false)
+        const langLower = lang.toLowerCase()
+        i18nInstance.addResourceBundle(langLower, moduleNs, resources, true, true)
+        i18nInstance.addResourceBundle(langLower, 'translation', resources, true, true)
+        i18nInstance.addResourceBundle(langLower, 'common', resources, true, true)
       })
     }
 

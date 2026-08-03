@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { useVerticalNav } from '../contexts/verticalNavContext'
 import type { VerticalNavContextProps } from '../contexts/verticalNavContext'
-import { useSettings, themeConfig } from '@cap/platform-core'
+import { useSettings } from '@cap/platform-store'
+import { themeConfig } from '@cap/theme'
 import VuexyLogo from '../../assets/svg/Logo'
 import { Box } from '@mui/material'
 
@@ -18,7 +19,7 @@ const LogoText = styled.span<LogoTextProps>`
   line-height: 1.09091;
   font-weight: 700;
   letter-spacing: 0.25px;
-  color: var(--mui-palette-text-primary);
+  color: ;
   transition: ${({ transitionDuration }) =>
     `margin-inline-start ${transitionDuration}ms ease-in-out, opacity ${transitionDuration}ms ease-in-out`};
 

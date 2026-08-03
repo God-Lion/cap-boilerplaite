@@ -1,11 +1,11 @@
 import React from 'react'
 import classnames from 'classnames'
-import { styled, useColorScheme, useTheme } from '@mui/material/styles'
-import type { Mode, SystemMode } from '@cap/platform-core'
+import { styled, useColorScheme, useTheme, alpha } from '@mui/material/styles'
+import type { Mode, SystemMode } from '@cap/shared-types'
 import VerticalNav, { NavHeader, NavCollapseIcons } from '../../menu/vertical-menu'
 import Logo from '../../assets/svg/Logo'
 import { useVerticalNav } from '../../menu/contexts/verticalNavContext'
-import { useSettings } from '@cap/platform-core'
+import { useSettings } from '@cap/platform-store'
 import navigationCustomStyles from '../../styles/core/vertical/navigationCustomStyles'
 import Close from '@mui/icons-material/Close'
 import RadioButtonChecked from '@mui/icons-material/RadioButtonChecked'
@@ -21,9 +21,9 @@ const StyledBoxForShadow = styled('div')(({ theme }) => ({
   width: 'calc(100% + 15px)',
   height: theme.mixins.toolbar.minHeight,
   transition: 'opacity .15s ease-in-out',
-  background: `linear-gradient(var(--mui-palette-background-paper) ${
+  background: `linear-gradient( ${
     theme.direction === 'rtl' ? '95%' : '5%'
-  }, rgb(var(--mui-palette-background-paperChannel) / 0.85) 30%, rgb(var(--mui-palette-background-paperChannel) / 0.5) 65%, rgb(var(--mui-palette-background-paperChannel) / 0.3) 75%, transparent)`,
+  }, ${alpha(theme.palette.background.paper, 0.85)} 30%, ${alpha(theme.palette.background.paper, 0.5)} 65%, ${alpha(theme.palette.background.paper, 0.3)} 75%, transparent)`,
   '&.scrolled': {
     opacity: 1,
   },
@@ -74,7 +74,7 @@ const Navigation: React.FC<{
     <VerticalNav
       customStyles={navigationCustomStyles(verticalNavOptions, theme)}
       collapsedWidth={71}
-      backgroundColor='var(--mui-palette-background-paper)'
+      backgroundColor={theme.palette.background.paper}
       // backgroundColor='#6A1B9A'
 
       // The following condition adds the data-mui-color-scheme='dark' attribute to the VerticalNav component

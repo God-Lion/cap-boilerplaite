@@ -13,7 +13,7 @@ const AppReactDropzone = styled(Box)<BoxProps>(({ theme }) => ({
     justifyContent: 'center',
     padding: theme.spacing(4),
     borderRadius: theme.shape.borderRadius,
-    border: `2px dashed ${theme.palette.divider}`,
+    border: `2px dashed `,
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
     },

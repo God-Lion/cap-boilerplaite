@@ -38,7 +38,7 @@ const FooterContent = () => {
           component='span'
           // className='text-textSecondary'
           sx={{
-            color: 'var(--mui-palette-text-secondary)',
+            color: 'text.secondary',
           }}
         >{`© ${new Date().getFullYear()}, Made `}</Box>
         {/* <span>{`❤️`}</span> */}
@@ -46,7 +46,7 @@ const FooterContent = () => {
           component='span'
           // className='text-textSecondary'
           sx={{
-            color: 'var(--mui-palette-text-secondary)',
+            color: 'text.secondary',
           }}
           className='text-textSecondary'
         >{` by `}</Box>

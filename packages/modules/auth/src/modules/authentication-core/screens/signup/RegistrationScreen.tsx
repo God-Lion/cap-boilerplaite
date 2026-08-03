@@ -4,7 +4,7 @@ import { Box, Typography, TextField, Button, Divider, alpha, useTheme, InputAdor
 import { Visibility, VisibilityOff, Email, Lock, PersonAdd, Person, Google, Microsoft } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+;
 import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
 
 export default function RegistrationScreen() {

@@ -1,8 +1,9 @@
 import React from 'react'
 import { useTheme } from '@mui/material/styles'
 import type { CSSObject } from '@emotion/styled'
-import type { ChildrenType } from '@cap/platform-core'
-import { themeConfig, useSettings } from '@cap/platform-core'
+import type { ChildrenType } from '@cap/shared-types'
+import { themeConfig } from '@cap/theme'
+import { useSettings } from '@cap/platform-store'
 import { verticalLayoutClasses } from "@cap/theme";
 import StyledHeader from '../styles/vertical/StyledHeader'
 import classnames from 'classnames'

@@ -45,6 +45,7 @@ export const mfaOrchestratorRouteConfig: AuthRouteConfig[] = [
   // createAuthRoute(Path.mfa.dashboard,            <MFAManagement />),
   // createAuthRoute(Path.mfa.add_method,           <AddMFAMethod />),
   // createAuthRoute(Path.mfa.security_keys,        <SecurityKeyManagement />),
+  createAuthRoute(Path.mfa.dashboard,            <PasskeyManagement />,        { requiresVerification: true, layout: 'admin' }),
   createAuthRoute(Path.mfa.verification,         <MFAVerificationScreen />, { layout: 'noLayout' }),
   // { path: Path.mfa.verification, element: <MFAVerificationTest /> },
   // { path: Path.mfa.backup_entry, element: <MFABackupCodeEntry />, layout: 'noLayout' },

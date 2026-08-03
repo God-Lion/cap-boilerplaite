@@ -1,4 +1,5 @@
 import React, { ReactNode, useCallback, useState } from 'react'
+import { useTheme } from '@mui/material/styles'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -25,7 +26,9 @@ import Person from '@mui/icons-material/Person'
 import People from '@mui/icons-material/People'
 import DesktopWindows from '@mui/icons-material/DesktopWindows'
 import Settings from '@mui/icons-material/Settings'
-import { useSettings, themeConfig, i18n as i18nConfig } from '@cap/platform-core'
+import { useSettings } from '@cap/platform-store'
+import { themeConfig } from '@cap/theme'
+import { i18n as i18nConfig } from '@cap/platform-core'
 
 export type ShortcutsType = {
   url: string
@@ -75,6 +78,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
   // Hooks
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
+  const theme = useTheme()
   const { settings } = useSettings()
   const { t, i18n } = useTranslation()
   const locale = i18n.language
@@ -123,7 +127,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
               sx={{
                 ...(settings.skin === 'bordered'
                   ? { border: 1, boxShadow: 'none' }
-                  : { boxShadow: 'var(--mui-customShadows-lg)' }),
+                  : { boxShadow: theme.customShadows.lg }),
               }}
             >
               <ClickAwayListener onClickAway={handleClose}>
@@ -181,11 +185,13 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
                             },
                             // Vertical border for odd items (left column)
                             ...(index % 2 === 0 && {
-                              borderInlineEnd: '1px solid var(--mui-palette-divider)',
+                              borderInlineEnd: 1,
+                              borderInlineEndColor: 'divider',
                             }),
                             // Horizontal border for all except last row
                             ...(index < shortcuts.length - (shortcuts.length % 2 === 0 ? 2 : 1) && {
-                              borderBlockEnd: '1px solid var(--mui-palette-divider)',
+                              borderBlockEnd: 1,
+                              borderBlockEndColor: 'divider',
                             }),
                           }}
                         >

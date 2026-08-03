@@ -73,7 +73,7 @@ export default function VerificationLinkExpired() {
           {sending ? t('email.sending', 'Sending...') : t('email.requestNewLink', 'Request a new link')}
         </Button>
 
-        <Button component={Link} to={Path.signin} variant="text" fullWidth
+        <Button component={Link} to={Path.auth.signin} variant="text" fullWidth
           sx={{ py: 1.2, borderRadius: 3, fontWeight: 600, color: 'text.secondary', textTransform: 'none', '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) } }}>
           {t('common.backToLogin', 'Back to log in')}
         </Button>

@@ -6,12 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Path } from '@auth/routes/path';
 import { useGetUser, useSecurityStatus, useActivityTimeline, useLinkedAccounts, useUserTokens } from '@auth';
 
-interface NavItem {
-  id: string
-  label: string
-  icon: React.ReactNode
-  path: string
-}
+
 
 interface StatCardProps {
   title: string

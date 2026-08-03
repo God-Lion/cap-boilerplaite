@@ -174,7 +174,7 @@ const QuickAction: React.FC<QuickActionProps> = ({ label, description, href }) =
 // ─── Main screen ─────────────────────────────────────────────────────────────
 const AdminOverviewDashboard: React.FC = () => {
   const theme = useTheme()
-  const { t } = useTranslation('common')
+  const { t: _t } = useTranslation('common')
   const navigate = useNavigate()
 
   const { data, isLoading, isError, error, refetch, isFetching } = useAdminDashboard()

@@ -12,7 +12,7 @@ export interface ModuleRouteConfig {
   label?: string
   // Navigation properties (if route also serves as a nav item)
   id?: string                       // optional unique key for React (fallback to path)
-  icon?: string                     // tabler icon class e.g. 'tabler-users'
+  icon?: string | React.ReactNode   // icon class string or React icon component e.g. MUI icon
   section?: string                  // if set, wraps the item in a <MenuSection>
   roles?: string[]                  // RoleGuard roles
   permissions?: string[]            // PermissionGuard permissions
@@ -25,7 +25,7 @@ export interface NavItemConfig {
   id: string                        // unique key for React
   label: string                     // i18n key or fallback string
   path?: string                     // route path (undefined = section header only)
-  icon?: string                     // tabler icon class e.g. 'tabler-users'
+  icon?: string | React.ReactNode   // icon class string or React icon component e.g. MUI icon
   section?: string                  // if set, wraps the item in a <MenuSection>
   roles?: string[]                  // RoleGuard roles
   permissions?: string[]            // PermissionGuard permissions
@@ -39,7 +39,7 @@ export interface SearchItemConfig {
   id: string
   name: string
   url: string
-  icon?: string
+  icon?: string | React.ReactNode
   section?: string
   shortcut?: string[]
   subtitle?: string

@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { AppBar, Box, Button, Container, IconButton, Typography, useTheme, Drawer, List, ListItem, ListItemButton, ListItemText, Stack } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Logo } from '../../shared';
-import { themeConfig, useNavigationMenu } from '@cap/platform-core';
+import { themeConfig } from '@cap/theme';
+import { useNavigationMenu } from '@cap/platform-core';
 import { Path } from '@cap/module-auth/routes/path';
 import { useTranslation } from 'react-i18next';
 
@@ -15,6 +16,18 @@ const GuestNavbar = () => {
 
   // Fetch dynamic public navigation links
   const navLinks = useNavigationMenu('public')
+
+  const translateLabel = (label?: string) => {
+    if (!label) return ''
+    const clean = label.replace(/^navigation\./, '')
+    const tVal = t(label, { defaultValue: '' })
+    if (tVal && tVal !== label) return tVal
+    const tClean = t(`navigation.${clean}`, { defaultValue: '' })
+    if (tClean && tClean !== `navigation.${clean}`) return tClean
+    const tLanding = t(`landing.${clean}`, { defaultValue: '' })
+    if (tLanding && tLanding !== `landing.${clean}`) return tLanding
+    return clean
+  }
 
   const handleNavigate = (path: string | undefined) => {
     if (path !== undefined) {
@@ -102,7 +115,7 @@ const GuestNavbar = () => {
                     },
                   }}
                 >
-                  {link.label}
+                  {translateLabel(link.label)}
                 </Button>
               ))}
             </Box>
@@ -130,7 +143,7 @@ const GuestNavbar = () => {
                   },
                 }}
               >
-                {t('navigation.register', 'Sign Up')}
+                {t('navigation.register')}
               </Button>
               <Button
                 variant='contained'
@@ -162,7 +175,7 @@ const GuestNavbar = () => {
                   },
                 }}
               >
-                {t('navigation.login', 'Sign In')}
+                {t('navigation.login')}
               </Button>
 
               {/* Mobile Menu Button */}
@@ -226,7 +239,7 @@ const GuestNavbar = () => {
                   }}
                 >
                   <ListItemText
-                    primary={link.label}
+                    primary={translateLabel(link.label)}
                     primaryTypographyProps={{
                       fontSize: '0.875rem',
                       fontWeight: 500,
@@ -261,7 +274,7 @@ const GuestNavbar = () => {
                   },
                 }}
               >
-                {t('navigation.login', 'Sign In')}
+                {t('navigation.login')}
               </Button>
             </ListItem>
           </List>

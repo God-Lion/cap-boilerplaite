@@ -1,7 +1,7 @@
 import { useTheme } from '@cap/theme'
 import type { CSSObject } from '@emotion/styled'
-import type { ChildrenType } from '@cap/platform-core'
-import { useSettings } from '@cap/platform-core'
+import type { ChildrenType } from '@cap/shared-types'
+import { useSettings } from '@cap/platform-store'
 // themeConfig.navbar defaults inlined to avoid circular import: type='fixed', blur=true
 const NAVBAR_TYPE: string = 'fixed'
 const NAVBAR_BLUR: boolean = true

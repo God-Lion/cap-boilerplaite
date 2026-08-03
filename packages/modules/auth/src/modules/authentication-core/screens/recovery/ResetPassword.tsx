@@ -5,7 +5,7 @@ import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { FetchResponse, IUserResponseEmailResetPassword } from '@cap/platform-core';
-import { ResetPasswordRequest } from '../../../../types/api.types';
+import type { ResetPasswordRequest } from '../../types/api.types';
 import { useResetPassword } from '@cap/module-auth/modules/authentication-core/hooks/useAuthQuery';
 import authService from '@cap/module-auth/modules/authentication-core/services/auth.service';
 import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@cap/module-auth/modules/authentication-core/components/shared/auth';

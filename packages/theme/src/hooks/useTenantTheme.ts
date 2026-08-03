@@ -9,13 +9,7 @@ import type { ThemePresetId } from '../types/presets';
 import { applyPreset } from '../utils/mergeTheme';
 import { DEFAULT_THEME_CONFIG } from '../types';
 
-interface UseTenantThemeOptions {
-  organizationId?: string;
-  apiEndpoint?: string;
-  storageKey?: string;
-  storageType?: 'localStorage' | 'sessionStorage';
-  initialTheme?: TenantThemeConfig | null;
-}
+
 
 interface UseTenantThemeReturn {
   theme: TenantThemeConfig;

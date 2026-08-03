@@ -44,7 +44,7 @@ export default function EmailVerificationScreen() {
         setSuccess(false)
         setErrorMsg(error.response?.data?.detail || t('email.errorOccurred', 'An error occurred during verification.'))
         if (error.response?.status === 403 || error.response?.status === 410) {
-          navigate(`${Path.verificationLinkExpired}?email=${encodeURIComponent(email)}`)
+          navigate(Path.auth.verificationLinkExpired, { state: { email } })
         }
       } finally {
         setVerifying(false)
@@ -105,11 +105,11 @@ export default function EmailVerificationScreen() {
           </Button>
         ) : (
           <>
-            <Button variant="contained" size="large" fullWidth onClick={() => navigate(Path.forgotPassword)}
+            <Button variant="contained" size="large" fullWidth component={Link} to={Path.auth.forgotPassword}
               sx={{ py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: '1rem', textTransform: 'none', bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark', transform: 'translateY(-1px)' } }}>
               {t('email.tryAgain', 'Request a new link')}
             </Button>
-            <MuiLink component={Link} to={Path.signin}
+            <MuiLink component={Link} to={Path.auth.signin}
               sx={{ color: 'text.secondary', fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none', '&:hover': { color: 'info.main' } }}>
               {t('common.backToLogin', 'Back to log in')}
             </MuiLink>

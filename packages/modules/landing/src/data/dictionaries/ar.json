@@ -9,6 +9,16 @@
         "about": "من نحن",
         "pricing": "الأسعار"
     },
+    "navigation": {
+        "home": "الرئيسية",
+        "chronosMycelium": "كرونوس مايسيليوم",
+        "features": "مقارنة الميزات",
+        "privacyPolicy": "سياسة الخصوصية",
+        "termsOfService": "شروط الخدمة",
+        "contact": "اتصل بنا",
+        "about": "من نحن",
+        "pricing": "الأسعار"
+    },
     "auth": {
         "account": {
             "about_you": "عنك",

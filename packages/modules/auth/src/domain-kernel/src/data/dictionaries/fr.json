@@ -1339,5 +1339,22 @@
         "copy": "Copier",
         "copied": "Copié !",
         "or": "OU"
+    },
+    "navigation": {
+        "idaas": "Noyau IDaaS",
+        "authPages": "Authentification",
+        "login": "Se connecter",
+        "register": "S'inscrire",
+        "forgotPassword": "Mot de passe oublié",
+        "security": "Méthodes de sécurité",
+        "twoSteps": "Vérification en deux étapes",
+        "passkeys": "Clés d'accès",
+        "passwordless": "Sans mot de passe",
+        "appsPages": "Applications",
+        "moduleManagement": "Gestion des modules",
+        "calendar": "Calendrier",
+        "userProfile": "Profil utilisateur",
+        "securitySettings": "Paramètres de sécurité",
+        "accountOverview": "Compte"
     }
 }

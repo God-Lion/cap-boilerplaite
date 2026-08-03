@@ -6,22 +6,22 @@ import type { RoleDto, PermissionDto, CheckPermissionRequest, CheckPermissionRes
 const mapRoleToDto = (role: Role): RoleDto => ({
   id: role.id,
   name: role.name,
-  guard_name: role.guard_name,
+  guard_name: role.guard_name ?? '',
   description: role.description ?? undefined,
   permissions: role.permissions?.map(mapPermissionToDto) ?? [],
   users_count: role.users_count,
-  created_at: role.created_at,
-  updated_at: role.updated_at,
+  created_at: role.created_at ?? '',
+  updated_at: role.updated_at ?? '',
 })
 
 const mapPermissionToDto = (permission: Permission): PermissionDto => ({
   id: permission.id,
   name: permission.name,
-  guard_name: permission.guard_name,
+  guard_name: permission.guard_name ?? '',
   resource: permission.resource,
   description: permission.description ?? undefined,
-  created_at: permission.created_at,
-  updated_at: permission.updated_at,
+  created_at: permission.created_at ?? '',
+  updated_at: permission.updated_at ?? '',
 })
 
 export class RoleService implements IRoleReader, IRoleWriter, IRolePermissionManager {

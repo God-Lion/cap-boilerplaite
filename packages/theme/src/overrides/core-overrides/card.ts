@@ -20,7 +20,7 @@ const card = (skin: Skin): Theme['components'] => {
     },
     MuiCardHeader: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: ({ theme: _theme }) => ({
           padding: 'var(--comp-card-padding, var(--mui-spacing-6, 24px))',
           '& + .MuiCardContent-root, & + .MuiCardActions-root': {
             paddingBlockStart: 0,
@@ -47,7 +47,7 @@ const card = (skin: Skin): Theme['components'] => {
     },
     MuiCardContent: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: ({ theme: _theme }) => ({
           padding: 'var(--comp-card-padding, var(--mui-spacing-6, 24px))',
           color: 'var(--mui-palette-text-secondary)',
           '&:last-child': {

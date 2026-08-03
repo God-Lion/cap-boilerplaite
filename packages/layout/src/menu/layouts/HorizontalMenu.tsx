@@ -1,8 +1,6 @@
-import { useTheme } from '@mui/material/styles'
-import { 
-  useSettings, 
-  type Dictionary 
-} from '@cap/platform-core'
+import { useTheme, alpha } from '@mui/material/styles'
+import type { Dictionary } from '@cap/shared-types'
+import { useSettings } from '@cap/platform-store'
 import { 
   HorizontalNav, 
   Menu 
@@ -61,8 +59,8 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Dictionary }) => {
         customStyles: verticalNavigationCustomStyles(verticalNavOptions, theme),
         backgroundColor:
           skin === 'bordered'
-            ? 'var(--mui-palette-background-paper)'
-            : 'var(--mui-palette-background-default)',
+            ? theme.palette.background.paper
+            : theme.palette.background.default,
       }}
     >
       <Menu
@@ -77,17 +75,17 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Dictionary }) => {
             paddingInline: '12px !important',
             '&:hover': {
               background: active
-                ? 'var(--mui-palette-primary-mainOpacity)'
-                : 'hsla(var(--mui-mainColor-hsl), 0.08) !important',
+                ? theme.palette.primary.mainOpacity
+                : `${alpha(theme.palette.text.primary, 0.08)} !important`,
               '& .tabler-icon, & i': {
                 transform: 'translateY(-2px)',
-                color: 'var(--mui-palette-primary-main) !important',
+                color: `${theme.palette.primary.main} !important`,
                 transition: 'all 0.3s ease',
               },
             },
             ...(active &&
               level === 0 && {
-                background: 'var(--mui-palette-primary-mainOpacity) !important',
+                background: `${theme.palette.primary.mainOpacity} !important`,
                 '&::after': {
                   content: '""',
                   position: 'absolute',
@@ -95,7 +93,7 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Dictionary }) => {
                   left: '20%',
                   right: '20%',
                   height: '2px',
-                  background: 'var(--mui-palette-primary-main)',
+                  background: theme.palette.primary.main,
                   borderRadius: '99px',
                   animation: 'scaleIn 0.3s ease',
                 },

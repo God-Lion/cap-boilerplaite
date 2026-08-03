@@ -34,7 +34,7 @@ import ContentCopy from '@mui/icons-material/ContentCopy'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import Warning from '@mui/icons-material/Warning'
-import VpnKey from '@mui/icons-material/VpnKey'
+
 import Refresh from '@mui/icons-material/Refresh'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'

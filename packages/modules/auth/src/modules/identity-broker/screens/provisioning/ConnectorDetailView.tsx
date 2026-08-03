@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Grid, Avatar, Card, IconButton, Chip, Tooltip, CircularProgress, Stack, useTheme, alpha, Tabs, Tab, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { ArrowBack, Refresh, CheckCircle, Error as ErrorIcon, Update, Delete, Settings, Storage, Info, History, Hub, CompareArrows, Security, ChevronRight, Save } from '@mui/icons-material';
+import { ArrowBack, Refresh, CheckCircle, Error as ErrorIcon,  Delete, Settings, Storage, Info, History, Hub, CompareArrows, Security, ChevronRight, Save } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
@@ -703,7 +703,7 @@ const ConnectorDetailView: React.FC = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {logs.map((log: any, idx: number) => (
+                      {logs.map((log: any, _idx: number) => (
                         <TableRow
                           key={log.id}
                           hover

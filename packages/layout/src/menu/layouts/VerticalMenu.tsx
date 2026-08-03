@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useSettings, type Dictionary } from '@cap/platform-core';
+import type { Dictionary } from '@cap/shared-types';
+import { useSettings } from '@cap/platform-store';
 import { useVerticalNav } from '../../hooks/useVerticalNav';
 import { Menu } from '../vertical-menu';
 import type { VerticalMenuContextProps } from '../components/vertical-menu/Menu';
@@ -63,19 +64,19 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             paddingInline: '12px !important',
             '&:hover': {
               background: active
-                ? 'var(--mui-palette-primary-mainOpacity)'
+                ? theme.palette.primary.mainOpacity
                 : 'var(--premium-gradient) !important',
               transform: 'translateX(4px)',
               '& .tabler-icon, & i': {
                 transform: 'scale(1.15)',
-                color: 'var(--mui-palette-primary-main) !important',
+                color: `${theme.palette.primary.main} !important`,
                 transition: 'all 0.3s ease',
               },
             },
             ...(active &&
               level === 0 && {
-                background: 'var(--mui-palette-primary-mainOpacity) !important',
-                boxShadow: '0 4px 12px 0 rgba(var(--mui-palette-primary-mainChannel), 0.2)',
+                background: `${theme.palette.primary.mainOpacity} !important`,
+                boxShadow: `0 4px 12px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
               }),
           }),
           label: {
@@ -92,7 +93,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           root: {
             marginBlockStart: '15px !important',
             '& .ts-menu-section-label': {
-              color: 'var(--mui-palette-text-disabled) !important',
+              color: `${theme.palette.text.disabled} !important`,
               fontSize: '0.75rem !important',
               fontWeight: '700 !important',
               textTransform: 'uppercase',

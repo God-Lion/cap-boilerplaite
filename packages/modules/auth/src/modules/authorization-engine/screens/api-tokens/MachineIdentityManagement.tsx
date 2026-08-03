@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Box, Typography, Card, CardContent, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, IconButton, TextField, InputAdornment } from '@mui/material';
 import { Add, Search, VpnKey, CheckCircle } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+;
 import { adminService, DeveloperApiKey } from '../../services/adminService';
 import { useSnackbar } from 'notistack';
 import { Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from '@mui/material';
 import { ContentCopy, Delete } from '@mui/icons-material';
 
 const MachineIdentityManagement = () => {
-  const { t } = useTranslation()
+
   const { enqueueSnackbar } = useSnackbar()
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)

@@ -18,7 +18,7 @@ const ActiveSessionsManagement = ({ adminView, userName, userId }: ActiveSession
   const { enqueueSnackbar } = useSnackbar()
 
   // Queries
-  const { data: response, isLoading, isError, refetch } = useSessions()
+  const { data: response, isLoading, refetch } = useSessions()
   const sessions = response?.data?.sessions || []
 
   // Mutations

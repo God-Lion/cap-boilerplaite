@@ -5,7 +5,7 @@ import React, { useState, useMemo } from 'react';
 import { Box, Typography, Card, CardContent, Button, IconButton, Chip, alpha, useTheme, Stack, Divider, Paper, Tooltip, Avatar, TextField, InputAdornment, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Menu, MenuItem, CircularProgress } from '@mui/material';
 import { Search, FilterList, Download, Security, History, Person, CheckCircle, MoreVert, Block, AssignmentTurnedIn, Refresh } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+;
 import { ImpersonationSession } from '@cap/shared-types';
 import { useImpersonationLogs } from '../../../../authentication-core';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -13,8 +13,8 @@ import { format, formatDistanceToNow } from 'date-fns';
 export default function ImpersonationLogs() {
   const { t } = useTranslation('common')
   const theme = useTheme()
-  const { id: orgIdParam } = useParams()
-  const orgId = orgIdParam ? Number(orgIdParam) : null
+
+
 
   const { data: logsResponse, isLoading: isFetching, refetch } = useImpersonationLogs({ page: 1, limit: 100 })
   const logs = useMemo(() => {
@@ -48,7 +48,7 @@ export default function ImpersonationLogs() {
     return filteredLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
   }, [filteredLogs, page, rowsPerPage])
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage)
   }
 

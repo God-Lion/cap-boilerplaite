@@ -1,4 +1,12 @@
+import React from 'react'
 import type { CAPModule } from '@cap/shared-types'
+import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined'
+import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined'
+import ExtensionOutlinedIcon from '@mui/icons-material/ExtensionOutlined'
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined'
+import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined'
+import DevicesOutlinedIcon from '@mui/icons-material/DevicesOutlined'
+import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined'
 import { authRouteConfig, authRoutes } from './routes/routes'
 import Path from './routes/path'
 export { authRouteConfig, authRoutes, Path, Path as AuthPath }
@@ -24,10 +32,14 @@ import frUserDir from './modules/user-directory/src/data/dictionaries/fr.json'
 import enIdentityBroker from './modules/identity-broker/src/data/dictionaries/en.json'
 import arIdentityBroker from './modules/identity-broker/src/data/dictionaries/ar.json'
 import frIdentityBroker from './modules/identity-broker/src/data/dictionaries/fr.json'
+import enData from './data/dictionaries/en.json'
+import arData from './data/dictionaries/ar.json'
+import frData from './data/dictionaries/fr.json'
 import enCommon from './domain-kernel/src/data/dictionaries/en.json'
 import arCommon from './domain-kernel/src/data/dictionaries/ar.json'
 import frCommon from './domain-kernel/src/data/dictionaries/fr.json'
 
+registerDictionary({ en: enData, ar: arData, fr: frData })
 registerDictionary({ en: enCommon, ar: arCommon, fr: frCommon })
 registerDictionary({ en: enAuthCore, ar: arAuthCore, fr: frAuthCore })
 registerDictionary({ en: enMfa, ar: arMfa, fr: frMfa })
@@ -154,7 +166,7 @@ export const AuthModule: CAPModule = {
     {
       id: 'auth-identity-control',
       label: 'navigation.authPages',
-      icon: 'tabler-shield-lock',
+      icon: React.createElement(ShieldOutlinedIcon),
       variant: ['vertical', 'horizontal'],
       order: 20,
       children: [
@@ -166,13 +178,16 @@ export const AuthModule: CAPModule = {
     {
       id: 'auth-security-methods',
       label: 'navigation.security',
-      icon: 'tabler-key',
+      icon: React.createElement(VpnKeyOutlinedIcon),
       variant: ['vertical', 'horizontal'],
       order: 50,
       children: [
         { id: 'auth-mfa', label: 'navigation.twoSteps', path: Path.mfa.dashboard, order: 10 },
         { id: 'auth-passkeys', label: 'navigation.passkeys', path: Path.passkey.management, order: 20 },
         { id: 'auth-passwordless', label: 'navigation.passwordless', path: Path.passwordless.setup, order: 30 },
+        { id: 'auth-api-tokens', label: 'navigation.apiTokens', path: Path.apiTokens.dashboard, order: 40 },
+        { id: 'auth-sessions', label: 'navigation.activeSessions', path: Path.account.activeSessions, order: 50 },
+        { id: 'auth-linked', label: 'navigation.linkedAccounts', path: Path.user.linkedAccounts, order: 60 },
       ],
     },
     // --- DASHBOARD / APPS SECTION ---
@@ -185,35 +200,48 @@ export const AuthModule: CAPModule = {
     },
     {
       id: 'auth-modules',
-      label: 'Module Management',
-      icon: 'tabler-box',
+      label: 'navigation.moduleManagement',
+      icon: React.createElement(ExtensionOutlinedIcon),
       path: '/developer/modules',
       variant: ['vertical'],
       order: 105,
-    },
-    {
-      id: 'auth-calendar',
-      label: 'navigation.calendar',
-      icon: 'tabler-calendar',
-      path: '/apps/calendar',
-      variant: ['vertical'],
-      order: 110,
     },
   ],
   searchItems: [
     {
       id: 'auth-profile',
-      name: 'User Profile',
+      name: 'navigation.userProfile',
       url: Path.account.overview,
-      icon: 'tabler-user',
-      section: 'Account',
+      icon: React.createElement(PersonOutlinedIcon),
+      section: 'navigation.accountOverview',
     },
     {
       id: 'auth-security',
-      name: 'Security Settings',
+      name: 'navigation.securitySettings',
       url: Path.account.security,
-      icon: 'tabler-shield-lock',
-      section: 'Account',
+      icon: React.createElement(SecurityOutlinedIcon),
+      section: 'navigation.accountOverview',
+    },
+    {
+      id: 'auth-api-tokens',
+      name: 'navigation.apiTokens',
+      url: Path.apiTokens.dashboard,
+      icon: React.createElement(VpnKeyOutlinedIcon),
+      section: 'navigation.security',
+    },
+    {
+      id: 'auth-sessions',
+      name: 'navigation.activeSessions',
+      url: Path.account.activeSessions,
+      icon: React.createElement(DevicesOutlinedIcon),
+      section: 'navigation.security',
+    },
+    {
+      id: 'auth-linked-accounts',
+      name: 'navigation.linkedAccounts',
+      url: Path.user.linkedAccounts,
+      icon: React.createElement(LinkOutlinedIcon),
+      section: 'navigation.accountOverview',
     },
   ],
 }

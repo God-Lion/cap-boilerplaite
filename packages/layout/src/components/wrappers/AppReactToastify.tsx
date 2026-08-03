@@ -22,7 +22,7 @@ const ToastifyWrapper = styled(Box, {
       padding: theme.spacing(1.5, 2.5),
       backgroundColor: theme.palette.background.paper,
       boxShadow: ownerSkin === 'bordered' ? 'none' : ((theme as any).customShadows?.md || theme.shadows[6]),
-      border: ownerSkin === 'bordered' ? `1px solid ${theme.palette.divider}` : 'none',
+      border: ownerSkin === 'bordered' ? `1px solid ` : 'none',
       '&:not(.custom-toast)': {
         '& .Toastify__toast-body': {
           color: theme.palette.text.primary,

@@ -1,5 +1,5 @@
-import { Settings } from '@cap/platform-core'
-import styled from '@emotion/styled'
+import type { Settings } from '@cap/shared-types'
+import { styled } from '@mui/material/styles'
 import { KBarAnimator } from 'kbar'
 
 type StyledKBarAnimatorProps = {
@@ -13,7 +13,7 @@ const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>`
     max-inline-size: 90dvw;
     block-size: 580px;
     max-block-size: 90dvh;
-    background: var(--mui-palette-background-paper);
+    background: ;
     border-radius: var(--radius-md);
     display: flex;
     flex-direction: column;
@@ -29,7 +29,7 @@ const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>`
       border-radius: 0;
     `}
 
-    ${({ skin }) => skin !== 'bordered' && `box-shadow: var(--mui-customShadows-lg);`}
+    ${({ skin, theme }) => skin !== 'bordered' && `box-shadow: ${theme.customShadows.lg};`}
   }
 
   & #kbar-listbox {

@@ -9,6 +9,16 @@
         "about": "À Propos de Nous",
         "pricing": "Tarification"
     },
+    "navigation": {
+        "home": "Accueil",
+        "chronosMycelium": "Chronos Mycelium",
+        "features": "Comparaison des Fonctionnalités",
+        "privacyPolicy": "Politique de Confidentialité",
+        "termsOfService": "Conditions d'Utilisation",
+        "contact": "Contactez-nous",
+        "about": "À Propos de Nous",
+        "pricing": "Tarification"
+    },
     "auth": {
         "account": {
             "about_you": "À propos de vous",

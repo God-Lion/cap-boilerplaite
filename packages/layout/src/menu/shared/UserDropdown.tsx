@@ -16,29 +16,31 @@ import {
   Popper,
   Typography,
 } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme, alpha } from '@mui/material/styles'
 import AttachMoney from '@mui/icons-material/AttachMoney'
 import Help from '@mui/icons-material/Help'
 import Logout from '@mui/icons-material/Logout'
 import Person from '@mui/icons-material/Person'
 import Settings from '@mui/icons-material/Settings'
-import { useSettings, useAuth } from '@cap/platform-core'
+import { useSettings } from '@cap/platform-store'
+import { useAuth } from '@cap/platform-core'
 import { zIndexScale } from "@cap/theme";
 import { useSignOut } from '@cap/module-auth'
 import { Path } from '@cap/module-auth/routes/path'
 import { useTranslation } from 'react-i18next'
 
-const BadgeContentSpan = styled('span')({
+const BadgeContentSpan = styled('span')(({ theme }) => ({
   width: 8,
   height: 8,
   borderRadius: '50%',
   cursor: 'pointer',
-  backgroundColor: 'var(--mui-palette-success-main)',
-  boxShadow: '0 0 0 2px var(--mui-palette-background-paper)',
-})
+  backgroundColor: theme.palette.success.main,
+  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+}))
 
 const UserDropdown = () => {
   const { t } = useTranslation()
+  const theme = useTheme()
   const { user: authUser } = useAuth()
   const { signOut, isSigningOut } = useSignOut({
     onSuccess: () => {
@@ -170,7 +172,7 @@ const UserDropdown = () => {
                       gap: '0.75rem',
                       transition: 'all 0.2s ease',
                       '&:hover': {
-                        background: 'hsla(var(--mui-mainColor-hsl), 0.05) !important',
+                        background: `${alpha(theme.palette.text.primary, 0.05)} !important`,
                         transform: 'translateX(4px)',
                         '& svg': { color: 'primary.main' },
                       },
@@ -190,7 +192,7 @@ const UserDropdown = () => {
                       gap: '0.75rem',
                       transition: 'all 0.2s ease',
                       '&:hover': {
-                        background: 'hsla(var(--mui-mainColor-hsl), 0.05) !important',
+                        background: `${alpha(theme.palette.text.primary, 0.05)} !important`,
                         transform: 'translateX(4px)',
                         '& svg': { color: 'primary.main' },
                       },

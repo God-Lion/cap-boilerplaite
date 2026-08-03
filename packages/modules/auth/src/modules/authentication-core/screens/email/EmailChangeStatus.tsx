@@ -57,7 +57,7 @@ export default function EmailChangeStatus() {
               <Refresh />
             </IconButton>
           </Tooltip>
-          <Button variant="contained" onClick={() => navigate(Path.auth.requestEmailChange)} endIcon={<ArrowForward />}
+          <Button variant="contained" component={Link} to={Path.user.overview} endIcon={<ArrowForward />}
             sx={{ borderRadius: 3, textTransform: 'none', fontWeight: 800, bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark' } }}>
             {t('email.newRequest', 'New Request')}
           </Button>

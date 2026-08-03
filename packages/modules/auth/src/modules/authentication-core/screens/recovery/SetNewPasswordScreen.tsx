@@ -5,7 +5,7 @@ import { LockReset, Visibility, VisibilityOff, ArrowBack, ArrowForward } from '@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { FetchResponse, IUserResponseEmailResetPassword } from '@cap/platform-core';
-import { ResetPasswordRequest } from '../../../../types/api.types';
+import type { SetNewPasswordRequest } from '../../types/api.types';
 import { useResetPassword } from '@cap/module-auth/modules/authentication-core/hooks/useAuthQuery';
 import authService from '@cap/module-auth/modules/authentication-core/services/auth.service';
 import { Path } from '@cap/module-auth/routes/path';
@@ -133,7 +133,7 @@ export default function SetNewPasswordScreen() {
         </Alert>
         <Button
           component={Link}
-          to={Path.forgotPassword}
+          to={Path.auth.forgotPassword}
           fullWidth
           variant="contained"
           sx={{
@@ -333,4 +333,3 @@ export default function SetNewPasswordScreen() {
     </Box>
   )
 }
-

@@ -48,13 +48,24 @@ export {
   type Locale,
 } from './i18n/registry'
 
-import type { CAPModule } from '@cap/shared-types';
-import { landingRouteConfig } from './routes/routes';
-import { landingDictionaries } from './i18n/registry';
+import type { CAPModule, NavItemConfig } from '@cap/shared-types'
+import { landingRouteConfig, LandingPath } from './routes'
+import { landingDictionaries, registerDictionary } from './i18n/registry'
+// Register i18n dictionaries for landing module
+registerDictionary(landingDictionaries as any)
+
+export const landingNavItems: NavItemConfig[] = [
+  { id: 'nav-home', label: 'landing.home', path: LandingPath.home, variant: ['public'], guestOnly: true, order: 10 },
+  { id: 'guest-features', label: 'landing.features', path: LandingPath.features, variant: ['public'], order: 20 },
+  { id: 'guest-pricing', label: 'landing.pricing', path: LandingPath.pricing, variant: ['public'], order: 30 },
+  { id: 'guest-about', label: 'landing.about', path: LandingPath.about, variant: ['public'], order: 40 },
+  { id: 'guest-contact', label: 'landing.contact', path: LandingPath.contact, variant: ['public'], order: 50 },
+]
 
 export const LandingModule: CAPModule = {
   id: 'landing-module',
   version: '1.0.0',
   routes: landingRouteConfig,
   i18n: landingDictionaries,
+  navItems: landingNavItems,
 }

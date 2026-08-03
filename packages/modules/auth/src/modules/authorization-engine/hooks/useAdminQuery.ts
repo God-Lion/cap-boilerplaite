@@ -89,7 +89,7 @@ export const adminKeys = {
 import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import { FetchResponse, HttpError, PaginatedResponse } from '@cap/platform-core';
 import { adminService } from '../services/adminService';
-import type { OIDCClient, CreateOIDCClientRequest, UpdateOIDCClientRequest, AdminUser, CreateUserRequest, UpdateUserRequest, SSFConfig, MessageResponse, Role, Permission, AccessPolicy, Organization, CreateOrganizationRequest, OrganizationMember, Connector, ConnectorLog, SCIMToken, SAMLConfig, EmailTemplate, EmailTestRequest, BroadcastSSFEventRequest, BroadcastSSFEventResponse, MFAStats, UserStats, BulkActionRequest, BulkActionResult, AuthScope, CreateScopeRequest, UpdateScopeRequest, SCIMConfig, DetailedHealthReport, BasicMetrics, JWKSKey, JWKSKeyDetail, CreateJWKSKeyRequest, DomainVerification } from '@cap/shared-types';
+import type { OIDCClient, CreateOIDCClientRequest, UpdateOIDCClientRequest, AdminUser, CreateUserRequest, UpdateUserRequest, SSFConfig, MessageResponse, Role, Permission, AccessPolicy, Organization, CreateOrganizationRequest, OrganizationMember, Connector, ConnectorLog, SCIMToken, SAMLConfig, EmailTemplate, EmailTestRequest, BroadcastSSFEventRequest, BroadcastSSFEventResponse, MFAStats, UserStats, BulkActionRequest, BulkActionResult, AuthScope, CreateScopeRequest, UpdateScopeRequest, SCIMConfig, DetailedHealthReport, BasicMetrics, JWKSKey, JWKSKeyDetail, CreateJWKSKeyRequest, DomainVerification } from '../services/adminService';
 // ============================================================================
 // OIDC Client Management Hooks
 // ============================================================================

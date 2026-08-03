@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography, Avatar, Stack, Link as MuiLink, alpha, useTheme } from '@mui/material';
-import { MarkEmailRead, Refresh, ArrowBack } from '@mui/icons-material';
+import { MarkEmailRead, Refresh, ArrowBack, ArrowForward } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Path } from '@cap/module-auth/routes/path';

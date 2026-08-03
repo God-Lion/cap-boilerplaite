@@ -503,7 +503,7 @@ export default function DirectorySyncDashboard() {
           <Button
             variant='outlined'
             startIcon={<History />}
-            onClick={() => navigate(Path.syncLogs)}
+            onClick={() => navigate(Path.admin.syncLogs)}
             sx={{
               height: 48,
               px: 3.5,
@@ -542,7 +542,6 @@ export default function DirectorySyncDashboard() {
         </Stack>
       </Box>
 
-      {/* â”€â”€ Pattern 2: Quick Stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Grid container spacing={3} sx={{ mb: 6 }}>
         {[
           {
@@ -611,7 +610,6 @@ export default function DirectorySyncDashboard() {
         ))}
       </Grid>
 
-      {/* â”€â”€ Connectors Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3.5 }}>
         <Sync color='primary' sx={{ fontSize: 24 }} />
         <Typography
@@ -845,7 +843,6 @@ export default function DirectorySyncDashboard() {
           })
         )}
 
-        {/* â”€â”€ SCIM Configuration Promo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <Grid size={{ xs: 12 }}>
           <Card
             sx={{

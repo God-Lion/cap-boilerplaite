@@ -1,6 +1,6 @@
 import { useTheme } from '@mui/material/styles'
-import type { ChildrenType } from '@cap/platform-core'
-import { useSettings } from '@cap/platform-core'
+import type { ChildrenType } from '@cap/shared-types'
+import { useSettings } from '@cap/platform-store'
 // themeConfig.footer defaults inlined to avoid circular import: type='static'
 const FOOTER_TYPE: string = 'static'
 import { horizontalLayoutClasses } from '../../utils/layoutClasses'

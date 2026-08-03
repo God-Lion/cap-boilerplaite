@@ -8,7 +8,7 @@ const PhoneInput2 = styled('div')(({ theme }) => ({
     width: '100%',
     height: '56px',
     background: 'transparent',
-    border: `1px solid ${theme.palette.divider}`,
+    border: `1px solid `,
     borderRadius: '8px',
     fontSize: '1rem',
     paddingLeft: '58px',
@@ -16,12 +16,12 @@ const PhoneInput2 = styled('div')(({ theme }) => ({
     fontFamily: theme.typography.fontFamily,
     '&:focus': {
       borderColor: theme.palette.primary.main,
-      boxShadow: `0 0 0 1px ${theme.palette.primary.main}`,
+      boxShadow: `0 0 0 1px `,
     },
     '&.invalid-number': {
       borderColor: theme.palette.error.main,
       '&:focus': {
-        boxShadow: `0 0 0 1px ${theme.palette.error.main}`,
+        boxShadow: `0 0 0 1px `,
       },
     },
   },
@@ -55,7 +55,7 @@ const PhoneInput2 = styled('div')(({ theme }) => ({
     '&:focus .arrow': {
       borderLeftWidth: '4px',
       borderRightWidth: '4px',
-      borderTop: `5px solid ${theme.palette.primary.main}`,
+      borderTop: `5px solid `,
     },
     '& .open': {
       backgroundColor: theme.palette.action.hover,
@@ -74,11 +74,11 @@ const PhoneInput2 = styled('div')(({ theme }) => ({
       height: 0,
       borderLeft: '3px solid transparent',
       borderRight: '3px solid transparent',
-      borderTop: `4px solid ${theme.palette.text.secondary}`,
+      borderTop: `4px solid `,
     },
     '& .arrow.up': {
       borderTop: 'none',
-      borderBottom: `4px solid ${theme.palette.text.secondary}`,
+      borderBottom: `4px solid `,
     },
   },
   '& .country-list ': {
@@ -114,7 +114,7 @@ const PhoneInput2 = styled('div')(({ theme }) => ({
     '& .divider': {
       paddingBottom: '5px',
       marginBottom: '5px',
-      borderBottom: `1px solid ${theme.palette.divider}`,
+      borderBottom: `1px solid `,
     },
     '& .country': {
       position: 'relative',
@@ -145,7 +145,7 @@ const PhoneInput2 = styled('div')(({ theme }) => ({
       fontSize: '15px',
     },
     '& .search-box': {
-      border: `1px solid ${theme.palette.divider}`,
+      border: `1px solid `,
       borderRadius: '4px',
       fontSize: '15px',
       lineHeight: '15px',

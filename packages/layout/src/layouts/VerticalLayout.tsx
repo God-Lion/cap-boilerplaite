@@ -1,8 +1,8 @@
 import React from 'react'
 import type { ChildrenType } from '@cap/shared-types'
 import { Box } from '@mui/material'
-import LayoutContent from './components/vertical/LayoutContent'
-import { verticalLayoutClasses } from './utils/layoutClasses'
+import LayoutContent from '../components/vertical/LayoutContent'
+import { verticalLayoutClasses } from '../utils/layoutClasses'
 import classnames from 'classnames'
 
 const VerticalLayout: React.FC<

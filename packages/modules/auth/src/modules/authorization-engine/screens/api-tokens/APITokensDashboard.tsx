@@ -26,7 +26,7 @@ const APITokensDashboard: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedToken, setSelectedToken] = useState<APIToken | null>(null)
 
-  const { data: tokensResponse, isLoading, isError, refetch } = useUserTokens()
+  const { data: tokensResponse, isLoading, refetch } = useUserTokens()
   const revokeTokenMutation = useRevokeToken({
     onSuccess: () => {
       enqueueSnackbar(t('api_tokens:revoked_success', 'Token revoked successfully'), {

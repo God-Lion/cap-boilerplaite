@@ -4,10 +4,10 @@
  */
 export const mfaService = {
   passkeys: {
-    getRegistrationOptions: async (email?: string) => ({ data: {} as any }),
-    verifyRegistration: async (data: any) => ({ data: {} as any }),
-    getLoginOptions: async (email?: string) => ({ data: {} as any }),
-    verifyLogin: async (data: any) => ({
+    getRegistrationOptions: async (_email?: string) => ({ data: {} as any }),
+    verifyRegistration: async (_data: any) => ({ data: {} as any }),
+    getLoginOptions: async (_email?: string) => ({ data: {} as any }),
+    verifyLogin: async (_data: any) => ({
       data: {
         user: {} as any,
         token: '',
@@ -16,5 +16,5 @@ export const mfaService = {
       } as any
     }),
   },
-  verifyMfaCode: async (userId: number, code: string) => ({ data: { success: true } }),
+  verifyMfaCode: async (_userId: number, _code: string) => ({ data: { success: true } }),
 }

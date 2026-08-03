@@ -2,8 +2,8 @@ import { StateCreator } from 'zustand'
 import type { AppStore } from '../index'
 
 // Re-export notification types from shared-types for backward compatibility
-export type { NotificationType, Notification, NotificationInput } from '@cap/shared-types'
-import type { NotificationType, Notification } from '@cap/shared-types'
+export type {  Notification, NotificationInput } from '@cap/shared-types'
+import type {  Notification } from '@cap/shared-types'
 
 export interface NotificationSlice {
   // State

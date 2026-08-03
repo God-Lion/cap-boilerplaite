@@ -101,7 +101,7 @@ export default function SSFConfiguration() {
   const config = configResp?.data
 
   const { mutateAsync: updateConfig, isPending: isSaving } = useUpdateSSFConfig()
-  const { mutateAsync: testStream } = useTestSSFStream()
+  useTestSSFStream()
   const { data: historyData, isLoading: isHistoryLoading, refetch: refetchHistory } = useSSFHistory()
 
   useEffect(() => {
@@ -191,15 +191,7 @@ export default function SSFConfiguration() {
     enqueueSnackbar(t('auth.sso.event_added_success', 'New event type added locally. Save to persist.'), { variant: 'success' })
   }, [newEvent, events, enqueueSnackbar, t])
 
-  const handleTestSSFStreamClick = useCallback(async () => {
-    try {
-      await testStream()
-      enqueueSnackbar(t('auth.sso.ssf_test_success', 'Test signal broadcasted successfully'), { variant: 'success' })
-      refetchHistory()
-    } catch (err: unknown) {
-      enqueueSnackbar(err instanceof Error ? err.message : t('auth.sso.error_test_ssf', 'Failed to broadcast test signal'), { variant: 'error' })
-    }
-  }, [testStream, enqueueSnackbar, t, refetchHistory])
+
 
   const handleCopyJwksUrlClick = useCallback(() => {
     navigator.clipboard.writeText(`${window.location.origin}/.well-known/jwks.json`)

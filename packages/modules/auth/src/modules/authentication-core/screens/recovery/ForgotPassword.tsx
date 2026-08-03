@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Typography, Alert, InputAdornment, alpha, useTheme, Stack, Link as MuiLink } from '@mui/material';
 import { LockReset, Mail, ArrowBack } from '@mui/icons-material';
-import { motion } from 'framer-motion';
+;
 import { useTranslation } from 'react-i18next';
 import { useForgotPassword } from '@idaas/authentication-core/hooks/useAuthQuery';
 import { Path } from '@cap/module-auth/routes/path';

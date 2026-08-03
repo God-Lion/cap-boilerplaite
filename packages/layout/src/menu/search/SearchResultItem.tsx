@@ -1,10 +1,11 @@
-import { Fragment, forwardRef, useMemo } from 'react'
+import React, { Fragment, forwardRef, useMemo } from 'react'
 import type { Ref } from 'react'
 import { useParams } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { ActionId, ActionImpl } from 'kbar'
-import { i18n as i18nConfig, type SearchItemConfig } from '@cap/platform-core'
+import { i18n as i18nConfig } from '@cap/platform-core'
+import type { SearchItemConfig } from '@cap/shared-types'
 
 type Locale = (typeof i18nConfig)['locales'][number]
 
@@ -178,7 +179,11 @@ const SearchResultItem = forwardRef(
           sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, gap: 2, fontSize: '0.875rem' }}
         >
           {action.icon && (
-            <Box component='i' className={action.icon as string} sx={{ fontSize: '1.25rem' }} />
+            React.isValidElement(action.icon) ? (
+              action.icon
+            ) : typeof action.icon === 'string' ? (
+              <Box component='i' className={action.icon.startsWith('tabler-') ? action.icon : `tabler-${action.icon}`} sx={{ fontSize: '1.25rem' }} />
+            ) : null
           )}
           {action.name &&
             (action.subtitle ? (

@@ -1,6 +1,6 @@
 import { Theme } from '@mui/material/styles';
 
-export const MuiLayoutOverrides = (theme: Theme) => ({
+export const MuiLayoutOverrides = (_theme: Theme) => ({
   MuiList: {
     styleOverrides: {
       root: {

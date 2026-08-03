@@ -1,3 +1,4 @@
+import { alpha, useTheme } from '@mui/material/styles'
 import classnames from 'classnames'
 import Box from '@mui/material/Box'
 import { RoleIndicator } from '@cap/module-auth'
@@ -103,6 +104,8 @@ const notifications: Array<NotificationsType> = [
 ]
 
 const NavbarContent = () => {
+  const theme = useTheme()
+
   return (
     <Box
       className={classnames(verticalLayoutClasses.navbarContent)}
@@ -128,7 +131,7 @@ const NavbarContent = () => {
             '& .MuiIconButton-root': {
               transition: 'all 0.2s ease',
               '&:hover': {
-                background: 'hsla(var(--mui-mainColor-hsl), 0.08)',
+                background: alpha(theme.palette.text.primary, 0.08),
                 transform: 'translateY(-2px)',
                 '& i, & svg': { color: 'primary.main' },
               },

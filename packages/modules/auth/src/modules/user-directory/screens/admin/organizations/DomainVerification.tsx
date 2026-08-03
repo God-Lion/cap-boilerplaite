@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Box, Typography, Card, CardContent, Button, Stack, TextField, InputAdornment, Alert, Divider, Stepper, Step, StepLabel, CircularProgress, IconButton } from '@mui/material';
 import { Domain, ContentCopy, Info, Dns, Verified } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+
 
 const DomainVerification = () => {
-  const { t } = useTranslation()
   const [domain, setDomain] = useState('auth.example.com')
   const [isVerifying, setIsVerifying] = useState(false)
   const [step, setStep] = useState(1)

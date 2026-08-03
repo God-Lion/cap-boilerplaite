@@ -16,7 +16,7 @@ const Root = styled('div', {
   alignItems: 'center',
   flexDirection: 'column',
   justifyContent: 'center',
-  border: `1px solid ${theme.palette.divider}`,
+  border: `1px solid `,
 
   '&:hover': {
     borderColor: theme.palette.action.active,

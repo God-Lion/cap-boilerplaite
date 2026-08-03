@@ -1,9 +1,9 @@
 import React from 'react'
 import classnames from 'classnames'
-import type { ChildrenType } from '@cap/platform-core'
-import { HorizontalNavContext } from './menu/contexts/horizontalNavContextCore'
-import LayoutContent from './components/horizontal/LayoutContent'
-import { horizontalLayoutClasses } from './utils/layoutClasses'
+import type { ChildrenType } from '@cap/shared-types'
+import { HorizontalNavContext } from '../menu/contexts/horizontalNavContextCore'
+import LayoutContent from '../components/horizontal/LayoutContent'
+import { horizontalLayoutClasses } from '../utils/layoutClasses'
 
 const HorizontalLayout: React.FC<
   ChildrenType & {

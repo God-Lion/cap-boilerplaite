@@ -1339,5 +1339,22 @@
         "copy": "نسخ",
         "copied": "تم النسخ!",
         "or": "أو"
+    },
+    "navigation": {
+        "idaas": "مركز الهوية والوصول",
+        "authPages": "المصادقة",
+        "login": "تسجيل الدخول",
+        "register": "إنشاء حساب",
+        "forgotPassword": "نسيان كلمة المرور",
+        "security": "أساليب الأمان",
+        "twoSteps": "التحقق بخطوتين",
+        "passkeys": "مفاتيح المرور",
+        "passwordless": "بدون كلمة مرور",
+        "appsPages": "التطبيقات",
+        "moduleManagement": "إدارة الوحدات",
+        "calendar": "التقويم",
+        "userProfile": "الملف الشخصي للمستخدم",
+        "securitySettings": "إعدادات الأمان",
+        "accountOverview": "الحساب"
     }
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { ElementType, ReactNode } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { Box, IconButton, Typography } from '@mui/material'
@@ -7,8 +8,9 @@ import { useMedia } from 'react-use'
 import { KBarProvider, KBarPortal, KBarPositioner, KBarSearch, useKBar, type KBarState } from 'kbar'
 import SearchResults from './SearchResults'
 import StyledKBarAnimator from './StyledKBarAnimator'
-import type { ChildrenType } from '@cap/platform-core'
-import { useSettings, i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
+import type { ChildrenType } from '@cap/shared-types'
+import { useSettings } from '@cap/platform-store'
+import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
 import { useVerticalNav } from '../../hooks/useVerticalNav'
 import { zIndexScale } from "@cap/theme";
 
@@ -47,6 +49,7 @@ const ComponentWithUseKBar = (props: ComponentWithUseKBarProps) => {
 }
 
 const NavSearch = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const pathName = location.pathname
@@ -57,14 +60,28 @@ const NavSearch = () => {
 
   const dynamicSearchData = getSearchItems()
 
-  const searchActions = dynamicSearchData.map((item) => ({
-    ...item,
-    url: undefined,
-    perform: () =>
-      item.url.startsWith('http')
-        ? window.open(item.url, '_blank')
-        : navigate(getLocalizedUrl(item.url, locale || '')),
-  }))
+  const searchActions = dynamicSearchData.map((item) => {
+    const rawName = item.name || ''
+    const cleanNameKey = rawName.replace(/^navigation\./, '')
+    const translatedName = t(rawName, { defaultValue: t(`navigation.${cleanNameKey}`, { defaultValue: rawName }) })
+
+    const rawSection = item.section || ''
+    const cleanSectionKey = rawSection.replace(/^navigation\./, '')
+    const translatedSection = rawSection
+      ? t(rawSection, { defaultValue: t(`navigation.${cleanSectionKey}`, { defaultValue: rawSection }) })
+      : undefined
+
+    return {
+      ...item,
+      name: translatedName,
+      section: translatedSection,
+      url: undefined,
+      perform: () =>
+        item.url.startsWith('http')
+          ? window.open(item.url, '_blank')
+          : navigate(getLocalizedUrl(item.url, locale || '')),
+    }
+  })
 
   return (
     <KBarProvider actions={searchActions}>

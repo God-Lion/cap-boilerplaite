@@ -311,9 +311,9 @@ export class TenantService {
     return this.isAuthPluginEnabledForTenant(DEFAULT_TENANT_CONFIG, pluginId)
   }
 
-  static async fetchTenant(tenantSlug?: string): Promise<TenantConfig> {
+  static async fetchTenant(_tenantSlug?: string): Promise<TenantConfig> {
     const domain = this.getCurrentHostname()
-    const _slug = tenantSlug || this.getTenantFromHostname()
+
     
     // 1. Try Cache
     const cached = this.getCachedTenant(domain)

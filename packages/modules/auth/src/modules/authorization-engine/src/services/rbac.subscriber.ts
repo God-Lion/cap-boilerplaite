@@ -10,25 +10,21 @@ export interface RbacSubscriberConfig {
 }
 
 export class RbacSubscriber {
-  private tenantId?: string
 
-  constructor(config: RbacSubscriberConfig = {}) {
-    this.tenantId = config.tenantId
-  }
 
-  async handleUserAuthenticated(event: any): Promise<void> {
+  async handleUserAuthenticated(_event: any): Promise<void> {
     // Intentionally left blank for security audit finding 4.9
   }
 
-  async handleSessionCreated(event: any): Promise<void> {
+  async handleSessionCreated(_event: any): Promise<void> {
     // Intentionally left blank for security audit finding 4.9
   }
 
-  async handleSessionRevoked(event: any): Promise<void> {
+  async handleSessionRevoked(_event: any): Promise<void> {
     // Intentionally left blank for security audit finding 4.9
   }
 
-  async handleTokenIssued(event: any): Promise<void> {
+  async handleTokenIssued(_event: any): Promise<void> {
     // Intentionally left blank for security audit finding 4.9
   }
 

@@ -2,9 +2,8 @@ import { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Alert, Divider, IconButton, InputAdornment, Stack, Link as MuiLink, alpha, useTheme } from '@mui/material';
 import { LockPerson, Visibility, VisibilityOff, Google } from '@mui/icons-material';
-import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { RegisterRequest } from '../../../../types/api.types';
+import type { SignupRequest } from '../../types/api.types';
 import { useRegister } from '@idaas/authentication-core/hooks/useAuthQuery';
 import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
 

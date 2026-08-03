@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Box, Button, TextField, Typography, Alert, CircularProgress, useTheme, Link as MuiLink } from '@mui/material';
+import { Box, Button, TextField, Typography, Alert, CircularProgress, Link as MuiLink } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { Path } from '@cap/module-auth/routes/path';
 export default function DeactivateAccount() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const theme = useTheme()
+  // const _theme = useTheme()
   const [confirmText, setConfirmText] = useState('')
 
   const deactivateAccountMutation = useDeactivateAccount()

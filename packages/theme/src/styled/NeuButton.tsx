@@ -45,7 +45,7 @@ const getColor = (variant: NeuButtonProps['variant'], color?: string) => {
 };
 
 const StyledNeuButton = styled.button<Omit<NeuButtonProps, 'children'>>`
-  background: ${({ variant, backgroundColor, config }) =>
+  background: ${({ variant, backgroundColor,  }) =>
     getBackground(variant, backgroundColor)};
   color: ${({ variant, color }) => getColor(variant, color)};
   border-radius: ${({ borderRadius, config }) =>

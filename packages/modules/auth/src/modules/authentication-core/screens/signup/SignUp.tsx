@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { GitHub, Google, Visibility, VisibilityOff, ArrowForward, PersonAdd } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { RegisterRequest } from '../../../../types/api.types';
+import type { SignupRequest } from '../../types/api.types';
 import { useRegister } from '@idaas/authentication-core/hooks/useAuthQuery';
 
 const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i

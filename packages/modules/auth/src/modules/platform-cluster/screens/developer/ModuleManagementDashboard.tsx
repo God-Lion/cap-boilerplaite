@@ -17,7 +17,7 @@ import ModuleUploadModal from './components/ModuleUploadModal';
 
 export default function ModuleManagementDashboard() {
   const theme = useTheme()
-  const { t } = useTranslation('common')
+  const { t: _t } = useTranslation('common')
 
   const [modules, setModules] = useState<ModuleStatusInfo[]>([])
   const [searchTerm, setSearchTerm] = useState('')

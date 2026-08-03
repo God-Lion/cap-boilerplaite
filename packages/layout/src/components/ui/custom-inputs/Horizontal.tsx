@@ -14,7 +14,7 @@ const Root = styled('div', {
   cursor: 'pointer',
   position: 'relative',
   alignItems: 'flex-start',
-  border: `1px solid ${theme.palette.customColors.inputBorder}`,
+  border: `1px solid `,
   padding: theme.spacing(4),
   color: theme.palette.text.primary,
   transition: theme.transitions.create(['border-color'], {
@@ -27,7 +27,7 @@ const Root = styled('div', {
   '&.active': {
     borderColor: theme.palette.primary.main,
     '& i, & svg': {
-      color: `${theme.palette.primary.main} !important`,
+      color: ` !important`,
     },
   },
 }))
@@ -37,7 +37,7 @@ const Title = styled(Typography, {
   slot: 'title',
 })(({ theme }) => ({
   fontWeight: theme.typography.fontWeightMedium,
-  color: `${theme.palette.text.primary} !important`,
+  color: ` !important`,
 }))
 
 const Meta = styled(Typography, {
@@ -45,7 +45,7 @@ const Meta = styled(Typography, {
   slot: 'meta',
 })(({ theme }) => ({
   ...theme.typography.body2,
-  color: `${theme.palette.text.disabled} !important`,
+  color: ` !important`,
 }))
 
 const Content = styled(Typography, {

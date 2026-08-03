@@ -20,30 +20,9 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useJWKSKeys, useRotateJWKSKeys, useDeleteJWKSKey, useCreateJWKSKey, useGetJWKSKeyDetail, CreateJWKSKeyRequest } from '@auth';
 
-interface JWKSKey {
-  kid: string
-  status: 'active' | 'standby' | 'revoked'
-  alg: string
-  use: string
-  created: string
-  expires: string
-  health: number
-}
 
-interface JWKSManagementProps {
-  keys?: JWKSKey[]
-  isLoading?: boolean
-  onRotate?: () => void
-  onAddKey?: () => void
-  onDeleteKey?: (kid: string) => void
-  onViewHistory?: () => void
-}
 
-// Mock data â€” replace with useJWKSKeys() hook
-const MOCK_KEYS: JWKSKey[] = [
-  { kid: 'nexus-v2-main-2024', status: 'active', alg: 'RS256', use: 'sig', created: '2024-01-10', expires: '2025-01-10', health: 95 },
-  { kid: 'nexus-v2-backup-2024', status: 'standby', alg: 'RS256', use: 'sig', created: '2024-01-11', expires: '2025-01-11', health: 100 },
-]
+
 
 export default function JWKSManagement() {
   const { t } = useTranslation()

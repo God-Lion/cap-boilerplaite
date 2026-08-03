@@ -2,8 +2,8 @@ import { apiClient, FetchResponse, PaginatedResponse } from '@cap/platform-core'
 import { ENDPOINTS } from '@cap/module-auth/modules/authentication-core/services/endpoints';
 import type { SCIMConfig } from '../../../domain-kernel/src/types';
 import type { SAMLConfig, JWKSKey, CreateJWKSKeyRequest, JWKSKeyDetail, SSFConfig, BroadcastSSFEventRequest, BroadcastSSFEventResponse } from '../../../domain-kernel/src/types';
-import { AccessPolicy } from '@cap/shared-types';
-
+import type { AccessPolicy, Role, Permission } from '@cap/shared-types';
+export type { AccessPolicy, Role, Permission };
 export type { SCIMConfig }
 export type { SAMLConfig, JWKSKey, CreateJWKSKeyRequest, JWKSKeyDetail, SSFConfig, BroadcastSSFEventRequest, BroadcastSSFEventResponse }
 
@@ -44,27 +44,6 @@ export interface BasicMetrics {
   timestamp: string
 }
 
-export interface Role {
-  id: number
-  name: string
-  guard_name: string
-  description: string | null
-  permissions: Permission[]
-  parents?: Role[]
-  users_count?: number
-  created_at: string
-  updated_at: string
-}
-
-export interface Permission {
-  id: number
-  name: string
-  guard_name: string
-  resource?: string
-  description: string | null
-  created_at: string
-  updated_at: string
-}
 
 export interface RolePermissionSyncRequest {
   permission_ids: number[]

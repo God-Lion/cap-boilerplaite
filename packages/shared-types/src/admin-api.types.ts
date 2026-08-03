@@ -176,17 +176,23 @@ export interface BroadcastSSFEventResponse {
 export interface Role {
   id: number
   name: string
+  guard_name?: string
   description?: string
   isSystem?: boolean
   userCount?: number
+  users_count?: number
   permissions?: Permission[]
+  parents?: Role[]
   createdAt?: string
   updatedAt?: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface CreateRoleRequest {
   name: string
   description?: string
+  guard_name?: string
   permissions?: string[]
 }
 
@@ -198,9 +204,12 @@ export interface UpdateRoleRequest {
 export interface Permission {
   id: number
   name: string
-  resource: string
-  action: string
+  guard_name?: string
+  resource?: string
+  action?: string
   description?: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface CreatePermissionRequest {
