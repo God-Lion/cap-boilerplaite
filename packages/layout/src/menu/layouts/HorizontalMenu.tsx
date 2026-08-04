@@ -117,7 +117,7 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Dictionary }) => {
               margin: '2px 8px !important',
               transition: 'all 0.2s ease',
               '&:hover': {
-                background: 'var(--premium-gradient) !important',
+                background: theme.palette.action.hover,
               },
             },
           },

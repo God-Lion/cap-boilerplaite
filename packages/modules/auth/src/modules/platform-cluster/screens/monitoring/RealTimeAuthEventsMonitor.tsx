@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { buildLayoutSurfaceEffect } from '@cap/layout'
 import {
   Box,
   Button,
@@ -336,7 +338,15 @@ const RealTimeAuthEventsMonitor = () => {
             {stats.map((stat, index) => {
               const Icon = stat.icon
               return (
-                <Paper key={index} className='glass-effect' sx={{ p: 3, borderRadius: 2, bgcolor: 'transparent', boxShadow: 'none' }}>
+                <Paper
+                  key={index}
+                  sx={(theme: any) => ({
+                    p: 3,
+                    borderRadius: 2,
+                    border: '1px solid ' + theme.palette.divider,
+                    ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                  })}
+                >
                   <Box
                     sx={{
                       display: 'flex',
@@ -522,18 +532,15 @@ const RealTimeAuthEventsMonitor = () => {
         >
           {/* Feed List (Left) */}
           <Paper
-            className='glass-effect'
-            sx={{
+            sx={(theme: any) => ({
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
               borderRadius: 2,
               overflow: 'hidden',
-              bgcolor: 'transparent',
-              border: 1,
-              borderColor: 'divider',
-              boxShadow: 'none',
-            }}
+              border: '1px solid ' + theme.palette.divider,
+              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            })}
           >
             <Box
               sx={{
@@ -665,18 +672,15 @@ const RealTimeAuthEventsMonitor = () => {
 
           {/* Detail View (Right Panel) */}
           <Paper
-            className='glass-effect'
-            sx={{
+            sx={(theme: any) => ({
               width: { xs: '100%', lg: 400 },
               display: 'flex',
               flexDirection: 'column',
               borderRadius: 2,
               overflow: 'hidden',
-              bgcolor: 'transparent',
-              border: 1,
-              borderColor: 'divider',
-              boxShadow: 'none',
-            }}
+              border: '1px solid ' + theme.palette.divider,
+              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            })}
           >
             <Box
               sx={{

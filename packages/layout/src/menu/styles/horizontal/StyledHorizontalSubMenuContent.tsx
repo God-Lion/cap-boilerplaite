@@ -3,15 +3,15 @@ import type { SubMenuContentProps } from '../../components/horizontal-menu/SubMe
 
 const StyledHorizontalSubMenuContent = styled.div<SubMenuContentProps>`
   inline-size: 260px;
-  border-radius: 4px;
-  box-shadow: 0 9px 28px 8px #00000011;
+  border-radius: ${({ theme }: any) => `${theme?.shape?.borderRadius || 4}px`};
+  box-shadow: ${({ theme }: any) => theme?.customShadows?.lg || theme?.shadows?.[4] || '0 6px 16px rgba(0, 0, 0, 0.12)'};
   outline: none;
   box-sizing: border-box;
-  background-color: white;
+  background-color: ${({ theme }: any) => theme?.palette?.background?.paper || '#ffffff'};
   overflow: hidden;
 
   ${({ browserScroll, top }) =>
-    browserScroll && `overflow-y: auto; max-block-size: calc((var(--vh, 1vh) * 100) - ${top}px);`}
+    browserScroll && `overflow-y: auto; max-block-size: calc(100dvh - ${top}px);`}
   ${({ $rootStyles }) => $rootStyles};
 `
 

@@ -23,6 +23,7 @@ import Logout from '@mui/icons-material/Logout'
 import Person from '@mui/icons-material/Person'
 import Settings from '@mui/icons-material/Settings'
 import { useSettings, useAppStore } from '@cap/platform-store'
+import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 import { useAuth } from '@cap/platform-core'
 import { AppPaths, resolveDynamicPath } from '@cap/shared-types'
 import { zIndexScale } from '@cap/theme'
@@ -128,14 +129,15 @@ const UserDropdown = () => {
             }}
           >
             <Paper
-              className='glass-effect animate-scale-in'
-              sx={{
+              className='animate-scale-in'
+              sx={(theme: any) => ({
                 borderRadius: '12px !important',
                 overflow: 'hidden',
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
-                  ? { border: 1, boxShadow: 'none' }
-                  : { boxShadow: 'var(--premium-shadow)' }),
-              }}
+                  ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
+                  : {}),
+              })}
             >
               <ClickAwayListener
                 onClickAway={(e) => handleDropdownClose(e as MouseEvent | TouchEvent)}

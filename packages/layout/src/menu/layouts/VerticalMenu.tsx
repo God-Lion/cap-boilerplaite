@@ -65,7 +65,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             '&:hover': {
               background: active
                 ? theme.palette.primary.mainOpacity
-                : 'var(--premium-gradient) !important',
+                : theme.palette.action.hover,
               transform: 'translateX(4px)',
               '& .tabler-icon, & i': {
                 transform: 'scale(1.15)',

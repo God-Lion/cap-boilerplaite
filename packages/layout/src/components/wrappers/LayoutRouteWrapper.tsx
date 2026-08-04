@@ -46,11 +46,7 @@ export const LayoutRouteWrapper: React.FC<LayoutRouteWrapperProps> = ({
 
   const content = children ?? element
 
-  return (
-    <div className='premium-auth-container' style={{ display: 'contents' }}>
-      {content}
-    </div>
-  )
+  return <React.Fragment>{content}</React.Fragment>
 }
 
 export default LayoutRouteWrapper

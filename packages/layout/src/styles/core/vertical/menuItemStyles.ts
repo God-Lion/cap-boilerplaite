@@ -1,5 +1,6 @@
 // MUI Imports
 import type { Theme } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
 
 // Type Imports
 import type { MenuItemStyles, MenuItemStylesParams } from '../../../menu/types'
@@ -32,31 +33,31 @@ const menuItemStyles = (
           }),
       [`&.${menuClasses.subMenuRoot}.${menuClasses.open} > .${menuClasses.button}, &.${menuClasses.subMenuRoot} > .${menuClasses.button}.${menuClasses.active}`]:
         {
-          backgroundColor: 'var(--mui-palette-action-selected) !important',
+          backgroundColor: `${theme.palette.action.selected} !important`,
         },
       [`&.${menuClasses.disabled} > .${menuClasses.button}`]: {
-        color: 'var(--mui-palette-text-disabled)',
+        color: theme.palette.text.disabled,
       },
       [`&:not(.${menuClasses.subMenuRoot}) > .${menuClasses.button}.${menuClasses.active}`]: {
         ...(popoutCollapsed && level > 0
           ? {
-              backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
-              color: 'var(--mui-palette-primary-main)',
+              backgroundColor: alpha(theme.palette.primary.main, 0.16),
+              color: theme.palette.primary.main,
               [`& .${menuClasses.icon}`]: {
-                color: 'var(--mui-palette-primary-main)',
+                color: theme.palette.primary.main,
               },
             }
           : {
-              color: 'var(--mui-palette-primary-contrastText)',
+              color: theme.palette.primary.contrastText,
               background:
                 theme.direction === 'ltr'
                   ? `linear-gradient(270deg,
-                    rgb(var(--mui-palette-primary-mainChannel) / 0.7) 0%,
-                    var(--mui-palette-primary-main) 100%) !important`
+                    ${alpha(theme.palette.primary.main, 0.7)} 0%,
+                    ${theme.palette.primary.main} 100%) !important`
                   : `linear-gradient(270deg,
-                     var(--mui-palette-primary-main) 100%,
-                     rgb(var(--mui-palette-primary-mainChannel) / 0.7) 100%) !important`,
-              boxShadow: 'var(--mui-customShadows-primary-sm)',
+                     ${theme.palette.primary.main} 100%,
+                     ${alpha(theme.palette.primary.main, 0.7)} 100%) !important`,
+              boxShadow: (theme as any).customShadows?.primary?.sm || theme.shadows[2],
               [`& .${menuClasses.icon}`]: {
                 color: 'inherit',
               },
@@ -66,7 +67,7 @@ const menuItemStyles = (
     button: ({ level, active }: MenuItemStylesParams) => ({
       paddingBlock: '8px',
       paddingInline: '12px',
-      borderRadius: 'var(--border-radius)',
+      borderRadius: theme.shape.borderRadius,
       ...(!(isCollapsed && !isHovered) && {
         '&:has(.MuiChip-root)': {
           paddingBlock: theme.spacing(1.75),
@@ -74,15 +75,15 @@ const menuItemStyles = (
       }),
 
       ...((!isPopoutWhenCollapsed || popoutExpanded || (popoutCollapsed && level === 0)) && {
-        borderRadius: 'var(--mui-shape-borderRadius)',
+        borderRadius: theme.shape.borderRadius,
         transition: `padding-inline-start ${transitionDuration}ms ease-in-out`,
       }),
       ...(!active && {
         '&:hover, &:focus-visible': {
-          backgroundColor: 'var(--mui-palette-action-hover)',
+          backgroundColor: theme.palette.action.hover,
         },
         '&[aria-expanded="true"]': {
-          backgroundColor: 'var(--mui-palette-action-selected)',
+          backgroundColor: theme.palette.action.selected,
         },
       }),
     }),
@@ -93,7 +94,7 @@ const menuItemStyles = (
       }),
       ...(level > 0 && {
         fontSize: '0.75rem',
-        color: 'var(--mui-palette-text-secondary)',
+        color: theme.palette.text.secondary,
       }),
       ...(level === 0 && {
         marginInlineEnd: theme.spacing(2),
@@ -141,9 +142,9 @@ const menuItemStyles = (
       },
     },
     subMenuContent: ({ level }: MenuItemStylesParams) => ({
-      zIndex: 'calc(var(--drawer-z-index) + 1)',
-      borderRadius: 'var(--border-radius)',
-      backgroundColor: 'var(--mui-palette-background-paper)',
+      zIndex: theme.zIndex.drawer + 1,
+      borderRadius: theme.shape.borderRadius,
+      backgroundColor: theme.palette.background.paper,
       ...(popoutCollapsed && {
         '& > ul, & > div > ul': {
           [`& > li:not(:last-child), & > li > .${menuClasses.button}:not(:last-child)`]: {
@@ -154,10 +155,10 @@ const menuItemStyles = (
           ...(settings.skin === 'bordered'
             ? {
                 boxShadow: 'none',
-                border: '1px solid var(--mui-palette-divider)',
+                border: `1px solid ${theme.palette.divider}`,
               }
             : {
-                boxShadow: 'var(--mui-customShadows-sm)',
+                boxShadow: (theme as any).customShadows?.sm || theme.shadows[2],
               }),
           [`& .${menuClasses.button}`]: {
             paddingInline: theme.spacing(4),

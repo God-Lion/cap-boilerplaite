@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Path } from '@cap/module-auth/routes/path';
 import { useOrganizationInvitations, useInviteOrganizationMember, useRevokeOrganizationInvitation } from '@idaas/authentication-core/hooks/useAdminQuery';
 import { useSnackbar } from 'notistack';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 
 interface Invitation {
   id: string | number
@@ -200,10 +201,13 @@ export default function OrganizationInvitationDashboard() {
         ].map((stat, i) => (
           <Card
             key={i}
-            className='glass-effect'
-            sx={{ borderRadius: 3, border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}
+            sx={(theme: any) => ({
+              borderRadius: 3,
+              border: '1px solid ' + theme.palette.divider,
+              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            })}
           >
-            {/* â”€â”€ SYSTEM PATTERN: metric_card (OrganizationProfile style) â”€â”€ */}
+            {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style) ── */}
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Avatar
                 sx={{ bgcolor: alpha(stat.color, 0.1), color: stat.color, width: 44, height: 44 }}
@@ -225,15 +229,12 @@ export default function OrganizationInvitationDashboard() {
 
       {/* Table */}
       <Paper
-        className='glass-effect'
-        sx={{
+        sx={(theme: any) => ({
           borderRadius: 4,
-          border: '1px solid',
-          borderColor: 'divider',
-          boxShadow: 'none',
+          border: '1px solid ' + theme.palette.divider,
           overflow: 'hidden',
-          bgcolor: 'transparent',
-        }}
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
       >
         <Box
           sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', gap: 2 }}
@@ -353,8 +354,11 @@ export default function OrganizationInvitationDashboard() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         slotProps={{
           paper: {
-            className: 'glass-effect',
-            sx: { borderRadius: 3, minWidth: 200, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' },
+            sx: (theme: any) => ({
+              borderRadius: 3,
+              minWidth: 200,
+              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            }),
           },
         }}
       >
@@ -435,7 +439,12 @@ export default function OrganizationInvitationDashboard() {
         onClose={() => setInviteModalOpen(false)}
         fullWidth
         maxWidth='xs'
-        PaperProps={{ className: 'glass-effect', sx: { borderRadius: 4 } }}
+        PaperProps={{
+          sx: (theme: any) => ({
+            borderRadius: 4,
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          }),
+        }}
       >
         <DialogTitle sx={{ fontWeight: 800 }}>{t('auth.admin.inviteMemberModalTitle')}</DialogTitle>
         <DialogContent>

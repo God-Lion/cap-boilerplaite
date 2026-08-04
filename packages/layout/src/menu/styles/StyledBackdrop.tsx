@@ -9,7 +9,7 @@ const StyledBackdrop = styled.div<StyledBackdropProps>`
   inset-block-start: 0;
   inset-inline-end: 0;
   inset-block-end: 0;
-  z-index: var(--backdrop-z-index);
+  z-index: ${({ theme }: any) => (theme?.zIndex?.drawer ? theme.zIndex.drawer - 1 : 1199)};
   background-color: ${({ backdropColor }) => backdropColor || 'rgba(0, 0, 0, 0.3)'};
   touch-action: none;
 `

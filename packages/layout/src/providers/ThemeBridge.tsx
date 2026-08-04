@@ -109,26 +109,26 @@ export const ThemeBridge = ({ children }: { children: React.ReactNode }) => {
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
             <GlobalStyles
-              styles={{
+              styles={(theme) => ({
                 ':root': {
-                  // Core Layout Variables
-                  '--border-color': 'var(--color-border)',
-                  '--border-radius': 'var(--radius-md)',
+                  // Core Layout Variables derived from MUI theme
+                  '--border-color': theme.palette.divider,
+                  '--border-radius': `${theme.shape.borderRadius}px`,
 
                   // Derived Background Variables
                   '--background-color-rgb': 'var(--color-background-h) var(--color-background-s) var(--color-background-l)',
                   '--backdrop-color': 'hsl(var(--color-background-h) var(--color-background-s) var(--color-background-l) / 0.6)',
 
                   // Z-Index Layers (Source of Truth)
-                  '--header-z-index': 'var(--z-index-app-bar, 1100)',
-                  '--drawer-z-index': 'var(--z-index-drawer, 1200)',
+                  '--header-z-index': String(theme.zIndex.appBar),
+                  '--drawer-z-index': String(theme.zIndex.drawer),
                   '--footer-z-index': '1050',
                   '--z-behind': '-1',
 
                   // Layout Constants
                   '--header-height': '64px',
                 },
-              }}
+              })}
             />
             {children}
           </MuiThemeProvider>

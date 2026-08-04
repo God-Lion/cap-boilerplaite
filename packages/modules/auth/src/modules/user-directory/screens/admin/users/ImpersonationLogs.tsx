@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { ImpersonationSession } from '@cap/shared-types';
 import { useImpersonationLogs } from '../../../../authentication-core';
 import { format, formatDistanceToNow } from 'date-fns';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 
 export default function ImpersonationLogs() {
   const { t } = useTranslation('common')
@@ -134,15 +135,12 @@ export default function ImpersonationLogs() {
 
       {/* Stats/Overview Card */}
       <Card
-        className="glass-effect"
-        sx={{
+        sx={(theme: any) => ({
           mb: 4,
           borderRadius: 4,
-          bgcolor: 'transparent',
-          border: '1px dashed',
-          borderColor: alpha(theme.palette.primary.main, 0.2),
-          boxShadow: 'none',
-        }}
+          border: '1px dashed ' + alpha(theme.palette.primary.main, 0.2),
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
       >
         <CardContent
           sx={{
@@ -255,15 +253,12 @@ export default function ImpersonationLogs() {
 
       {/* Table Card */}
       <Paper
-        className="glass-effect"
-        sx={{
+        sx={(theme: any) => ({
           borderRadius: 4,
           overflow: 'hidden',
-          border: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          boxShadow: '0px 10px 30px -10px rgba(0,0,0,0.05)',
-        }}
+          border: '1px solid ' + theme.palette.divider,
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
       >
         <TableContainer>
           <Table sx={{ minWidth: 800 }}>

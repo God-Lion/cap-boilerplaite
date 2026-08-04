@@ -57,6 +57,7 @@ import {
   AdminUser,
 } from '@idaas/authentication-core/hooks/useAdminQuery'
 import { Path } from '@cap/module-auth/routes/path'
+import { buildLayoutSurfaceEffect } from '@cap/layout'
 
 export default function UserList() {
   const { t } = useTranslation('common')
@@ -349,9 +350,7 @@ export default function UserList() {
         ].map((stat, idx) => (
           <Card
             key={idx}
-            className='glass-effect'
-            sx={{
-              boxShadow: 'none',
+            sx={(theme: any) => ({
               borderRadius: 4,
               cursor: 'pointer',
               transition: 'transform 0.15s ease, border-color 0.15s ease',
@@ -359,7 +358,8 @@ export default function UserList() {
                 transform: 'translateY(-2px)',
                 borderColor: theme.palette[stat.color].main,
               },
-            }}
+              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            })}
             onClick={stat.onClick}
           >
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2.5, p: 3 }}>
@@ -410,13 +410,12 @@ export default function UserList() {
       </Box>
 
       <Card
-        className='glass-effect'
-        sx={{
-          bgcolor: 'transparent',
-          boxShadow: 'none',
+        sx={(theme: any) => ({
           borderRadius: 4,
           overflow: 'hidden',
-        }}
+          border: '1px solid ' + theme.palette.divider,
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
       >
         {/* Toolbar */}
         <Box

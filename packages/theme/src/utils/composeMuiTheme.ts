@@ -1,4 +1,5 @@
 import { createTheme, darken, lighten } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import type { Direction, Settings, SystemMode } from '@cap/shared-types';
 import getComponentOverrides from '../overrides';
 import type { TenantThemeConfig } from '../types';
@@ -20,6 +21,18 @@ const toNumber = (value: string | number | undefined, fallback: number) => {
   const parsed = Number.parseInt(value || '', 10);
   return Number.isNaN(parsed) ? fallback : parsed;
 };
+
+const derivePaletteColorGroup = (mainColor: string, contrastText = '#FFF') => ({
+  light: lighten(mainColor, 0.2),
+  main: mainColor,
+  dark: darken(mainColor, 0.12),
+  contrastText,
+  lighterOpacity: `${mainColor}14`,
+  lightOpacity: `${mainColor}29`,
+  mainOpacity: `${mainColor}3D`,
+  darkOpacity: `${mainColor}52`,
+  darkerOpacity: `${mainColor}61`,
+});
 
 export const composeMuiTheme = ({
   currentMode,
@@ -62,72 +75,12 @@ export const composeMuiTheme = ({
       direction,
       palette: {
         mode: currentMode,
-        primary: {
-          light: lighten(primaryMain, 0.2),
-          main: primaryMain,
-          dark: darken(primaryMain, 0.12),
-          // Opacity tokens — consumed by button/tab override variants (not via colorSchemes)
-          lighterOpacity: `${primaryMain}14`,
-          lightOpacity: `${primaryMain}29`,
-          mainOpacity: `${primaryMain}3D`,
-          darkOpacity: `${primaryMain}52`,
-          darkerOpacity: `${primaryMain}61`,
-        },
-        secondary: {
-          light: lighten(secondaryMain, 0.2),
-          main: secondaryMain,
-          dark: darken(secondaryMain, 0.12),
-          contrastText: '#FFF',
-          lighterOpacity: `${secondaryMain}14`,
-          lightOpacity: `${secondaryMain}29`,
-          mainOpacity: `${secondaryMain}3D`,
-          darkOpacity: `${secondaryMain}52`,
-          darkerOpacity: `${secondaryMain}61`,
-        },
-        error: {
-          light: lighten(errorMain, 0.2),
-          main: errorMain,
-          dark: darken(errorMain, 0.12),
-          contrastText: '#FFF',
-          lighterOpacity: `${errorMain}14`,
-          lightOpacity: `${errorMain}29`,
-          mainOpacity: `${errorMain}3D`,
-          darkOpacity: `${errorMain}52`,
-          darkerOpacity: `${errorMain}61`,
-        },
-        success: {
-          light: lighten(successMain, 0.2),
-          main: successMain,
-          dark: darken(successMain, 0.12),
-          contrastText: '#FFF',
-          lighterOpacity: `${successMain}14`,
-          lightOpacity: `${successMain}29`,
-          mainOpacity: `${successMain}3D`,
-          darkOpacity: `${successMain}52`,
-          darkerOpacity: `${successMain}61`,
-        },
-        warning: {
-          light: lighten(warningMain, 0.2),
-          main: warningMain,
-          dark: darken(warningMain, 0.12),
-          contrastText: '#FFF',
-          lighterOpacity: `${warningMain}14`,
-          lightOpacity: `${warningMain}29`,
-          mainOpacity: `${warningMain}3D`,
-          darkOpacity: `${warningMain}52`,
-          darkerOpacity: `${warningMain}61`,
-        },
-        info: {
-          light: lighten(infoMain, 0.2),
-          main: infoMain,
-          dark: darken(infoMain, 0.12),
-          contrastText: '#FFF',
-          lighterOpacity: `${infoMain}14`,
-          lightOpacity: `${infoMain}29`,
-          mainOpacity: `${infoMain}3D`,
-          darkOpacity: `${infoMain}52`,
-          darkerOpacity: `${infoMain}61`,
-        },
+        primary: derivePaletteColorGroup(primaryMain, '#FFF'),
+        secondary: derivePaletteColorGroup(secondaryMain, '#FFF'),
+        error: derivePaletteColorGroup(errorMain, '#FFF'),
+        success: derivePaletteColorGroup(successMain, '#FFF'),
+        warning: derivePaletteColorGroup(warningMain, '#FFF'),
+        info: derivePaletteColorGroup(infoMain, '#FFF'),
         background: {
           default: backgroundDefault,
           paper: surfaceColor,
@@ -240,3 +193,23 @@ export const composeMuiTheme = ({
 
   return theme;
 };
+
+import { LRUCache } from './LRUCache';
+
+const themeCache = new LRUCache<string, Theme>(20);
+
+export const composeMuiThemeMemoized = (options: ComposeMuiThemeOptions): Theme => {
+  const { currentMode, direction = 'ltr', settings, tenantTheme } = options;
+  const key = `${tenantTheme?.id || 'default'}_${currentMode}_${direction}_${settings.skin}_${settings.effect || 'none'}_${settings.primaryColor || ''}`;
+  
+  const cached = themeCache.get(key);
+  if (cached) {
+    return cached;
+  }
+  
+  const compiledTheme = composeMuiTheme(options);
+  themeCache.set(key, compiledTheme);
+  return compiledTheme;
+};
+
+

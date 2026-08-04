@@ -222,193 +222,135 @@ onTerminalError(() => {
   }
 })
 
-export const useAuthStore = () => {
-  const user = useAppStore((state) => state.user)
-  const isAuthenticated = useAppStore((state) => state.isAuthenticated)
-  const isAdmin = useAppStore((state) => state.isAdmin)
-  const isLoading = useAppStore((state) => state.isLoading)
-  const error = useAppStore((state) => state.error)
-  const tokens = useAppStore((state) => state.tokens)
-  const signIn = useAppStore((state) => state.signIn)
-  const signOut = useAppStore((state) => state.signOut)
-  const refreshAuth = useAppStore((state) => state.refreshAuth)
-  const refreshToken = useAppStore((state) => state.refreshToken)
-  const updateUser = useAppStore((state) => state.updateUser)
-  const setUser = useAppStore((state) => state.setUser)
-  const setTokens = useAppStore((state) => state.setTokens)
-  const clearError = useAppStore((state) => state.clearError)
+import { useShallow } from 'zustand/shallow'
 
-  return {
-    user,
-    isAuthenticated,
-    isAdmin,
-    isLoading,
-    error,
-    tokens,
-    signIn,
-    signOut,
-    refreshAuth,
-    refreshToken,
-    updateUser,
-    setUser,
-    setTokens,
-    clearError,
-  }
-}
+export const useAuthStore = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      user: state.user,
+      isAuthenticated: state.isAuthenticated,
+      isAdmin: state.isAdmin,
+      isLoading: state.isLoading,
+      error: state.error,
+      tokens: state.tokens,
+      signIn: state.signIn,
+      signOut: state.signOut,
+      refreshAuth: state.refreshAuth,
+      refreshToken: state.refreshToken,
+      updateUser: state.updateUser,
+      setUser: state.setUser,
+      setTokens: state.setTokens,
+      clearError: state.clearError,
+    }))
+  )
 
-export const useGuest = () => {
-  const guestSession = useAppStore((state) => state.guestSession)
-  const isGuest = useAppStore((state) => state.isGuest)
-  const createGuestSession = useAppStore((state) => state.createGuestSession)
-  const clearGuestSession = useAppStore((state) => state.clearGuestSession)
-  const addGuestData = useAppStore((state) => state.addGuestData)
-  const getGuestData = useAppStore((state) => state.getGuestData)
-  const incrementAnalysisCount = useAppStore((state) => state.incrementAnalysisCount)
-  const getAnalysisCount = useAppStore((state) => state.getAnalysisCount)
-
-  return {
-    guestSession,
-    isGuest,
-    createGuestSession,
-    clearGuestSession,
-    addGuestData,
-    getGuestData,
-    incrementAnalysisCount,
-    analysisCounts: getAnalysisCount(),
-  }
-}
+export const useGuest = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      guestSession: state.guestSession,
+      isGuest: state.isGuest,
+      createGuestSession: state.createGuestSession,
+      clearGuestSession: state.clearGuestSession,
+      addGuestData: state.addGuestData,
+      getGuestData: state.getGuestData,
+      incrementAnalysisCount: state.incrementAnalysisCount,
+      analysisCounts: state.getAnalysisCount(),
+    }))
+  )
 
 
-export const useProfile = () => {
-  const profiles = useAppStore((state) => state.profiles)
-  const activeProfile = useAppStore((state) => state.activeProfile)
-  const addProfile = useAppStore((state) => state.addProfile)
-  const updateProfile = useAppStore((state) => state.updateProfile)
-  const deleteProfile = useAppStore((state) => state.deleteProfile)
-  const setActiveProfile = useAppStore((state) => state.setActiveProfile)
+export const useProfile = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      profiles: state.profiles,
+      activeProfile: state.activeProfile,
+      addProfile: state.addProfile,
+      updateProfile: state.updateProfile,
+      deleteProfile: state.deleteProfile,
+      setActiveProfile: state.setActiveProfile,
+    }))
+  )
 
-  return {
-    profiles,
-    activeProfile,
-    addProfile,
-    updateProfile,
-    deleteProfile,
-    setActiveProfile,
-  }
-}
+export const useNotifications = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      notifications: state.notifications,
+      unreadCount: state.unreadCount,
+      addNotification: state.addNotification,
+      markAsRead: state.markAsRead,
+      markAllAsRead: state.markAllAsRead,
+      deleteNotification: state.deleteNotification,
+      clearNotifications: state.clearNotifications,
+    }))
+  )
 
-export const useNotifications = () => {
-  const notifications = useAppStore((state) => state.notifications)
-  const unreadCount = useAppStore((state) => state.unreadCount)
-  const addNotification = useAppStore((state) => state.addNotification)
-  const markAsRead = useAppStore((state) => state.markAsRead)
-  const markAllAsRead = useAppStore((state) => state.markAllAsRead)
-  const deleteNotification = useAppStore((state) => state.deleteNotification)
-  const clearNotifications = useAppStore((state) => state.clearNotifications)
+export const usePreferences = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      preferences: state.preferences,
+      updatePreferences: state.updatePreferences,
+      resetPreferences: state.resetPreferences,
+    }))
+  )
 
-  return {
-    notifications,
-    unreadCount,
-    addNotification,
-    markAsRead,
-    markAllAsRead,
-    deleteNotification,
-    clearNotifications,
-  }
-}
-
-export const usePreferences = () => {
-  const preferences = useAppStore((state) => state.preferences)
-  const updatePreferences = useAppStore((state) => state.updatePreferences)
-  const resetPreferences = useAppStore((state) => state.resetPreferences)
-
-  return {
-    preferences,
-    updatePreferences,
-    resetPreferences,
-  }
-}
-
-export const useSettings = () => {
-  const settings = useAppStore((state) => state.settings)
-  const isSettingsChanged = useAppStore((state) => state.isSettingsChanged)
-  const updateSettings = useAppStore((state) => state.updateSettings)
-  const resetSettings = useAppStore((state) => state.resetSettings)
-  const updatePageSettings = useAppStore((state) => state.updatePageSettings)
-
-  return {
-    settings,
-    isSettingsChanged,
-    updateSettings,
-    resetSettings,
-    updatePageSettings,
-  }
-}
+export const useSettings = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      settings: state.settings,
+      isSettingsChanged: state.isSettingsChanged,
+      updateSettings: state.updateSettings,
+      resetSettings: state.resetSettings,
+      updatePageSettings: state.updatePageSettings,
+    }))
+  )
 
 /** @deprecated Use useVerticalNav from @cap/layout */
-export const useVerticalNavStore = () => {
-  const verticalNav = useAppStore((state) => state.verticalNav)
-  const updateVerticalNavState = useAppStore((state) => state.updateVerticalNavState)
-  const collapseVerticalNav = useAppStore((state) => state.collapseVerticalNav)
-  const hoverVerticalNav = useAppStore((state) => state.hoverVerticalNav)
-  const toggleVerticalNav = useAppStore((state) => state.toggleVerticalNav)
-
-  return {
-    ...verticalNav,
-    updateVerticalNavState,
-    collapseVerticalNav,
-    hoverVerticalNav,
-    toggleVerticalNav,
-  }
-}
+export const useVerticalNavStore = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      ...state.verticalNav,
+      updateVerticalNavState: state.updateVerticalNavState,
+      collapseVerticalNav: state.collapseVerticalNav,
+      hoverVerticalNav: state.hoverVerticalNav,
+      toggleVerticalNav: state.toggleVerticalNav,
+    }))
+  )
 
 /** @deprecated Use useHorizontalNav from @cap/layout */
-export const useHorizontalNavStore = () => {
-  const horizontalNav = useAppStore((state) => state.horizontalNav)
-  const updateIsBreakpointReached = useAppStore((state) => state.updateIsBreakpointReached)
+export const useHorizontalNavStore = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      ...state.horizontalNav,
+      updateIsBreakpointReached: state.updateIsBreakpointReached,
+    }))
+  )
 
-  return {
-    ...horizontalNav,
-    updateIsBreakpointReached,
-  }
-}
+export const useTheme = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      mode: state.settings.mode,
+      toggleColorMode: state.toggleColorMode,
+      setMode: state.setMode,
+    }))
+  )
 
-export const useTheme = () => {
-  const mode = useAppStore((state) => state.settings.mode)
-  const toggleColorMode = useAppStore((state) => state.toggleColorMode)
-  const setMode = useAppStore((state) => state.setMode)
+export const useNetwork = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      isOnline: state.isOnline,
+      setOnline: state.setOnline,
+      setOffline: state.setOffline,
+    }))
+  )
 
-  return {
-    mode,
-    toggleColorMode,
-    setMode,
-  }
-}
+export const useOfflineQueue = () =>
+  useAppStore(
+    useShallow((state: AppStore) => ({
+      offlineQueue: state.offlineQueue,
+      addToOfflineQueue: state.addToOfflineQueue,
+      removeFromOfflineQueue: state.removeFromOfflineQueue,
+      incrementOfflineRetry: state.incrementOfflineRetry,
+      clearOfflineQueue: state.clearOfflineQueue,
+    }))
+  )
 
-export const useNetwork = () => {
-  const isOnline = useAppStore((state) => state.isOnline)
-  const setOnline = useAppStore((state) => state.setOnline)
-  const setOffline = useAppStore((state) => state.setOffline)
-
-  return {
-    isOnline,
-    setOnline,
-    setOffline,
-  }
-}
-
-export const useOfflineQueue = () => {
-  const offlineQueue = useAppStore((state) => state.offlineQueue)
-  const addToOfflineQueue = useAppStore((state) => state.addToOfflineQueue)
-  const removeFromOfflineQueue = useAppStore((state) => state.removeFromOfflineQueue)
-  const incrementOfflineRetry = useAppStore((state) => state.incrementOfflineRetry)
-  const clearOfflineQueue = useAppStore((state) => state.clearOfflineQueue)
-
-  return {
-    offlineQueue,
-    addToOfflineQueue,
-    removeFromOfflineQueue,
-    incrementOfflineRetry,
-    clearOfflineQueue,
-  }
-}

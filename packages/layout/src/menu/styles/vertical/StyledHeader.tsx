@@ -1,7 +1,9 @@
 import styled from '@emotion/styled'
+import { alpha } from '@mui/material/styles'
 import { verticalLayoutClasses } from '@cap/theme'
 import type { Theme } from '@mui/material/styles'
 import type { CSSObject } from '@emotion/styled'
+import { SurfaceEffectFactory } from '../../../utils/buildLayoutSurfaceEffect'
 
 type StyledHeaderProps = {
   theme: Theme
@@ -11,7 +13,7 @@ type StyledHeaderProps = {
 }
 
 const StyledHeader = styled.header<StyledHeaderProps>`
-  min-block-size: var(--header-height);
+  min-block-size: 64px;
 
   &.${verticalLayoutClasses.headerContentCompact} {
     &.${verticalLayoutClasses.headerFloating}
@@ -44,26 +46,26 @@ const StyledHeader = styled.header<StyledHeaderProps>`
   &.${verticalLayoutClasses.headerFixed} {
     position: sticky;
     inset-block-start: 0;
-    z-index: var(--header-z-index);
+    z-index: ${({ theme }) => theme.zIndex.appBar};
 
     &:not(.${verticalLayoutClasses.headerBlur}).scrolled.${verticalLayoutClasses.headerAttached},
       &:not(.${verticalLayoutClasses.headerBlur}).scrolled.${verticalLayoutClasses.headerDetached}
       .${verticalLayoutClasses.navbar} {
-      background-color: var(--mui-palette-background-paper);
+      background-color: ${({ theme }) => theme.palette.background.paper};
     }
 
     &.${verticalLayoutClasses.headerDetached} .${verticalLayoutClasses.navbar} {
-      box-shadow: var(--mui-customShadows-sm);
+      box-shadow: ${({ theme }) => (theme as any).customShadows?.sm || theme.shadows[1]};
 
       [data-skin='bordered'] & {
         box-shadow: none;
-        border-inline: 1px solid var(--border-color);
-        border-block-end: 1px solid var(--border-color);
+        border-inline: 1px solid ${({ theme }) => theme.palette.divider};
+        border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
       }
     }
     &.${verticalLayoutClasses.headerDetached} .${verticalLayoutClasses.navbar} {
-      border-end-start-radius: var(--border-radius);
-      border-end-end-radius: var(--border-radius);
+      border-end-start-radius: ${({ theme }) => `${theme.shape.borderRadius}px`};
+      border-end-end-radius: ${({ theme }) => `${theme.shape.borderRadius}px`};
     }
 
     &.${verticalLayoutClasses.headerDetached}, &.${verticalLayoutClasses.headerFloating} {
@@ -81,39 +83,39 @@ const StyledHeader = styled.header<StyledHeaderProps>`
         &.${verticalLayoutClasses.headerFloating}
         .${verticalLayoutClasses.navbar} {
         backdrop-filter: blur(6px);
-        background-color: rgb(var(--background-color-rgb) / 0.88);
+        background-color: ${({ theme }) => alpha(theme.palette.background.paper, 0.88)};
       }
 
       &.${verticalLayoutClasses.headerFloating} {
         &:before {
           content: '';
           position: absolute;
-          z-index: var(--z-behind);
+          z-index: -1;
           inset-block-start: 0;
           inset-inline: 0;
           block-size: 100%;
-          background: linear-gradient(
+          background: ${({ theme }) => `linear-gradient(
             180deg,
-            rgb(var(--mui-palette-background-defaultChannel) / 0.7) 44%,
-            rgb(var(--mui-palette-background-defaultChannel) / 0.43) 73%,
-            rgb(var(--mui-palette-background-defaultChannel) / 0)
-          );
+            ${alpha(theme.palette.background.default, 0.7)} 44%,
+            ${alpha(theme.palette.background.default, 0.43)} 73%,
+            ${alpha(theme.palette.background.default, 0)}
+          )`};
           backdrop-filter: blur(10px);
-          mask: linear-gradient(
-            var(--mui-palette-background-default),
-            var(--mui-palette-background-default) 18%,
+          mask: ${({ theme }) => `linear-gradient(
+            ${theme.palette.background.default},
+            ${theme.palette.background.default} 18%,
             transparent 100%
-          );
+          )`};
         }
       }
     }
 
     &.${verticalLayoutClasses.headerAttached}.scrolled {
-      box-shadow: var(--mui-customShadows-sm);
+      box-shadow: ${({ theme }) => (theme as any).customShadows?.sm || theme.shadows[1]};
 
       [data-skin='bordered'] & {
         box-shadow: none;
-        border-block-end: 1px solid var(--border-color);
+        border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
       }
     }
 
@@ -144,14 +146,15 @@ const StyledHeader = styled.header<StyledHeaderProps>`
     padding-block-start: 16px;
 
     .${verticalLayoutClasses.navbar} {
-      background-color: var(--mui-palette-background-paper);
-      border-radius: var(--border-radius);
+      background-color: ${({ theme }) => theme.palette.background.paper};
+      border-radius: ${({ theme }) => `${theme.shape.borderRadius}px`};
       padding-inline: 16px;
-      box-shadow: var(--mui-customShadows-sm);
+      box-shadow: ${({ theme }) => (theme as any).customShadows?.sm || theme.shadows[1]};
+      ${({ theme }) => SurfaceEffectFactory.create((theme as any).effects || (theme as any).effectConfig || { globalType: 'glass' }, theme)};
 
       [data-skin='bordered'] & {
         box-shadow: none;
-        border: 1px solid var(--border-color);
+        border: 1px solid ${({ theme }) => theme.palette.divider};
       }
     }
   }
@@ -179,3 +182,4 @@ const StyledHeader = styled.header<StyledHeaderProps>`
 `
 
 export default StyledHeader
+

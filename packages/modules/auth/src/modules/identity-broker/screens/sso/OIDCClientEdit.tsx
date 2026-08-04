@@ -43,7 +43,8 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useSnackbar } from 'notistack'
-import { Path, useOIDCClient, useUpdateOIDCClient, useRotateClientSecret } from "@auth"
+import { Path, useOIDCClient, useUpdateOIDCClient, useRotateClientSecret } from '@auth'
+import { buildLayoutSurfaceEffect } from '@cap/layout'
 
 const updateOidcSchema = z.object({
   name: z.string().min(3, 'Client Name must be at least 3 characters').max(50),
@@ -218,13 +219,13 @@ export default function OIDCClientEdit() {
       {/* Secret Rotation Alert (if rotated) */}
       {newSecret && (
         <Card
-          className='glass-effect warning'
-          sx={{
+          sx={(theme: any) => ({
             p: 4,
             mb: 4,
             borderRadius: 4,
-            boxShadow: `0 8px 32px ${alpha(theme.palette.warning.main, 0.1)}`,
-          }}
+            border: '1px solid ' + theme.palette.warning.main,
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
           component={motion.div}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -270,12 +271,12 @@ export default function OIDCClientEdit() {
       )}
 
       <Card
-        className='glass-effect'
-        sx={{
+        sx={(theme: any) => ({
           borderRadius: 4,
-          boxShadow: 'none',
           mb: 4,
-        }}
+          border: '1px solid ' + theme.palette.divider,
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
       >
         <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
           {/* Client ID readonly display */}
@@ -402,11 +403,11 @@ export default function OIDCClientEdit() {
 
       {/* Danger Zone */}
       <Card
-        className='glass-effect danger'
-        sx={{
+        sx={(theme: any) => ({
           borderRadius: 4,
-          boxShadow: 'none',
-        }}
+          border: '1px solid ' + theme.palette.error.main,
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
       >
         <Box sx={{ p: 4 }}>
           <Typography variant="h6" sx={{ fontWeight: 800, mb: 3, color: 'error.main' }}>

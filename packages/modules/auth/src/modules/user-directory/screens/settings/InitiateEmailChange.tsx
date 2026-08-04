@@ -1,9 +1,9 @@
-
 import { Box, Typography, Card, CardContent, Avatar, Button, Grid, TextField, Alert, AlertTitle, Container, IconButton, Stack } from '@mui/material';
 import { Mail, Security, Warning, ArrowForward, Lock, CalendarToday, ArrowBack } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Path } from '@auth/routes/path';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 
 const InitiateEmailChange = () => {
   const { t } = useTranslation()
@@ -35,8 +35,14 @@ const InitiateEmailChange = () => {
       <Grid container spacing={4}>
         <Grid size={{ xs: 12, md: 7 }}>
           <Stack spacing={3}>
-            {/* â”€â”€ SYSTEM PATTERN: metric_card (OrganizationProfile style) â”€â”€ */}
-            <Card className='glass-effect' variant='outlined' sx={{ borderRadius: 3, bgcolor: 'transparent' }}>
+            {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style) ── */}
+            <Card
+              variant='outlined'
+              sx={(theme: any) => ({
+                borderRadius: 3,
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
+            >
               <CardContent sx={{ p: 3 }}>
                 <Typography variant='subtitle1' fontWeight='bold' sx={{ mb: 3 }}>
                   {t('auth.account.current_account_status', 'Current Account Status')}
@@ -60,7 +66,13 @@ const InitiateEmailChange = () => {
               </CardContent>
             </Card>
 
-            <Card className='glass-effect' variant='outlined' sx={{ borderRadius: 3, bgcolor: 'transparent' }}>
+            <Card
+              variant='outlined'
+              sx={(theme: any) => ({
+                borderRadius: 3,
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
+            >
               <CardContent sx={{ p: 3 }}>
                 <Typography
                   variant='subtitle1'
@@ -128,14 +140,14 @@ const InitiateEmailChange = () => {
         <Grid size={{ xs: 12, md: 5 }}>
           <Stack spacing={3}>
             <Alert
-              className='glass-effect'
               severity='warning'
               icon={<Warning fontSize='inherit' />}
-              sx={{
+              sx={(theme: any) => ({
                 borderRadius: 3,
                 bgcolor: 'rgba(245, 158, 11, 0.1)',
                 border: '1px solid rgba(245, 158, 11, 0.2)',
-              }}
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
             >
               <AlertTitle sx={{ fontWeight: 'bold' }}>
                 {t('auth.account.session_termination_warning', 'Session Termination Warning')}

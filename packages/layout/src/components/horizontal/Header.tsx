@@ -39,7 +39,7 @@ const LayoutHeader = (props: Props) => {
   // Phase 4 & 5: tenant-driven per-component styles and effects
   const navbarStyle = useComponentStyle('navbar')
   const navbarEffect = useComponentEffectConfig('navbar')
-  const effectStyles = buildLayoutSurfaceEffect(navbarEffect)
+  const effectStyles = buildLayoutSurfaceEffect(navbarEffect, theme)
 
   const mergedOverrideStyles: CSSObject = {
     ...(navbarStyle?.customProperties as CSSObject),

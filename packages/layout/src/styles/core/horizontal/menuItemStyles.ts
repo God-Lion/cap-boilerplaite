@@ -1,4 +1,5 @@
 import type { Theme } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
 import type { MenuItemStyles, MenuItemStylesParams } from '../../../menu/types'
 import type { Settings } from '@cap/platform-core'
 import { menuClasses } from '../../../menu/utils/menuClasses'
@@ -9,40 +10,40 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
       borderRadius: 6,
     }),
     [`&.${menuClasses.open} > .${menuClasses.button}`]: {
-      backgroundColor: 'var(--mui-palette-action-selected) !important',
+      backgroundColor: `${theme.palette.action.selected} !important`,
     },
     ...(level === 0
       ? {
           [`& .${menuClasses.button}.${menuClasses.active}`]: {
-            color: 'var(--mui-palette-primary-contrastText) !important',
+            color: `${theme.palette.primary.contrastText} !important`,
             background:
               theme.direction === 'ltr'
                 ? `linear-gradient(270deg,
-                  rgb(var(--mui-palette-primary-mainChannel) / 0.7) 0%,
-                  var(--mui-palette-primary-main) 100%) !important`
+                  ${alpha(theme.palette.primary.main, 0.7)} 0%,
+                  ${theme.palette.primary.main} 100%) !important`
                 : `linear-gradient(270deg,
-                  var(--mui-palette-primary-main) 100%,
-                  rgb(var(--mui-palette-primary-mainChannel) / 0.7) 100%) !important`,
+                  ${theme.palette.primary.main} 100%,
+                  ${alpha(theme.palette.primary.main, 0.7)} 100%) !important`,
           },
         }
       : {
           [`&:not([aria-expanded]) > .${menuClasses.button}.${menuClasses.active}`]: {
-            backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
-            color: 'var(--mui-palette-primary-main)',
+            backgroundColor: alpha(theme.palette.primary.main, 0.16),
+            color: theme.palette.primary.main,
           },
           [`&[aria-expanded] > .${menuClasses.button}.${menuClasses.active}`]: {
-            backgroundColor: 'var(--mui-palette-action-selected) !important',
+            backgroundColor: `${theme.palette.action.selected} !important`,
           },
         }),
     [`&.${menuClasses.disabled} > .${menuClasses.button}`]: {
-      color: 'var(--mui-palette-text-disabled)',
+      color: theme.palette.text.disabled,
       '& *': {
         color: 'inherit',
       },
     },
   }),
   button: {
-    borderRadius: 'var(--border-radius)',
+    borderRadius: theme.shape.borderRadius,
     paddingInline: theme.spacing(4),
     '&:not(:has(.MuiChip-root))': {
       paddingBlock: theme.spacing(2),
@@ -52,22 +53,22 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
     },
     [`&:not(.${menuClasses.active}):hover, &:not(.${menuClasses.active}):focus-visible, &:not(.${menuClasses.active})[aria-expanded="true"]`]:
       {
-        backgroundColor: 'var(--mui-palette-action-hover)',
+        backgroundColor: theme.palette.action.hover,
       },
   },
   icon: ({ level }: MenuItemStylesParams) => ({
     marginInlineEnd: theme.spacing(2),
     ...(level < 2
       ? { fontSize: '1.375rem' }
-      : { fontSize: '0.75rem', color: 'var(--mui-palette-text-secondary)' }),
+      : { fontSize: '0.75rem', color: theme.palette.text.secondary }),
     '& > i, & > svg': {
       fontSize: 'inherit',
     },
     '& .tabler-circle': {
       fontSize: '0.75rem',
-      color: 'var(--mui-palette-text-secondary)',
+      color: theme.palette.text.secondary,
       [`.${menuClasses.active} &`]: {
-        color: 'var(--mui-palette-primary-main)',
+        color: theme.palette.primary.main,
       },
     },
   }),
@@ -78,7 +79,7 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
     marginInlineStart: theme.spacing(2),
   },
   subMenuStyles: {
-    zIndex: 'calc(var(--header-z-index) + 1)',
+    zIndex: theme.zIndex.appBar + 1,
   },
   subMenuExpandIcon: {
     fontSize: '1.25rem',
@@ -88,15 +89,15 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
     },
   },
   subMenuContent: {
-    borderRadius: 'var(--border-radius)',
-    backgroundColor: 'var(--mui-palette-background-paper)',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.paper,
     ...(settings.skin === 'bordered'
       ? {
           boxShadow: 'none',
-          border: '1px solid var(--mui-palette-divider)',
+          border: `1px solid ${theme.palette.divider}`,
         }
       : {
-          boxShadow: 'var(--mui-customShadows-lg)',
+          boxShadow: (theme as any).customShadows?.lg || theme.shadows[8],
         }),
     '& > ul, & > div > ul': {
       padding: theme.spacing(2),

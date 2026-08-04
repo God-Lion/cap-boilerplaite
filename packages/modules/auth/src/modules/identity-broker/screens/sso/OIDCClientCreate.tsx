@@ -3,7 +3,7 @@
 // This screen uses React Hook Form and Zod to enforce valid OIDC specs and displays the returned client credentials ONCE upon creation.
 
 import { useState } from 'react';
-import { Box, Button, Container, Typography, Card, TextField, IconButton, alpha, useTheme, Avatar, Breadcrumbs, FormControl, InputLabel, Select, MenuItem, FormHelperText, Alert, AlertTitle, Tooltip } from '@mui/material';
+import { Box, Button, Container, Typography, Card, TextField, IconButton, alpha, useTheme, Avatar, Breadcrumbs, FormControl, InputLabel, Select, MenuItem, FormHelperText, Alert, AlertTitle, Tooltip, Stack } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 // import from '@mui/icons-material/VpnKey';
@@ -18,6 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSnackbar } from 'notistack';
 import { Path, useCreateOIDCClient } from '@auth';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 
 const createOidcSchema = z.object({
   name: z.string().min(3, 'Client Name must be at least 3 characters').max(50),
@@ -136,26 +137,36 @@ export default function OIDCClientCreate() {
       {/* SUCCESS STATE - Show Credentials */}
       {newCredentials ? (
         <Card
-          className='glass-effect success'
-          sx={{
+          sx={(theme: any) => ({
             p: 4,
             borderRadius: 4,
-            boxShadow: `0 8px 32px ${alpha(theme.palette.success.main, 0.1)}`,
-          }}
+            border: '1px solid ' + theme.palette.success.main,
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
           component={motion.div}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <Alert severity="success" icon={false} sx={{ mb: 4, bgcolor: 'transparent', p: 0 }}>
-            <AlertTitle sx={{ typography: 'h5', fontWeight: 800, color: 'success.main' }}>
-              {t('auth.sso.client_registration_success', 'Client Registered Successfully')}
-            </AlertTitle>
-            <Typography variant="body2" color="text.secondary">
-              {t('auth.sso.client_secret_warning', 'Please copy your Client Secret now. For security reasons, it cannot be retrieved again.')}
-            </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+            <Avatar sx={{ bgcolor: alpha(theme.palette.success.main, 0.15), color: 'success.main', width: 48, height: 48 }}>
+              <Add />
+            </Avatar>
+            <Box>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: 'success.main' }}>
+                {t('auth.sso.client_created_successfully', 'Client Created Successfully')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('auth.sso.copy_client_secret_warning', 'Make sure to copy your Client Secret now. You will not be able to see it again!')}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Alert severity="warning" icon={<Warning />} sx={{ mb: 4, borderRadius: 2 }}>
+            <AlertTitle sx={{ fontWeight: 700 }}>{t('auth.sso.important_notice', 'Important Notice')}</AlertTitle>
+            {t('auth.sso.secret_storage_warning', 'Store the client secret securely in your application configuration or environment variables.')}
           </Alert>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Stack spacing={3}>
             <Box>
               <Typography variant="overline" sx={{ fontWeight: 800, color: 'text.secondary' }}>
                 CLIENT ID
@@ -212,7 +223,7 @@ export default function OIDCClientCreate() {
                 </Tooltip>
               </Box>
             </Box>
-          </Box>
+          </Stack>
 
           <Box sx={{ mt: 5, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
             <Button variant="outlined" component={RouterLink} to={Path.identity.oidcConfigBrowser}>
@@ -223,11 +234,11 @@ export default function OIDCClientCreate() {
       ) : (
         /* CREATION FORM */
         <Card
-          className='glass-effect'
-          sx={{
+          sx={(theme: any) => ({
             borderRadius: 4,
-            boxShadow: 'none',
-          }}
+            border: '1px solid ' + theme.palette.divider,
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
         >
           <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>

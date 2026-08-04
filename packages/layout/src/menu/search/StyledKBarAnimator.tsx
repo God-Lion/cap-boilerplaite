@@ -1,48 +1,51 @@
 import type { Settings } from '@cap/shared-types'
 import { styled } from '@mui/material/styles'
 import { KBarAnimator } from 'kbar'
+import { SurfaceEffectFactory } from '../../utils/buildLayoutSurfaceEffect'
 
 type StyledKBarAnimatorProps = {
   skin: Settings['skin']
   isSmallScreen: boolean
 }
 
-const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>`
-  & > div {
-    inline-size: 600px;
-    max-inline-size: 90dvw;
-    block-size: 580px;
-    max-block-size: 90dvh;
-    background: ${({ theme }) => theme.palette.background.paper};
-    border-radius: var(--radius-md, ${({ theme }) => theme.shape.borderRadius}px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>(({ theme, skin, isSmallScreen }: any) => {
+  const surfaceEffect = SurfaceEffectFactory.create(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme)
 
-    ${({ isSmallScreen }) =>
-      isSmallScreen &&
-      `
-      min-block-size: 100dvh;
-      max-block-size: 100dvh;
-      min-inline-size: 100dvw;
-      max-inline-size: 100dvw;
-      border-radius: 0;
-    `}
+  return {
+    '& > div': {
+      inlineSize: '600px',
+      maxInlineSize: '90dvw',
+      blockSize: '580px',
+      maxBlockSize: '90dvh',
+      borderRadius: `${theme.shape.borderRadius * 2}px`,
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+      ...surfaceEffect,
 
-    ${({ skin, theme }) =>
-      skin === 'bordered'
-        ? `border: 1px solid ${theme.palette.divider};`
-        : `box-shadow: ${theme.customShadows.lg};`}
+      ...(isSmallScreen && {
+        minBlockSize: '100dvh',
+        maxBlockSize: '100dvh',
+        minInlineSize: '100dvw',
+        maxInlineSize: '100dvw',
+        borderRadius: 0,
+      }),
+
+      ...(skin === 'bordered' && {
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow: 'none',
+      }),
+    },
+
+    '& #kbar-listbox': {
+      paddingInline: '0.5rem',
+
+      '& [id^="kbar-listbox-item"]': {
+        insetInlineStart: '8px !important',
+        inlineSize: 'calc(100% - 16px) !important',
+      },
+    },
   }
-
-  & #kbar-listbox {
-    padding-inline: 0.5rem;
-
-    & [id^='kbar-listbox-item'] {
-      inset-inline-start: 8px !important;
-      inline-size: calc(100% - 16px) !important;
-    }
-  }
-`
+})
 
 export default StyledKBarAnimator

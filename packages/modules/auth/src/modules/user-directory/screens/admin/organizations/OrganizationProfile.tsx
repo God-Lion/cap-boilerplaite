@@ -8,6 +8,7 @@ import { Path } from '@cap/module-auth/routes/path';
 
 import { useOrganization, useUpdateOrganization, useVerifyDomain, useUploadOrganizationLogo, adminKeys } from '@idaas/authentication-core/hooks/useAdminQuery';
 import { useQueryClient } from '@tanstack/react-query';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -307,13 +308,12 @@ export default function OrganizationProfile() {
               }}
             >
               <Card
-                className='glass-effect'
-                sx={{
-                  bgcolor: 'transparent',
-                  boxShadow: 'none',
+                sx={(theme: any) => ({
                   width: '100%',
                   mb: 3,
-                }}
+                  border: '1px solid ' + theme.palette.divider,
+                  ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                })}
               >
                 <CardContent sx={{ p: 3 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
@@ -521,12 +521,11 @@ export default function OrganizationProfile() {
               {process.env.NODE_ENV === 'development' && (
                 <Box sx={{ width: '100%' }}>
                   <Card
-                    className='glass-effect'
-                    sx={{
-                      bgcolor: 'transparent',
-                      boxShadow: 'none',
+                    sx={(theme: any) => ({
                       mt: 3,
-                    }}
+                      border: '1px solid ' + theme.palette.divider,
+                      ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                    })}
                   >
                     <CardContent sx={{ p: 3 }}>
                       <Typography
@@ -566,11 +565,10 @@ export default function OrganizationProfile() {
           {/* Side Panel */}
           <Grid size={{ xs: 12, md: 4 }}>
             <Card
-              className='glass-effect'
-              sx={{
-                bgcolor: 'transparent',
-                boxShadow: 'none',
-              }}
+              sx={(theme: any) => ({
+                border: '1px solid ' + theme.palette.divider,
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
             >
               <CardContent sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -664,13 +662,12 @@ export default function OrganizationProfile() {
             }}
           >
             <Card
-              className='glass-effect'
-              sx={{
-                bgcolor: 'transparent',
+              sx={(theme: any) => ({
                 borderRadius: 4,
-                boxShadow: 'none',
                 height: '100%',
-              }}
+                border: '1px solid ' + theme.palette.divider,
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
             >
               <CardContent sx={{ p: 3 }}>
                 <Typography
@@ -938,7 +935,13 @@ export default function OrganizationProfile() {
       </TabPanel>
 
       <TabPanel value={tab} index={3}>
-        <Card className='glass-effect' sx={{ borderRadius: 4, boxShadow: 'none' }}>
+        <Card
+          sx={(theme: any) => ({
+            borderRadius: 4,
+            border: '1px solid ' + theme.palette.divider,
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
+        >
           <CardContent sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
               <Typography variant='h6' sx={{ fontWeight: 800, textTransform: 'uppercase' }}>
@@ -1031,7 +1034,13 @@ export default function OrganizationProfile() {
       </TabPanel>
 
       <TabPanel value={tab} index={4}>
-        <Card className='glass-effect' sx={{ borderRadius: 4, boxShadow: 'none' }}>
+        <Card
+          sx={(theme: any) => ({
+            borderRadius: 4,
+            border: '1px solid ' + theme.palette.divider,
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
+        >
           <CardContent sx={{ p: 3 }}>
             <Box
               sx={{ display: 'flex', justifyContent: 'space-between', mb: 4, alignItems: 'center' }}
@@ -1048,7 +1057,13 @@ export default function OrganizationProfile() {
               </Button>
             </Box>
 
-            <TableContainer className='glass-effect' sx={{ borderRadius: 3, boxShadow: 'none' }}>
+            <TableContainer
+              sx={(theme: any) => ({
+                borderRadius: 3,
+                border: '1px solid ' + theme.palette.divider,
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
+            >
               <Table>
                 <TableHead sx={{ bgcolor: 'action.hover' }}>
                   <TableRow>

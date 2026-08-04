@@ -31,7 +31,7 @@ const Footer = (props: Props) => {
   // Phase 4 & 5: tenant-driven per-component styles and effects
   const footerStyle = useComponentStyle('footer')
   const footerEffect = useComponentEffectConfig('footer')
-  const effectStyles = buildLayoutSurfaceEffect(footerEffect)
+  const effectStyles = buildLayoutSurfaceEffect(footerEffect, theme)
 
   const mergedOverrideStyles: CSSObject = {
     ...(footerStyle?.customProperties as CSSObject),

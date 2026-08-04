@@ -39,7 +39,7 @@ const Footer: React.FC<
   const footerStyle = useComponentStyle('footer')
   // Phase 5: glassmorphism / neumorphism effect override
   const footerEffect = useComponentEffectConfig('footer')
-  const effectStyles = buildLayoutSurfaceEffect(footerEffect)
+  const effectStyles = buildLayoutSurfaceEffect(footerEffect, theme)
 
   const mergedOverrideStyles: CSSObject = {
     ...(footerStyle?.customProperties as CSSObject),

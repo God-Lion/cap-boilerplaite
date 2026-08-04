@@ -2,6 +2,7 @@ import React, { useCallback, useState, useMemo } from 'react';
 import { Box, Button, Card, CardContent, Typography, Divider, List, ListItem, ListItemText, ListItemIcon, CircularProgress, Alert, Paper, Avatar } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
 import { Download as DownloadIcon, FilePresent as FileIcon, History as HistoryIcon, Schedule as ScheduleIcon } from '@mui/icons-material';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 // 
 import { useComplianceExport, useExportMutation } from '../../hooks/useUserQuery';
 
@@ -47,7 +48,14 @@ export const DataExport: React.FC = () => {
         Download a copy of your personal data. This archive includes your profile information, activity logs, and connected account data as per GDPR Right to Portability.
       </Typography>
 
-      <Card className="glass-effect" sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider', boxShadow: 'none', mb: 4, bgcolor: 'transparent' }}>
+      <Card
+        sx={(theme: any) => ({
+          borderRadius: 4,
+          border: '1px solid ' + theme.palette.divider,
+          mb: 4,
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
+      >
         <CardContent sx={{ p: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
             <Box
@@ -169,11 +177,19 @@ export const DataExport: React.FC = () => {
         )}
       </Paper>
       
-      <Box sx={{ mt: 4, p: 3, borderRadius: '12px', bgcolor: '#fffbeb', border: '1px solid #fef3c7' }}>
-        <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 1, color: '#92400e' }}>
+      <Box
+        sx={(theme: any) => ({
+          mt: 4,
+          p: 3,
+          borderRadius: `${theme.shape.borderRadius * 1.5}px`,
+          bgcolor: alpha(theme.palette.warning.main, 0.1),
+          border: `1px solid ${alpha(theme.palette.warning.main, 0.2)}`,
+        })}
+      >
+        <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 1, color: 'warning.dark' }}>
           Important Security Notice
         </Typography>
-        <Typography variant='caption' sx={{ color: '#b45309', display: 'block' }}>
+        <Typography variant='caption' sx={{ color: 'warning.main', display: 'block' }}>
           Your data archive contains sensitive information including PII. Please ensure you store this file in a secure location and delete it after use if possible. 
           Each archive link is protected and expires after 7 days for your security.
         </Typography>

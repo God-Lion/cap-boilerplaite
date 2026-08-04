@@ -13,6 +13,20 @@ let state: ThemeEditorState = {
 
 const listeners = new Set<() => void>();
 
+function syncDOMVariables(draftConfig: TenantThemeConfig | null) {
+  if (typeof document === 'undefined' || !draftConfig?.tokens?.colors) return;
+  const colors = draftConfig.tokens.colors;
+  const root = document.documentElement;
+  if (colors.primary?.value) root.style.setProperty('--mui-palette-primary-main', colors.primary.value);
+  if (colors.secondary?.value) root.style.setProperty('--mui-palette-secondary-main', colors.secondary.value);
+  if (colors.background?.value) root.style.setProperty('--mui-palette-background-default', colors.background.value);
+  if (colors.surface?.value) root.style.setProperty('--mui-palette-background-paper', colors.surface.value);
+  if (colors.border?.value) root.style.setProperty('--border-color', colors.border.value);
+  if (draftConfig.tokens.borderRadius?.md) {
+    root.style.setProperty('--border-radius', `${draftConfig.tokens.borderRadius.md}px`);
+  }
+}
+
 function notify() {
   listeners.forEach((listener) => listener());
 }
@@ -32,6 +46,7 @@ export const themeEditorStore = {
       isEditing: true,
       draftConfig: JSON.parse(JSON.stringify(initialConfig)),
     };
+    syncDOMVariables(state.draftConfig);
     notify();
   },
 
@@ -43,6 +58,7 @@ export const themeEditorStore = {
       ...state,
       draftConfig: nextConfig,
     };
+    syncDOMVariables(nextConfig);
     notify();
   },
 

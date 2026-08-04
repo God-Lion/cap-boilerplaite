@@ -47,6 +47,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useOIDCClients, useDeleteOIDCClient, Path } from "@auth"
+import { buildLayoutSurfaceEffect } from '@cap/layout'
 
 export default function OIDCConfigBrowser() {
   const { t } = useTranslation()
@@ -195,13 +196,13 @@ export default function OIDCConfigBrowser() {
       </Box>
 
       <Card
-        className='glass-effect'
-        sx={{
+        sx={(theme: any) => ({
           borderRadius: 4,
           mb: 5,
-          boxShadow: 'none',
+          border: '1px solid ' + theme.palette.divider,
           overflow: 'hidden',
-        }}
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
       >
         <Box
           sx={{

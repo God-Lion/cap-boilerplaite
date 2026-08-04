@@ -60,7 +60,7 @@ const AdminMenu = ({ dictionary, scrollMenu }: Props) => {
             '&:hover': {
               background: active
                 ? theme.palette.primary.mainOpacity
-                : 'var(--premium-gradient) !important',
+                : theme.palette.action.hover,
               transform: 'translateX(4px)',
             },
             ...(active &&

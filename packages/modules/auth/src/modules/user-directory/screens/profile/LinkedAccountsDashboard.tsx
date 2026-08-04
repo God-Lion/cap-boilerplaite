@@ -16,9 +16,10 @@ import {
   ListItemButton,
   useTheme,
   alpha,
-  Grid,
   CircularProgress,
+  Grid,
 } from '@mui/material'
+import { buildLayoutSurfaceEffect } from '@cap/layout'
 
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -196,14 +197,11 @@ const LinkedAccountsDashboard = () => {
         {/* Providers List */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Card
-            className="glass-effect"
-            sx={{
-              bgcolor: 'transparent',
-              boxShadow: 'none',
+            sx={(theme: any) => ({
               borderRadius: 4,
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
+              border: '1px solid ' + theme.palette.divider,
+              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            })}
           >
             <List disablePadding>
               {providers.map((provider, index) => {

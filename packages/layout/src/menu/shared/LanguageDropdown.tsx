@@ -15,6 +15,7 @@ type Locale = (typeof i18nConfig)['locales'][number]
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '@cap/platform-store'
 import { zIndexScale } from '@cap/theme'
+import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 
 const LANGUAGE_NATIVE_MAP: Record<string, string> = {
   en: 'English',
@@ -103,14 +104,15 @@ const LanguageDropdown = () => {
             }}
           >
             <Paper
-              className='glass-effect animate-scale-in'
-              sx={{
+              className='animate-scale-in'
+              sx={(theme: any) => ({
                 borderRadius: '12px !important',
                 overflow: 'hidden',
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
-                  ? { border: 1, boxShadow: 'none' }
-                  : { boxShadow: 'var(--premium-shadow)' }),
-              }}
+                  ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
+                  : {}),
+              })}
             >
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList onKeyDown={handleClose}>

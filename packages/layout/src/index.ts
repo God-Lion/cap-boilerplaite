@@ -68,7 +68,7 @@ export { useHorizontalNav, useHorizontalMenu } from './menu/contexts/horizontalN
 export { useLayoutTokens } from './hooks/useLayoutTokens'
 
 // ── Utils ──────────────────────────────────────────────────────
-export { buildLayoutSurfaceEffect } from './utils/buildLayoutSurfaceEffect'
+export { buildLayoutSurfaceEffect, SurfaceEffectFactory } from './utils/buildLayoutSurfaceEffect'
 
 // ── Styles & Providers ─────────────────────────────────────────
 export { default as ThemeBridge, generateTheme } from './providers/ThemeBridge'

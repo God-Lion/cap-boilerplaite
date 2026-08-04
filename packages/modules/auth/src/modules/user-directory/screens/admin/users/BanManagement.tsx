@@ -48,6 +48,7 @@ import {
   useResolveAppeal,
 } from "@idaas/authentication-core/hooks/useAdminQuery"
 import { useSnackbar } from 'notistack'
+import { buildLayoutSurfaceEffect } from '@cap/layout'
 import IssueBanDialog from './IssueBanDialog'
 
 export default function BanManagement() {
@@ -135,13 +136,11 @@ export default function BanManagement() {
         ].map((stat, idx) => (
           <Grid key={idx} size={{ xs: 12, sm: 4 }}>
             <Card
-              className='glass-effect'
-              sx={{
+              sx={(theme: any) => ({
                 bgcolor: alpha((theme.palette as any)[stat.color].main, 0.04),
-                border: '1px solid',
-                borderColor: alpha((theme.palette as any)[stat.color].main, 0.1),
-                boxShadow: 'none',
-              }}
+                border: '1px solid ' + alpha((theme.palette as any)[stat.color].main, 0.1),
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
             >
               <CardContent>
                 <Box
@@ -227,21 +226,19 @@ export default function BanManagement() {
               <Typography>{t('auth.common.loading')}</Typography>
             </Box>
           ) : !bannedUsersData?.data?.data?.length ? (
-            <Alert severity='info' className='glass-effect'>
+            <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })}>
               {t('auth.admin.noBannedUsers')}
             </Alert>
           ) : (
             bannedUsersData.data.data.map((user: AdminUser) => (
               <Card
                 key={user.id}
-                className='glass-effect'
-                sx={{
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  boxShadow: 'none',
+                sx={(theme: any) => ({
+                  border: '1px solid ' + theme.palette.divider,
                   transition: 'border-color 0.2s',
                   '&:hover': { borderColor: 'error.light' },
-                }}
+                  ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                })}
               >
                 <CardContent sx={{ p: 0 }}>
                   <Box
@@ -399,7 +396,15 @@ export default function BanManagement() {
           refetch()
         }}
       />
-      <Dialog open={!!editingUser} onClose={() => setEditingUser(null)} PaperProps={{ className: 'glass-effect' }}>
+      <Dialog
+        open={!!editingUser}
+        onClose={() => setEditingUser(null)}
+        PaperProps={{
+          sx: (theme: any) => ({
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          }),
+        }}
+      >
         <DialogTitle>{t('auth.admin.editBan')}</DialogTitle>
         <DialogContent>
           <DialogContentText>{t('auth.admin.editBan_stub')}</DialogContentText>
@@ -443,7 +448,7 @@ function AppealsQueue() {
 
   return (
     <Stack spacing={3} className='animate-scale-in'>
-      <Alert severity='info' className='glass-effect'>
+      <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })}>
         {t('auth.admin.appealsInfo')}
       </Alert>
       {isLoading ? (
@@ -451,7 +456,7 @@ function AppealsQueue() {
           <Typography>{t('auth.common.loading')}</Typography>
         </Box>
       ) : appeals.length === 0 ? (
-        <Alert severity='success' className='glass-effect'>
+        <Alert severity='success' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })}>
           {t('auth.admin.noAppeals')}
         </Alert>
       ) : (
@@ -459,12 +464,10 @@ function AppealsQueue() {
           {appeals.map((appeal: any) => (
             <Card
               key={appeal.id}
-              className='glass-effect'
-              sx={{
-                border: '1px solid',
-                borderColor: alpha(theme.palette.warning.main, 0.3),
-                boxShadow: 'none',
-              }}
+              sx={(theme: any) => ({
+                border: '1px solid ' + alpha(theme.palette.warning.main, 0.3),
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
             >
               <CardContent>
                 <Box
@@ -546,7 +549,15 @@ function AppealsQueue() {
         </Stack>
       )}
 
-      <Dialog open={!!resolvingAppealId} onClose={() => setResolvingAppealId(null)} PaperProps={{ className: 'glass-effect' }}>
+      <Dialog
+        open={!!resolvingAppealId}
+        onClose={() => setResolvingAppealId(null)}
+        PaperProps={{
+          sx: (theme: any) => ({
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          }),
+        }}
+      >
         <DialogTitle>{t('auth.admin.denyAppeal_confirm_title')}</DialogTitle>
         <DialogContent>
           <DialogContentText>{t('auth.admin.denyAppeal_confirm_msg')}</DialogContentText>
@@ -657,13 +668,15 @@ function BanFullHistory() {
           <Typography>{t('auth.common.loading')}</Typography>
         </Box>
       ) : logs.length === 0 ? (
-        <Alert severity='info' className='glass-effect'>{t('auth.admin.noBanHistory')}</Alert>
+        <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })}>{t('auth.admin.noBanHistory')}</Alert>
       ) : (
         logs.map((log: any) => (
           <Card
             key={log.id}
-            className='glass-effect'
-            sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}
+            sx={(theme: any) => ({
+              border: '1px solid ' + theme.palette.divider,
+              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            })}
           >
             <CardContent sx={{ py: '12px !important' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

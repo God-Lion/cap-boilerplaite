@@ -3,6 +3,7 @@ import { Box, Button, Container, IconButton, InputAdornment, TextField, Typograp
 import { Lock, Visibility, VisibilityOff, LockReset, ArrowBack } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { themeConfig, useNotifications } from '@cap/platform-core';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useChangePassword } from '@auth';
 
@@ -124,8 +125,7 @@ function ChangePassword() {
 
         {/* â”€â”€ SYSTEM PATTERN: metric_card (OrganizationProfile style background) â”€â”€ */}
         <Card
-          className='glass-effect'
-          sx={{
+          sx={(theme: any) => ({
             display: 'flex',
             flexDirection: 'column',
             width: '100%',
@@ -133,13 +133,11 @@ function ChangePassword() {
             position: 'relative',
             overflow: 'hidden',
             borderRadius: '12px',
-            boxShadow: 'none',
-            border: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'transparent',
+            border: '1px solid ' + theme.palette.divider,
             mx: { xs: 2, sm: 4 },
             zIndex: 1,
-          }}
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
         >
           <CardContent
             sx={{

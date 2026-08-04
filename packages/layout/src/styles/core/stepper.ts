@@ -57,7 +57,7 @@ const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
         },
       },
       '&.Mui-disabled .MuiStepConnector-line': {
-        borderColor: theme.palette.primary.light, // Using light as a fallback for lightOpacity if not explicitly defined in palette
+        borderColor: theme.palette.action.disabledBackground || theme.palette.primary.light,
       },
     },
     '& .MuiStepper-alternativeLabel': {

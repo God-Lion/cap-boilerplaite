@@ -87,7 +87,7 @@ const NavbarContent = () => {
             '& .MuiIconButton-root': {
               transition: 'all 0.2s ease',
               '&:hover': {
-                background: 'hsla(var(--mui-mainColor-hsl), 0.08)',
+                background: 'action.hover',
                 transform: 'translateY(-2px)',
                 '& i, & svg': { color: 'primary.main' },
               },

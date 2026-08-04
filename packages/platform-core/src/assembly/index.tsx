@@ -1,21 +1,16 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import i18next from 'i18next'
-import { CAPModule, SearchItemConfig } from '../types'
+import { CAPModule } from '../types'
 import { useAppStore } from '@cap/platform-store'
 import { LayoutRouteWrapper } from '@cap/layout'
 import { NotFound } from '../components/NotFound'
+import { ModuleRegistry, type AuthRouteConfig } from './ModuleRegistry'
 
-
-import { registerDictionary } from '../i18n/registry'
+export type { AuthRouteConfig }
 
 interface AssembleAppProps {
   modules: Array<CAPModule>
 }
-
-// Internal registries
-let _searchItems: SearchItemConfig[] = []
-let _modules: CAPModule[] = []
 
 /**
  * Returns all merged navigation items from all registered modules.
@@ -25,97 +20,22 @@ export const getNavItems = () => useAppStore.getState().navItems
 /**
  * Returns all merged search items from all registered modules.
  */
-export const getSearchItems = () => _searchItems
+export const getSearchItems = () => ModuleRegistry.getInstance().getSearchItems()
 
 /**
  * Returns all registered modules.
  */
-export const getModules = () => _modules
-
-import type { ModuleRouteConfig } from '@cap/shared-types'
-
-export type AuthRouteConfig = ModuleRouteConfig & {
-  element: React.JSX.Element
-}
+export const getModules = () => ModuleRegistry.getInstance().getModules()
 
 export const assembleApp = ({ modules }: AssembleAppProps) => {
-  // Reset registries on every call (useful for HMR or multiple assemblies)
-  _modules.length = 0
-  _modules.push(...modules)
-  _searchItems.length = 0
-
-  const seenSearchIds = new Set<string>()
-  const navItemsToRegister: Array<typeof _modules[0]['navItems']> = []
-
-  // Register module i18n resources isolated strictly by module name/id
-  const i18nInstance = (i18next as any)?.default || i18next
-  if (!i18nInstance.isInitialized && typeof i18nInstance.init === 'function') {
-    i18nInstance.init({
-      lng: 'en',
-      fallbackLng: 'en',
-      resources: {},
-      interpolation: { escapeValue: false },
-    })
-  }
+  const registry = ModuleRegistry.getInstance()
+  registry.reset()
 
   modules.forEach((module) => {
-    const moduleNs = module.id || (module as any).name || 'common'
-    if (module.i18n) {
-      registerDictionary(module.i18n as any)
-      Object.entries(module.i18n).forEach(([lang, resources]) => {
-        const langLower = lang.toLowerCase()
-        i18nInstance.addResourceBundle(langLower, moduleNs, resources, true, true)
-        i18nInstance.addResourceBundle(langLower, 'translation', resources, true, true)
-        i18nInstance.addResourceBundle(langLower, 'common', resources, true, true)
-      })
-    }
-
-    if (module.navItems) {
-      navItemsToRegister.push(module.navItems)
-    }
-
-    if (module.searchItems) {
-      module.searchItems.forEach((item) => {
-        if (!seenSearchIds.has(item.id)) {
-          seenSearchIds.add(item.id)
-          _searchItems.push(item)
-        }
-      })
-    }
+    registry.registerModule(module)
   })
 
-  // Collect all route configs from all modules
-  const allRouteConfigs: AuthRouteConfig[] = []
-  const seenPaths = new Set<string>()
-  const routeNavItems: typeof _modules[0]['navItems'] = []
-
-  modules.forEach((module) => {
-    const routesToRegister = module.routes || module.authRouteConfig
-    if (routesToRegister) {
-      routesToRegister.forEach((route: any) => {
-        if (route && route.path && !seenPaths.has(route.path)) {
-          seenPaths.add(route.path)
-          allRouteConfigs.push(route)
-
-          // Auto-extract nav item from route if it has nav-specific properties
-          if (route.variant || route.roles || route.guestOnly || route.icon) {
-            routeNavItems.push({
-              id: route.id || route.path,
-              label: route.label || route.path,
-              path: route.path,
-              icon: route.icon,
-              section: route.section,
-              roles: route.roles,
-              permissions: route.permissions,
-              guestOnly: route.guestOnly,
-              variant: route.variant,
-              order: route.order,
-            })
-          }
-        }
-      })
-    }
-  })
+  const { allRouteConfigs, routeNavItems, navItemsToRegister } = registry.extractRoutesAndNav()
 
   // Return the App component with a SINGLE Routes component matching.
   const App = () => {
@@ -172,6 +92,6 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
     )
   }
 
-
   return App
 }
+

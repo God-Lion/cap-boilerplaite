@@ -30,6 +30,7 @@ import BarChart from '@mui/icons-material/BarChart'
 import Email from '@mui/icons-material/Email'
 import { useSettings } from '@cap/platform-store'
 import { themeConfig, zIndexScale } from '@cap/theme'
+import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 import type { ThemeColor } from '@cap/shared-types'
 import { useTranslation } from 'react-i18next'
 
@@ -225,11 +226,15 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
             }}
           >
             <Paper
-              sx={{
+              className='animate-scale-in'
+              sx={(theme: any) => ({
+                borderRadius: '12px !important',
+                overflow: 'hidden',
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
-                  ? { border: 1, boxShadow: 'none' }
-                  : { boxShadow: 'lg' }),
-              }}
+                  ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
+                  : {}),
+              })}
             >
               <ClickAwayListener onClickAway={handleClose}>
                 <Box>

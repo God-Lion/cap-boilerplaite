@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
+import { useTheme } from '@mui/material/styles'
 import { useVerticalNav } from '../contexts/verticalNavContext'
 import type { VerticalNavContextProps } from '../contexts/verticalNavContext'
 import { useSettings } from '@cap/platform-store'
@@ -30,10 +31,15 @@ const LogoText = styled.span<LogoTextProps>`
 `
 
 const Logo = () => {
-  const logoTextRef = React.useRef<HTMLSpanElement>(null)
-  const { isHovered, transitionDuration } = useVerticalNav()
+  const theme = useTheme()
+  // Hooks
+  const { isHovered, transitionDuration, isCollapsed } = useVerticalNav()
   const { settings } = useSettings()
+
+  // Vars
   const { layout } = settings
+
+  const logoTextRef = React.useRef<HTMLSpanElement>(null)
 
   React.useEffect(() => {
     if (layout !== 'collapsed') return
@@ -60,7 +66,7 @@ const Logo = () => {
         style={{
           fontSize: '1.5rem',
           lineHeight: '2rem',
-          color: 'var(--primary-color)',
+          color: theme.palette.primary.main,
         }}
       />
       <LogoText

@@ -19,6 +19,7 @@ import { useSettings } from '@cap/platform-store'
 import { zIndexScale, themeEditorStore, DEFAULT_THEME_CONFIG } from '@cap/theme'
 import { useTenant } from '@cap/platform-core'
 import { useTranslation } from 'react-i18next'
+import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 
 const ModeDropdown = () => {
   const [open, setOpen] = React.useState<boolean>(false)
@@ -103,14 +104,15 @@ const ModeDropdown = () => {
             }}
           >
             <Paper
-              className='glass-effect animate-scale-in'
-              sx={{
+              className='animate-scale-in'
+              sx={(theme: any) => ({
                 borderRadius: '12px !important',
                 overflow: 'hidden',
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
-                  ? { border: 1, boxShadow: 'none' }
-                  : { boxShadow: 'var(--premium-shadow)' }),
-              }}
+                  ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
+                  : {}),
+              })}
             >
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList onKeyDown={handleClose}>

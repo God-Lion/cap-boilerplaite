@@ -17,6 +17,7 @@ import {
   Paper,
   Divider,
   Grid,
+  alpha,
 } from '@mui/material'
 import {
   ArrowBack,
@@ -38,6 +39,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useDeleteAccount, useErasureMutation } from "../../hooks/useUserQuery"
 import logger from "@idaas/authentication-core/utils/logger"
 import { Path } from "@cap/module-auth/routes/path"
+import { buildLayoutSurfaceEffect } from "@cap/layout"
 
 // Validation Schema
 const deleteAccountSchema = (t: any) =>
@@ -140,14 +142,12 @@ export default function DeleteAccount() {
 
         {/* Main Card */}
         <Paper
-          className='glass-effect'
           elevation={0}
-          sx={{
+          sx={(theme: any) => ({
             borderRadius: '12px',
             overflow: 'hidden',
-            bgcolor: 'transparent',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-          }}
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
         >
           {/* Header Section with Warning */}
           <Box
@@ -215,7 +215,7 @@ export default function DeleteAccount() {
           >
             {/* Error Alert */}
             {deleteError && (
-              <Alert className='glass-effect' severity='error' sx={{ mb: 3, borderRadius: '8px' }}>
+              <Alert sx={(theme: any) => ({ mb: 3, borderRadius: '8px', ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })} severity='error'>
                 {(deleteError as any)?.message || t('auth.common.errorOccurred')}
               </Alert>
             )}
@@ -231,14 +231,14 @@ export default function DeleteAccount() {
 
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box
-                  className='glass-effect'
-                  sx={{
+                  sx={(theme: any) => ({
                     display: 'flex',
                     gap: 2,
                     p: 2,
-                    boxShadow: '0 2px 20px rgba(0,0,0,0.05)',
-                    borderRadius: '1px',
-                  }}
+                    borderRadius: '8px',
+                    border: '1px solid ' + theme.palette.divider,
+                    ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                  })}
                 >
                   <FolderOff sx={{ color: '#9ca3af', fontSize: 24, mt: 0.5 }} />
                   <Box>
@@ -255,14 +255,14 @@ export default function DeleteAccount() {
                 </Box>
 
                 <Box
-                  className='glass-effect'
-                  sx={{
+                  sx={(theme: any) => ({
                     display: 'flex',
                     gap: 2,
                     p: 2,
-                    boxShadow: '0 2px 20px rgba(0,0,0,0.05)',
-                    borderRadius: '1px',
-                  }}
+                    borderRadius: '8px',
+                    border: '1px solid ' + theme.palette.divider,
+                    ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                  })}
                 >
                   <CreditCardOff sx={{ color: '#9ca3af', fontSize: 24, mt: 0.5 }} />
                   <Box>
@@ -279,14 +279,14 @@ export default function DeleteAccount() {
                 </Box>
 
                 <Box
-                  className='glass-effect'
-                  sx={{
+                  sx={(theme: any) => ({
                     display: 'flex',
                     gap: 2,
                     p: 2,
-                    boxShadow: '0 2px 20px rgba(0,0,0,0.05)',
-                    borderRadius: '1px',
-                  }}
+                    borderRadius: '8px',
+                    border: '1px solid ' + theme.palette.divider,
+                    ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                  })}
                 >
                   <LockClock sx={{ color: '#9ca3af', fontSize: 24, mt: 0.5 }} />
                   <Box>
@@ -306,14 +306,13 @@ export default function DeleteAccount() {
 
             {/* Alternative Actions */}
             <Box
-              className='glass-effect'
-              sx={{
+              sx={(theme: any) => ({
                 p: { xs: 2.5, sm: 3 },
-                bgcolor: 'rgba(19, 127, 236, 0.05)',
-                border: '1px solid rgba(19, 127, 236, 0.1)',
                 borderRadius: '8px',
                 mb: 4,
-              }}
+                border: '1px solid ' + alpha(theme.palette.info.main, 0.2),
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              })}
             >
               <Box
                 sx={{
@@ -627,10 +626,10 @@ export default function DeleteAccount() {
         maxWidth='xs'
         fullWidth
         PaperProps={{
-          className: 'glass-effect',
-          sx: {
+          sx: (theme: any) => ({
             borderRadius: '12px',
-          },
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          }),
         }}
       >
         <DialogTitle sx={{ fontWeight: 700, color: '#111418' }}>

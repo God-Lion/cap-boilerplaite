@@ -38,6 +38,7 @@ import DesktopWindows from '@mui/icons-material/DesktopWindows'
 import Settings from '@mui/icons-material/Settings'
 import LinkIcon from '@mui/icons-material/Link'
 import { useSettings } from '@cap/platform-store'
+import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 import { themeConfig, zIndexScale } from '@cap/theme'
 import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
 
@@ -167,11 +168,15 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
             style={{ transformOrigin: placement === 'bottom-end' ? 'right top' : 'left top' }}
           >
             <Paper
-              sx={{
+              className='animate-scale-in'
+              sx={(theme: any) => ({
+                borderRadius: '12px !important',
+                overflow: 'hidden',
+                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
-                  ? { border: 1, boxShadow: 'none' }
-                  : { boxShadow: theme.customShadows.lg }),
-              }}
+                  ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
+                  : {}),
+              })}
             >
               <ClickAwayListener onClickAway={handleClose}>
                 <Box>
@@ -295,6 +300,11 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
         onClose={() => setAddDialogOpen(false)}
         maxWidth='xs'
         fullWidth
+        PaperProps={{
+          sx: (theme: any) => ({
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          }),
+        }}
       >
         <DialogTitle>{t('navigation.addShortcut')}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: '16px !important' }}>

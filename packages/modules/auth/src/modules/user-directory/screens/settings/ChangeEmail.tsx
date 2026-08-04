@@ -7,6 +7,7 @@ import { themeConfig, useNotifications } from '@cap/platform-core';
 import { Controller, useForm } from 'react-hook-form';
 import { Path } from '@cap/module-auth/routes/path';
 import { useCurrentUserQuery, useChangeEmail } from '../../hooks/useUserQuery';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 
 interface ChangeEmailRequestFormData {
   CurrentEmail: string
@@ -89,8 +90,14 @@ function ChangeEmail() {
         }}
       >
         <Card
-          className='glass-effect'
-          sx={{ maxWidth: 480, width: '100%', borderRadius: 3, textAlign: 'center', p: 4 }}
+          sx={(theme: any) => ({
+            maxWidth: 480,
+            width: '100%',
+            borderRadius: 3,
+            textAlign: 'center',
+            p: 4,
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
         >
           <CheckCircle sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
           <Typography variant='h5' fontWeight='700' mb={2}>
@@ -163,8 +170,7 @@ function ChangeEmail() {
 
         {/* â”€â”€ SYSTEM PATTERN: metric_card (OrganizationProfile style background) â”€â”€ */}
         <Card
-          className='glass-effect'
-          sx={{
+          sx={(theme: any) => ({
             display: 'flex',
             flexDirection: 'column',
             width: '100%',
@@ -172,13 +178,11 @@ function ChangeEmail() {
             position: 'relative',
             overflow: 'hidden',
             borderRadius: '12px',
-            boxShadow: 'none',
-            border: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'transparent',
+            border: '1px solid ' + theme.palette.divider,
             mx: { xs: 2, sm: 4 },
             zIndex: 1,
-          }}
+            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          })}
         >
           <CardContent
             sx={{

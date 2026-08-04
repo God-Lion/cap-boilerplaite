@@ -14,7 +14,7 @@ const menuSectionStyles = (
     root: {
       marginBlockStart: theme.spacing(0),
       [`& .${menuClasses.menuSectionContent}`]: {
-        color: 'var(--mui-palette-text-disabled)',
+        color: theme.palette.text.disabled,
         paddingInline: '12px !important',
         paddingBlock: `${theme.spacing(collapsedNotHovered ? 3.625 : 1.5)} !important`,
         marginBlockStart: theme.spacing(1.5),
@@ -23,7 +23,7 @@ const menuSectionStyles = (
           content: '""',
           blockSize: 1,
           inlineSize: '1.375rem',
-          backgroundColor: 'var(--mui-palette-text-disabled)',
+          backgroundColor: theme.palette.text.disabled,
         },
         ...(!collapsedNotHovered && {
           '&:before': {

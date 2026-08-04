@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDeactivateAccount, useUserProfile } from '../../hooks/useUserQuery';
 import logger from '@idaas/authentication-core/utils/logger';
 import { Path } from '@cap/module-auth/routes/path';
+import { buildLayoutSurfaceEffect } from '@cap/layout';
 
 export default function DeactivateAccount() {
   const { t } = useTranslation()
@@ -53,17 +54,14 @@ export default function DeactivateAccount() {
       }}
     >
       <Box
-        className='glass-effect'
-        sx={{
+        sx={(theme: any) => ({
           width: '100%',
           maxWidth: 560,
-          bgcolor: 'background.paper',
           borderRadius: 3,
-          boxShadow: 2,
-          border: '1px solid',
-          borderColor: 'divider',
+          border: '1px solid ' + theme.palette.divider,
           overflow: 'hidden',
-        }}
+          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+        })}
       >
         {/* Header */}
         <Box

@@ -113,6 +113,7 @@ export default defineConfig({
     ],
   },
   optimizeDeps: {
+    force: true, // Force Vite to clear its cache and re-bundle @mui/system
     include: [
       '@tanstack/react-query',
       'react-toastify',
