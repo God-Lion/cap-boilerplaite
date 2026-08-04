@@ -44,9 +44,8 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   _modules.push(...modules)
   _searchItems.length = 0
 
-  // Sync with reactive store
-  useAppStore.getState().clearNavigation()
   const seenSearchIds = new Set<string>()
+  const navItemsToRegister: Array<typeof _modules[0]['navItems']> = []
 
   // Register module i18n resources isolated strictly by module name/id
   const i18nInstance = (i18next as any)?.default || i18next
@@ -72,7 +71,7 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
     }
 
     if (module.navItems) {
-      useAppStore.getState().registerModuleNavigation(module.navItems)
+      navItemsToRegister.push(module.navItems)
     }
 
     if (module.searchItems) {
@@ -118,13 +117,17 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
     }
   })
 
-  if (routeNavItems.length > 0) {
-    useAppStore.getState().registerModuleNavigation(routeNavItems)
-  }
-
-
   // Return the App component with a SINGLE Routes component matching.
   const App = () => {
+    React.useEffect(() => {
+      useAppStore.getState().clearNavigation()
+      navItemsToRegister.forEach((items) => {
+        if (items) useAppStore.getState().registerModuleNavigation(items)
+      })
+      if (routeNavItems.length > 0) {
+        useAppStore.getState().registerModuleNavigation(routeNavItems)
+      }
+    }, [])
     return (
       <React.Suspense
         fallback={

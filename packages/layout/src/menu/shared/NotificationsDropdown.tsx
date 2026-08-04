@@ -280,7 +280,14 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
                     </Tooltip>
                   </Box>
                   <Divider />
-                  <ScrollWrapper hidden={hidden}>
+                  {notificationsState.length === 0 ? (
+                    <Box sx={{ p: 6, textAlign: 'center' }}>
+                      <Typography color='text.secondary' variant='body2'>
+                        {t('navigation.noNotifications', 'No new notifications')}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <ScrollWrapper hidden={hidden}>
                     {notificationsState.map((notification, index) => {
                       const {
                         title,
@@ -382,6 +389,7 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
                       )
                     })}
                   </ScrollWrapper>
+                  )}
                   <Divider />
                   <Box sx={{ p: 4 }}>
                     <Button fullWidth variant='contained' size='small'>

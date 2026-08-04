@@ -22,11 +22,10 @@ import Help from '@mui/icons-material/Help'
 import Logout from '@mui/icons-material/Logout'
 import Person from '@mui/icons-material/Person'
 import Settings from '@mui/icons-material/Settings'
-import { useSettings } from '@cap/platform-store'
+import { useSettings, useAppStore } from '@cap/platform-store'
 import { useAuth } from '@cap/platform-core'
+import { AppPaths, resolveDynamicPath } from '@cap/shared-types'
 import { zIndexScale } from "@cap/theme";
-import { useSignOut } from '@cap/module-auth'
-import { Path } from '@cap/module-auth/routes/path'
 import { useTranslation } from 'react-i18next'
 
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -41,21 +40,33 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 const UserDropdown = () => {
   const { t } = useTranslation()
   const theme = useTheme()
-  const { user: authUser } = useAuth()
-  const { signOut, isSigningOut } = useSignOut({
-    onSuccess: () => {
-      console.log('[UserDropdown] User signed out successfully')
-      setAnchorEl(null)
-    },
-  })
+  const navItems = useAppStore((state) => state.navItems)
+  const { user: authUser, logout, isLoggingOut } = useAuth()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const navigate = useNavigate()
   const { settings } = useSettings()
 
+  // Dynamically resolve route paths from registered module navItems ("Magnet Legos")
+  const profilePath = React.useMemo(
+    () => resolveDynamicPath(navItems, 'user-profile', AppPaths.account.overview),
+    [navItems]
+  )
+  const settingsPath = React.useMemo(
+    () => resolveDynamicPath(navItems, 'account-settings', AppPaths.account.edit),
+    [navItems]
+  )
+  const pricingPath = React.useMemo(
+    () => resolveDynamicPath(navItems, 'guest-pricing', AppPaths.landing.pricing),
+    [navItems]
+  )
+  const aboutPath = React.useMemo(
+    () => resolveDynamicPath(navItems, 'guest-about', AppPaths.landing.about),
+    [navItems]
+  )
+
   // Extract user data from IAuth structure
   const user = authUser?.user || authUser
-  console.log('[UserDropdown] Current user:', user)
 
   const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(open ? null : event.currentTarget)
@@ -73,7 +84,8 @@ const UserDropdown = () => {
   }
 
   const handleUserLogout = () => {
-    signOut()
+    setAnchorEl(null)
+    logout()
   }
 
   return (
@@ -164,7 +176,7 @@ const UserDropdown = () => {
                     }}
                   />
                   <MenuItem
-                    onClick={(e) => handleDropdownClose(e, Path.account.overview)}
+                    onClick={(e) => handleDropdownClose(e, profilePath)}
                     sx={{
                       marginInline: '8px !important',
                       marginBlock: '4px !important',
@@ -180,11 +192,11 @@ const UserDropdown = () => {
                   >
                     <Person sx={{ fontSize: '22px', transition: 'color 0.2s' }} />
                     <Typography color='text.primary' sx={{ fontWeight: 500 }}>
-                      {t('navigation.profile', 'My Profile')}
+                      {t('navigation.profile')}
                     </Typography>
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleDropdownClose(e, Path.account.edit)}
+                    onClick={(e) => handleDropdownClose(e, settingsPath)}
                     sx={{
                       marginInline: '8px !important',
                       marginBlock: '4px !important',
@@ -200,28 +212,28 @@ const UserDropdown = () => {
                   >
                     <Settings sx={{ fontSize: '22px', transition: 'color 0.2s' }} />
                     <Typography color='text.primary' sx={{ fontWeight: 500 }}>
-                      {t('navigation.settings', 'Settings')}
+                      {t('navigation.settings')}
                     </Typography>
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleDropdownClose(e, '/pricing')}
+                    onClick={(e) => handleDropdownClose(e, pricingPath)}
                     sx={{
                       marginInline: '0.5rem',
                       gap: '0.75rem',
                     }}
                   >
                     <AttachMoney sx={{ fontSize: '22px' }} />
-                    <Typography color='text.primary'>{t('landing.pricing', 'Pricing')}</Typography>
+                    <Typography color='text.primary'>{t('navigation.pricing')}</Typography>
                   </MenuItem>
                   <MenuItem
-                    onClick={(e) => handleDropdownClose(e, '/about')}
+                    onClick={(e) => handleDropdownClose(e, aboutPath)}
                     sx={{
                       marginInline: '0.5rem',
                       gap: '0.75rem',
                     }}
                   >
                     <Help sx={{ fontSize: '22px' }} />
-                    <Typography color='text.primary'>{t('landing.about', 'About Us')}</Typography>
+                    <Typography color='text.primary'>{t('navigation.about')}</Typography>
                   </MenuItem>
                   <Box
                     sx={{
@@ -236,16 +248,16 @@ const UserDropdown = () => {
                       variant='contained'
                       color='error'
                       size='small'
-                      disabled={isSigningOut}
+                      disabled={isLoggingOut}
                       endIcon={
-                        isSigningOut ? <CircularProgress size={16} color='inherit' /> : <Logout />
+                        isLoggingOut ? <CircularProgress size={16} color='inherit' /> : <Logout />
                       }
                       onClick={handleUserLogout}
                       sx={{
                         '& .MuiButton-endIcon': { marginInlineStart: 1.5 },
                       }}
                     >
-                      {isSigningOut ? t('navigation.signingOut', 'Signing out...') : t('navigation.logout', 'Logout')}
+                      {isLoggingOut ? t('navigation.signingOut') : t('navigation.logout')}
                     </Button>
                   </Box>
                 </MenuList>

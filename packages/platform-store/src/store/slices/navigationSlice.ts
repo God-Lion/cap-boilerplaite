@@ -84,7 +84,16 @@ export const createNavigationSlice: StateCreator<
   navItems: [],
   registerModuleNavigation: (items: NavItemConfig[]) => {
     set((state) => {
-      state.navItems.push(...items)
+      items.forEach((item) => {
+        const existingIndex = state.navItems.findIndex(
+          (existing) => (item.id && existing.id === item.id) || (item.path && existing.path === item.path)
+        )
+        if (existingIndex >= 0) {
+          state.navItems[existingIndex] = { ...state.navItems[existingIndex], ...item }
+        } else {
+          state.navItems.push(item)
+        }
+      })
     })
   },
   clearNavigation: () => {

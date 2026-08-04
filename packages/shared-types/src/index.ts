@@ -19,3 +19,4 @@ export * from './admin-api.types';
 
 // API Registry - single source of truth for endpoints and query keys
 export * from './api-registry';
+export * from './routes';

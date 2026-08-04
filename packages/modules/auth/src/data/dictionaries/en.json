@@ -12,7 +12,6 @@
     "preview": "Preview",
     "edit": "Edit",
     "add": "Add",
-    "user": "User",
     "view": "View",
     "rolesPermissions": "Roles & Permissions",
     "roles": "Roles",
@@ -119,6 +118,44 @@
     "activeSessions": "Active Sessions",
     "securitySettings": "Security Settings",
     "accountOverview": "Account",
-    "moduleManagement": "Module Management"
+    "moduleManagement": "Module Management",
+    "shortcuts": "Shortcuts",
+    "addShortcut": "Add Shortcut",
+    "notifications": "Notifications",
+    "new": "New",
+    "markAllRead": "Mark all as read",
+    "markAllUnread": "Mark all as unread",
+    "noNotifications": "No new notifications",
+    "viewAllNotifications": "View All Notifications",
+    "profile": "My Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "signingOut": "Signing out...",
+    "admin": "Admin",
+    "adminAccess": "Administrator Access",
+    "user": "User",
+    "registeredUser": "Registered User",
+    "guest": "Guest",
+    "guestMode": "Guest Mode - Limited Access",
+    "notAuthenticated": "Not Authenticated"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "switchMode": "Switch theme mode - currently"
+  },
+  "language": {
+    "selectLanguage": "Select Language",
+    "en": "English",
+    "fr": "Français",
+    "ar": "العربية"
+  },
+  "footer": {
+    "madeWith": "Made with",
+    "by": "by",
+    "license": "License",
+    "documentation": "Documentation",
+    "support": "Support"
   }
 }

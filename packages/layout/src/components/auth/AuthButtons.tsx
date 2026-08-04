@@ -14,10 +14,10 @@ const AuthButtons: React.FC = () => {
   return (
     <Stack direction='row' spacing={1}>
       <Button variant='outlined' size='small' onClick={() => navigate(Path.auth.signin)}>
-        {t('navigation.login', 'Sign In')}
+        {t('navigation.login')}
       </Button>
       <Button variant='contained' size='small' onClick={() => navigate(Path.auth.signup)}>
-        {t('navigation.register', 'Sign Up')}
+        {t('navigation.register')}
       </Button>
     </Stack>
   )

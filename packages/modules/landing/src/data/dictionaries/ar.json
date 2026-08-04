@@ -17,7 +17,45 @@
         "termsOfService": "شروط الخدمة",
         "contact": "اتصل بنا",
         "about": "من نحن",
-        "pricing": "الأسعار"
+        "pricing": "الأسعار",
+        "shortcuts": "اختصارات",
+        "addShortcut": "إضافة اختصار",
+        "notifications": "الإشعارات",
+        "new": "جديد",
+        "markAllRead": "تحديد الكل كقروء",
+        "markAllUnread": "تحديد الكل كغير مقروء",
+        "noNotifications": "لا توجد إشعارات جديدة",
+        "viewAllNotifications": "عرض كل الإشعارات",
+        "profile": "ملفي الشخصي",
+        "settings": "الإعدادات",
+        "logout": "تسجيل الخروج",
+        "signingOut": "جاري تسجيل الخروج...",
+        "admin": "مسؤول",
+        "adminAccess": "صلاحيات مسؤول النظام",
+        "user": "مستخدم",
+        "registeredUser": "مستخدم مسجل",
+        "guest": "زائر",
+        "guestMode": "وضع الزائر - وصول محدود",
+        "notAuthenticated": "غير مسجل الدخول"
+    },
+    "theme": {
+        "light": "فاتح",
+        "dark": "داكن",
+        "system": "النظام",
+        "switchMode": "تبديل مظهر النظام - حالياً"
+    },
+    "language": {
+        "selectLanguage": "اختر اللغة",
+        "en": "English",
+        "fr": "Français",
+        "ar": "العربية"
+    },
+    "footer": {
+        "madeWith": "تم التطوير بـ",
+        "by": "بواسطة",
+        "license": "الترخيص",
+        "documentation": "الوثائق",
+        "support": "الدعم الفني"
     },
     "auth": {
         "account": {

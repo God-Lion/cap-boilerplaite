@@ -9,7 +9,6 @@ import { NavVariant, NavItemConfig } from '@cap/shared-types/module'
  */
 export const useNavigationMenu = (variant: NavVariant) => {
   const navItems = useAppStore((state) => state.navItems)
-  console.log("navItems", navItems)
   const user = useAppStore((state) => state.user)
   const isAuthenticated = useAppStore((state) => state.isAuthenticated)
   const isAdmin = useAppStore((state) => state.isAdmin)
@@ -49,7 +48,19 @@ export const useNavigationMenu = (variant: NavVariant) => {
         }))
     }
 
-    return filterRecursive(byVariant).sort((a, b) => (a.order || 0) - (b.order || 0))
+    const seenKeys = new Set<string>()
+    const uniqueItems: NavItemConfig[] = []
+    filterRecursive(byVariant).forEach((item) => {
+      const key = item.id || item.path
+      if (key && !seenKeys.has(key)) {
+        seenKeys.add(key)
+        uniqueItems.push(item)
+      } else if (!key) {
+        uniqueItems.push(item)
+      }
+    })
+
+    return uniqueItems.sort((a, b) => (a.order || 0) - (b.order || 0))
   }, [navItems, user, isAuthenticated, isAdmin, variant, hasRole, hasPermission])
 
   return filteredMenu

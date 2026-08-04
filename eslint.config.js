@@ -7,7 +7,7 @@ const Layers = {
   LAYER_2: ['@cap/platform-store'],
   LAYER_3: ['@cap/platform-core'],
   LAYER_4: ['@cap/layout', '@cap/civil-registry'],
-  LAYER_5: ['@cap/module-admin', '@cap/module-auth', '@cap/module-landing', '@cap/module-kyc', '@cap/module-digital-id', '@cap/module-blockchain-idaas', '@cap/module-monitoring-alerts', '@cap/module-user'],
+  LAYER_5: ['@cap/module-admin', '@cap/module-auth', '@cap/module-landing', '@cap/module-theme', '@cap/module-kyc', '@cap/module-digital-id', '@cap/module-blockchain-idaas', '@cap/module-monitoring-alerts', '@cap/module-user'],
   LAYER_6: ['@cap/app'],
   ID_AAS: ['@idaas/authentication-core', '@idaas/authorization-engine', '@idaas/identity-broker', '@idaas/mfa-orchestrator', '@idaas/passwordless-service', '@idaas/platform-cluster', '@idaas/session-manager', '@idaas/user-directory'],
 }

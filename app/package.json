@@ -32,6 +32,7 @@
     "@cap/layout": "workspace:*",
     "@cap/module-auth": "workspace:*",
     "@cap/module-landing": "workspace:*",
+    "@cap/module-theme": "workspace:*",
     "@cap/platform-core": "workspace:*",
     "@cap/shared-types": "workspace:*",
     "@emotion/cache": "^11.14.0",

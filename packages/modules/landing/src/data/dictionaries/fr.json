@@ -17,7 +17,45 @@
         "termsOfService": "Conditions d'Utilisation",
         "contact": "Contactez-nous",
         "about": "À Propos de Nous",
-        "pricing": "Tarification"
+        "pricing": "Tarification",
+        "shortcuts": "Raccourcis",
+        "addShortcut": "Ajouter un raccourci",
+        "notifications": "Notifications",
+        "new": "Nouveau",
+        "markAllRead": "Tout marquer comme lu",
+        "markAllUnread": "Tout marquer comme non lu",
+        "noNotifications": "Aucune nouvelle notification",
+        "viewAllNotifications": "Voir toutes les notifications",
+        "profile": "Mon Profil",
+        "settings": "Paramètres",
+        "logout": "Déconnexion",
+        "signingOut": "Déconnexion en cours...",
+        "admin": "Administrateur",
+        "adminAccess": "Accès Administrateur",
+        "user": "Utilisateur",
+        "registeredUser": "Utilisateur Enregistré",
+        "guest": "Invité",
+        "guestMode": "Mode Invité - Accès Limité",
+        "notAuthenticated": "Non Authentifié"
+    },
+    "theme": {
+        "light": "Clair",
+        "dark": "Sombre",
+        "system": "Système",
+        "switchMode": "Changer le mode du thème - actuellement"
+    },
+    "language": {
+        "selectLanguage": "Choisir la langue",
+        "en": "English",
+        "fr": "Français",
+        "ar": "العربية"
+    },
+    "footer": {
+        "madeWith": "Développé avec",
+        "by": "par",
+        "license": "Licence",
+        "documentation": "Documentation",
+        "support": "Support"
     },
     "auth": {
         "account": {

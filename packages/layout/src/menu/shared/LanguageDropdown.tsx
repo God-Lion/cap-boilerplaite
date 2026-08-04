@@ -7,52 +7,50 @@ import {
   MenuList,
   Paper,
   Popper,
+  Tooltip,
 } from '@mui/material'
 import Translate from '@mui/icons-material/Translate'
-import { i18n as i18nConfig } from '@cap/platform-core'
+import { i18n as i18nConfig, getAvailableLocales } from '@cap/platform-core'
 type Locale = (typeof i18nConfig)['locales'][number]
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '@cap/platform-store'
+import { zIndexScale } from '@cap/theme'
 
-type LanguageDataType = {
-  langCode: Locale
-  langName: string
+const LANGUAGE_NATIVE_MAP: Record<string, string> = {
+  en: 'English',
+  fr: 'Français',
+  ar: 'العربية',
+  es: 'Español',
+  de: 'Deutsch',
+  it: 'Italiano',
+  pt: 'Português',
 }
-
-// const getLocalePath = (pathName: string, locale: string): string => {
-//   if (!pathName) return '/'
-//   const segments = pathName.split('/')
-
-//   segments[1] = locale
-
-//   return segments.join('/')
-// }
-
-const languageData: Array<LanguageDataType> = [
-  {
-    langCode: 'en',
-    langName: 'English',
-  },
-  {
-    langCode: 'fr',
-    langName: 'French',
-  },
-  {
-    langCode: 'ar',
-    langName: 'Arabic',
-  },
-]
 
 const LanguageDropdown = () => {
   const [open, setOpen] = React.useState<boolean>(false)
+  const [tooltipOpen, setTooltipOpen] = React.useState<boolean>(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
-  const [, i18n] = useTranslation('common')
-
-  // Hooks
+  const { t, i18n } = useTranslation()
   const { settings } = useSettings()
+
+  // Dynamically derive language list from platform-core i18n registry
+  const availableLanguages = React.useMemo(() => {
+    const locales = typeof getAvailableLocales === 'function' 
+      ? getAvailableLocales() 
+      : (i18nConfig.locales as readonly Locale[])
+
+    return locales.map((langCode) => ({
+      langCode: langCode as Locale,
+      langName: t(`language.${langCode}`, {
+        defaultValue: LANGUAGE_NATIVE_MAP[langCode] || String(langCode).toUpperCase(),
+      }),
+    }))
+  }, [t])
+
   const handleClose = () => {
     setOpen(false)
+    setTooltipOpen(false)
     setAnchorEl(null)
   }
 
@@ -60,22 +58,31 @@ const LanguageDropdown = () => {
     setAnchorEl(event.currentTarget)
     setOpen((prevOpen) => !prevOpen)
   }
+
   const handleLangCode = (langCode: Locale) => {
     i18n.changeLanguage(langCode)
-
     handleClose()
   }
 
   return (
     <React.Fragment>
-      <IconButton
-        onClick={handleToggle}
-        sx={{
-          color: 'text.primary',
-        }}
+      <Tooltip
+        title={t('language.selectLanguage')}
+        onOpen={() => setTooltipOpen(true)}
+        onClose={() => setTooltipOpen(false)}
+        open={open ? false : tooltipOpen}
+        PopperProps={{ className: 'capitalize' }}
       >
-        <Translate />
-      </IconButton>
+        <IconButton
+          onClick={handleToggle}
+          sx={{
+            color: 'text.primary',
+          }}
+          aria-label={t('language.selectLanguage')}
+        >
+          <Translate />
+        </IconButton>
+      </Tooltip>
       <Popper
         open={open}
         transition
@@ -85,7 +92,7 @@ const LanguageDropdown = () => {
         sx={{
           minInlineSize: '160px',
           marginBlockStart: '0.75rem !important',
-          zIndex: 1,
+          zIndex: zIndexScale.dropdown,
         }}
       >
         {({ TransitionProps, placement }) => (
@@ -96,31 +103,25 @@ const LanguageDropdown = () => {
             }}
           >
             <Paper
+              className='glass-effect animate-scale-in'
               sx={{
+                borderRadius: '12px !important',
+                overflow: 'hidden',
                 ...(settings.skin === 'bordered'
-                  ? {
-                    borderWidth: '1px',
-                    // --tw-shadow: 0 0 #0000;
-                    // --tw-shadow-colored: 0 0 #0000;
-                    boxShadow:
-                      'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)',
-                  }
-                  : {
-
-                    boxShadow:
-                      'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)',
-                  }),
+                  ? { border: 1, boxShadow: 'none' }
+                  : { boxShadow: 'var(--premium-shadow)' }),
               }}
             >
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList onKeyDown={handleClose}>
-                  {languageData.map((locale) => (
+                  {availableLanguages.map((locale) => (
                     <MenuItem
                       key={locale.langCode}
-                      // component={Link}
-                      // href={getLocalePath(pathName, locale.langCode)}
                       onClick={() => handleLangCode(locale.langCode)}
                       selected={i18n.language === locale.langCode}
+                      sx={{
+                        fontWeight: i18n.language === locale.langCode ? 600 : 400,
+                      }}
                     >
                       {locale.langName}
                     </MenuItem>

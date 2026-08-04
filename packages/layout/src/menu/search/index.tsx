@@ -100,7 +100,9 @@ const NavSearch = () => {
           <IconButton sx={{ color: 'text.primary' }}>
             <Search />
           </IconButton>
-          <Typography sx={{ whiteSpace: 'nowrap', color: 'text.disabled' }}>Search ⌘K</Typography>
+          <Typography sx={{ whiteSpace: 'nowrap', color: 'text.disabled' }}>
+            {t('search.placeholder', { defaultValue: 'Search ⌘K' })}
+          </Typography>
         </Box>
       </ComponentWithUseKBar>
       <KBarPortal>
@@ -127,7 +129,7 @@ const NavSearch = () => {
                 <Search />
               </Box>
               <KBarSearch
-                defaultPlaceholder=''
+                defaultPlaceholder={t('search.input_placeholder', { defaultValue: 'Search...' })}
                 name='search-input'
                 style={{
                   flexGrow: 1,

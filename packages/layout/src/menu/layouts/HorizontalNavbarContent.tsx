@@ -1,6 +1,8 @@
+import React from 'react'
 import Box from '@mui/material/Box'
 import { alpha, useTheme } from '@mui/material/styles'
 import classnames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { horizontalLayoutClasses } from '@cap/theme'
 import HorizontalNavToggle from '../../components/horizontal/NavToggle'
 import { useHorizontalNav } from '../contexts/horizontalNavContext'
@@ -8,102 +10,42 @@ import LanguageDropdown from '../shared/LanguageDropdown'
 import ModeDropdown from '../shared/ModeDropdown'
 import NotificationsDropdown, { NotificationsType } from '../shared/NotificationsDropdown'
 import NavSearch from '../search'
-import ShortcutsDropdown, { ShortcutsType } from '../shared/ShortcutsDropdown'
+import ShortcutsDropdown from '../shared/ShortcutsDropdown'
 import UserDropdown from '../shared/UserDropdown'
 import Logo from '../shared/Logo'
-import { RoleIndicator } from '@cap/module-auth'
-import { Path } from '@cap/module-auth'
+import RoleIndicator from '../../components/RoleIndicator'
+import { getSearchItems } from '@cap/platform-core'
 
-const shortcuts: Array<ShortcutsType> = [
-  {
-    url: '/apps/calendar',
-    icon: 'tabler-calendar',
-    title: 'Calendar',
-    subtitle: 'Appointments',
-  },
-  {
-    url: '/apps/invoice/list',
-    icon: 'tabler-file-dollar',
-    title: 'Invoice App',
-    subtitle: 'Manage Accounts',
-  },
-  {
-    url: Path.admin.users,
-    icon: 'tabler-user',
-    title: 'Users',
-    subtitle: 'Manage Users',
-  },
-  {
-    url: Path.admin.roles,
-    icon: 'tabler-users-group',
-    title: 'Role Management',
-    subtitle: 'Permissions',
-  },
-  {
-    url: '/',
-    icon: 'tabler-device-desktop-analytics',
-    title: 'Dashboard',
-    subtitle: 'User Dashboard',
-  },
-  {
-    url: Path.account.overview,
-    icon: 'tabler-settings',
-    title: 'Settings',
-    subtitle: 'Account Overview',
-  },
-]
 
-const notifications: Array<NotificationsType> = [
-  {
-    avatarImage: '/images/avatars/8.png',
-    title: 'Congratulations Flora 🎉',
-    subtitle: 'Won the monthly bestseller gold badge',
-    time: '1h ago',
-    read: false,
-  },
-  {
-    title: 'Cecilia Becker',
-    avatarColor: 'secondary',
-    subtitle: 'Accepted your connection',
-    time: '12h ago',
-    read: false,
-  },
-  {
-    avatarImage: '/images/avatars/3.png',
-    title: 'Bernard Woods',
-    subtitle: 'You have new message from Bernard Woods',
-    time: 'May 18, 8:26 AM',
-    read: true,
-  },
-  {
-    avatarIcon: 'tabler-chart-bar',
-    title: 'Monthly report generated',
-    subtitle: 'July month financial report is generated',
-    avatarColor: 'info',
-    time: 'Apr 24, 10:30 AM',
-    read: true,
-  },
-  {
-    avatarText: 'MG',
-    title: 'Application has been approved 🚀',
-    subtitle: 'Your Meta Gadgets project application has been approved.',
-    avatarColor: 'success',
-    time: 'Feb 17, 12:17 PM',
-    read: true,
-  },
-  {
-    avatarIcon: 'tabler-mail',
-    title: 'New message from Harry',
-    subtitle: 'You have new message from Harry',
-    avatarColor: 'error',
-    time: 'Jan 6, 1:48 PM',
-    read: true,
-  },
-]
 
 const NavbarContent = () => {
   const theme = useTheme()
+  const { t } = useTranslation()
   const { isBreakpointReached } = useHorizontalNav()
+  const searchItems = getSearchItems()
+
+  const shortcuts = React.useMemo(() => {
+    return searchItems.slice(0, 6).map((item) => {
+      const rawName = item.name || ''
+      const cleanNameKey = rawName.replace(/^navigation\./, '')
+      const translatedName = t(rawName, {
+        defaultValue: t(`navigation.${cleanNameKey}`, { defaultValue: rawName }),
+      })
+
+      const rawSection = item.section || ''
+      const cleanSectionKey = rawSection.replace(/^navigation\./, '')
+      const translatedSection = rawSection
+        ? t(rawSection, { defaultValue: t(`navigation.${cleanSectionKey}`, { defaultValue: rawSection }) })
+        : ''
+
+      return {
+        url: item.url,
+        icon: item.icon || 'tabler-link',
+        title: translatedName,
+        subtitle: translatedSection,
+      }
+    })
+  }, [searchItems, t])
 
   return (
     <Box
@@ -155,7 +97,7 @@ const NavbarContent = () => {
           <LanguageDropdown />
           <ModeDropdown />
           <ShortcutsDropdown shortcuts={shortcuts} />
-          <NotificationsDropdown notifications={notifications} />
+          <NotificationsDropdown notifications={[]} />
         </Box>
         <UserDropdown />
       </Box>

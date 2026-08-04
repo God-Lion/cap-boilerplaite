@@ -14,12 +14,15 @@ import Brightness7 from '@mui/icons-material/Brightness7'
 import Laptop from '@mui/icons-material/Laptop'
 import type { Mode } from '@cap/shared-types'
 import { useSettings } from '@cap/platform-store'
+import { zIndexScale } from '@cap/theme'
+import { useTranslation } from 'react-i18next'
 
 const ModeDropdown = () => {
   const [open, setOpen] = React.useState<boolean>(false)
   const [tooltipOpen, setTooltipOpen] = React.useState<boolean>(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const { settings, updateSettings } = useSettings()
+  const { t } = useTranslation()
 
   const handleClose = () => {
     setOpen(false)
@@ -33,33 +36,28 @@ const ModeDropdown = () => {
   }
 
   const handleModeSwitch = (mode: Mode) => {
-    // Close dropdown immediately
     handleClose()
-
-    // Update settings if different mode selected
     if (settings.mode !== mode) {
-      updateSettings({ mode: mode })
+      updateSettings({ mode })
     }
   }
 
   const getModeIcon = (): React.JSX.Element => {
     if (settings.mode === 'system') return <Laptop />
-    else if (settings.mode === 'dark') return <Brightness4 />
-    else return <Brightness7 />
+    if (settings.mode === 'dark') return <Brightness4 />
+    return <Brightness7 />
   }
 
   const getModeLabel = (): string => {
-    if (settings.mode === 'system') return 'System'
-    else if (settings.mode === 'dark') return 'Dark'
-    else return 'Light'
+    if (settings.mode === 'system') return t('theme.system')
+    if (settings.mode === 'dark') return t('theme.dark')
+    return t('theme.light')
   }
-
-  console.log('settings.mode', settings.mode)
 
   return (
     <React.Fragment>
       <Tooltip
-        title={`${getModeLabel()} Mode`}
+        title={`${t('theme.switchMode')} ${getModeLabel()}`}
         onOpen={() => setTooltipOpen(true)}
         onClose={() => setTooltipOpen(false)}
         open={open ? false : tooltipOpen}
@@ -68,9 +66,9 @@ const ModeDropdown = () => {
         <IconButton
           onClick={handleToggle}
           sx={{
-            color: 'var(--primary-color)',
+            color: 'text.primary',
           }}
-          aria-label={`Switch theme mode - currently ${getModeLabel()}`}
+          aria-label={`${t('theme.switchMode')} ${getModeLabel()}`}
         >
           {getModeIcon()}
         </IconButton>
@@ -84,7 +82,7 @@ const ModeDropdown = () => {
         sx={{
           minInlineSize: '160px',
           marginBlockStart: '0.75rem !important',
-          zIndex: 1,
+          zIndex: zIndexScale.dropdown,
         }}
       >
         {({ TransitionProps, placement }) => (
@@ -95,19 +93,14 @@ const ModeDropdown = () => {
             }}
           >
             <Paper
+              className='glass-effect animate-scale-in'
               sx={{
+                borderRadius: '12px !important',
+                overflow: 'hidden',
                 ...(settings.skin === 'bordered'
-                  ? {
-                      borderWidth: '1px',
-                      boxShadow:
-                        'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)',
-                    }
-                  : {
-                      boxShadow:
-                        'var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)',
-                    }),
+                  ? { border: 1, boxShadow: 'none' }
+                  : { boxShadow: 'var(--premium-shadow)' }),
               }}
-              className={settings.skin === 'bordered' ? 'border shadow-none' : 'shadow-lg'}
             >
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList onKeyDown={handleClose}>
@@ -118,12 +111,8 @@ const ModeDropdown = () => {
                       gap: '0.75rem',
                     }}
                   >
-                    <Brightness7
-                      sx={{
-                        fontSize: '22px',
-                      }}
-                    />
-                    Light
+                    <Brightness7 sx={{ fontSize: '22px' }} />
+                    {t('theme.light')}
                   </MenuItem>
                   <MenuItem
                     onClick={() => handleModeSwitch('dark')}
@@ -132,12 +121,8 @@ const ModeDropdown = () => {
                       gap: '0.75rem',
                     }}
                   >
-                    <Brightness4
-                      sx={{
-                        fontSize: '22px',
-                      }}
-                    />
-                    Dark
+                    <Brightness4 sx={{ fontSize: '22px' }} />
+                    {t('theme.dark')}
                   </MenuItem>
                   <MenuItem
                     onClick={() => handleModeSwitch('system')}
@@ -146,12 +131,8 @@ const ModeDropdown = () => {
                       gap: '0.75rem',
                     }}
                   >
-                    <Laptop
-                      sx={{
-                        fontSize: '22px',
-                      }}
-                    />
-                    System
+                    <Laptop sx={{ fontSize: '22px' }} />
+                    {t('theme.system')}
                   </MenuItem>
                 </MenuList>
               </ClickAwayListener>

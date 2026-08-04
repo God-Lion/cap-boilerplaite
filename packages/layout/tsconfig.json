@@ -30,24 +30,10 @@
       "@/*": [
         "../../app/src/*"
       ],
-      "@auth": [
-        "../modules/auth/src",
-        "../platform-core/src/stubs/auth-shim.tsx"
-      ],
-      "@auth/*": [
-        "../modules/auth/src/*",
-        "../platform-core/src/stubs/auth-shim.tsx"
-      ],
-      "@idaas/*": [
-        "../modules/auth/src/modules/*",
-        "../platform-core/src/stubs/auth-shim.tsx"
-      ],
       "@cap/module-auth": [
-        "../modules/auth/src",
         "../platform-core/src/stubs/auth-shim.tsx"
       ],
       "@cap/module-auth/*": [
-        "../modules/auth/src/*",
         "../platform-core/src/stubs/auth-shim.tsx"
       ],
       "@cap/platform-core": [
