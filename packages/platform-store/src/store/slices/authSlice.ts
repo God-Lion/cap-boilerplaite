@@ -1,8 +1,8 @@
 import { StateCreator } from 'zustand'
+import type { AppStore } from '../../types'
 import { fetchClient, ENDPOINTS } from '../../services/api/api.client'
 import { IAuth, ILogin, hasAdminRole, normalizeRole } from '@cap/shared-types'
 import { secureTokenManager, TokenData as AuthTokens } from '../../services/secureTokenManager'
-import { AppStore } from '..'
 
 export type { AuthTokens }
 

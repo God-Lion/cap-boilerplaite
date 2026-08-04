@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider as MuiThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { useSettings } from '@cap/platform-store';
 import { useTenant } from '@cap/platform-core';
-import { composeMuiTheme, TenantThemeProvider, ThemeSettingsProvider, applyThemeVariablesSync } from '@cap/theme';
+import { composeMuiTheme, TenantThemeProvider, ThemeSettingsProvider, applyThemeVariablesSync, useThemeEditorStore } from '@cap/theme';
 import type { TenantThemeConfig } from '@cap/theme';
 import type { Settings, Mode, SystemMode } from '@cap/shared-types';
 
@@ -60,28 +60,34 @@ export const ThemeBridge = ({ children }: { children: React.ReactNode }) => {
     saveTheme 
   } = useTenant();
   
+  const isEditing = useThemeEditorStore((s) => s.isEditing);
+  const draftConfig = useThemeEditorStore((s) => s.draftConfig);
+  const deferredDraft = React.useDeferredValue(draftConfig);
+
+  const activeConfig = isEditing && deferredDraft ? deferredDraft : tenantConfig;
+  
   const { settings } = useSettings();
   
   const resolvedMode = useResolvedSystemMode(settings.mode);
   const isDark = resolvedMode === 'dark';
 
   const theme = useMemo(() => {
-    const compiled = generateTheme(tenantConfig as any, settings, isDark);
-    if (typeof window !== 'undefined' && tenantConfig) {
+    const compiled = generateTheme(activeConfig as any, settings, isDark);
+    if (typeof window !== 'undefined' && activeConfig) {
       try {
-        applyThemeVariablesSync(tenantConfig as any);
+        applyThemeVariablesSync(activeConfig as any);
       } catch {
         // Fallback gracefully if DOM is not ready
       }
     }
     return compiled;
-  }, [tenantConfig, settings, isDark]);
+  }, [activeConfig, settings, isDark]);
 
   return (
     <StyledEngineProvider injectFirst>
       <ThemeSettingsProvider settings={settings}>
         <TenantThemeProvider 
-          theme={tenantConfig as any} 
+          theme={activeConfig as any} 
           isLoading={isLoadingTheme} 
           error={errorTheme} 
           refetch={refetchTheme} 

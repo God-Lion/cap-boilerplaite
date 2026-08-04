@@ -6,6 +6,8 @@
     "dev": "pnpm --filter @cap/app run dev",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
+    "lint:circular": "npx madge --circular --extensions ts,tsx --exclude dist ./app/src ./packages/api-contracts/src ./packages/auth-contracts/src ./packages/layout/src ./packages/modules/auth/src ./packages/modules/landing/src ./packages/modules/theme/src ./packages/platform-core/src ./packages/platform-store/src ./packages/shared-types/src ./packages/theme/src",
+    "lint:circular:graph": "npx madge --circular --image graph.svg --extensions ts,tsx --exclude dist ./app/src ./packages/api-contracts/src ./packages/auth-contracts/src ./packages/layout/src ./packages/modules/auth/src ./packages/modules/landing/src ./packages/modules/theme/src ./packages/platform-core/src ./packages/platform-store/src ./packages/shared-types/src ./packages/theme/src",
     "test:e2e": "pnpm --filter @cap/app run test:e2e",
     "cspell": "cspell --no-progress --show-suggestions --relative --dot --gitignore \"**\"",
     "audit:ci": "pnpm audit --audit-level=high",
@@ -21,6 +23,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint-plugin-import": "^2.32.0",
+    "madge": "^8.0.0",
     "plop": "^4.0.1",
     "vite-plugin-pwa": "^1.2.0"
   }

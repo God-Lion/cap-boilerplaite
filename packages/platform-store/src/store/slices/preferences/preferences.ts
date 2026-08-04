@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand'
-import type { AppStore } from '../../index'
+import type { AppStore } from '../../types'
 import { UserPreferences, defaultPreferences } from './User'
 
 export interface PreferencesSlice {

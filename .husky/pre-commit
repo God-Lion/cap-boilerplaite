@@ -4,6 +4,9 @@
 echo "🏗️  Running Architectural Rules Validation..."
 echo ""
 
+echo "🔄 Checking for circular dependencies..."
+pnpm run lint:circular || { echo "❌ Circular dependency detected! Commit aborted."; exit 1; }
+
 # Run lint-staged for staged files
 npx lint-staged
 

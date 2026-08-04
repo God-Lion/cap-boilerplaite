@@ -12,8 +12,10 @@ const card = (skin: Skin): Theme['components'] => {
       styleOverrides: {
         root: ({ ownerState }) => ({
           borderRadius: 'var(--comp-card-border-radius, 12px)',
+          backgroundColor: 'var(--effect-bg, var(--mui-palette-background-paper))',
+          backdropFilter: 'var(--effect-backdrop, none)',
           ...(ownerState.variant !== 'outlined' && {
-            boxShadow: 'var(--comp-card-box-shadow, var(--mui-customShadows-md))',
+            boxShadow: 'var(--effect-shadow, var(--comp-card-box-shadow, var(--mui-customShadows-md)))',
           }),
         }),
       },

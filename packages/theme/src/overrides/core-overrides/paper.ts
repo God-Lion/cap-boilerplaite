@@ -6,6 +6,8 @@ const paper: Theme['components'] = {
     styleOverrides: {
       root: {
         backgroundImage: 'none',
+        backgroundColor: 'var(--effect-bg, var(--mui-palette-background-paper))',
+        backdropFilter: 'var(--effect-backdrop, none)',
       },
     },
   },

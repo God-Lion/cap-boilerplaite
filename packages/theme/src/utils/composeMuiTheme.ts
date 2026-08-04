@@ -3,7 +3,8 @@ import type { Direction, Settings, SystemMode } from '@cap/shared-types';
 import getComponentOverrides from '../overrides';
 import type { TenantThemeConfig } from '../types';
 import { DEFAULT_THEME_CONFIG } from '../types';
-import { darkTheme, lightTheme } from '../assets/themes';
+import darkTheme from '../assets/themes/dark';
+import lightTheme from '../assets/themes/light';
 import { createBaseMuiTheme } from './createBaseMuiTheme';
 
 interface ComposeMuiThemeOptions {

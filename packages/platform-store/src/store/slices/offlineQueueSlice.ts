@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand'
-import { AppStore } from '..'
+import type { AppStore } from '../../types'
 
 // Re-export queue types from shared-types for backward compatibility
 export type { OfflineQueueEntry, OfflineQueueEntryInput, QueueHttpMethod } from '@cap/shared-types'
@@ -31,11 +31,11 @@ export const createOfflineQueueSlice: StateCreator<
     }),
   removeFromOfflineQueue: (id) =>
     set((state: AppStore) => {
-      state.offlineQueue = state.offlineQueue.filter((e) => e.id !== id)
+      state.offlineQueue = state.offlineQueue.filter((e: OfflineQueueEntry) => e.id !== id)
     }),
   incrementOfflineRetry: (id) =>
     set((state: AppStore) => {
-      const entry = state.offlineQueue.find((e) => e.id === id)
+      const entry = state.offlineQueue.find((e: OfflineQueueEntry) => e.id === id)
       if (entry) {
         entry.retryCount += 1
       }

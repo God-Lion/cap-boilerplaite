@@ -2,16 +2,12 @@ import { Children, isValidElement } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import type { CSSObject } from '@emotion/styled'
 import type { ChildrenType, RenderExpandedMenuItemIcon } from '../types'
-import {
-  SubMenu as HorizontalSubMenu,
-  MenuItem as HorizontalMenuItem,
-  Menu as HorizontalMenu,
-} from '../horizontal-menu'
-import {
-  SubMenu as VerticalSubMenu,
-  MenuItem as VerticalMenuItem,
-  Menu as VerticalMenu,
-} from '../vertical-menu'
+import HorizontalSubMenu from '../components/horizontal-menu/SubMenu'
+import HorizontalMenuItem from '../components/horizontal-menu/MenuItem'
+import HorizontalMenu from '../components/horizontal-menu/Menu'
+import VerticalSubMenu from '../components/vertical-menu/SubMenu'
+import VerticalMenuItem from '../components/vertical-menu/MenuItem'
+import VerticalMenu from '../components/vertical-menu/Menu'
 import { menuClasses } from './menuClasses'
 import StyledMenuIcon from '../styles/StyledMenuIcon'
 

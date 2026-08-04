@@ -7,7 +7,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { BrowserRouter } from 'react-router-dom';
-import { TenantProvider, themeConfig, i18n, onForbiddenError, useNetworkSync, getModules } from '@cap/platform-core';
+import { TenantProvider, themeConfig, i18n, onForbiddenError, useNetworkSync, getModules, useTenant } from '@cap/platform-core';
 import type { ChildrenType } from '@cap/platform-core';
 import { TourProvider } from '@reactour/tour';
 import { toast } from 'react-toastify';
@@ -16,6 +16,7 @@ import common_fr from './data/dictionaries/fr.json';
 import common_ar from './data/dictionaries/ar.json';
 import { ThemeBridge, AppReactToastify } from '@cap/layout';
 import { GlobalZIndexStyles } from '@cap/theme';
+import { ThemeEditor } from '@cap/module-theme';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -140,6 +141,11 @@ const ThemedTourProvider: React.FC<ChildrenType> = ({ children }) => {
   )
 }
 
+const GlobalThemeEditor = () => {
+  const { saveTheme } = useTenant();
+  return <ThemeEditor asDrawer onSave={saveTheme} />;
+};
+
 const Providers: React.FC<ChildrenType> = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -151,6 +157,7 @@ const Providers: React.FC<ChildrenType> = ({ children }) => {
               <ForbiddenListener />
               <NetworkSync />
               <ThemedTourProvider>{children}</ThemedTourProvider>
+              <GlobalThemeEditor />
             </BrowserRouter>
             <AppReactToastify position={themeConfig.toastPosition} hideProgressBar />
             <ReactQueryDevtools initialIsOpen={false} />
@@ -160,5 +167,6 @@ const Providers: React.FC<ChildrenType> = ({ children }) => {
     </QueryClientProvider>
   )
 }
+
 
 export default Providers

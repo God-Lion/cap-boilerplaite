@@ -37,6 +37,8 @@
       "@cap/shared-types/*": ["../shared-types/src/*"],
       "@cap/platform-store": ["../platform-store/src"],
       "@cap/platform-store/*": ["../platform-store/src/*"],
+      "@cap/module-theme": ["../modules/theme/src"],
+      "@cap/module-theme/*": ["../modules/theme/src/*"],
       "@cap/theme": ["../theme/src"],
       "@cap/theme/*": ["../theme/src/*"],
       "@auth": ["../modules/auth/src"],

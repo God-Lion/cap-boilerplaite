@@ -1,0 +1,10 @@
+{
+  "fontSize": "10px",
+  "graphVizOptions": {
+    "G": {
+      "rankdir": "LR"
+    }
+  },
+  "exclude": "(dist|node_modules|build|coverage)",
+  "fileExtensions": ["ts", "tsx"]
+}

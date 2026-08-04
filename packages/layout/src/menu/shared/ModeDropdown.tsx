@@ -12,9 +12,12 @@ import {
 import Brightness4 from '@mui/icons-material/Brightness4'
 import Brightness7 from '@mui/icons-material/Brightness7'
 import Laptop from '@mui/icons-material/Laptop'
+import Palette from '@mui/icons-material/Palette'
+import Divider from '@mui/material/Divider'
 import type { Mode } from '@cap/shared-types'
 import { useSettings } from '@cap/platform-store'
-import { zIndexScale } from '@cap/theme'
+import { zIndexScale, themeEditorStore, DEFAULT_THEME_CONFIG } from '@cap/theme'
+import { useTenant } from '@cap/platform-core'
 import { useTranslation } from 'react-i18next'
 
 const ModeDropdown = () => {
@@ -23,6 +26,13 @@ const ModeDropdown = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const { settings, updateSettings } = useSettings()
   const { t } = useTranslation()
+
+  const { theme: tenantTheme } = useTenant()
+
+  const handleOpenThemeBuilder = () => {
+    handleClose()
+    themeEditorStore.startEditing((tenantTheme as any) || DEFAULT_THEME_CONFIG)
+  }
 
   const handleClose = () => {
     setOpen(false)
@@ -134,6 +144,18 @@ const ModeDropdown = () => {
                     <Laptop sx={{ fontSize: '22px' }} />
                     {t('theme.system')}
                   </MenuItem>
+                  <Divider sx={{ my: 0.5 }} />
+                  <MenuItem
+                    onClick={handleOpenThemeBuilder}
+                    sx={{
+                      gap: '0.75rem',
+                      color: 'primary.main',
+                      fontWeight: 600,
+                    }}
+                  >
+                    <Palette sx={{ fontSize: '22px' }} />
+                    Theme Builder
+                  </MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>
@@ -143,5 +165,6 @@ const ModeDropdown = () => {
     </React.Fragment>
   )
 }
+
 
 export default ModeDropdown

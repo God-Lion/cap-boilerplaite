@@ -1,5 +1,5 @@
 import type { StateCreator } from 'zustand'
-import type { AppStore } from '../index'
+import type { AppStore } from '../../types'
 import type { NavItemConfig } from '@cap/shared-types/module'
 
 import { VerticalNavState, HorizontalNavState } from '@cap/shared-types'

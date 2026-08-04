@@ -14,18 +14,8 @@ import { createSettingsSlice, SettingsSlice, LayoutOverride } from './slices/set
 import { createNavigationSlice, NavigationSlice } from './slices/navigationSlice'
 import { createNetworkSlice, NetworkSlice } from './slices/networkSlice'
 import { createOfflineQueueSlice, OfflineQueueSlice } from './slices/offlineQueueSlice'
-
-export type { LayoutOverride }
-
-export type AppStore = AuthSlice &
-  GuestSlice &
-  ProfileSlice &
-  NotificationSlice &
-  PreferencesSlice &
-  SettingsSlice &
-  NavigationSlice &
-  NetworkSlice &
-  OfflineQueueSlice
+import type { AppStore } from '../types'
+export type { LayoutOverride, AppStore }
 
 // Hydration tracking
 let hasHydrated = false

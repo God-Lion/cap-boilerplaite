@@ -11,7 +11,7 @@
  */
 
 import { StateCreator } from 'zustand'
-import type { AppStore } from '../index'
+import type { AppStore } from '../../types'
 
 export interface GuestSessionData {
   sessionId: string

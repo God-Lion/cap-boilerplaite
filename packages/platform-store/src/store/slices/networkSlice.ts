@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand'
-import { AppStore } from '..'
+import type { AppStore } from '../../types'
 
 export interface NetworkSlice {
   isOnline: boolean

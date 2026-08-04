@@ -7,6 +7,7 @@ export * from './utils'
 export * from './hooks'
 export * from './styled'
 export * from './styles'
+export * from './store/themeEditorStore'
 
 export * from './assets'
 

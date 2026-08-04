@@ -16,7 +16,7 @@ export const useNavigationMenu = (variant: NavVariant) => {
 
   const filteredMenu = useMemo(() => {
     // 1. Filter by variant directly
-    const byVariant = navItems.filter(item => 
+    const byVariant = navItems.filter((item: NavItemConfig) => 
       !item.variant || item.variant.includes(variant) || item.variant.includes('all')
     )
 
