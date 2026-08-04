@@ -38,7 +38,7 @@ import DesktopWindows from '@mui/icons-material/DesktopWindows'
 import Settings from '@mui/icons-material/Settings'
 import LinkIcon from '@mui/icons-material/Link'
 import { useSettings } from '@cap/platform-store'
-import { themeConfig } from '@cap/theme'
+import { themeConfig, zIndexScale } from '@cap/theme'
 import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
 
 export type ShortcutsType = {
@@ -146,7 +146,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
         placement='bottom-end'
         anchorEl={anchorEl}
         sx={{
-          zIndex: 1,
+          zIndex: zIndexScale.dropdown,
           marginBlockStart: 3,
           inlineSize: isSmallScreen ? '100%' : 384,
         }}

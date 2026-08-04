@@ -13,8 +13,8 @@ const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>`
     max-inline-size: 90dvw;
     block-size: 580px;
     max-block-size: 90dvh;
-    background: ;
-    border-radius: var(--radius-md);
+    background: ${({ theme }) => theme.palette.background.paper};
+    border-radius: var(--radius-md, ${({ theme }) => theme.shape.borderRadius}px);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -29,7 +29,10 @@ const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>`
       border-radius: 0;
     `}
 
-    ${({ skin, theme }) => skin !== 'bordered' && `box-shadow: ${theme.customShadows.lg};`}
+    ${({ skin, theme }) =>
+      skin === 'bordered'
+        ? `border: 1px solid ${theme.palette.divider};`
+        : `box-shadow: ${theme.customShadows.lg};`}
   }
 
   & #kbar-listbox {

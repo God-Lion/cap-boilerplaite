@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { ElementType, ReactNode } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { Box, IconButton, Typography } from '@mui/material'
+import { alpha, useTheme } from '@mui/material/styles'
 import Search from '@mui/icons-material/Search'
 import Close from '@mui/icons-material/Close'
 import { useMedia } from 'react-use'
@@ -12,7 +13,7 @@ import type { ChildrenType } from '@cap/shared-types'
 import { useSettings } from '@cap/platform-store'
 import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
 import { useVerticalNav } from '../../hooks/useVerticalNav'
-import { zIndexScale } from "@cap/theme";
+import { zIndexScale } from '@cap/theme'
 
 export type Locale = (typeof i18nConfig)['locales'][number]
 
@@ -49,6 +50,7 @@ const ComponentWithUseKBar = (props: ComponentWithUseKBarProps) => {
 }
 
 const NavSearch = () => {
+  const theme = useTheme()
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
@@ -163,7 +165,8 @@ const NavSearch = () => {
             position: 'fixed',
             inset: 0,
             zIndex: zIndexScale.search,
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
+            bgcolor: alpha(theme.palette.common.black, 0.5),
+            backdropFilter: 'blur(4px)',
           }}
         />
       </KBarPortal>

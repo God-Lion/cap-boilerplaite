@@ -55,7 +55,7 @@ const NoResult = (props: NoResultProps) => {
         <Box
           component='i'
           className='tabler-file-unknown'
-          sx={{ fontSize: '64px', marginBlockEnd: 2.5 }}
+          sx={{ fontSize: '64px', marginBlockEnd: 2.5, color: 'text.secondary' }}
         />
         <Typography
           sx={{

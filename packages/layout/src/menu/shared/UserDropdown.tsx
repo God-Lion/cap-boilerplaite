@@ -25,7 +25,7 @@ import Settings from '@mui/icons-material/Settings'
 import { useSettings, useAppStore } from '@cap/platform-store'
 import { useAuth } from '@cap/platform-core'
 import { AppPaths, resolveDynamicPath } from '@cap/shared-types'
-import { zIndexScale } from "@cap/theme";
+import { zIndexScale } from '@cap/theme'
 import { useTranslation } from 'react-i18next'
 
 const BadgeContentSpan = styled('span')(({ theme }) => ({

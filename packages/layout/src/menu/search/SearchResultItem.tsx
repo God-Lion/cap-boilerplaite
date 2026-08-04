@@ -63,11 +63,16 @@ const Shortcut = ({ shortcut }: { shortcut: string[] }) => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 24,
+    minWidth: 24,
     height: 24,
+    px: 1,
     borderRadius: 0.5,
-    fontSize: '0.875rem',
-    bgcolor: 'action.selected',
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    bgcolor: 'action.hover',
+    border: 1,
+    borderColor: 'divider',
+    color: 'text.secondary',
   }
 
   if (shortcut.length > 1) {

@@ -19,7 +19,7 @@ const LogoText = styled.span<LogoTextProps>`
   line-height: 1.09091;
   font-weight: 700;
   letter-spacing: 0.25px;
-  color: ;
+  color: inherit;
   transition: ${({ transitionDuration }) =>
     `margin-inline-start ${transitionDuration}ms ease-in-out, opacity ${transitionDuration}ms ease-in-out`};
 

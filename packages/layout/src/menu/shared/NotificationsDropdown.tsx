@@ -29,7 +29,7 @@ import Close from '@mui/icons-material/Close'
 import BarChart from '@mui/icons-material/BarChart'
 import Email from '@mui/icons-material/Email'
 import { useSettings } from '@cap/platform-store'
-import { themeConfig } from '@cap/theme'
+import { themeConfig, zIndexScale } from '@cap/theme'
 import type { ThemeColor } from '@cap/shared-types'
 import { useTranslation } from 'react-i18next'
 
@@ -202,7 +202,7 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
         placement='bottom-end'
         anchorEl={anchorEl}
         sx={{
-          zIndex: 1,
+          zIndex: zIndexScale.dropdown,
           marginBlockStart: 3,
           inlineSize: isSmallScreen ? '100%' : 384,
         }}
