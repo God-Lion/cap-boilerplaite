@@ -1,4 +1,11 @@
 import { styled } from '@cap/theme'
+import {
+  footerTokens,
+  getFooterElevationShadow,
+  getFooterBorderBlockStart,
+  getFooterDetachedBorderedStyles,
+  getFooterZIndex,
+} from '@cap/theme'
 import type { CSSObject } from '@emotion/styled'
 import { verticalLayoutClasses } from '../../utils/layoutClasses'
 
@@ -11,55 +18,51 @@ type StyledFooterProps = {
 const StyledFooter = styled('footer')<StyledFooterProps>(({ theme, layoutPadding, compactContentWidth, overrideStyles }) => ({
   [`&.${verticalLayoutClasses.footerContentCompact}`]: {
     [`&.${verticalLayoutClasses.footerDetached}`]: {
-      marginInline: 'auto',
+      marginInline: footerTokens.layout.compactMarginInline,
       maxInlineSize: `${compactContentWidth}px`,
     },
 
     [`&.${verticalLayoutClasses.footerAttached} .${verticalLayoutClasses.footerContentWrapper}`]: {
-      marginInline: 'auto',
+      marginInline: footerTokens.layout.compactMarginInline,
       maxInlineSize: `${compactContentWidth}px`,
     },
   },
 
   [`&.${verticalLayoutClasses.footerFixed}`]: {
-    position: 'sticky',
-    insetBlockEnd: 0,
-    zIndex: theme.zIndex.drawer - 100 || 1050,
+    position: footerTokens.positioning.sticky,
+    insetBlockEnd: footerTokens.positioning.insetBlockEnd,
+    zIndex: getFooterZIndex(theme),
 
     [`&.${verticalLayoutClasses.footerAttached}, &.${verticalLayoutClasses.footerDetached} .${verticalLayoutClasses.footerContentWrapper}`]: {
       backgroundColor: theme.palette.background.paper,
     },
 
     [`&.${verticalLayoutClasses.footerDetached}`]: {
-      pointerEvents: 'none',
+      pointerEvents: footerTokens.interaction.containerPointerEvents,
       paddingInline: layoutPadding,
 
       [`& .${verticalLayoutClasses.footerContentWrapper}`]: {
-        pointerEvents: 'auto',
-        boxShadow: (theme as any).customShadows?.sm || theme.shadows[2],
+        pointerEvents: footerTokens.interaction.contentPointerEvents,
+        boxShadow: getFooterElevationShadow(theme),
         borderStartStartRadius: `${theme.shape.borderRadius}px`,
         borderStartEndRadius: `${theme.shape.borderRadius}px`,
 
-        '[data-skin="bordered"] &': {
-          boxShadow: 'none',
-          borderInline: `1px solid ${theme.palette.divider}`,
-          borderBlockStart: `1px solid ${theme.palette.divider}`,
-        },
+        '[data-skin="bordered"] &': getFooterDetachedBorderedStyles(theme),
       },
     },
 
     [`&.${verticalLayoutClasses.footerAttached}`]: {
-      boxShadow: (theme as any).customShadows?.sm || theme.shadows[2],
+      boxShadow: getFooterElevationShadow(theme),
 
       '[data-skin="bordered"] &': {
-        boxShadow: 'none',
-        borderBlockStart: `1px solid ${theme.palette.divider}`,
+        boxShadow: footerTokens.borderedSkin.boxShadow,
+        borderBlockStart: getFooterBorderBlockStart(theme),
       },
     },
   },
 
   [`& .${verticalLayoutClasses.footerContentWrapper}`]: {
-    paddingBlock: '16px',
+    paddingBlock: footerTokens.layout.paddingBlock,
     paddingInline: layoutPadding,
   },
 

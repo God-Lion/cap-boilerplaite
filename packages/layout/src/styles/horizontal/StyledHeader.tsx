@@ -1,10 +1,14 @@
 import { styled } from '@cap/theme'
-import { alpha } from '@mui/material/styles'
+import {
+  headerTokens,
+  getHeaderElevationShadow,
+  getHeaderBorderBlockEnd,
+  getHeaderBlurStyles,
+} from '@cap/theme'
 import type { CSSObject } from '@emotion/styled'
 import { horizontalLayoutClasses } from '../../utils/layoutClasses'
 import { SurfaceEffectFactory } from '../../utils/buildLayoutSurfaceEffect'
 
-// themeConfig values inlined to avoid circular import (layoutPadding:24, compactContentWidth:1440)
 type StyledHeaderProps = {
   overrideStyles?: CSSObject
   layoutPadding: string
@@ -15,38 +19,35 @@ const StyledHeader = styled('header')<StyledHeaderProps>(({ theme, layoutPadding
   const surfaceEffect = SurfaceEffectFactory.create((theme as any).effects || (theme as any).effectConfig || { globalType: 'glass' }, theme)
 
   return {
-    boxShadow: (theme as any).customShadows?.sm || theme.shadows[1],
+    boxShadow: getHeaderElevationShadow(theme),
     ...surfaceEffect,
     
     '[data-skin="bordered"] &': {
-      boxShadow: 'none',
-      borderBlockEnd: `1px solid ${theme.palette.divider}`,
+      boxShadow: headerTokens.borderedSkin.boxShadow,
+      borderBlockEnd: getHeaderBorderBlockEnd(theme),
     },
 
     [`&:not(.${horizontalLayoutClasses.headerBlur})`]: {
       backgroundColor: theme.palette.background.paper,
     },
 
-    [`&.${horizontalLayoutClasses.headerBlur}`]: {
-      backdropFilter: 'blur(6px)',
-      backgroundColor: alpha(theme.palette.background.paper, 0.88),
-    },
+    [`&.${horizontalLayoutClasses.headerBlur}`]: getHeaderBlurStyles(theme),
 
     [`&.${horizontalLayoutClasses.headerFixed}`]: {
-      position: 'sticky',
-      insetBlockStart: 0,
+      position: headerTokens.positioning.sticky,
+      insetBlockStart: headerTokens.positioning.insetBlockStart,
       zIndex: theme.zIndex.appBar,
     },
 
     [`&.${horizontalLayoutClasses.headerContentCompact} .${horizontalLayoutClasses.navbar}`]: {
-      marginInline: 'auto',
+      marginInline: headerTokens.layout.compactMarginInline,
       maxInlineSize: `${compactContentWidth}px`,
     },
 
     [`& .${horizontalLayoutClasses.navbar}`]: {
-      position: 'relative',
-      minBlockSize: '64px', // Standard height or from theme
-      paddingBlock: '8px',
+      position: headerTokens.positioning.navbarPosition,
+      minBlockSize: headerTokens.layout.minBlockSize,
+      paddingBlock: headerTokens.layout.paddingBlock,
       paddingInline: layoutPadding,
     },
 
@@ -55,4 +56,3 @@ const StyledHeader = styled('header')<StyledHeaderProps>(({ theme, layoutPadding
 })
 
 export default StyledHeader
-

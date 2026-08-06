@@ -2,9 +2,8 @@ import React from 'react'
 import { useTheme } from '@mui/material/styles'
 import type { CSSObject } from '@emotion/styled'
 import type { ChildrenType } from '@cap/shared-types'
-import { themeConfig } from '@cap/theme'
+import { themeConfig, verticalLayoutClasses, layoutMenuTokens } from '@cap/theme'
 import { useSettings } from '@cap/platform-store'
-import { verticalLayoutClasses } from "@cap/theme";
 import StyledHeader from '../styles/vertical/StyledHeader'
 import classnames from 'classnames'
 import { Box } from '@mui/material'
@@ -37,7 +36,6 @@ const Navbar: React.FC<
       compactContentWidth={themeConfig.compactContentWidth as number}
       className={classnames(
         verticalLayoutClasses.header,
-        // 'flex items-center justify-center is-full',
         {
           [verticalLayoutClasses.headerFixed]: headerFixed,
           [verticalLayoutClasses.headerStatic]: headerStatic,
@@ -49,22 +47,11 @@ const Navbar: React.FC<
           [verticalLayoutClasses.headerContentWide]: headerContentWide,
         },
       )}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        inlineSize: '100%',
-      }}
+      style={layoutMenuTokens.verticalNavbar.containerStyles}
     >
       <Box
-        className={classnames(
-          verticalLayoutClasses.navbar,
-          // 'flex bs-full'
-        )}
-        sx={{
-          display: 'flex',
-          blockSize: '100%',
-        }}
+        className={classnames(verticalLayoutClasses.navbar)}
+        sx={layoutMenuTokens.verticalNavbar.boxStyles}
       >
         {children || <NavbarContent />}
       </Box>

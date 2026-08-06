@@ -1,5 +1,6 @@
 import { css } from '@emotion/react'
 import type { Theme } from '@mui/material/styles'
+import { menuTokens } from '@cap/theme'
 import type { ChildrenType } from '../../types'
 import { menuClasses } from '../../utils/menuClasses'
 
@@ -20,12 +21,12 @@ export const menuButtonStyles = (props: MenuButtonStylesProps) => {
   return css({
     display: 'flex',
     alignItems: 'center',
-    minBlockSize: '30px',
+    minBlockSize: menuTokens.horizontal.button.minBlockSize,
     textDecoration: 'none',
     color: 'inherit',
     boxSizing: 'border-box',
     cursor: 'pointer',
-    paddingInline: '20px',
+    paddingInline: menuTokens.horizontal.button.paddingInline,
 
     '&:hover': {
       backgroundColor: hoverBg,

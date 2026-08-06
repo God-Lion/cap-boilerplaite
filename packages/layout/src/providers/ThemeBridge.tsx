@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider as MuiThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { useSettings } from '@cap/platform-store';
 import { useTenant } from '@cap/platform-core';
-import { composeMuiTheme, TenantThemeProvider, ThemeSettingsProvider, applyThemeVariablesSync, useThemeEditorStore } from '@cap/theme';
+import { composeMuiTheme, TenantThemeProvider, ThemeSettingsProvider, applyThemeVariablesSync, useThemeEditorStore, headerTokens, footerTokens } from '@cap/theme';
 import type { TenantThemeConfig } from '@cap/theme';
 import type { Settings, Mode, SystemMode } from '@cap/shared-types';
 
@@ -122,11 +122,11 @@ export const ThemeBridge = ({ children }: { children: React.ReactNode }) => {
                   // Z-Index Layers (Source of Truth)
                   '--header-z-index': String(theme.zIndex.appBar),
                   '--drawer-z-index': String(theme.zIndex.drawer),
-                  '--footer-z-index': '1050',
+                  '--footer-z-index': String(footerTokens.positioning.defaultZIndex),
                   '--z-behind': '-1',
 
                   // Layout Constants
-                  '--header-height': '64px',
+                  '--header-height': headerTokens.layout.minBlockSize,
                 },
               })}
             />

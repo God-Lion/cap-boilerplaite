@@ -2,6 +2,7 @@ import type { Settings } from '@cap/shared-types'
 import { styled } from '@mui/material/styles'
 import { KBarAnimator } from 'kbar'
 import { SurfaceEffectFactory } from '../../utils/buildLayoutSurfaceEffect'
+import { searchTokens } from '@cap/theme'
 
 type StyledKBarAnimatorProps = {
   skin: Settings['skin']
@@ -13,10 +14,10 @@ const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>(({ them
 
   return {
     '& > div': {
-      inlineSize: '600px',
-      maxInlineSize: '90dvw',
-      blockSize: '580px',
-      maxBlockSize: '90dvh',
+      inlineSize: searchTokens.animator.desktopInlineSize,
+      maxInlineSize: searchTokens.animator.desktopMaxInlineSize,
+      blockSize: searchTokens.animator.desktopBlockSize,
+      maxBlockSize: searchTokens.animator.desktopMaxBlockSize,
       borderRadius: `${theme.shape.borderRadius * 2}px`,
       display: 'flex',
       flexDirection: 'column',
@@ -24,10 +25,10 @@ const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>(({ them
       ...surfaceEffect,
 
       ...(isSmallScreen && {
-        minBlockSize: '100dvh',
-        maxBlockSize: '100dvh',
-        minInlineSize: '100dvw',
-        maxInlineSize: '100dvw',
+        minBlockSize: searchTokens.animator.mobileMinBlockSize,
+        maxBlockSize: searchTokens.animator.mobileMaxBlockSize,
+        minInlineSize: searchTokens.animator.mobileMinInlineSize,
+        maxInlineSize: searchTokens.animator.mobileMaxInlineSize,
         borderRadius: 0,
       }),
 
@@ -38,11 +39,11 @@ const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>(({ them
     },
 
     '& #kbar-listbox': {
-      paddingInline: '0.5rem',
+      paddingInline: searchTokens.animator.listboxPaddingInline,
 
       '& [id^="kbar-listbox-item"]': {
-        insetInlineStart: '8px !important',
-        inlineSize: 'calc(100% - 16px) !important',
+        insetInlineStart: searchTokens.animator.listboxItemInset,
+        inlineSize: searchTokens.animator.listboxItemWidth,
       },
     },
   }

@@ -1,8 +1,13 @@
 import { styled } from '@cap/theme'
+import {
+  footerTokens,
+  getFooterElevationShadow,
+  getFooterBorderBlockStart,
+  getFooterZIndex,
+} from '@cap/theme'
 import type { CSSObject } from '@emotion/styled'
 import { horizontalLayoutClasses } from '../../utils/layoutClasses'
 
-// themeConfig values inlined to avoid circular import (layoutPadding:24, compactContentWidth:1440)
 type StyledFooterProps = {
   overrideStyles?: CSSObject
   layoutPadding: string
@@ -11,25 +16,25 @@ type StyledFooterProps = {
 
 const StyledFooter = styled('footer')<StyledFooterProps>(({ theme, layoutPadding, compactContentWidth, overrideStyles }) => ({
   [`&.${horizontalLayoutClasses.footerFixed}`]: {
-    position: 'sticky',
-    insetBlockEnd: 0,
-    zIndex: theme.zIndex.drawer - 100 || 1050,
+    position: footerTokens.positioning.sticky,
+    insetBlockEnd: footerTokens.positioning.insetBlockEnd,
+    zIndex: getFooterZIndex(theme),
     backgroundColor: theme.palette.background.paper,
-    boxShadow: (theme as any).customShadows?.sm || theme.shadows[2],
+    boxShadow: getFooterElevationShadow(theme),
 
     '[data-skin="bordered"] &': {
-      boxShadow: 'none',
-      borderBlockStart: `1px solid ${theme.palette.divider}`,
+      boxShadow: footerTokens.borderedSkin.boxShadow,
+      borderBlockStart: getFooterBorderBlockStart(theme),
     },
   },
 
   [`&.${horizontalLayoutClasses.footerContentCompact} .${horizontalLayoutClasses.footerContentWrapper}`]: {
-    marginInline: 'auto',
+    marginInline: footerTokens.layout.compactMarginInline,
     maxInlineSize: `${compactContentWidth}px`,
   },
 
   [`& .${horizontalLayoutClasses.footerContentWrapper}`]: {
-    paddingBlock: '16px',
+    paddingBlock: footerTokens.layout.paddingBlock,
     paddingInline: layoutPadding,
   },
 

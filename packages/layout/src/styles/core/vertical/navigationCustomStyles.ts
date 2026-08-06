@@ -1,5 +1,9 @@
 import type { Theme } from '@mui/material/styles'
-import { alpha } from '@mui/material/styles'
+import {
+  menuTokens,
+  getVerticalNavBackdropColor,
+  getVerticalNavContainerShadow,
+} from '@cap/theme'
 import type { VerticalNavState } from '../../../menu/contexts/verticalNavContext'
 import { menuClasses, verticalNavClasses } from '../../../menu/utils/menuClasses'
 
@@ -12,8 +16,11 @@ const navigationCustomStyles = (verticalNavOptions: VerticalNavState, theme: The
     color: theme.palette.text.primary,
     zIndex: `${theme.zIndex.drawer} !important`,
     [`& .${verticalNavClasses.header}`]: {
-      paddingBlock: theme.spacing(5),
-      paddingInline: theme.spacing(5.5, 4),
+      paddingBlock: theme.spacing(menuTokens.vertical.header.paddingBlockSpacing),
+      paddingInline: theme.spacing(
+        menuTokens.vertical.header.paddingInlineStartSpacing,
+        menuTokens.vertical.header.paddingInlineEndSpacing
+      ),
 
       ...(collapsedNotHovered && {
         paddingInline: theme.spacing(((collapsedWidth as number) - 35) / 8),
@@ -30,19 +37,18 @@ const navigationCustomStyles = (verticalNavOptions: VerticalNavState, theme: The
         duration: transitionDuration,
         easing: 'ease-in-out',
       }),
-      borderColor: 'transparent',
-      boxShadow: (theme as any).customShadows?.sm || theme.shadows[2],
+      ...getVerticalNavContainerShadow(theme, (theme as any).settings?.skin),
       '[data-skin="bordered"] &': {
         boxShadow: 'none',
         borderColor: theme.palette.divider,
       },
     },
     [`& .${menuClasses.root}`]: {
-      paddingBlock: theme.spacing(1),
-      paddingInline: theme.spacing(3),
+      paddingBlock: theme.spacing(menuTokens.vertical.root.paddingBlockSpacing),
+      paddingInline: theme.spacing(menuTokens.vertical.root.paddingInlineSpacing),
     },
     [`& .${verticalNavClasses.backdrop}`]: {
-      backgroundColor: alpha(theme.palette.common.black, 0.5),
+      backgroundColor: getVerticalNavBackdropColor(theme),
     },
   }
 }

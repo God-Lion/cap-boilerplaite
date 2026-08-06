@@ -14,7 +14,7 @@ import { i18n as i18nConfig, getAvailableLocales } from '@cap/platform-core'
 type Locale = (typeof i18nConfig)['locales'][number]
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '@cap/platform-store'
-import { zIndexScale } from '@cap/theme'
+import { zIndexScale, dropdownTokens } from '@cap/theme'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 
 const LANGUAGE_NATIVE_MAP: Record<string, string> = {
@@ -91,8 +91,8 @@ const LanguageDropdown = () => {
         placement='bottom-start'
         anchorEl={anchorEl}
         sx={{
-          minInlineSize: '160px',
-          marginBlockStart: '0.75rem !important',
+          minInlineSize: dropdownTokens.dropdownPopper.minInlineSizeSmall,
+          marginBlockStart: dropdownTokens.dropdownPopper.marginBlockStart,
           zIndex: zIndexScale.dropdown,
         }}
       >
@@ -106,7 +106,7 @@ const LanguageDropdown = () => {
             <Paper
               className='animate-scale-in'
               sx={(theme: any) => ({
-                borderRadius: '12px !important',
+                borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
                 ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'

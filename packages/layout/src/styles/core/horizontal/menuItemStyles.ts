@@ -1,5 +1,10 @@
 import type { Theme } from '@mui/material/styles'
 import { alpha } from '@mui/material/styles'
+import {
+  menuTokens,
+  getHorizontalMenuItemActiveGradient,
+  getHorizontalSubmenuContentStyles,
+} from '@cap/theme'
 import type { MenuItemStyles, MenuItemStylesParams } from '../../../menu/types'
 import type { Settings } from '@cap/platform-core'
 import { menuClasses } from '../../../menu/utils/menuClasses'
@@ -7,7 +12,7 @@ import { menuClasses } from '../../../menu/utils/menuClasses'
 const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
   root: ({ level }: MenuItemStylesParams) => ({
     ...(level === 0 && {
-      borderRadius: 6,
+      borderRadius: menuTokens.horizontal.item.borderRadius,
     }),
     [`&.${menuClasses.open} > .${menuClasses.button}`]: {
       backgroundColor: `${theme.palette.action.selected} !important`,
@@ -16,19 +21,12 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
       ? {
           [`& .${menuClasses.button}.${menuClasses.active}`]: {
             color: `${theme.palette.primary.contrastText} !important`,
-            background:
-              theme.direction === 'ltr'
-                ? `linear-gradient(270deg,
-                  ${alpha(theme.palette.primary.main, 0.7)} 0%,
-                  ${theme.palette.primary.main} 100%) !important`
-                : `linear-gradient(270deg,
-                  ${theme.palette.primary.main} 100%,
-                  ${alpha(theme.palette.primary.main, 0.7)} 100%) !important`,
+            background: getHorizontalMenuItemActiveGradient(theme),
           },
         }
       : {
           [`&:not([aria-expanded]) > .${menuClasses.button}.${menuClasses.active}`]: {
-            backgroundColor: alpha(theme.palette.primary.main, 0.16),
+            backgroundColor: alpha(theme.palette.primary.main, menuTokens.horizontal.item.activeSubmenuAlpha),
             color: theme.palette.primary.main,
           },
           [`&[aria-expanded] > .${menuClasses.button}.${menuClasses.active}`]: {
@@ -44,12 +42,12 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
   }),
   button: {
     borderRadius: theme.shape.borderRadius,
-    paddingInline: theme.spacing(4),
+    paddingInline: theme.spacing(menuTokens.horizontal.item.paddingInlineSpacing),
     '&:not(:has(.MuiChip-root))': {
-      paddingBlock: theme.spacing(2),
+      paddingBlock: theme.spacing(menuTokens.horizontal.item.paddingBlockDefaultSpacing),
     },
     '&:has(.MuiChip-root)': {
-      paddingBlock: theme.spacing(1.75),
+      paddingBlock: theme.spacing(menuTokens.horizontal.item.paddingBlockChipSpacing),
     },
     [`&:not(.${menuClasses.active}):hover, &:not(.${menuClasses.active}):focus-visible, &:not(.${menuClasses.active})[aria-expanded="true"]`]:
       {
@@ -57,15 +55,15 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
       },
   },
   icon: ({ level }: MenuItemStylesParams) => ({
-    marginInlineEnd: theme.spacing(2),
+    marginInlineEnd: theme.spacing(menuTokens.horizontal.item.iconMarginInlineEndSpacing),
     ...(level < 2
-      ? { fontSize: '1.375rem' }
-      : { fontSize: '0.75rem', color: theme.palette.text.secondary }),
+      ? { fontSize: menuTokens.horizontal.item.iconSizePrimary }
+      : { fontSize: menuTokens.horizontal.item.iconSizeSecondary, color: theme.palette.text.secondary }),
     '& > i, & > svg': {
       fontSize: 'inherit',
     },
     '& .tabler-circle': {
-      fontSize: '0.75rem',
+      fontSize: menuTokens.horizontal.item.iconSizeSecondary,
       color: theme.palette.text.secondary,
       [`.${menuClasses.active} &`]: {
         color: theme.palette.primary.main,
@@ -73,17 +71,17 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
     },
   }),
   prefix: {
-    marginInlineEnd: theme.spacing(2),
+    marginInlineEnd: theme.spacing(menuTokens.horizontal.item.prefixMarginInlineEndSpacing),
   },
   suffix: {
-    marginInlineStart: theme.spacing(2),
+    marginInlineStart: theme.spacing(menuTokens.horizontal.item.suffixMarginInlineStartSpacing),
   },
   subMenuStyles: {
-    zIndex: theme.zIndex.appBar + 1,
+    zIndex: theme.zIndex.appBar + menuTokens.horizontal.item.submenuZIndexOffset,
   },
   subMenuExpandIcon: {
-    fontSize: '1.25rem',
-    marginInlineStart: theme.spacing(2),
+    fontSize: menuTokens.horizontal.item.expandIconSize,
+    marginInlineStart: theme.spacing(menuTokens.horizontal.item.expandIconMarginInlineStartSpacing),
     '& i, & svg': {
       fontSize: 'inherit',
     },
@@ -91,18 +89,11 @@ const menuItemStyles = (settings: Settings, theme: Theme): MenuItemStyles => ({
   subMenuContent: {
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.paper,
-    ...(settings.skin === 'bordered'
-      ? {
-          boxShadow: 'none',
-          border: `1px solid ${theme.palette.divider}`,
-        }
-      : {
-          boxShadow: (theme as any).customShadows?.lg || theme.shadows[8],
-        }),
+    ...getHorizontalSubmenuContentStyles(theme, settings.skin),
     '& > ul, & > div > ul': {
-      padding: theme.spacing(2),
+      padding: theme.spacing(menuTokens.horizontal.item.submenuPaddingSpacing),
       '& > li:not(:last-child)': {
-        marginBlockEnd: theme.spacing(0.5),
+        marginBlockEnd: theme.spacing(menuTokens.horizontal.item.submenuItemMarginBlockEndSpacing),
       },
     },
   },

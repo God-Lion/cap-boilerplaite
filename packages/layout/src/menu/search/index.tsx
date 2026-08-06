@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { ElementType, ReactNode } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { Box, IconButton, Typography } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import Search from '@mui/icons-material/Search'
 import Close from '@mui/icons-material/Close'
 import { useMedia } from 'react-use'
@@ -13,7 +13,7 @@ import type { ChildrenType } from '@cap/shared-types'
 import { useSettings } from '@cap/platform-store'
 import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
 import { useVerticalNav } from '../../hooks/useVerticalNav'
-import { zIndexScale } from '@cap/theme'
+import { zIndexScale, searchTokens, getSearchBackdropBgColor } from '@cap/theme'
 
 export type Locale = (typeof i18nConfig)['locales'][number]
 
@@ -98,7 +98,7 @@ const NavSearch = () => {
           ),
         })}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: searchTokens.header.gap }}>
           <IconButton sx={{ color: 'text.primary' }}>
             <Search />
           </IconButton>
@@ -120,9 +120,9 @@ const NavSearch = () => {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 2,
-                paddingBlock: 5,
-                paddingInline: 6,
+                gap: searchTokens.header.gap,
+                paddingBlock: searchTokens.header.paddingBlock,
+                paddingInline: searchTokens.header.paddingInline,
                 borderBottom: 1,
                 borderColor: 'divider',
               }}
@@ -136,9 +136,9 @@ const NavSearch = () => {
                 style={{
                   flexGrow: 1,
                   minInlineSize: 0,
-                  paddingBlock: '4px',
-                  paddingInline: '6px',
-                  fontSize: '16px',
+                  paddingBlock: searchTokens.header.inputPaddingBlock,
+                  paddingInline: searchTokens.header.inputPaddingInline,
+                  fontSize: searchTokens.header.inputFontSize,
                   outline: 'none',
                   border: 'none',
                   background: 'transparent',
@@ -152,7 +152,7 @@ const NavSearch = () => {
               <ComponentWithUseKBar
                 triggerClick
                 sx={{ display: 'flex', cursor: 'pointer' }}
-                icon={<Close sx={{ fontSize: '22px', color: 'text.primary' }} />}
+                icon={<Close sx={{ fontSize: searchTokens.header.closeIconFontSize, color: 'text.primary' }} />}
               />
             </Box>
             <SearchResults currentPath={pathName} data={dynamicSearchData} />
@@ -165,8 +165,8 @@ const NavSearch = () => {
             position: 'fixed',
             inset: 0,
             zIndex: zIndexScale.search,
-            bgcolor: alpha(theme.palette.common.black, 0.5),
-            backdropFilter: 'blur(4px)',
+            bgcolor: getSearchBackdropBgColor(theme),
+            backdropFilter: searchTokens.backdrop.blur,
           }}
         />
       </KBarPortal>

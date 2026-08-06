@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useState, useEffect, useMemo } from 'react'
+import React, { ReactNode, useCallback, useState, useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -39,7 +39,7 @@ import Settings from '@mui/icons-material/Settings'
 import LinkIcon from '@mui/icons-material/Link'
 import { useSettings } from '@cap/platform-store'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
-import { themeConfig, zIndexScale } from '@cap/theme'
+import { themeConfig, zIndexScale, dropdownTokens } from '@cap/theme'
 import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
 
 export type ShortcutsType = {
@@ -69,12 +69,12 @@ const getShortcutIcon = (icon: string | ReactNode): ReactNode => {
 
 const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
   if (hidden) {
-    return <Box sx={{ overflowX: 'hidden', maxBlockSize: 434 }}>{children}</Box>
+    return <Box sx={{ overflowX: 'hidden', maxBlockSize: dropdownTokens.shortcuts.maxBlockSize }}>{children}</Box>
   } else {
     return (
       <PerfectScrollbar
         options={{ wheelPropagation: false, suppressScrollX: true }}
-        style={{ maxBlockSize: 434 }}
+        style={{ maxBlockSize: dropdownTokens.shortcuts.maxBlockSize }}
       >
         {children}
       </PerfectScrollbar>
@@ -101,7 +101,6 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
   // Hooks
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
-  const theme = useTheme()
   const { settings } = useSettings()
   const { t, i18n } = useTranslation()
   const locale = i18n.language
@@ -148,8 +147,8 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
         anchorEl={anchorEl}
         sx={{
           zIndex: zIndexScale.dropdown,
-          marginBlockStart: 3,
-          inlineSize: isSmallScreen ? '100%' : 384,
+          marginBlockStart: dropdownTokens.notifications.popperMarginBlockStart,
+          inlineSize: isSmallScreen ? '100%' : dropdownTokens.notifications.popperInlineSizeDesktop,
         }}
         {...(isSmallScreen && {
           modifiers: [
@@ -170,7 +169,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
             <Paper
               className='animate-scale-in'
               sx={(theme: any) => ({
-                borderRadius: '12px !important',
+                borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
                 ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
@@ -185,8 +184,8 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      paddingBlock: 3,
-                      paddingInline: 4,
+                      paddingBlock: dropdownTokens.notifications.headerPaddingBlock,
+                      paddingInline: dropdownTokens.notifications.headerPaddingInline,
                       width: '100%',
                       gap: 2,
                     }}
@@ -220,7 +219,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
                     <Box
                       sx={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gridTemplateColumns: dropdownTokens.shortcuts.gridColumns,
                       }}
                     >
                       {shortcutsList.map((shortcut, index) => (
@@ -251,16 +250,16 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
                               display: 'flex',
                               alignItems: 'center',
                               flexDirection: 'column',
-                              padding: 6,
-                              gap: 3,
+                              padding: dropdownTokens.shortcuts.itemPadding,
+                              gap: dropdownTokens.shortcuts.itemGap,
                               blockSize: '100%',
                               textDecoration: 'none',
                             }}
                           >
                             <Avatar
                               sx={{
-                                width: 50,
-                                height: 50,
+                                width: dropdownTokens.shortcuts.avatarWidth,
+                                height: dropdownTokens.shortcuts.avatarHeight,
                                 bgcolor: 'action.selected',
                                 color: 'text.primary',
                               }}
@@ -376,4 +375,3 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
 }
 
 export default ShortcutsDropdown
-

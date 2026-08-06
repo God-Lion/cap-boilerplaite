@@ -202,6 +202,7 @@ export const useAppStore = create<AppStore>()(
   <T>(selector: (state: AppStore) => T): T
   getState(): AppStore
   setState(state: Partial<AppStore> | ((state: AppStore) => Partial<AppStore>)): void
+  subscribe(listener: (state: AppStore, prevState: AppStore) => void): () => void
 }
 
 // --- Subscribe to Terminal Auth Errors ---

@@ -4,6 +4,7 @@ import { Box, Typography, List, ListItem } from '@mui/material'
 import { useKBar } from 'kbar'
 import { useTranslation } from 'react-i18next'
 import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
+import { useTheme } from '@mui/material/styles'
 
 const getLocalizedUrl = (url: string, locale: string): string => {
   if (!locale) return url
@@ -14,6 +15,8 @@ const DefaultSuggestions = () => {
   const { t } = useTranslation()
   const { query } = useKBar()
   const { lang: locale } = useParams<{ lang?: string }>()
+  const theme = useTheme()
+  const searchTokens = theme.cap.searchTokens
 
   const searchItems = getSearchItems()
 
@@ -63,10 +66,10 @@ const DefaultSuggestions = () => {
         display: 'flex',
         flexGrow: 1,
         flexWrap: 'wrap',
-        columnGap: '48px',
-        rowGap: 8,
-        paddingBlock: 14,
-        paddingInline: 16,
+        columnGap: searchTokens.defaultSuggestions.columnGap,
+        rowGap: searchTokens.defaultSuggestions.rowGap,
+        paddingBlock: searchTokens.defaultSuggestions.paddingBlock,
+        paddingInline: searchTokens.defaultSuggestions.paddingInline,
         overflowY: 'auto',
         overflowX: 'hidden',
       }}
@@ -79,22 +82,22 @@ const DefaultSuggestions = () => {
             flexDirection: 'column',
             justifyContent: 'center',
             overflowX: 'hidden',
-            gap: 4,
-            flexBasis: { xs: '100%', sm: 'calc((100% - 3rem) / 2)' },
+            gap: searchTokens.defaultSuggestions.sectionGap,
+            flexBasis: { xs: '100%', sm: searchTokens.defaultSuggestions.smFlexBasis },
           }}
         >
           <Typography
             sx={{
-              fontSize: '0.75rem',
-              lineHeight: 1.16667,
+              fontSize: searchTokens.defaultSuggestions.sectionLabelFontSize,
+              lineHeight: searchTokens.defaultSuggestions.sectionLabelLineHeight,
               textTransform: 'uppercase',
               color: 'text.disabled',
-              letterSpacing: '0.8px',
+              letterSpacing: searchTokens.defaultSuggestions.sectionLabelLetterSpacing,
             }}
           >
             {section.sectionLabel}
           </Typography>
-          <List sx={{ display: 'flex', flexDirection: 'column', gap: 4, p: 0 }}>
+          <List sx={{ display: 'flex', flexDirection: 'column', gap: searchTokens.defaultSuggestions.sectionGap, p: 0 }}>
             {section.items.map((item) => (
               <ListItem key={item.id} sx={{ display: 'flex', p: 0 }}>
                 <Box
@@ -114,18 +117,18 @@ const DefaultSuggestions = () => {
                   }}
                 >
                   {item.icon && (
-                    <Box sx={{ display: 'flex', fontSize: '1.25rem', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', fontSize: searchTokens.defaultSuggestions.iconFontSize, alignItems: 'center' }}>
                       {React.isValidElement(item.icon)
                         ? item.icon
                         : typeof item.icon === 'string' ? (
-                            <Box component='i' className={item.icon} sx={{ fontSize: '1.25rem' }} />
+                            <Box component='i' className={item.icon} sx={{ fontSize: searchTokens.defaultSuggestions.iconFontSize }} />
                           ) : null}
                     </Box>
                   )}
                   <Typography
                     sx={{
-                      fontSize: '15px',
-                      lineHeight: 1.4667,
+                      fontSize: searchTokens.defaultSuggestions.itemLabelFontSize,
+                      lineHeight: searchTokens.defaultSuggestions.itemLabelLineHeight,
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',

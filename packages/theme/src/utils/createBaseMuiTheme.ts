@@ -2,6 +2,17 @@ import type { Theme } from '@mui/material/styles'
 import type { Direction, Settings, Skin, SystemMode } from '@cap/shared-types'
 import coreOverrides from '../overrides/core-overrides'
 import { zIndexScale } from '../assets/themes/definitions/zIndex'
+import { headerTokens } from '../assets/themes/definitions/headerTokens'
+import { menuTokens } from '../assets/themes/definitions/menuTokens'
+import { footerTokens } from '../assets/themes/definitions/footerTokens'
+import { mainTokens } from '../assets/themes/definitions/mainTokens'
+import { stepperTokens } from '../assets/themes/definitions/stepperTokens'
+import { guestNavbarTokens } from '../assets/themes/definitions/guestNavbarTokens'
+import { navbarTokens } from '../assets/themes/definitions/navbarTokens'
+import { adminMenuTokens } from '../assets/themes/definitions/adminMenuTokens'
+import { layoutMenuTokens } from '../assets/themes/definitions/layoutMenuTokens'
+import { searchTokens } from '../assets/themes/definitions/searchTokens'
+import { dropdownTokens } from '../assets/themes/definitions/dropdownTokens'
 
 const spacing = {
   spacing: (factor: number) => `${0.25 * factor}rem`,
@@ -113,5 +124,18 @@ export const createBaseMuiTheme = (
       dark: '225 222 245',
       lightShadow: '47 43 61',
       darkShadow: '19 17 32',
+    },
+    cap: {
+      headerTokens,
+      menuTokens,
+      footerTokens,
+      mainTokens,
+      stepperTokens,
+      guestNavbarTokens,
+      navbarTokens,
+      adminMenuTokens,
+      layoutMenuTokens,
+      searchTokens,
+      dropdownTokens,
     },
   }) as unknown as Theme

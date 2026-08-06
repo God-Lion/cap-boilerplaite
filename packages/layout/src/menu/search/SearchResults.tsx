@@ -6,8 +6,8 @@ import DefaultSuggestions from './DefaultSuggestions'
 import NoResult from './NoResult'
 import SearchResultItem from './SearchResultItem'
 import type { SearchItemConfig } from '@cap/shared-types'
+import { searchTokens } from '@cap/theme'
 
-// type Results = (string | ActionImpl)[]
 type Results = Array<string | ActionImpl>
 
 // Filter the search result data by limiting the number of results per section to 3 if
@@ -57,21 +57,19 @@ const SearchResults = ({ currentPath, data }: { currentPath: string; data: Array
 
   return (
     <KBarResults
-      // If you do not want to filter the search data, you can remove `getFilteredResults`
-      // function below and directly pass `results` to `items` prop.
       items={getFilteredResults(results)}
       onRender={({ item, active }) =>
         typeof item === 'string' ? (
           <Box
             sx={{
-              paddingBlockStart: 4,
-              paddingBlockEnd: 2,
-              paddingInline: 4,
-              fontSize: '12px',
-              lineHeight: 1.16667,
+              paddingBlockStart: searchTokens.sectionHeader.paddingBlockStart,
+              paddingBlockEnd: searchTokens.sectionHeader.paddingBlockEnd,
+              paddingInline: searchTokens.sectionHeader.paddingInline,
+              fontSize: searchTokens.sectionHeader.fontSize,
+              lineHeight: searchTokens.sectionHeader.lineHeight,
               color: 'text.disabled',
               textTransform: 'uppercase',
-              letterSpacing: '0.8px',
+              letterSpacing: searchTokens.sectionHeader.letterSpacing,
             }}
           >
             {item}

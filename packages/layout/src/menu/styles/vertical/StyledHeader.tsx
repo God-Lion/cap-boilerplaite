@@ -1,6 +1,16 @@
 import styled from '@emotion/styled'
 import { alpha } from '@mui/material/styles'
-import { verticalLayoutClasses } from '@cap/theme'
+import {
+  headerTokens,
+  getHeaderElevationShadow,
+  getHeaderBorderInline,
+  getHeaderBorderBlockEnd,
+  getHeaderBorderFull,
+  getFloatingNavbarInlineSize,
+  getCompactFloatingMaxInlineSize,
+  getHeaderFloatingMask,
+  verticalLayoutClasses,
+} from '@cap/theme'
 import type { Theme } from '@mui/material/styles'
 import type { CSSObject } from '@emotion/styled'
 import { SurfaceEffectFactory } from '../../../utils/buildLayoutSurfaceEffect'
@@ -13,7 +23,7 @@ type StyledHeaderProps = {
 }
 
 const StyledHeader = styled.header<StyledHeaderProps>`
-  min-block-size: 64px;
+  min-block-size: ${headerTokens.layout.minBlockSize};
 
   &.${verticalLayoutClasses.headerContentCompact} {
     &.${verticalLayoutClasses.headerFloating}
@@ -22,16 +32,15 @@ const StyledHeader = styled.header<StyledHeaderProps>`
       .${verticalLayoutClasses.navbar},
       &.${verticalLayoutClasses.headerAttached}
       .${verticalLayoutClasses.navbar} {
-      margin-inline: auto;
+      margin-inline: ${headerTokens.layout.compactMarginInline};
     }
 
     &.${verticalLayoutClasses.headerFloating}
       .${verticalLayoutClasses.navbar},
       &.${verticalLayoutClasses.headerFixed}.${verticalLayoutClasses.headerDetached}
       .${verticalLayoutClasses.navbar} {
-      max-inline-size: calc(
-        ${({ compactContentWidth }) => compactContentWidth}px - ${({ layoutPadding }) => `calc(${layoutPadding}px * 2)`}
-      );
+      max-inline-size: ${({ compactContentWidth, layoutPadding }) =>
+        getCompactFloatingMaxInlineSize(compactContentWidth, layoutPadding)};
     }
 
     .${verticalLayoutClasses.navbar} {
@@ -44,8 +53,8 @@ const StyledHeader = styled.header<StyledHeaderProps>`
   }
 
   &.${verticalLayoutClasses.headerFixed} {
-    position: sticky;
-    inset-block-start: 0;
+    position: ${headerTokens.positioning.sticky};
+    inset-block-start: ${headerTokens.positioning.insetBlockStart};
     z-index: ${({ theme }) => theme.zIndex.appBar};
 
     &:not(.${verticalLayoutClasses.headerBlur}).scrolled.${verticalLayoutClasses.headerAttached},
@@ -55,12 +64,12 @@ const StyledHeader = styled.header<StyledHeaderProps>`
     }
 
     &.${verticalLayoutClasses.headerDetached} .${verticalLayoutClasses.navbar} {
-      box-shadow: ${({ theme }) => (theme as any).customShadows?.sm || theme.shadows[1]};
+      box-shadow: ${({ theme }) => getHeaderElevationShadow(theme)};
 
       [data-skin='bordered'] & {
-        box-shadow: none;
-        border-inline: 1px solid ${({ theme }) => theme.palette.divider};
-        border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
+        box-shadow: ${headerTokens.borderedSkin.boxShadow};
+        border-inline: ${({ theme }) => getHeaderBorderInline(theme)};
+        border-block-end: ${({ theme }) => getHeaderBorderBlockEnd(theme)};
       }
     }
     &.${verticalLayoutClasses.headerDetached} .${verticalLayoutClasses.navbar} {
@@ -69,10 +78,10 @@ const StyledHeader = styled.header<StyledHeaderProps>`
     }
 
     &.${verticalLayoutClasses.headerDetached}, &.${verticalLayoutClasses.headerFloating} {
-      pointer-events: none;
+      pointer-events: ${headerTokens.interaction.containerPointerEvents};
 
       & .${verticalLayoutClasses.navbar} {
-        pointer-events: auto;
+        pointer-events: ${headerTokens.interaction.navbarPointerEvents};
       }
     }
 
@@ -82,40 +91,36 @@ const StyledHeader = styled.header<StyledHeaderProps>`
         .${verticalLayoutClasses.navbar},
         &.${verticalLayoutClasses.headerFloating}
         .${verticalLayoutClasses.navbar} {
-        backdrop-filter: blur(6px);
-        background-color: ${({ theme }) => alpha(theme.palette.background.paper, 0.88)};
+        backdrop-filter: ${headerTokens.glassmorphism.backdropFilter};
+        background-color: ${({ theme }) => alpha(theme.palette.background.paper, headerTokens.glassmorphism.paperOpacity)};
       }
 
       &.${verticalLayoutClasses.headerFloating} {
         &:before {
-          content: '';
-          position: absolute;
-          z-index: -1;
-          inset-block-start: 0;
-          inset-inline: 0;
-          block-size: 100%;
+          content: ${headerTokens.floatingOverlay.content};
+          position: ${headerTokens.floatingOverlay.position};
+          z-index: ${headerTokens.floatingOverlay.zIndex};
+          inset-block-start: ${headerTokens.floatingOverlay.insetBlockStart};
+          inset-inline: ${headerTokens.floatingOverlay.insetInline};
+          block-size: ${headerTokens.floatingOverlay.blockSize};
           background: ${({ theme }) => `linear-gradient(
-            180deg,
-            ${alpha(theme.palette.background.default, 0.7)} 44%,
-            ${alpha(theme.palette.background.default, 0.43)} 73%,
-            ${alpha(theme.palette.background.default, 0)}
+            ${headerTokens.floatingOverlay.gradientAngle},
+            ${alpha(theme.palette.background.default, headerTokens.floatingOverlay.stops.topAlpha)} ${headerTokens.floatingOverlay.stops.topPosition},
+            ${alpha(theme.palette.background.default, headerTokens.floatingOverlay.stops.midAlpha)} ${headerTokens.floatingOverlay.stops.midPosition},
+            ${alpha(theme.palette.background.default, headerTokens.floatingOverlay.stops.bottomAlpha)}
           )`};
-          backdrop-filter: blur(10px);
-          mask: ${({ theme }) => `linear-gradient(
-            ${theme.palette.background.default},
-            ${theme.palette.background.default} 18%,
-            transparent 100%
-          )`};
+          backdrop-filter: ${headerTokens.floatingOverlay.backdropFilter};
+          mask: ${({ theme }) => getHeaderFloatingMask(theme)};
         }
       }
     }
 
     &.${verticalLayoutClasses.headerAttached}.scrolled {
-      box-shadow: ${({ theme }) => (theme as any).customShadows?.sm || theme.shadows[1]};
+      box-shadow: ${({ theme }) => getHeaderElevationShadow(theme)};
 
       [data-skin='bordered'] & {
-        box-shadow: none;
-        border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
+        box-shadow: ${headerTokens.borderedSkin.boxShadow};
+        border-block-end: ${({ theme }) => getHeaderBorderBlockEnd(theme)};
       }
     }
 
@@ -138,23 +143,23 @@ const StyledHeader = styled.header<StyledHeaderProps>`
         .${verticalLayoutClasses.headerFloating}
       ).${verticalLayoutClasses.headerDetached}.scrolled
       .${verticalLayoutClasses.navbar} {
-      padding-inline: 16px;
+      padding-inline: ${headerTokens.layout.paddingInline};
     }
   }
 
   &.${verticalLayoutClasses.headerFloating} {
-    padding-block-start: 16px;
+    padding-block-start: ${headerTokens.layout.floatingPaddingBlockStart};
 
     .${verticalLayoutClasses.navbar} {
       background-color: ${({ theme }) => theme.palette.background.paper};
       border-radius: ${({ theme }) => `${theme.shape.borderRadius}px`};
-      padding-inline: 16px;
-      box-shadow: ${({ theme }) => (theme as any).customShadows?.sm || theme.shadows[1]};
+      padding-inline: ${headerTokens.layout.paddingInline};
+      box-shadow: ${({ theme }) => getHeaderElevationShadow(theme)};
       ${({ theme }) => SurfaceEffectFactory.create((theme as any).effects || (theme as any).effectConfig || { globalType: 'glass' }, theme)};
 
       [data-skin='bordered'] & {
-        box-shadow: none;
-        border: 1px solid ${({ theme }) => theme.palette.divider};
+        box-shadow: ${headerTokens.borderedSkin.boxShadow};
+        border: ${({ theme }) => getHeaderBorderFull(theme)};
       }
     }
   }
@@ -163,23 +168,22 @@ const StyledHeader = styled.header<StyledHeaderProps>`
     .${verticalLayoutClasses.navbar},
     &.${verticalLayoutClasses.headerFixed}.${verticalLayoutClasses.headerDetached}
     .${verticalLayoutClasses.navbar} {
-    inline-size: calc(100% - ${({ layoutPadding }) => `calc(${layoutPadding}px * 2)`});
+    inline-size: ${({ layoutPadding }) => getFloatingNavbarInlineSize(layoutPadding)};
   }
 
   &:not(.${verticalLayoutClasses.headerFloating}).${verticalLayoutClasses.headerStatic}
     .${verticalLayoutClasses.navbar} {
-    padding-inline: 16px;
+    padding-inline: ${headerTokens.layout.paddingInline};
   }
 
   .${verticalLayoutClasses.navbar} {
-    position: relative;
-    padding-block: 8px;
-    padding-inline: 16px;
-    inline-size: 100%;
+    position: ${headerTokens.positioning.navbarPosition};
+    padding-block: ${headerTokens.layout.paddingBlock};
+    padding-inline: ${headerTokens.layout.paddingInline};
+    inline-size: ${headerTokens.layout.fullInlineSize};
   }
 
   ${({ overrideStyles }) => overrideStyles}
 `
 
 export default StyledHeader
-

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { menuTokens, getSubmenuPopoutShadow } from '@cap/theme'
 import type { SubMenuContentProps } from '../components/vertical-menu/SubMenuContent'
 import { SurfaceEffectFactory } from '../../utils/buildLayoutSurfaceEffect'
 
@@ -24,12 +25,12 @@ const StyledSubMenuContent = styled.div<SubMenuContentProps>`
       return {
         display: 'block',
         paddingInlineStart: '0px',
-        inlineSize: '260px',
-        borderRadius: '4px',
+        inlineSize: menuTokens.vertical.item.popoutSubmenuInlineSize,
+        borderRadius: menuTokens.vertical.item.popoutBorderRadius,
         blockSize: 'auto !important',
         transition: 'none !important',
         backgroundColor: theme?.palette?.background?.paper || '#ffffff',
-        boxShadow: theme?.customShadows?.lg || theme?.shadows?.[4] || '0 6px 16px rgba(0, 0, 0, 0.12)',
+        boxShadow: getSubmenuPopoutShadow(theme),
         ...surfaceEffect,
       }
     }
@@ -42,9 +43,7 @@ const StyledSubMenuContent = styled.div<SubMenuContentProps>`
   ${({ browserScroll }) =>
     browserScroll && `overflow-y: auto; max-block-size: 100dvh;`}
 
-
   ${({ rootStyles }) => rootStyles};
 `
 
 export default StyledSubMenuContent
-

@@ -214,42 +214,15 @@ Notable detail:
 
 ### `components/`
 
-Shared UI components related to theming, inputs, tables, and utility UI.
+MUI base wrappers and shared theme-level widgets.
 
 Publicly exported from `components/index.ts`:
 
-- custom inputs
-  - `CustomInputVertical`
-  - `CustomInputHorizontal`
-  - `CustomInputImage`
-  - custom input prop/types exports
-- menu and utility widgets
-  - `OptionMenu`
-  - `DashboardItem`
-  - `DirectionalIcon`
-  - `DropZone`
-  - `Empty`
-  - `ErrorBoundary`
-  - `Icon`
-  - `Loading`
-  - `PhoneInput`
-  - `StyledMenu`
-  - `TablePaginationComponent`
-- MUI helpers
-  - `Avatar`
-  - `Chip`
-- feature groups
-  - `AppReactTable`
-  - `Table`
-  - table types
-  - virtualized exports
-  - PWA exports
+- MUI component extensions (`./mui`)
+- `Copyright`
+- `AdaptiveLogo`
 
-Important caveats:
-
-- `components/dialogs/` contains many dialog implementations, but they are not exported from the package root today.
-- `components/common/` exports `GuestBanner` and `FeatureLockedModal` components.
-- `components/react-table/index.tsx` currently looks more like a demo wrapper around `LocalTable` than a narrow library entry module.
+*Note: General-purpose UI components like `DropZone`, `PhoneInput`, and virtualized tables reside in `@cap/layout` (and will be moved to `@cap/ui`).*
 
 ### `DESCRIPTION.md`
 

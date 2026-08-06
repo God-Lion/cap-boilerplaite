@@ -1,22 +1,20 @@
 import React from 'react'
 import Box from '@mui/material/Box'
-import { alpha, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { horizontalLayoutClasses } from '@cap/theme'
+import { horizontalLayoutClasses, layoutMenuTokens, getNavbarIconButtonHoverBg } from '@cap/theme'
 import HorizontalNavToggle from '../../components/horizontal/NavToggle'
 import { useHorizontalNav } from '../contexts/horizontalNavContext'
 import LanguageDropdown from '../shared/LanguageDropdown'
 import ModeDropdown from '../shared/ModeDropdown'
-import NotificationsDropdown, { NotificationsType } from '../shared/NotificationsDropdown'
-import NavSearch from '../search'
 import ShortcutsDropdown from '../shared/ShortcutsDropdown'
+import NotificationsDropdown from '../shared/NotificationsDropdown'
+import NavSearch from '../search'
 import UserDropdown from '../shared/UserDropdown'
 import Logo from '../shared/Logo'
 import RoleIndicator from '../../components/RoleIndicator'
 import { getSearchItems } from '@cap/platform-core'
-
-
 
 const NavbarContent = () => {
   const theme = useTheme()
@@ -54,7 +52,7 @@ const NavbarContent = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '1rem',
+        gap: layoutMenuTokens.navbarContent.gap,
         inlineSize: '100%',
       }}
     >
@@ -62,7 +60,7 @@ const NavbarContent = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: '1rem',
+          gap: layoutMenuTokens.navbarContent.gap,
         }}
       >
         <HorizontalNavToggle />
@@ -74,7 +72,7 @@ const NavbarContent = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: 1.5,
+          gap: layoutMenuTokens.navbarContent.actionsGap,
         }}
       >
         <NavSearch />
@@ -83,12 +81,12 @@ const NavbarContent = () => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: 0.5,
+            gap: layoutMenuTokens.navbarContent.iconGroupGap,
             '& .MuiIconButton-root': {
-              transition: 'all 0.2s ease',
+              transition: layoutMenuTokens.navbarContent.iconButtonTransition,
               '&:hover': {
-                background: 'action.hover',
-                transform: 'translateY(-2px)',
+                background: getNavbarIconButtonHoverBg(theme),
+                transform: layoutMenuTokens.navbarContent.iconButtonHoverTranslateY,
                 '& i, & svg': { color: 'primary.main' },
               },
             },

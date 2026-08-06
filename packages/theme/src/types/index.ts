@@ -9,6 +9,18 @@ export * from './componentStyles';
 export * from './presets';
 export * from './menu';
 
+import type { HeaderTokens } from '../assets/themes/definitions/headerTokens'
+import type { MenuTokens } from '../assets/themes/definitions/menuTokens'
+import type { FooterTokens } from '../assets/themes/definitions/footerTokens'
+import type { MainTokens } from '../assets/themes/definitions/mainTokens'
+import type { StepperTokens } from '../assets/themes/definitions/stepperTokens'
+import type { GuestNavbarTokens } from '../assets/themes/definitions/guestNavbarTokens'
+import type { NavbarTokens } from '../assets/themes/definitions/navbarTokens'
+import type { AdminMenuTokens } from '../assets/themes/definitions/adminMenuTokens'
+import type { LayoutMenuTokens } from '../assets/themes/definitions/layoutMenuTokens'
+import type { SearchTokens } from '../assets/themes/definitions/searchTokens'
+import type { DropdownTokens } from '../assets/themes/definitions/dropdownTokens'
+
 // Styled component prop types are re-exported from './styled' module
 // Import them from '@cap/theme' or './styled' directly
 // The styledProps.ts file is kept for documentation and internal use
@@ -129,6 +141,19 @@ declare module '@mui/material/styles' {
       lightShadow: string
       darkShadow: string
     };
+    cap: {
+      headerTokens: HeaderTokens;
+      menuTokens: MenuTokens;
+      footerTokens: FooterTokens;
+      mainTokens: MainTokens;
+      stepperTokens: StepperTokens;
+      guestNavbarTokens: GuestNavbarTokens;
+      navbarTokens: NavbarTokens;
+      adminMenuTokens: AdminMenuTokens;
+      layoutMenuTokens: LayoutMenuTokens;
+      searchTokens: SearchTokens;
+      dropdownTokens: DropdownTokens;
+    };
   }
   interface ThemeOptions {
     customShadows?: {
@@ -158,6 +183,19 @@ declare module '@mui/material/styles' {
       dark?: string
       lightShadow?: string
       darkShadow?: string
+    };
+    cap?: {
+      headerTokens?: HeaderTokens;
+      menuTokens?: MenuTokens;
+      footerTokens?: FooterTokens;
+      mainTokens?: MainTokens;
+      stepperTokens?: StepperTokens;
+      guestNavbarTokens?: GuestNavbarTokens;
+      navbarTokens?: NavbarTokens;
+      adminMenuTokens?: AdminMenuTokens;
+      layoutMenuTokens?: LayoutMenuTokens;
+      searchTokens?: SearchTokens;
+      dropdownTokens?: DropdownTokens;
     };
   }
 }

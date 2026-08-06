@@ -40,6 +40,8 @@ import StyledHorizontalNavExpandIcon, {
 import StyledSubMenuContentWrapper from '../../styles/horizontal/StyledHorizontalSubMenuContentWrapper'
 import ChevronRight from '../../svg/ChevronRight'
 
+import { menuTokens } from '@cap/theme'
+
 export type SubMenuProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'prefix'> &
   RootStylesType &
   Partial<ChildrenType> & {
@@ -68,12 +70,12 @@ type StyledSubMenuProps = Pick<SubMenuProps, 'rootStyles' | 'disabled'> & {
 const StyledSubMenu = styled.li<StyledSubMenuProps>`
   ${({ level }) =>
     level === 0 && {
-      borderRadius: '6px',
+      borderRadius: `${menuTokens.horizontal.item.borderRadius}px`,
       overflow: 'hidden',
     }}
 
   &.${menuClasses.open} > .${menuClasses.button} {
-    background-color: #f3f3f3;
+    background-color: ${menuTokens.horizontal.button.openBg};
   }
 
   ${({ menuItemStyles }) => menuItemStyles};
@@ -186,16 +188,16 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (pr
     duration: transitionDuration,
 
     initial: {
-      opacity: 0,
-      transform: 'translateY(10px)',
+      opacity: menuTokens.horizontal.popoutTransition.initialOpacity,
+      transform: `translateY(${menuTokens.horizontal.popoutTransition.offsetY})`,
     },
     open: {
-      opacity: 1,
+      opacity: menuTokens.horizontal.popoutTransition.openOpacity,
       transform: 'translateY(0px)',
     },
     close: {
-      opacity: 0,
-      transform: 'translateY(10px)',
+      opacity: menuTokens.horizontal.popoutTransition.initialOpacity,
+      transform: `translateY(${menuTokens.horizontal.popoutTransition.offsetY})`,
     },
   })
 

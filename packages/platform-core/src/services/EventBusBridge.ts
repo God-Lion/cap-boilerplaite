@@ -1,4 +1,4 @@
-import { useAppStore } from '@cap/platform-store'
+import { useAppStore, type AppStore } from '@cap/platform-store'
 import { EventBus } from './EventBus'
 
 /**
@@ -19,7 +19,7 @@ export function initEventBusBridge(): void {
   // Track auth state transitions to emit events
   let wasAuthenticated = useAppStore.getState().isAuthenticated
 
-  useAppStore.subscribe((state) => {
+  useAppStore.subscribe((state: AppStore) => {
     const isNowAuthenticated = state.isAuthenticated
 
     if (wasAuthenticated && !isNowAuthenticated) {
@@ -27,7 +27,7 @@ export function initEventBusBridge(): void {
     }
 
     if (!wasAuthenticated && isNowAuthenticated) {
-      EventBus.emit('auth:signin', { userId: state.user?.id || state.user?._id || 'unknown' })
+      EventBus.emit('auth:signin', { userId: state.user?.id || (state.user as any)?._id || 'unknown' })
     }
 
     wasAuthenticated = isNowAuthenticated

@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { useUpdateEffect } from 'react-use';
 import type { CSSObject } from '@emotion/styled';
-// 
 import type { ChildrenType, RootStylesType } from '../../types';
 import { HorizontalSubMenuContext } from '../../contexts/horizontalSubMenuContext';
 import MenuButton from './MenuButton';

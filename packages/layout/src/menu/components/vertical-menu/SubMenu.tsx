@@ -36,6 +36,8 @@ import StyledVerticalNavExpandIcon, {
   StyledVerticalNavExpandIconWrapper,
 } from '../../styles/vertical/StyledVerticalNavExpandIcon'
 
+import { menuTokens } from '@cap/theme'
+
 export type SubMenuProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'prefix'> &
   RootStylesType &
   Partial<ChildrenType> & {
@@ -67,10 +69,10 @@ type StyledSubMenuProps = Pick<SubMenuProps, 'rootStyles' | 'disabled'> & {
 const StyledSubMenu = styled.li<StyledSubMenuProps>`
   position: relative;
   inline-size: 100%;
-  margin-block-start: 4px;
+  margin-block-start: ${menuTokens.vertical.submenu.marginBlockStart};
 
   &.${menuClasses.open} > .${menuClasses.button} {
-    background-color: ${({ theme }: any) => theme.palette?.action?.hover || 'rgba(0, 0, 0, 0.04)'};
+    background-color: ${({ theme }: any) => theme.palette?.action?.hover || menuTokens.vertical.submenu.openHoverBg};
   }
 
   ${({ menuItemStyles }) => menuItemStyles};
@@ -164,7 +166,7 @@ const SubMenu: React.ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (pr
     strategy: 'fixed',
     open: openWhenCollapsed,
     onOpenChange: setOpenWhenCollapsed,
-    placement: 'right-start',
+    placement: menuTokens.vertical.submenu.placement as any,
     middleware: [
       offset({
         mainAxis: mainAxisOffset,

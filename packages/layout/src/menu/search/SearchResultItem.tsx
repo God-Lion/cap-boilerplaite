@@ -6,6 +6,7 @@ import { useTheme } from '@mui/material/styles'
 import type { ActionId, ActionImpl } from 'kbar'
 import { i18n as i18nConfig } from '@cap/platform-core'
 import type { SearchItemConfig } from '@cap/shared-types'
+import { searchTokens } from '@cap/theme'
 
 type Locale = (typeof i18nConfig)['locales'][number]
 
@@ -20,8 +21,8 @@ const Title = ({ title, flexGrow = false }: { title: string; flexGrow?: boolean 
       component='span'
       sx={{
         flexGrow: flexGrow ? 1 : 0,
-        fontSize: '15px',
-        lineHeight: 1.4667,
+        fontSize: searchTokens.resultItem.titleFontSize,
+        lineHeight: searchTokens.resultItem.titleLineHeight,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
@@ -63,12 +64,12 @@ const Shortcut = ({ shortcut }: { shortcut: string[] }) => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 24,
-    height: 24,
-    px: 1,
-    borderRadius: 0.5,
-    fontSize: '0.75rem',
-    fontWeight: 600,
+    minWidth: searchTokens.resultItem.kbdMinWidth,
+    height: searchTokens.resultItem.kbdHeight,
+    px: searchTokens.resultItem.kbdPx,
+    borderRadius: searchTokens.resultItem.kbdBorderRadius,
+    fontSize: searchTokens.resultItem.kbdFontSize,
+    fontWeight: searchTokens.resultItem.kbdFontWeight,
     bgcolor: 'action.hover',
     border: 1,
     borderColor: 'divider',
@@ -113,10 +114,10 @@ const EnterComponent = ({
       <Box
         component='i'
         className={
-          theme.direction === 'ltr' ? 'tabler-corner-down-left' : 'tabler-corner-down-right'
+          theme.direction === 'ltr' ? searchTokens.resultItem.enterLtrClass : searchTokens.resultItem.enterRtlClass
         }
         sx={{
-          fontSize: '1.25rem',
+          fontSize: searchTokens.resultItem.enterIconFontSize,
           ...(isCurrentPath && { color: 'primary.main' }),
         }}
       />
@@ -161,12 +162,12 @@ const SearchResultItem = forwardRef(
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: 4,
+          gap: searchTokens.resultItem.gap,
           position: 'relative',
-          paddingBlock: 2,
-          paddingInline: 4,
+          paddingBlock: searchTokens.resultItem.paddingBlock,
+          paddingInline: searchTokens.resultItem.paddingInline,
           cursor: 'pointer',
-          borderRadius: 1,
+          borderRadius: searchTokens.resultItem.borderRadius,
           ...(active && !isCurrentPath && { bgcolor: 'action.selected' }),
           ...(!active &&
             isCurrentPath && {
@@ -187,7 +188,7 @@ const SearchResultItem = forwardRef(
             React.isValidElement(action.icon) ? (
               action.icon
             ) : typeof action.icon === 'string' ? (
-              <Box component='i' className={action.icon.startsWith('tabler-') ? action.icon : `tabler-${action.icon}`} sx={{ fontSize: '1.25rem' }} />
+              <Box component='i' className={action.icon.startsWith('tabler-') ? action.icon : `tabler-${action.icon}`} sx={{ fontSize: searchTokens.defaultSuggestions.iconFontSize }} />
             ) : null
           )}
           {action.name &&
@@ -198,8 +199,8 @@ const SearchResultItem = forwardRef(
                   <Typography
                     component='span'
                     sx={{
-                      fontSize: '13px',
-                      lineHeight: 1.538462,
+                      fontSize: searchTokens.resultItem.subtitleFontSize,
+                      lineHeight: searchTokens.resultItem.subtitleLineHeight,
                       color: 'text.secondary',
                     }}
                   >

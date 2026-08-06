@@ -19,12 +19,13 @@ const buildGlassEffect: SurfaceEffectBuilder = (config, theme) => {
   if (!glass) return {}
   const glassStyles = getGlassmorphismStyles(glass, theme)
   const paperColor = theme?.palette?.background?.paper || '#ffffff'
+  const borderWidthToken = (theme as any)?.tenantTheme?.tokens?.borderWidth?.thin || '1px'
   return {
     backdropFilter: glassStyles.backdropFilter || `blur(${glass.blur || '16px'})`,
     background: glass.background || (theme ? alpha(paperColor, glass.opacity ?? 0.88) : `rgba(255, 255, 255, ${glass.opacity ?? 0.88})`),
     borderColor: glass.borderColor || theme?.palette?.divider || 'rgba(0, 0, 0, 0.12)',
     borderStyle: 'solid',
-    borderWidth: glass.borderWidth || '1px',
+    borderWidth: glass.borderWidth || borderWidthToken,
   }
 }
 
@@ -43,9 +44,10 @@ const buildBrutalismEffect: SurfaceEffectBuilder = (config, theme) => {
   if (!brutal) return {}
   const brutalStyles = getBrutalismStyles(brutal, theme)
   const fallbackColor = theme?.palette?.text?.primary || '#000000'
+  const borderWidthToken = (theme as any)?.tenantTheme?.tokens?.borderWidth?.medium || '2px'
   return {
     background: brutal.backgroundColor || theme?.palette?.background?.paper || '#ffffff',
-    border: brutalStyles.border || `${brutal.borderWidth || '2px'} solid ${brutal.borderColor || fallbackColor}`,
+    border: brutalStyles.border || `${brutal.borderWidth || borderWidthToken} solid ${brutal.borderColor || fallbackColor}`,
     boxShadow: brutalStyles.boxShadow || `${brutal.shadowOffset || '4px'} ${brutal.shadowOffset || '4px'} 0px ${brutal.shadowColor || fallbackColor}`,
   }
 }
@@ -56,10 +58,11 @@ const buildBentoEffect: SurfaceEffectBuilder = (config, theme) => {
   const bentoStyles = getBentoStyles(bento, theme)
   const fallbackBorder = theme?.palette?.divider || 'rgba(0, 0, 0, 0.12)'
   const fallbackShadow = (theme as any)?.customShadows?.md || theme?.shadows?.[4] || '0 4px 6px -1px rgba(0,0,0,0.1)'
+  const borderWidthToken = (theme as any)?.tenantTheme?.tokens?.borderWidth?.thin || '1px'
   return {
     background: bento.background || theme?.palette?.background?.paper || '#ffffff',
     borderRadius: bento.borderRadius || (theme ? `${theme.shape.borderRadius * 2}px` : '24px'),
-    border: bentoStyles.border || `${bento.borderWidth || '1px'} solid ${bento.borderColor || fallbackBorder}`,
+    border: bentoStyles.border || `${bento.borderWidth || borderWidthToken} solid ${bento.borderColor || fallbackBorder}`,
     boxShadow: bento.shadow || fallbackShadow,
   }
 }

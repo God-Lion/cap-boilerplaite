@@ -1,5 +1,5 @@
 import React from 'react'
-import { alpha, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import classnames from 'classnames'
 import Box from '@mui/material/Box'
 import { useTranslation } from 'react-i18next'
@@ -8,7 +8,7 @@ import { getSearchItems } from '@cap/platform-core'
 
 // Component Imports
 import { NavToggle } from '../shared'
-import NotificationsDropdown, { NotificationsType } from '../shared/NotificationsDropdown'
+import NotificationsDropdown from '../shared/NotificationsDropdown'
 import ShortcutsDropdown from '../shared/ShortcutsDropdown'
 import LanguageDropdown from '../shared/LanguageDropdown'
 import ModeDropdown from '../shared/ModeDropdown'
@@ -16,9 +16,7 @@ import NavSearch from '../search'
 import UserDropdown from '../shared/UserDropdown'
 
 // Definition Imports
-import { verticalLayoutClasses } from "@cap/theme";
-
-
+import { verticalLayoutClasses, layoutMenuTokens, getNavbarIconButtonHoverBg } from '@cap/theme'
 
 const NavbarContent = () => {
   const theme = useTheme()
@@ -55,26 +53,26 @@ const NavbarContent = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '1rem',
+        gap: layoutMenuTokens.navbarContent.gap,
         inlineSize: '100%',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: layoutMenuTokens.navbarContent.gap }}>
         <NavToggle />
         <NavSearch />
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: layoutMenuTokens.navbarContent.actionsGap }}>
         <RoleIndicator showLabel={true} size='small' />
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: 0.5,
+            gap: layoutMenuTokens.navbarContent.iconGroupGap,
             '& .MuiIconButton-root': {
-              transition: 'all 0.2s ease',
+              transition: layoutMenuTokens.navbarContent.iconButtonTransition,
               '&:hover': {
-                background: alpha(theme.palette.text.primary, 0.08),
-                transform: 'translateY(-2px)',
+                background: getNavbarIconButtonHoverBg(theme),
+                transform: layoutMenuTokens.navbarContent.iconButtonHoverTranslateY,
                 '& i, & svg': { color: 'primary.main' },
               },
             },

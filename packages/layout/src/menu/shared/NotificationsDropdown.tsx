@@ -29,7 +29,7 @@ import Close from '@mui/icons-material/Close'
 import BarChart from '@mui/icons-material/BarChart'
 import Email from '@mui/icons-material/Email'
 import { useSettings } from '@cap/platform-store'
-import { themeConfig, zIndexScale } from '@cap/theme'
+import { themeConfig, zIndexScale, dropdownTokens, getNotificationBadgeShadow } from '@cap/theme'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 import type { ThemeColor } from '@cap/shared-types'
 import { useTranslation } from 'react-i18next'
@@ -69,12 +69,12 @@ export type NotificationsType = {
 
 const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
   if (hidden) {
-    return <Box sx={{ overflowX: 'hidden', maxBlockSize: 420 }}>{children}</Box>
+    return <Box sx={{ overflowX: 'hidden', maxBlockSize: dropdownTokens.notifications.maxBlockSize }}>{children}</Box>
   } else {
     return (
       <PerfectScrollbar
         options={{ wheelPropagation: false, suppressScrollX: true }}
-        style={{ maxBlockSize: 420 }}
+        style={{ maxBlockSize: dropdownTokens.notifications.maxBlockSize }}
       >
         {children}
       </PerfectScrollbar>
@@ -88,7 +88,7 @@ const getAvatar = (
     'avatarImage' | 'avatarIcon' | 'title' | 'avatarText' | 'avatarColor' | 'avatarSkin'
   >,
 ) => {
-  const { avatarImage, avatarIcon, avatarText, title, avatarColor, avatarSkin } = params
+  const { avatarImage, avatarIcon, avatarText, title, avatarColor } = params
 
   if (avatarImage) {
     return <Avatar src={avatarImage} />
@@ -128,8 +128,6 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
   // Vars
   const notificationCount = notificationsState.filter((notification) => !notification.read).length
   const readAll = notificationsState.every((notification) => notification.read)
-
-  // Refs
 
   // Hooks
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
@@ -187,9 +185,9 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
           sx={{
             cursor: 'pointer',
             '& .MuiBadge-dot': {
-              top: 6,
-              right: 5,
-              boxShadow: (theme) => `${theme.palette.background.paper} 0px 0px 0px 2px`,
+              top: dropdownTokens.notifications.badgeTop,
+              right: dropdownTokens.notifications.badgeRight,
+              boxShadow: (theme) => getNotificationBadgeShadow(theme),
             },
           }}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -204,8 +202,8 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
         anchorEl={anchorEl}
         sx={{
           zIndex: zIndexScale.dropdown,
-          marginBlockStart: 3,
-          inlineSize: isSmallScreen ? '100%' : 384,
+          marginBlockStart: dropdownTokens.notifications.popperMarginBlockStart,
+          inlineSize: isSmallScreen ? '100%' : dropdownTokens.notifications.popperInlineSizeDesktop,
         }}
         {...(isSmallScreen && {
           modifiers: [
@@ -228,7 +226,7 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
             <Paper
               className='animate-scale-in'
               sx={(theme: any) => ({
-                borderRadius: '12px !important',
+                borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
                 ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
@@ -243,8 +241,8 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      paddingBlock: 3,
-                      paddingInline: 4,
+                      paddingBlock: dropdownTokens.notifications.headerPaddingBlock,
+                      paddingInline: dropdownTokens.notifications.headerPaddingInline,
                       width: '100%',
                       gap: 2,
                     }}
@@ -311,9 +309,9 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
                           key={index}
                           sx={{
                             display: 'flex',
-                            paddingBlock: 3,
-                            paddingInline: 4,
-                            gap: 3,
+                            paddingBlock: dropdownTokens.notifications.itemPaddingBlock,
+                            paddingInline: dropdownTokens.notifications.itemPaddingInline,
+                            gap: dropdownTokens.notifications.itemGap,
                             cursor: 'pointer',
                             '&:hover': {
                               backgroundColor: 'action.hover',
@@ -396,7 +394,7 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
                   </ScrollWrapper>
                   )}
                   <Divider />
-                  <Box sx={{ p: 4 }}>
+                  <Box sx={{ p: dropdownTokens.notifications.footerPadding }}>
                     <Button fullWidth variant='contained' size='small'>
                       {t('navigation.viewAllNotifications', 'View All Notifications')}
                     </Button>
@@ -412,4 +410,3 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
 }
 
 export default NotificationDropdown
-

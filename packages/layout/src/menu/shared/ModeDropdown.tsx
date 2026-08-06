@@ -16,7 +16,7 @@ import Palette from '@mui/icons-material/Palette'
 import Divider from '@mui/material/Divider'
 import type { Mode } from '@cap/shared-types'
 import { useSettings } from '@cap/platform-store'
-import { zIndexScale, themeEditorStore, DEFAULT_THEME_CONFIG } from '@cap/theme'
+import { zIndexScale, themeEditorStore, DEFAULT_THEME_CONFIG, dropdownTokens } from '@cap/theme'
 import { useTenant } from '@cap/platform-core'
 import { useTranslation } from 'react-i18next'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
@@ -91,8 +91,8 @@ const ModeDropdown = () => {
         placement='bottom-start'
         anchorEl={anchorEl}
         sx={{
-          minInlineSize: '160px',
-          marginBlockStart: '0.75rem !important',
+          minInlineSize: dropdownTokens.dropdownPopper.minInlineSizeSmall,
+          marginBlockStart: dropdownTokens.dropdownPopper.marginBlockStart,
           zIndex: zIndexScale.dropdown,
         }}
       >
@@ -106,7 +106,7 @@ const ModeDropdown = () => {
             <Paper
               className='animate-scale-in'
               sx={(theme: any) => ({
-                borderRadius: '12px !important',
+                borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
                 ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
@@ -120,43 +120,43 @@ const ModeDropdown = () => {
                     onClick={() => handleModeSwitch('light')}
                     selected={settings.mode === 'light'}
                     sx={{
-                      gap: '0.75rem',
+                      gap: dropdownTokens.dropdownPopper.itemGap,
                     }}
                   >
-                    <Brightness7 sx={{ fontSize: '22px' }} />
+                    <Brightness7 sx={{ fontSize: dropdownTokens.dropdownPopper.itemIconFontSize }} />
                     {t('theme.light')}
                   </MenuItem>
                   <MenuItem
                     onClick={() => handleModeSwitch('dark')}
                     selected={settings.mode === 'dark'}
                     sx={{
-                      gap: '0.75rem',
+                      gap: dropdownTokens.dropdownPopper.itemGap,
                     }}
                   >
-                    <Brightness4 sx={{ fontSize: '22px' }} />
+                    <Brightness4 sx={{ fontSize: dropdownTokens.dropdownPopper.itemIconFontSize }} />
                     {t('theme.dark')}
                   </MenuItem>
                   <MenuItem
                     onClick={() => handleModeSwitch('system')}
                     selected={settings.mode === 'system'}
                     sx={{
-                      gap: '0.75rem',
+                      gap: dropdownTokens.dropdownPopper.itemGap,
                     }}
                   >
-                    <Laptop sx={{ fontSize: '22px' }} />
+                    <Laptop sx={{ fontSize: dropdownTokens.dropdownPopper.itemIconFontSize }} />
                     {t('theme.system')}
                   </MenuItem>
                   <Divider sx={{ my: 0.5 }} />
                   <MenuItem
                     onClick={handleOpenThemeBuilder}
                     sx={{
-                      gap: '0.75rem',
+                      gap: dropdownTokens.dropdownPopper.itemGap,
                       color: 'primary.main',
                       fontWeight: 600,
                     }}
                   >
-                    <Palette sx={{ fontSize: '22px' }} />
-                    Theme Builder
+                    <Palette sx={{ fontSize: dropdownTokens.dropdownPopper.itemIconFontSize }} />
+                    {t('theme.themeBuilder')}
                   </MenuItem>
                 </MenuList>
               </ClickAwayListener>
@@ -167,6 +167,5 @@ const ModeDropdown = () => {
     </React.Fragment>
   )
 }
-
 
 export default ModeDropdown

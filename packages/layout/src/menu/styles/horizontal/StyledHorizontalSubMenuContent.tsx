@@ -1,10 +1,11 @@
 import styled from '@emotion/styled'
+import { menuTokens, getSubmenuPopoutShadow } from '@cap/theme'
 import type { SubMenuContentProps } from '../../components/horizontal-menu/SubMenuContent'
 
 const StyledHorizontalSubMenuContent = styled.div<SubMenuContentProps>`
-  inline-size: 260px;
+  inline-size: ${menuTokens.horizontal.item.popoutSubmenuInlineSize};
   border-radius: ${({ theme }: any) => `${theme?.shape?.borderRadius || 4}px`};
-  box-shadow: ${({ theme }: any) => theme?.customShadows?.lg || theme?.shadows?.[4] || '0 6px 16px rgba(0, 0, 0, 0.12)'};
+  box-shadow: ${({ theme }: any) => getSubmenuPopoutShadow(theme)};
   outline: none;
   box-sizing: border-box;
   background-color: ${({ theme }: any) => theme?.palette?.background?.paper || '#ffffff'};

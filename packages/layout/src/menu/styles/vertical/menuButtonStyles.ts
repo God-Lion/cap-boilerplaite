@@ -1,5 +1,6 @@
 import { css } from '@emotion/react'
 import type { Theme } from '@mui/material/styles'
+import { menuTokens } from '@cap/theme'
 import type { ChildrenType } from '../../types'
 import { menuClasses } from '../../utils/menuClasses'
 
@@ -23,14 +24,14 @@ export const menuButtonStyles = (props: MenuButtonStylesProps) => {
   return css({
     display: 'flex',
     alignItems: 'center',
-    minBlockSize: '30px',
+    minBlockSize: menuTokens.vertical.button.minBlockSize,
     textDecoration: 'none',
     color: 'inherit',
     boxSizing: 'border-box',
     cursor: 'pointer',
-    paddingInlineEnd: '20px',
+    paddingInlineEnd: menuTokens.vertical.button.paddingInlineEnd,
     paddingInlineStart: `${
-      level === 0 ? 20 : (isPopoutWhenCollapsed && isCollapsed ? level : level + 1) * 20
+      level === 0 ? menuTokens.vertical.button.basePaddingInlineStart : (isPopoutWhenCollapsed && isCollapsed ? level : level + 1) * menuTokens.vertical.button.basePaddingInlineStart
     }px`,
 
     '&:hover, &[aria-expanded="true"]': {

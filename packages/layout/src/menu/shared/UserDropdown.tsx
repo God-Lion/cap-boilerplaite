@@ -16,7 +16,7 @@ import {
   Popper,
   Typography,
 } from '@mui/material'
-import { styled, useTheme, alpha } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import AttachMoney from '@mui/icons-material/AttachMoney'
 import Help from '@mui/icons-material/Help'
 import Logout from '@mui/icons-material/Logout'
@@ -26,12 +26,12 @@ import { useSettings, useAppStore } from '@cap/platform-store'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 import { useAuth } from '@cap/platform-core'
 import { AppPaths, resolveDynamicPath } from '@cap/shared-types'
-import { zIndexScale } from '@cap/theme'
+import { zIndexScale, dropdownTokens, getUserDropdownItemHoverBg } from '@cap/theme'
 import { useTranslation } from 'react-i18next'
 
 const BadgeContentSpan = styled('span')(({ theme }) => ({
-  width: 8,
-  height: 8,
+  width: dropdownTokens.userDropdown.badgeDotSize,
+  height: dropdownTokens.userDropdown.badgeDotSize,
   borderRadius: '50%',
   cursor: 'pointer',
   backgroundColor: theme.palette.success.main,
@@ -105,8 +105,8 @@ const UserDropdown = () => {
           onClick={handleDropdownOpen}
           sx={{
             cursor: 'pointer',
-            blockSize: '38px',
-            inlineSize: '38px',
+            blockSize: dropdownTokens.userDropdown.avatarSize,
+            inlineSize: dropdownTokens.userDropdown.avatarSize,
           }}
         />
       </Badge>
@@ -116,8 +116,8 @@ const UserDropdown = () => {
         placement='bottom-end'
         anchorEl={anchorEl}
         sx={{
-          minInlineSize: '240px',
-          marginBlockStart: '0.75rem !important',
+          minInlineSize: dropdownTokens.dropdownPopper.minInlineSizeUser,
+          marginBlockStart: dropdownTokens.dropdownPopper.marginBlockStart,
           zIndex: zIndexScale.dropdown,
         }}
       >
@@ -131,7 +131,7 @@ const UserDropdown = () => {
             <Paper
               className='animate-scale-in'
               sx={(theme: any) => ({
-                borderRadius: '12px !important',
+                borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
                 ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
                 ...(settings.skin === 'bordered'
@@ -147,9 +147,9 @@ const UserDropdown = () => {
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      paddingBlock: '0.5rem',
-                      paddingInline: '1.5rem',
-                      gap: '0.5rem',
+                      paddingBlock: dropdownTokens.userDropdown.headerPaddingBlock,
+                      paddingInline: dropdownTokens.userDropdown.headerPaddingInline,
+                      gap: dropdownTokens.userDropdown.headerGap,
                     }}
                     tabIndex={-1}
                   >
@@ -180,19 +180,19 @@ const UserDropdown = () => {
                   <MenuItem
                     onClick={(e) => handleDropdownClose(e, profilePath)}
                     sx={{
-                      marginInline: '8px !important',
-                      marginBlock: '4px !important',
-                      borderRadius: '8px !important',
-                      gap: '0.75rem',
+                      marginInline: dropdownTokens.userDropdown.itemMarginInline,
+                      marginBlock: dropdownTokens.userDropdown.itemMarginBlock,
+                      borderRadius: dropdownTokens.userDropdown.itemBorderRadius,
+                      gap: dropdownTokens.userDropdown.itemGap,
                       transition: 'all 0.2s ease',
                       '&:hover': {
-                        background: `${alpha(theme.palette.text.primary, 0.05)} !important`,
-                        transform: 'translateX(4px)',
+                        background: getUserDropdownItemHoverBg(theme),
+                        transform: dropdownTokens.userDropdown.itemHoverTranslateX,
                         '& svg': { color: 'primary.main' },
                       },
                     }}
                   >
-                    <Person sx={{ fontSize: '22px', transition: 'color 0.2s' }} />
+                    <Person sx={{ fontSize: dropdownTokens.dropdownPopper.itemIconFontSize, transition: 'color 0.2s' }} />
                     <Typography color='text.primary' sx={{ fontWeight: 500 }}>
                       {t('navigation.profile')}
                     </Typography>
@@ -200,19 +200,19 @@ const UserDropdown = () => {
                   <MenuItem
                     onClick={(e) => handleDropdownClose(e, settingsPath)}
                     sx={{
-                      marginInline: '8px !important',
-                      marginBlock: '4px !important',
-                      borderRadius: '8px !important',
-                      gap: '0.75rem',
+                      marginInline: dropdownTokens.userDropdown.itemMarginInline,
+                      marginBlock: dropdownTokens.userDropdown.itemMarginBlock,
+                      borderRadius: dropdownTokens.userDropdown.itemBorderRadius,
+                      gap: dropdownTokens.userDropdown.itemGap,
                       transition: 'all 0.2s ease',
                       '&:hover': {
-                        background: `${alpha(theme.palette.text.primary, 0.05)} !important`,
-                        transform: 'translateX(4px)',
+                        background: getUserDropdownItemHoverBg(theme),
+                        transform: dropdownTokens.userDropdown.itemHoverTranslateX,
                         '& svg': { color: 'primary.main' },
                       },
                     }}
                   >
-                    <Settings sx={{ fontSize: '22px', transition: 'color 0.2s' }} />
+                    <Settings sx={{ fontSize: dropdownTokens.dropdownPopper.itemIconFontSize, transition: 'color 0.2s' }} />
                     <Typography color='text.primary' sx={{ fontWeight: 500 }}>
                       {t('navigation.settings')}
                     </Typography>
@@ -221,28 +221,28 @@ const UserDropdown = () => {
                     onClick={(e) => handleDropdownClose(e, pricingPath)}
                     sx={{
                       marginInline: '0.5rem',
-                      gap: '0.75rem',
+                      gap: dropdownTokens.userDropdown.itemGap,
                     }}
                   >
-                    <AttachMoney sx={{ fontSize: '22px' }} />
+                    <AttachMoney sx={{ fontSize: dropdownTokens.dropdownPopper.itemIconFontSize }} />
                     <Typography color='text.primary'>{t('navigation.pricing')}</Typography>
                   </MenuItem>
                   <MenuItem
                     onClick={(e) => handleDropdownClose(e, aboutPath)}
                     sx={{
                       marginInline: '0.5rem',
-                      gap: '0.75rem',
+                      gap: dropdownTokens.userDropdown.itemGap,
                     }}
                   >
-                    <Help sx={{ fontSize: '22px' }} />
+                    <Help sx={{ fontSize: dropdownTokens.dropdownPopper.itemIconFontSize }} />
                     <Typography color='text.primary'>{t('navigation.about')}</Typography>
                   </MenuItem>
                   <Box
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      paddingBlock: '0.5rem',
-                      paddingInline: '0.75rem',
+                      paddingBlock: dropdownTokens.userDropdown.logoutBoxPaddingBlock,
+                      paddingInline: dropdownTokens.userDropdown.logoutBoxPaddingInline,
                     }}
                   >
                     <Button
@@ -256,7 +256,7 @@ const UserDropdown = () => {
                       }
                       onClick={handleUserLogout}
                       sx={{
-                        '& .MuiButton-endIcon': { marginInlineStart: 1.5 },
+                        '& .MuiButton-endIcon': { marginInlineStart: dropdownTokens.userDropdown.logoutEndIconMargin },
                       }}
                     >
                       {isLoggingOut ? t('navigation.signingOut') : t('navigation.logout')}
@@ -273,5 +273,3 @@ const UserDropdown = () => {
 }
 
 export default UserDropdown
-
-

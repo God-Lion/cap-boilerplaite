@@ -23,6 +23,7 @@ export interface PrimitiveTokens {
   };
   spacing: Record<string, string>;
   borderRadius: Record<string, string>;
+  borderWidth?: Record<string, string>;
   typography: {
     fontFamily: Record<string, string>;
     fontSize: Record<string, string>;
@@ -82,6 +83,12 @@ export const DEFAULT_PRIMITIVE_TOKENS: PrimitiveTokens = {
     lg: '12px',
     xl: '16px',
     full: '9999px',
+  },
+  borderWidth: {
+    none: '0px',
+    thin: '1px',
+    medium: '2px',
+    thick: '4px',
   },
   typography: {
     fontFamily: {

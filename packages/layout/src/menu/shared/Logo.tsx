@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles'
 import { useVerticalNav } from '../contexts/verticalNavContext'
 import type { VerticalNavContextProps } from '../contexts/verticalNavContext'
 import { useSettings } from '@cap/platform-store'
-import { themeConfig } from '@cap/theme'
+import { themeConfig, dropdownTokens } from '@cap/theme'
 import VuexyLogo from '../../assets/svg/Logo'
 import { Box } from '@mui/material'
 
@@ -16,10 +16,10 @@ type LogoTextProps = {
 }
 
 const LogoText = styled.span<LogoTextProps>`
-  font-size: 1.375rem;
-  line-height: 1.09091;
-  font-weight: 700;
-  letter-spacing: 0.25px;
+  font-size: ${dropdownTokens.logo.fontSize};
+  line-height: ${dropdownTokens.logo.lineHeight};
+  font-weight: ${dropdownTokens.logo.fontWeight};
+  letter-spacing: ${dropdownTokens.logo.letterSpacing};
   color: inherit;
   transition: ${({ transitionDuration }) =>
     `margin-inline-start ${transitionDuration}ms ease-in-out, opacity ${transitionDuration}ms ease-in-out`};
@@ -27,13 +27,13 @@ const LogoText = styled.span<LogoTextProps>`
   ${({ isHovered, isCollapsed }) =>
     isCollapsed && !isHovered
       ? 'opacity: 0; margin-inline-start: 0;'
-      : 'opacity: 1; margin-inline-start: 12px;'}
+      : `opacity: 1; margin-inline-start: ${dropdownTokens.logo.marginInlineStart};`}
 `
 
 const Logo = () => {
   const theme = useTheme()
   // Hooks
-  const { isHovered, transitionDuration, isCollapsed } = useVerticalNav()
+  const { isHovered, transitionDuration } = useVerticalNav()
   const { settings } = useSettings()
 
   // Vars
@@ -50,8 +50,6 @@ const Logo = () => {
     }
   }, [isHovered, layout])
 
-  // You may return any JSX here to display a logo in the sidebar header
-  // return <Img src='/next.svg' width={100} height={25} alt='logo' /> // for example
   return (
     <Box
       data-tut='reactour__logo'
@@ -64,8 +62,8 @@ const Logo = () => {
     >
       <VuexyLogo
         style={{
-          fontSize: '1.5rem',
-          lineHeight: '2rem',
+          fontSize: dropdownTokens.logo.iconFontSize,
+          lineHeight: dropdownTokens.logo.iconLineHeight,
           color: theme.palette.primary.main,
         }}
       />
