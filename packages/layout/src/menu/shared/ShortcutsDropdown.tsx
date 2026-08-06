@@ -39,7 +39,7 @@ import Settings from '@mui/icons-material/Settings'
 import LinkIcon from '@mui/icons-material/Link'
 import { useSettings } from '@cap/platform-store'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
-import { themeConfig, zIndexScale, dropdownTokens } from '@cap/theme'
+import { themeConfig, zIndexScale, dropdownTokens, getTenantThemeEffects } from '@cap/theme'
 import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
 
 export type ShortcutsType = {
@@ -171,7 +171,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
               sx={(theme: any) => ({
                 borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                 ...(settings.skin === 'bordered'
                   ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
                   : {}),
@@ -301,7 +301,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
         fullWidth
         PaperProps={{
           sx: (theme: any) => ({
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           }),
         }}
       >

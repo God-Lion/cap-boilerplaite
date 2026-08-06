@@ -4,6 +4,7 @@ import { Lock, Visibility, VisibilityOff, LockReset, ArrowBack } from '@mui/icon
 import { useTranslation } from 'react-i18next';
 import { themeConfig, useNotifications } from '@cap/platform-core';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useChangePassword } from '@auth';
 
@@ -136,7 +137,7 @@ function ChangePassword() {
             border: '1px solid ' + theme.palette.divider,
             mx: { xs: 2, sm: 4 },
             zIndex: 1,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
         >
           <CardContent

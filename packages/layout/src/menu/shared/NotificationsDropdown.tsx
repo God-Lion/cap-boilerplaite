@@ -29,7 +29,7 @@ import Close from '@mui/icons-material/Close'
 import BarChart from '@mui/icons-material/BarChart'
 import Email from '@mui/icons-material/Email'
 import { useSettings } from '@cap/platform-store'
-import { themeConfig, zIndexScale, dropdownTokens, getNotificationBadgeShadow } from '@cap/theme'
+import { themeConfig, zIndexScale, dropdownTokens, getNotificationBadgeShadow, getTenantThemeEffects } from '@cap/theme'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 import type { ThemeColor } from '@cap/shared-types'
 import { useTranslation } from 'react-i18next'
@@ -228,7 +228,7 @@ const NotificationDropdown = ({ notifications }: { notifications: Array<Notifica
               sx={(theme: any) => ({
                 borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                 ...(settings.skin === 'bordered'
                   ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
                   : {}),

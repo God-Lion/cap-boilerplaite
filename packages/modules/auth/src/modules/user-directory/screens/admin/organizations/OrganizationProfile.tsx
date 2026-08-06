@@ -9,6 +9,7 @@ import { Path } from '@cap/module-auth/routes/path';
 import { useOrganization, useUpdateOrganization, useVerifyDomain, useUploadOrganizationLogo, adminKeys } from '@idaas/authentication-core/hooks/useAdminQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -312,7 +313,7 @@ export default function OrganizationProfile() {
                   width: '100%',
                   mb: 3,
                   border: '1px solid ' + theme.palette.divider,
-                  ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                  ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                 })}
               >
                 <CardContent sx={{ p: 3 }}>
@@ -524,7 +525,7 @@ export default function OrganizationProfile() {
                     sx={(theme: any) => ({
                       mt: 3,
                       border: '1px solid ' + theme.palette.divider,
-                      ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                      ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                     })}
                   >
                     <CardContent sx={{ p: 3 }}>
@@ -567,7 +568,7 @@ export default function OrganizationProfile() {
             <Card
               sx={(theme: any) => ({
                 border: '1px solid ' + theme.palette.divider,
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <CardContent sx={{ p: 3 }}>
@@ -666,7 +667,7 @@ export default function OrganizationProfile() {
                 borderRadius: 4,
                 height: '100%',
                 border: '1px solid ' + theme.palette.divider,
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <CardContent sx={{ p: 3 }}>
@@ -939,7 +940,7 @@ export default function OrganizationProfile() {
           sx={(theme: any) => ({
             borderRadius: 4,
             border: '1px solid ' + theme.palette.divider,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
         >
           <CardContent sx={{ p: 3 }}>
@@ -1038,7 +1039,7 @@ export default function OrganizationProfile() {
           sx={(theme: any) => ({
             borderRadius: 4,
             border: '1px solid ' + theme.palette.divider,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
         >
           <CardContent sx={{ p: 3 }}>
@@ -1061,7 +1062,7 @@ export default function OrganizationProfile() {
               sx={(theme: any) => ({
                 borderRadius: 3,
                 border: '1px solid ' + theme.palette.divider,
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <Table>

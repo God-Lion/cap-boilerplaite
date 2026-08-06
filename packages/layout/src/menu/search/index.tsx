@@ -13,7 +13,7 @@ import type { ChildrenType } from '@cap/shared-types'
 import { useSettings } from '@cap/platform-store'
 import { i18n as i18nConfig, getSearchItems } from '@cap/platform-core'
 import { useVerticalNav } from '../../hooks/useVerticalNav'
-import { zIndexScale, searchTokens, getSearchBackdropBgColor } from '@cap/theme'
+import { zIndexScale, searchTokens, getSearchBackdropBgColor, getTenantThemeEffects } from '@cap/theme'
 
 export type Locale = (typeof i18nConfig)['locales'][number]
 
@@ -58,6 +58,7 @@ const NavSearch = () => {
   const { settings } = useSettings()
   const { isBreakpointReached } = useVerticalNav()
   const isSmallScreen = useMedia('(max-width: 600px)', false)
+  const isGlassEffect = getTenantThemeEffects(theme).globalType === 'glass'
   const { lang: locale } = useParams<{ lang?: string }>()
 
   const dynamicSearchData = getSearchItems()
@@ -166,7 +167,7 @@ const NavSearch = () => {
             inset: 0,
             zIndex: zIndexScale.search,
             bgcolor: getSearchBackdropBgColor(theme),
-            backdropFilter: searchTokens.backdrop.blur,
+            backdropFilter: isGlassEffect ? searchTokens.backdrop.blur : 'none',
           }}
         />
       </KBarPortal>

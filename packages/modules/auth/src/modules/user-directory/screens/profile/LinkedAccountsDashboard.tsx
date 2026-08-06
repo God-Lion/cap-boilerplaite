@@ -20,6 +20,7 @@ import {
   Grid,
 } from '@mui/material'
 import { buildLayoutSurfaceEffect } from '@cap/layout'
+import { getTenantThemeEffects } from '@cap/theme'
 
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -200,7 +201,7 @@ const LinkedAccountsDashboard = () => {
             sx={(theme: any) => ({
               borderRadius: 4,
               border: '1px solid ' + theme.palette.divider,
-              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
             })}
           >
             <List disablePadding>

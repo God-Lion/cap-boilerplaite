@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Path } from '@auth/routes/path';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 
 const InitiateEmailChange = () => {
   const { t } = useTranslation()
@@ -40,7 +41,7 @@ const InitiateEmailChange = () => {
               variant='outlined'
               sx={(theme: any) => ({
                 borderRadius: 3,
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <CardContent sx={{ p: 3 }}>
@@ -70,7 +71,7 @@ const InitiateEmailChange = () => {
               variant='outlined'
               sx={(theme: any) => ({
                 borderRadius: 3,
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <CardContent sx={{ p: 3 }}>
@@ -146,7 +147,7 @@ const InitiateEmailChange = () => {
                 borderRadius: 3,
                 bgcolor: 'rgba(245, 158, 11, 0.1)',
                 border: '1px solid rgba(245, 158, 11, 0.2)',
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <AlertTitle sx={{ fontWeight: 'bold' }}>

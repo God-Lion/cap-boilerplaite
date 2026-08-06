@@ -58,6 +58,7 @@ import {
 } from '@idaas/authentication-core/hooks/useAdminQuery'
 import { Path } from '@cap/module-auth/routes/path'
 import { buildLayoutSurfaceEffect } from '@cap/layout'
+import { getTenantThemeEffects } from '@cap/theme'
 
 export default function UserList() {
   const { t } = useTranslation('common')
@@ -358,7 +359,7 @@ export default function UserList() {
                 transform: 'translateY(-2px)',
                 borderColor: theme.palette[stat.color].main,
               },
-              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
             })}
             onClick={stat.onClick}
           >
@@ -414,7 +415,7 @@ export default function UserList() {
           borderRadius: 4,
           overflow: 'hidden',
           border: '1px solid ' + theme.palette.divider,
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         {/* Toolbar */}

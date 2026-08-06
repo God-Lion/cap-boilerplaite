@@ -49,6 +49,7 @@ import {
 } from "@idaas/authentication-core/hooks/useAdminQuery"
 import { useSnackbar } from 'notistack'
 import { buildLayoutSurfaceEffect } from '@cap/layout'
+import { getTenantThemeEffects } from '@cap/theme'
 import IssueBanDialog from './IssueBanDialog'
 
 export default function BanManagement() {
@@ -139,7 +140,7 @@ export default function BanManagement() {
               sx={(theme: any) => ({
                 bgcolor: alpha((theme.palette as any)[stat.color].main, 0.04),
                 border: '1px solid ' + alpha((theme.palette as any)[stat.color].main, 0.1),
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <CardContent>
@@ -226,7 +227,7 @@ export default function BanManagement() {
               <Typography>{t('auth.common.loading')}</Typography>
             </Box>
           ) : !bannedUsersData?.data?.data?.length ? (
-            <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })}>
+            <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme) })}>
               {t('auth.admin.noBannedUsers')}
             </Alert>
           ) : (
@@ -237,7 +238,7 @@ export default function BanManagement() {
                   border: '1px solid ' + theme.palette.divider,
                   transition: 'border-color 0.2s',
                   '&:hover': { borderColor: 'error.light' },
-                  ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                  ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                 })}
               >
                 <CardContent sx={{ p: 0 }}>
@@ -401,7 +402,7 @@ export default function BanManagement() {
         onClose={() => setEditingUser(null)}
         PaperProps={{
           sx: (theme: any) => ({
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           }),
         }}
       >
@@ -448,7 +449,7 @@ function AppealsQueue() {
 
   return (
     <Stack spacing={3} className='animate-scale-in'>
-      <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })}>
+      <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme) })}>
         {t('auth.admin.appealsInfo')}
       </Alert>
       {isLoading ? (
@@ -456,7 +457,7 @@ function AppealsQueue() {
           <Typography>{t('auth.common.loading')}</Typography>
         </Box>
       ) : appeals.length === 0 ? (
-        <Alert severity='success' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })}>
+        <Alert severity='success' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme) })}>
           {t('auth.admin.noAppeals')}
         </Alert>
       ) : (
@@ -466,7 +467,7 @@ function AppealsQueue() {
               key={appeal.id}
               sx={(theme: any) => ({
                 border: '1px solid ' + alpha(theme.palette.warning.main, 0.3),
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <CardContent>
@@ -554,7 +555,7 @@ function AppealsQueue() {
         onClose={() => setResolvingAppealId(null)}
         PaperProps={{
           sx: (theme: any) => ({
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           }),
         }}
       >
@@ -668,14 +669,14 @@ function BanFullHistory() {
           <Typography>{t('auth.common.loading')}</Typography>
         </Box>
       ) : logs.length === 0 ? (
-        <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })}>{t('auth.admin.noBanHistory')}</Alert>
+        <Alert severity='info' sx={(theme: any) => ({ ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme) })}>{t('auth.admin.noBanHistory')}</Alert>
       ) : (
         logs.map((log: any) => (
           <Card
             key={log.id}
             sx={(theme: any) => ({
               border: '1px solid ' + theme.palette.divider,
-              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
             })}
           >
             <CardContent sx={{ py: '12px !important' }}>

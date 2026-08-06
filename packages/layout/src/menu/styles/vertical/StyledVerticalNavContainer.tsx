@@ -1,4 +1,4 @@
-import { styled } from '@cap/theme'
+import { styled, getTenantThemeEffects } from '@cap/theme'
 import type { VerticalNavProps } from '../../components/vertical-menu/VerticalNav'
 import { verticalNavClasses } from '../../utils/menuClasses'
 import { SurfaceEffectFactory } from '../../../utils/buildLayoutSurfaceEffect'
@@ -6,7 +6,7 @@ import { SurfaceEffectFactory } from '../../../utils/buildLayoutSurfaceEffect'
 type StyledVerticalNavContainerProps = Pick<VerticalNavProps, 'width' | 'transitionDuration'>
 
 const StyledVerticalNavContainer = styled('div')<StyledVerticalNavContainerProps>(({ theme, width, transitionDuration }: any) => {
-  const surfaceEffect = SurfaceEffectFactory.create(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme)
+  const surfaceEffect = SurfaceEffectFactory.create(getTenantThemeEffects(theme), theme)
 
   return {
     position: 'relative',

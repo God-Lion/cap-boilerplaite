@@ -7,6 +7,7 @@ import { useDeactivateAccount, useUserProfile } from '../../hooks/useUserQuery';
 import logger from '@idaas/authentication-core/utils/logger';
 import { Path } from '@cap/module-auth/routes/path';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 
 export default function DeactivateAccount() {
   const { t } = useTranslation()
@@ -60,7 +61,7 @@ export default function DeactivateAccount() {
           borderRadius: 3,
           border: '1px solid ' + theme.palette.divider,
           overflow: 'hidden',
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         {/* Header */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { buildLayoutSurfaceEffect } from '@cap/layout'
+import { getTenantThemeEffects } from '@cap/theme'
 import {
   Box,
   Button,
@@ -344,7 +345,7 @@ const RealTimeAuthEventsMonitor = () => {
                     p: 3,
                     borderRadius: 2,
                     border: '1px solid ' + theme.palette.divider,
-                    ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                    ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                   })}
                 >
                   <Box
@@ -539,7 +540,7 @@ const RealTimeAuthEventsMonitor = () => {
               borderRadius: 2,
               overflow: 'hidden',
               border: '1px solid ' + theme.palette.divider,
-              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
             })}
           >
             <Box
@@ -679,7 +680,7 @@ const RealTimeAuthEventsMonitor = () => {
               borderRadius: 2,
               overflow: 'hidden',
               border: '1px solid ' + theme.palette.divider,
-              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
             })}
           >
             <Box

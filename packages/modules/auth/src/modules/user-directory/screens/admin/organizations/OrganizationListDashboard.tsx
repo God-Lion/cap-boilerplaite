@@ -48,6 +48,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Path } from '@cap/module-auth/routes/path'
 import { buildLayoutSurfaceEffect } from '@cap/layout'
+import { getTenantThemeEffects } from '@cap/theme'
 import { secureTokenManager } from '@cap/platform-core'
 import {
   useOrganizations,
@@ -269,7 +270,7 @@ export default function OrganizationListDashboard() {
               borderRadius: 4,
               transition: 'transform 0.15s ease',
               '&:hover': { transform: 'translateY(-2px)' },
-              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
             })}
           >
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2.5, p: 3 }}>
@@ -324,7 +325,7 @@ export default function OrganizationListDashboard() {
           borderRadius: 4,
           overflow: 'hidden',
           border: '1px solid ' + theme.palette.divider,
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         {/* Toolbar */}

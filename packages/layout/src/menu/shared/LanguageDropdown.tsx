@@ -14,7 +14,7 @@ import { i18n as i18nConfig, getAvailableLocales } from '@cap/platform-core'
 type Locale = (typeof i18nConfig)['locales'][number]
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '@cap/platform-store'
-import { zIndexScale, dropdownTokens } from '@cap/theme'
+import { zIndexScale, dropdownTokens, getTenantThemeEffects } from '@cap/theme'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 
 const LANGUAGE_NATIVE_MAP: Record<string, string> = {
@@ -108,7 +108,7 @@ const LanguageDropdown = () => {
               sx={(theme: any) => ({
                 borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                 ...(settings.skin === 'bordered'
                   ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
                   : {}),

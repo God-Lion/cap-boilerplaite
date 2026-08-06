@@ -26,7 +26,7 @@ import { useSettings, useAppStore } from '@cap/platform-store'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
 import { useAuth } from '@cap/platform-core'
 import { AppPaths, resolveDynamicPath } from '@cap/shared-types'
-import { zIndexScale, dropdownTokens, getUserDropdownItemHoverBg } from '@cap/theme'
+import { zIndexScale, dropdownTokens, getUserDropdownItemHoverBg, getTenantThemeEffects } from '@cap/theme'
 import { useTranslation } from 'react-i18next'
 
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -133,7 +133,7 @@ const UserDropdown = () => {
               sx={(theme: any) => ({
                 borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                 ...(settings.skin === 'bordered'
                   ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
                   : {}),

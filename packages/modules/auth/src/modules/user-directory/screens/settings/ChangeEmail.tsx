@@ -8,6 +8,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Path } from '@cap/module-auth/routes/path';
 import { useCurrentUserQuery, useChangeEmail } from '../../hooks/useUserQuery';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 
 interface ChangeEmailRequestFormData {
   CurrentEmail: string
@@ -96,7 +97,7 @@ function ChangeEmail() {
             borderRadius: 3,
             textAlign: 'center',
             p: 4,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
         >
           <CheckCircle sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
@@ -181,7 +182,7 @@ function ChangeEmail() {
             border: '1px solid ' + theme.palette.divider,
             mx: { xs: 2, sm: 4 },
             zIndex: 1,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
         >
           <CardContent

@@ -10,6 +10,7 @@ import { ImpersonationSession } from '@cap/shared-types';
 import { useImpersonationLogs } from '../../../../authentication-core';
 import { format, formatDistanceToNow } from 'date-fns';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 
 export default function ImpersonationLogs() {
   const { t } = useTranslation('common')
@@ -139,7 +140,7 @@ export default function ImpersonationLogs() {
           mb: 4,
           borderRadius: 4,
           border: '1px dashed ' + alpha(theme.palette.primary.main, 0.2),
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         <CardContent
@@ -257,7 +258,7 @@ export default function ImpersonationLogs() {
           borderRadius: 4,
           overflow: 'hidden',
           border: '1px solid ' + theme.palette.divider,
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         <TableContainer>

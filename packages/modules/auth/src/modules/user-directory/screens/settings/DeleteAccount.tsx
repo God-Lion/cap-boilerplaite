@@ -40,6 +40,7 @@ import { useDeleteAccount, useErasureMutation } from "../../hooks/useUserQuery"
 import logger from "@idaas/authentication-core/utils/logger"
 import { Path } from "@cap/module-auth/routes/path"
 import { buildLayoutSurfaceEffect } from "@cap/layout"
+import { getTenantThemeEffects } from '@cap/theme'
 
 // Validation Schema
 const deleteAccountSchema = (t: any) =>
@@ -146,7 +147,7 @@ export default function DeleteAccount() {
           sx={(theme: any) => ({
             borderRadius: '12px',
             overflow: 'hidden',
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
         >
           {/* Header Section with Warning */}
@@ -215,7 +216,7 @@ export default function DeleteAccount() {
           >
             {/* Error Alert */}
             {deleteError && (
-              <Alert sx={(theme: any) => ({ mb: 3, borderRadius: '8px', ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme) })} severity='error'>
+              <Alert sx={(theme: any) => ({ mb: 3, borderRadius: '8px', ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme) })} severity='error'>
                 {(deleteError as any)?.message || t('auth.common.errorOccurred')}
               </Alert>
             )}
@@ -237,7 +238,7 @@ export default function DeleteAccount() {
                     p: 2,
                     borderRadius: '8px',
                     border: '1px solid ' + theme.palette.divider,
-                    ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                    ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                   })}
                 >
                   <FolderOff sx={{ color: '#9ca3af', fontSize: 24, mt: 0.5 }} />
@@ -261,7 +262,7 @@ export default function DeleteAccount() {
                     p: 2,
                     borderRadius: '8px',
                     border: '1px solid ' + theme.palette.divider,
-                    ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                    ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                   })}
                 >
                   <CreditCardOff sx={{ color: '#9ca3af', fontSize: 24, mt: 0.5 }} />
@@ -285,7 +286,7 @@ export default function DeleteAccount() {
                     p: 2,
                     borderRadius: '8px',
                     border: '1px solid ' + theme.palette.divider,
-                    ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                    ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                   })}
                 >
                   <LockClock sx={{ color: '#9ca3af', fontSize: 24, mt: 0.5 }} />
@@ -311,7 +312,7 @@ export default function DeleteAccount() {
                 borderRadius: '8px',
                 mb: 4,
                 border: '1px solid ' + alpha(theme.palette.info.main, 0.2),
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
               })}
             >
               <Box
@@ -628,7 +629,7 @@ export default function DeleteAccount() {
         PaperProps={{
           sx: (theme: any) => ({
             borderRadius: '12px',
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           }),
         }}
       >

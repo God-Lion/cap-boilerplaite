@@ -3,6 +3,7 @@ import { Box, Button, Card, CardContent, Typography, Divider, List, ListItem, Li
 import { useTheme, alpha } from '@mui/material/styles';
 import { Download as DownloadIcon, FilePresent as FileIcon, History as HistoryIcon, Schedule as ScheduleIcon } from '@mui/icons-material';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 // 
 import { useComplianceExport, useExportMutation } from '../../hooks/useUserQuery';
 
@@ -53,7 +54,7 @@ export const DataExport: React.FC = () => {
           borderRadius: 4,
           border: '1px solid ' + theme.palette.divider,
           mb: 4,
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         <CardContent sx={{ p: 4 }}>

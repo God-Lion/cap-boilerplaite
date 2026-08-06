@@ -10,6 +10,7 @@ import {
   getCompactFloatingMaxInlineSize,
   getHeaderFloatingMask,
   verticalLayoutClasses,
+  getTenantThemeEffects,
 } from '@cap/theme'
 import type { Theme } from '@mui/material/styles'
 import type { CSSObject } from '@emotion/styled'
@@ -155,7 +156,7 @@ const StyledHeader = styled.header<StyledHeaderProps>`
       border-radius: ${({ theme }) => `${theme.shape.borderRadius}px`};
       padding-inline: ${headerTokens.layout.paddingInline};
       box-shadow: ${({ theme }) => getHeaderElevationShadow(theme)};
-      ${({ theme }) => SurfaceEffectFactory.create((theme as any).effects || (theme as any).effectConfig || { globalType: 'glass' }, theme)};
+      ${({ theme }) => SurfaceEffectFactory.create(getTenantThemeEffects(theme), theme)};
 
       [data-skin='bordered'] & {
         box-shadow: ${headerTokens.borderedSkin.boxShadow};

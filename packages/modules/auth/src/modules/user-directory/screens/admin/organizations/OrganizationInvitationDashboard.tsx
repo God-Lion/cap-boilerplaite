@@ -7,6 +7,7 @@ import { Path } from '@cap/module-auth/routes/path';
 import { useOrganizationInvitations, useInviteOrganizationMember, useRevokeOrganizationInvitation } from '@idaas/authentication-core/hooks/useAdminQuery';
 import { useSnackbar } from 'notistack';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 
 interface Invitation {
   id: string | number
@@ -204,7 +205,7 @@ export default function OrganizationInvitationDashboard() {
             sx={(theme: any) => ({
               borderRadius: 3,
               border: '1px solid ' + theme.palette.divider,
-              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
             })}
           >
             {/* ── SYSTEM PATTERN: metric_card (OrganizationProfile style) ── */}
@@ -233,7 +234,7 @@ export default function OrganizationInvitationDashboard() {
           borderRadius: 4,
           border: '1px solid ' + theme.palette.divider,
           overflow: 'hidden',
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         <Box
@@ -357,7 +358,7 @@ export default function OrganizationInvitationDashboard() {
             sx: (theme: any) => ({
               borderRadius: 3,
               minWidth: 200,
-              ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+              ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
             }),
           },
         }}
@@ -442,7 +443,7 @@ export default function OrganizationInvitationDashboard() {
         PaperProps={{
           sx: (theme: any) => ({
             borderRadius: 4,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           }),
         }}
       >

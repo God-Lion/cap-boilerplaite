@@ -2,7 +2,7 @@ import type { Settings } from '@cap/shared-types'
 import { styled } from '@mui/material/styles'
 import { KBarAnimator } from 'kbar'
 import { SurfaceEffectFactory } from '../../utils/buildLayoutSurfaceEffect'
-import { searchTokens } from '@cap/theme'
+import { searchTokens, getTenantThemeEffects } from '@cap/theme'
 
 type StyledKBarAnimatorProps = {
   skin: Settings['skin']
@@ -10,7 +10,7 @@ type StyledKBarAnimatorProps = {
 }
 
 const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>(({ theme, skin, isSmallScreen }: any) => {
-  const surfaceEffect = SurfaceEffectFactory.create(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme)
+  const surfaceEffect = SurfaceEffectFactory.create(getTenantThemeEffects(theme), theme)
 
   return {
     '& > div': {
@@ -22,6 +22,8 @@ const StyledKBarAnimator = styled(KBarAnimator)<StyledKBarAnimatorProps>(({ them
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.shadows[4],
       ...surfaceEffect,
 
       ...(isSmallScreen && {

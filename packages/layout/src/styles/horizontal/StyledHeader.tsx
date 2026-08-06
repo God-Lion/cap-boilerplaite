@@ -1,4 +1,4 @@
-import { styled } from '@cap/theme'
+import { styled, getTenantThemeEffects } from '@cap/theme'
 import {
   headerTokens,
   getHeaderElevationShadow,
@@ -16,7 +16,7 @@ type StyledHeaderProps = {
 }
 
 const StyledHeader = styled('header')<StyledHeaderProps>(({ theme, layoutPadding, compactContentWidth, overrideStyles }) => {
-  const surfaceEffect = SurfaceEffectFactory.create((theme as any).effects || (theme as any).effectConfig || { globalType: 'glass' }, theme)
+  const surfaceEffect = SurfaceEffectFactory.create(getTenantThemeEffects(theme), theme)
 
   return {
     boxShadow: getHeaderElevationShadow(theme),

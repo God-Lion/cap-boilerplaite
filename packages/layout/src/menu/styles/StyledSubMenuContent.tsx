@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { menuTokens, getSubmenuPopoutShadow } from '@cap/theme'
+import { menuTokens, getSubmenuPopoutShadow, getTenantThemeEffects } from '@cap/theme'
 import type { SubMenuContentProps } from '../components/vertical-menu/SubMenuContent'
 import { SurfaceEffectFactory } from '../../utils/buildLayoutSurfaceEffect'
 
@@ -21,7 +21,7 @@ const StyledSubMenuContent = styled.div<SubMenuContentProps>`
 
   ${({ isCollapsed, level, isPopoutWhenCollapsed, theme }: any) => {
     if (isCollapsed && level === 0 && isPopoutWhenCollapsed) {
-      const surfaceEffect = SurfaceEffectFactory.create(theme?.effects || theme?.effectConfig || { globalType: 'glass' }, theme)
+      const surfaceEffect = SurfaceEffectFactory.create(getTenantThemeEffects(theme), theme)
       return {
         display: 'block',
         paddingInlineStart: '0px',

@@ -29,7 +29,7 @@ import type {
   ComponentStyles,
   EffectType,
 } from '@cap/theme';
-import { DEFAULT_TENANT_THEME, useThemeEditorStore, themeEditorStore } from '@cap/theme';
+import { DEFAULT_TENANT_THEME, applyPreset, useThemeEditorStore, themeEditorStore } from '@cap/theme';
 import type { ThemePresetId } from '@cap/theme';
 
 interface TabPanelProps {
@@ -157,111 +157,11 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
   }, [updateThemeState]);
 
   const handlePresetSelect = useCallback((presetId: ThemePresetId) => {
-    const presets: Record<ThemePresetId, TenantThemeConfig> = {
-      default: { ...DEFAULT_TENANT_THEME, organizationId },
-      glassmorphism: {
-        ...DEFAULT_TENANT_THEME,
-        organizationId,
-        preset: 'glassmorphism',
-        effects: {
-          ...DEFAULT_TENANT_THEME.effects,
-          globalType: 'glass',
-          glassmorphism: { ...DEFAULT_TENANT_THEME.effects.glassmorphism, enabled: true },
-        },
-        tokens: {
-          ...DEFAULT_TENANT_THEME.tokens,
-          colors: {
-            ...DEFAULT_TENANT_THEME.tokens.colors,
-            primary: { value: '#8b5cf6', description: 'Purple primary' },
-            secondary: { value: '#6366f1', description: 'Indigo secondary' },
-            background: { value: '#0f172a', description: 'Dark slate background' },
-            surface: { value: 'rgba(30, 41, 59, 0.8)', description: 'Glass surface' },
-            text: { value: '#f8fafc', description: 'Light text' },
-            textMuted: { value: '#94a3b8', description: 'Muted text' },
-            border: { value: 'rgba(255, 255, 255, 0.1)', description: 'Subtle border' },
-          },
-        },
-      },
-      neumorphism: {
-        ...DEFAULT_TENANT_THEME,
-        organizationId,
-        preset: 'neumorphism',
-        effects: {
-          ...DEFAULT_TENANT_THEME.effects,
-          globalType: 'neu',
-          neumorphism: { ...DEFAULT_TENANT_THEME.effects.neumorphism, enabled: true },
-        },
-        tokens: {
-          ...DEFAULT_TENANT_THEME.tokens,
-          colors: {
-            ...DEFAULT_TENANT_THEME.tokens.colors,
-            primary: { value: '#6366f1', description: 'Soft purple primary' },
-            secondary: { value: '#8b5cf6', description: 'Soft indigo secondary' },
-            background: { value: '#e0e5ec', description: 'Soft gray background' },
-            surface: { value: '#e0e5ec', description: 'Same as background' },
-            text: { value: '#374151', description: 'Dark gray text' },
-            textMuted: { value: '#6b7280', description: 'Muted text' },
-            border: { value: '#d1d5db', description: 'Subtle border' },
-          },
-        },
-      },
-      'dark-ui': {
-        ...DEFAULT_TENANT_THEME,
-        organizationId,
-        preset: 'dark-ui',
-        tokens: {
-          ...DEFAULT_TENANT_THEME.tokens,
-          colors: {
-            ...DEFAULT_TENANT_THEME.tokens.colors,
-            primary: { value: '#22d3ee', description: 'Cyan neon accent' },
-            secondary: { value: '#a855f7', description: 'Purple neon accent' },
-            background: { value: '#09090b', description: 'Near black background' },
-            surface: { value: '#18181b', description: 'Elevated surface' },
-            text: { value: '#fafafa', description: 'Bright white text' },
-            textMuted: { value: '#71717a', description: 'Muted gray text' },
-            border: { value: '#27272a', description: 'Subtle border' },
-          },
-        },
-      },
-      'flat-design': {
-        ...DEFAULT_TENANT_THEME,
-        organizationId,
-        preset: 'flat-design',
-        tokens: {
-          ...DEFAULT_TENANT_THEME.tokens,
-          colors: {
-            ...DEFAULT_TENANT_THEME.tokens.colors,
-            primary: { value: '#1e40af', description: 'Deep navy blue' },
-            secondary: { value: '#3b82f6', description: 'Bright blue' },
-            background: { value: '#f1f5f9', description: 'Light gray background' },
-            surface: { value: '#ffffff', description: 'White surface' },
-            text: { value: '#0f172a', description: 'Dark text' },
-            textMuted: { value: '#64748b', description: 'Muted text' },
-            border: { value: '#cbd5e1', description: 'Light border' },
-          },
-        },
-      },
-      'liquid-organic': {
-        ...DEFAULT_TENANT_THEME,
-        organizationId,
-        preset: 'liquid-organic',
-        tokens: {
-          ...DEFAULT_TENANT_THEME.tokens,
-          colors: {
-            ...DEFAULT_TENANT_THEME.tokens.colors,
-            primary: { value: '#ec4899', description: 'Pink primary' },
-            secondary: { value: '#8b5cf6', description: 'Purple secondary' },
-            background: { value: '#fdf4ff', description: 'Light pink background' },
-            surface: { value: '#ffffff', description: 'White surface' },
-            text: { value: '#581c87', description: 'Deep purple text' },
-            textMuted: { value: '#a855f7', description: 'Light purple muted' },
-            border: { value: '#e9d5ff', description: 'Light purple border' },
-          },
-        },
-      },
-    } as any;
-
-    updateThemeState(() => presets[presetId] || DEFAULT_TENANT_THEME);
+    const presetTheme = applyPreset(presetId);
+    updateThemeState(() => ({
+      ...presetTheme,
+      organizationId,
+    }));
   }, [organizationId, updateThemeState]);
 
   const handleSave = async () => {

@@ -19,6 +19,7 @@ import { z } from 'zod';
 import { useSnackbar } from 'notistack';
 import { Path, useCreateOIDCClient } from '@auth';
 import { buildLayoutSurfaceEffect } from '@cap/layout';
+import { getTenantThemeEffects } from '@cap/theme';
 
 const createOidcSchema = z.object({
   name: z.string().min(3, 'Client Name must be at least 3 characters').max(50),
@@ -141,7 +142,7 @@ export default function OIDCClientCreate() {
             p: 4,
             borderRadius: 4,
             border: '1px solid ' + theme.palette.success.main,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
           component={motion.div}
           initial={{ opacity: 0, scale: 0.95 }}
@@ -237,7 +238,7 @@ export default function OIDCClientCreate() {
           sx={(theme: any) => ({
             borderRadius: 4,
             border: '1px solid ' + theme.palette.divider,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
         >
           <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>

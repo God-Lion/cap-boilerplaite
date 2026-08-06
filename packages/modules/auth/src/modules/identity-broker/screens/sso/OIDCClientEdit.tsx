@@ -45,6 +45,7 @@ import { z } from 'zod'
 import { useSnackbar } from 'notistack'
 import { Path, useOIDCClient, useUpdateOIDCClient, useRotateClientSecret } from '@auth'
 import { buildLayoutSurfaceEffect } from '@cap/layout'
+import { getTenantThemeEffects } from '@cap/theme'
 
 const updateOidcSchema = z.object({
   name: z.string().min(3, 'Client Name must be at least 3 characters').max(50),
@@ -224,7 +225,7 @@ export default function OIDCClientEdit() {
             mb: 4,
             borderRadius: 4,
             border: '1px solid ' + theme.palette.warning.main,
-            ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+            ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
           })}
           component={motion.div}
           initial={{ opacity: 0, scale: 0.95 }}
@@ -275,7 +276,7 @@ export default function OIDCClientEdit() {
           borderRadius: 4,
           mb: 4,
           border: '1px solid ' + theme.palette.divider,
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
@@ -406,7 +407,7 @@ export default function OIDCClientEdit() {
         sx={(theme: any) => ({
           borderRadius: 4,
           border: '1px solid ' + theme.palette.error.main,
-          ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+          ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
         })}
       >
         <Box sx={{ p: 4 }}>

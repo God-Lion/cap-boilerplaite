@@ -16,7 +16,7 @@ import Palette from '@mui/icons-material/Palette'
 import Divider from '@mui/material/Divider'
 import type { Mode } from '@cap/shared-types'
 import { useSettings } from '@cap/platform-store'
-import { zIndexScale, themeEditorStore, DEFAULT_THEME_CONFIG, dropdownTokens } from '@cap/theme'
+import { zIndexScale, themeEditorStore, DEFAULT_THEME_CONFIG, dropdownTokens, getTenantThemeEffects } from '@cap/theme'
 import { useTenant } from '@cap/platform-core'
 import { useTranslation } from 'react-i18next'
 import { buildLayoutSurfaceEffect } from '../../utils/buildLayoutSurfaceEffect'
@@ -108,7 +108,7 @@ const ModeDropdown = () => {
               sx={(theme: any) => ({
                 borderRadius: dropdownTokens.dropdownPopper.paperBorderRadius,
                 overflow: 'hidden',
-                ...buildLayoutSurfaceEffect(theme.effects || theme.effectConfig || { globalType: 'glass' }, theme),
+                ...buildLayoutSurfaceEffect(getTenantThemeEffects(theme), theme),
                 ...(settings.skin === 'bordered'
                   ? { border: '1px solid ' + theme.palette.divider, boxShadow: 'none' }
                   : {}),
