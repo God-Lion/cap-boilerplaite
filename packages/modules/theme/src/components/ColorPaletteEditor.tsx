@@ -39,16 +39,43 @@ const ColorSwatch = ({ color, label, onColorChange }: {
       </Typography>
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
         <Box
+          component="label"
+          title="Pick color"
           sx={{
+            position: 'relative',
             width: 48,
             height: 48,
             borderRadius: 1,
-            backgroundColor: color.value,
             border: '1px solid',
             borderColor: 'divider',
             flexShrink: 0,
+            overflow: 'hidden',
+            cursor: 'pointer',
+            '&:hover': { borderColor: 'primary.main' },
           }}
-        />
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: color.value,
+            }}
+          />
+          <input
+            type="color"
+            value={color.value}
+            onChange={(e) => onColorChange(e.target.value)}
+            aria-label={`Pick color for ${label}`}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              opacity: 0,
+              cursor: 'pointer',
+            }}
+          />
+        </Box>
         <TextField
           size="small"
           value={color.value}

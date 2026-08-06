@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider as MuiThemeProvider, StyledEngineProvider } from '@mui/material/styles';
@@ -71,17 +71,45 @@ export const ThemeBridge = ({ children }: { children: React.ReactNode }) => {
   const resolvedMode = useResolvedSystemMode(settings.mode);
   const isDark = resolvedMode === 'dark';
 
+  // CSS custom property application is coalesced through requestAnimationFrame
+  // so rapid config changes (e.g. slider drags in the ThemeEditor) produce a
+  // single DOM write pass per animation frame instead of one synchronous flush
+  // per keystroke/tick. Only the latest config is applied on flush.
+  const latestConfigRef = useRef<TenantThemeConfig | null>(null);
+  const themeVarsRafRef = useRef<number | null>(null);
+
+  const applyThemeVarsBatched = useCallback((config: TenantThemeConfig) => {
+    latestConfigRef.current = config;
+    if (themeVarsRafRef.current !== null) return;
+    themeVarsRafRef.current = window.requestAnimationFrame(() => {
+      themeVarsRafRef.current = null;
+      const cfg = latestConfigRef.current;
+      if (cfg) {
+        try {
+          applyThemeVariablesSync(cfg);
+        } catch {
+          // Fallback gracefully if DOM is not ready
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (themeVarsRafRef.current !== null) {
+        window.cancelAnimationFrame(themeVarsRafRef.current);
+        themeVarsRafRef.current = null;
+      }
+    };
+  }, []);
+
   const theme = useMemo(() => {
     const compiled = generateTheme(activeConfig as any, settings, isDark);
     if (typeof window !== 'undefined' && activeConfig) {
-      try {
-        applyThemeVariablesSync(activeConfig as any);
-      } catch {
-        // Fallback gracefully if DOM is not ready
-      }
+      applyThemeVarsBatched(activeConfig as any);
     }
     return compiled;
-  }, [activeConfig, settings, isDark]);
+  }, [activeConfig, settings, isDark, applyThemeVarsBatched]);
 
   return (
     <StyledEngineProvider injectFirst>

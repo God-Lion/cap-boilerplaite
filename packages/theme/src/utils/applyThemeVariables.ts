@@ -265,43 +265,24 @@ export const generateThemeVariables = (theme: TenantThemeConfig): AppliedThemeVa
 
 let lastAppliedVariables: Record<string, string | number> = {};
 
-export const applyThemeVariables = (theme: TenantThemeConfig): AppliedThemeVariables => {
-  const vars = generateThemeVariables(theme);
-  const root = document.documentElement;
-  
-  const flattenedNew: Record<string, string | number> = {
-    ...vars.colors,
-    ...vars.spacing,
-    ...vars.borderRadius,
-    ...vars.typography,
-    ...vars.effects,
-    ...vars.components,
-  };
-  
-  requestAnimationFrame(() => {
-    for (const [key, value] of Object.entries(flattenedNew)) {
-      if (lastAppliedVariables[key] !== value) {
-        root.style.setProperty(key, String(value));
-        lastAppliedVariables[key] = value;
-      }
-    }
-  });
-  
-  return vars;
-};
+const flattenAppliedVariables = (vars: AppliedThemeVariables): Record<string, string | number> => ({
+  ...vars.colors,
+  ...vars.spacing,
+  ...vars.borderRadius,
+  ...vars.typography,
+  ...vars.effects,
+  ...vars.components,
+});
 
-export const applyThemeVariablesSync = (theme: TenantThemeConfig): AppliedThemeVariables => {
-  const vars = generateThemeVariables(theme);
-  const root = document.documentElement;
-  
-  const flattenedNew: Record<string, string | number> = {
-    ...vars.colors,
-    ...vars.spacing,
-    ...vars.borderRadius,
-    ...vars.typography,
-    ...vars.effects,
-    ...vars.components,
-  };
+const applyVariableDiff = (root: HTMLElement, flattenedNew: Record<string, string | number>) => {
+  // Remove previously applied variables that are no longer produced (e.g. the
+  // glass-only --effect-* variables after switching to the standard preset).
+  for (const key of Object.keys(lastAppliedVariables)) {
+    if (!(key in flattenedNew)) {
+      root.style.removeProperty(key);
+      delete lastAppliedVariables[key];
+    }
+  }
 
   for (const [key, value] of Object.entries(flattenedNew)) {
     if (lastAppliedVariables[key] !== value) {
@@ -309,7 +290,29 @@ export const applyThemeVariablesSync = (theme: TenantThemeConfig): AppliedThemeV
       lastAppliedVariables[key] = value;
     }
   }
-  
+};
+
+export const applyThemeVariables = (theme: TenantThemeConfig): AppliedThemeVariables => {
+  const vars = generateThemeVariables(theme);
+  const root = document.documentElement;
+
+  const flattenedNew = flattenAppliedVariables(vars);
+
+  requestAnimationFrame(() => {
+    applyVariableDiff(root, flattenedNew);
+  });
+
+  return vars;
+};
+
+export const applyThemeVariablesSync = (theme: TenantThemeConfig): AppliedThemeVariables => {
+  const vars = generateThemeVariables(theme);
+  const root = document.documentElement;
+
+  const flattenedNew = flattenAppliedVariables(vars);
+
+  applyVariableDiff(root, flattenedNew);
+
   return vars;
 };
 
