@@ -28,10 +28,10 @@ This document outlines the security architecture and developer responsibilities 
 
 ## 2. Using Secure Storage
 
-All storage operations in `@cap/platform-core` are asynchronous and support transparent obfuscated encryption for non-critical user preferences.
+All storage operations in `@cap/platform-store` are asynchronous and support transparent obfuscated encryption for non-critical user preferences.
 
 ```ts
-import { localStorageManager } from '@cap/platform-core'
+import { localStorageManager } from '@cap/platform-store'
 
 // Save persistent UI state (automatically obfuscated/encrypted)
 await localStorageManager.set('my_pref_key', { preferences: 'data' }, true)

@@ -16,4 +16,7 @@ The `auth-contracts` package defines the strict boundaries and types for the Ide
 
 ## Dependencies
 *   Like `api-contracts`, this package is a low-level definition library.
-*   Consumed heavily by `@cap/module-auth`, `@cap/platform-core`, and `@cap/layout` to verify session state without causing circular dependencies.
+*   Depends on `@cap/shared-types`, `@cap/api-contracts`, and `@cap/platform-store` (per `docs/MODULE_COUPLING_REPORT.md`).
+
+> [!NOTE]
+> **Current status (2026-08):** no package imports `@cap/auth-contracts` in source today (afferent coupling `Ca = 0` per `docs/MODULE_COUPLING_REPORT.md`). It is wired into the Vite aliases (`app/vite.config.ts`) and remains the intended contract surface for the auth module, but `@cap/module-auth` currently derives its types from `@cap/shared-types` and its own `domain-kernel/` instead. The decoupling intent in the "Overview" above is architectural, not yet enforced by runtime usage.

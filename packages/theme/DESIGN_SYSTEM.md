@@ -33,6 +33,8 @@ To support Right-To-Left languages (Arabic `ar`), always use logical CSS propert
 - Use `marginInlineStart` / `marginInlineEnd` instead of `marginLeft` / `marginRight`
 - Use `paddingInlineStart` / `paddingInlineEnd` instead of `paddingLeft` / `paddingRight`
 
+> **`stylis-plugin-rtl` auto-flipping:** the app and `@cap/theme` already wire in `stylis-plugin-rtl`, which automatically mirrors MUI's *physical* `sx` shorthands (`px`, `mx`, `pl`, `pr`, etc.) at the CSS-emission level when `dir='rtl'` is set. This means a component using `px`/`mx` is **not** automatically an RTL bug — the physical shorthand is safe because the plugin flips it. Prefer logical properties in hand-written `styled()`/raw CSS and in `sx` where clarity benefits, but do not "fix" working `px`/`mx` usage into logical properties unless the physical property is being applied through a path the plugin does not cover.
+
 ---
 
 ## 2. Typography & Fonts

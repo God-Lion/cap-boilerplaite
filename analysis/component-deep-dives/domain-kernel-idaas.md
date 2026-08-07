@@ -67,12 +67,12 @@ graph TD
 
 ## 3. Structural Gaps & Observations
 
-### The Orphaned Event Bus
+### The Event Bus (formerly "Orphaned Event Bus" — now RESOLVED)
 
-Although `EventBus` has full-fledged support for publishing and subscribing:
+`EventBus` has full-fledged support for publishing and subscribing:
 1.  **Subscriptions exist**: `rbac.subscriber.ts` correctly subscribes to `USER_AUTHENTICATED`, `SESSION_CREATED`, `SESSION_REVOKED`, and `TOKEN_ISSUED` when `subscribe()` is called.
-2.  **Publishing is missing**: **No code in the main app packages or the modules publishes events.** There is no call to `eventBus.publish(...)` outside of tests.
-3.  **Impact**: The pub-sub architecture is currently inert. State changes in `authenticationService` or `authorizationService` do not trigger domain events, meaning logs registered in `RbacSubscriber` (e.g. `[RbacSubscriber] User authenticated...`) are never printed in practice.
+2.  **Publishing is now active**: `eventBus.publish()` calls were injected across the authentication lifecycle in `packages/modules/auth/src/modules/authentication-core/services/auth.service.ts` — `UserAuthenticated`, `SessionCreated`, `TokenIssued`, `SessionRevoked`, `TokenRefreshed`, and `AuthenticationFailed` are all published on their respective state changes (sign-in, sign-up, sign-out, session revocation, refresh, failed logins).
+3.  **Impact**: The pub-sub architecture is functional — subscribers such as `RbacSubscriber` now receive lifecycle events in practice, not just in tests.
 
 ### Shared Signals and Events (SSF)
 

@@ -55,7 +55,7 @@ Theme generation is driven by `composeMuiTheme()`:
 2. **Palette Resolution**: Status colors and primary/secondary colors are expanded. Status color variants (light, dark, opacities) are calculated dynamically via MUI color manipulation functions (`lighten`, `darken`).
 3. **Typography Composition**: Merges custom font families (e.g. Inter, JetBrains Mono) with heading and body specifications.
 4. **Component Overrides**: Applies component-level override rules (`getComponentOverrides`) for MUI Buttons, Cards, Inputs, Tables, and Menus based on current tenant settings.
-5. **CSS Variable Bridge**: `applyThemeVariablesSync()` flattens token values into CSS custom properties (`--color-primary`, `--radius-md`, `--glass-blur`, etc.) injected into document root.
+5. **CSS Variable Bridge**: `applyThemeVariablesSync()` flattens token values into CSS custom properties (`--color-primary`, `--radius-md`, `--glass-blur`, etc.) injected into document root. In the shell, `ThemeBridge` coalesces rapid config changes (e.g. preset switching) into a single `requestAnimationFrame` write and removes variables a previous config emitted but the new one no longer produces (e.g. `--glass-*`/`--effect-*` on returning to a non-effect preset).
 
 ---
 

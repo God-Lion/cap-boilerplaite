@@ -1,13 +1,13 @@
-# `@boilerplate/theme` Source Description
+# `@cap/theme` Source Description
 
-This document describes the current `src/` layout for `@boilerplate/theme` based on the code that is actually present today.
+This document describes the current `src/` layout for `@cap/theme` based on the code that is actually present today.
 
 ## Overview
 
-`@boilerplate/theme` is a shared React + MUI theme package for:
+`@cap/theme` is a shared React + MUI theme package for:
 
 - tenant-aware theme configuration
-- runtime theme composition on top of `@cap/platform-core`
+- runtime theme composition
 - preset-driven visual styles
 - effect-aware styled components
 - reusable UI building blocks and wrappers
@@ -33,14 +33,17 @@ src/
 |-- index.ts
 |-- assets/
 |-- components/
+|-- config/
 |-- context/
 |-- hooks/
 |-- overrides/
-|-- services/
+|-- store/
 |-- styled/
 |-- styles/
 |-- types/
 |-- utils/
+|-- declarations.d.ts
+|-- test-setup.ts
 `-- DESCRIPTION.md
 ```
 
@@ -141,9 +144,8 @@ Hooks that connect tenant config to runtime styling.
   - returns the configured style rule for a component slot
 - `useThemeVariables`
   - deprecated compatibility hook that mirrors tenant tokens to CSS variables
-- `useObjectCookie`
-  - re-exports `useObjectCookie` from `@cap/platform-core` for backward compatibility
-  - see `platform-core/src/hooks/` for the canonical implementation
+- `useThemeCustomizer`
+  - exposes granular theme mutation helpers used by the Theme Editor screen
 
 ### `utils/`
 
@@ -163,7 +165,9 @@ Important utilities:
 - `themeObjectStyles.ts`
   - reads component-level style config from the MUI theme object
 - `applyThemeVariables.ts`
-  - deprecated-but-exported CSS variable generation and application helpers
+  - CSS variable generation and application helpers for consumers that still use CSS custom properties
+  - shared by `useThemeVariables` and `ThemeBridge`
+  - exports `flattenAppliedVariables` / `applyVariableDiff`, which coalesce rapid config changes into a single write and remove variables a previous config produced but the new one no longer emits
 
 ### `overrides/`
 
@@ -176,6 +180,21 @@ Current override groups:
 - `MuiTable.ts`
 
 These are attached inside `composeMuiTheme()`.
+
+### `config/`
+
+Static platform configuration defaults.
+
+- `themeConfig.ts`
+  - defines the default `ThemeConfig` (navbar/footer behavior, layout component positions, color palettes, shape/border-radius, typography, shadows) used as the base for MUI theme composition
+
+### `store/`
+
+Lightweight external stores for theme editor interactions.
+
+- `themeEditorStore.ts`
+  - `useSyncExternalStore`-based store holding the Theme Editor draft state (`isEditing`, `draftConfig`)
+  - mirrors draft token values to CSS variables (`--mui-palette-*`, `--border-color`, `--border-radius`) for live preview
 
 ### `styled/`
 
@@ -291,9 +310,8 @@ The previous description was outdated in several ways:
 
 If you are navigating this package today, treat it as a tenant-theme engine plus a shared UI toolkit:
 
-- `types/`, `context/`, `hooks/`, and `utils/` define the theme model
-- `assets/themes/` and `overrides/` define the MUI integration layer
+- `types/`, `context/`, `hooks/`, `utils/`, and `store/` define the theme model
+- `assets/themes/`, `config/`, and `overrides/` define the MUI integration layer
 - `styled/`, `styles/`, and `components/` provide reusable UI primitives
-- `services/theme.service.ts` handles backend synchronization
 
 That is the current structure represented by the code under `src/`.

@@ -2,7 +2,9 @@
 
 Sequenced from `architecture-report.md` and `technical-debt-report.md`. Ordered by **risk-reduction-per-hour**: cheap, high-confidence fixes first; anything touching shared routing/layout logic is sequenced so it's verified in isolation before the next change lands on top of it.
 
-**Status: awaiting approval.** Per the review brief, no implementation should begin until this roadmap is reviewed and approved. Nothing below has been applied to the codebase.
+**Status: awaiting approval.** Per the review brief, no implementation should begin until this roadmap is reviewed and approved. The thematic work (search fix, color picker, CSS variable batching) was handled separately from this roadmap.
+
+> **Current status (verified 2026-08):** several Phase 0 items have since landed independently. Per-item status is noted inline below. The approval-gate statement at the bottom ("no code in Phases 0–4 has been written") is **no longer literally true** — see the per-item notes; Phases 1–4 remain unimplemented.
 
 ---
 
@@ -10,10 +12,15 @@ Sequenced from `architecture-report.md` and `technical-debt-report.md`. Ordered 
 Pure additions or corrections with no behavioral change to running code.
 
 1. **Run the existing coupling analyzer and commit its output.** `node scripts/analyze-coupling.cjs` → `docs/MODULE_COUPLING_REPORT.md`. Replaces this review's qualitative coupling notes with exact Ce/Ca/instability numbers per package and DDD sub-module. (architecture-report.md §3)
+   > **Status: DONE** — `docs/MODULE_COUPLING_REPORT.md` is committed (generated 2026-08-04, 825 files, 11 packages, 76 sub-modules). Regenerate before trusting it for a large refactor.
 2. **Fix the pre-commit hook glob and missing script** in `app/package.json` (`src/app/**` → `app/src/**`; add or remove `validate:documentation`). (debt report §2.2)
+   > **Status: PARTIALLY DONE** — the lint-staged glob was corrected to `src/**/*.{ts,tsx}` and `validate:types` was added, but the hook is **still broken**: `.husky/pre-commit` runs a nonexistent root script `npm run validate:architecture`, and `app/package.json`'s `validate:isolation` targets a nonexistent `@boilerplate/ui` workspace. See technical-debt-report.md §2.2 (updated).
 3. **Delete the hardcoded default sign-in credentials** (and the commented-out second pair) in `SignInV2.tsx`. (debt report §1.2)
+   > **Status: NOT DONE** — `DEFAULT_FORM_VALUES` still ships `admin@example.com` / `password`.
 4. **Translate `Table.tsx`'s `labelRowsPerPage`** through the existing i18n dictionary system instead of a hardcoded French string. (debt report §1.3)
+   > **Status: DONE** — `Table.tsx` uses `t('table.rowsPerPage', 'Rows per page')`.
 5. **Annotate `technical-recommendations.md` §1 and §4** as resolved, pointing to `technical-issues.md` #1/#3, so the two docs stop appearing to contradict each other.
+   > **Status: DONE (this documentation pass)** — the annotations have been added to both sections.
 
 ## Phase 1 — Layout/routing correctness (the core finding, ~0.5–1 day)
 This is the highest-impact fix in the review and should land as one coherent change, tested against every route layout value before merging, because it touches the shared routing contract every module depends on.
@@ -51,4 +58,6 @@ Everything in `technical-recommendations.md` §6/§7 (MCP server for API contrac
 ---
 
 ## Approval gate
-**No code in Phases 0–4 has been written yet.** Confirm which phases (all, some, or a re-ordered subset) to proceed with, and confirm the Phase 1 direction — retire `'vertical'`/`'horizontal'` (6a) vs. wire them up (6b) — since that decision shapes several of the Phase 1 changes.
+**As of the original review, no code in Phases 0–4 had been written.** Confirm which phases (all, some, or a re-ordered subset) to proceed with, and confirm the Phase 1 direction — retire `'vertical'`/`'horizontal'` (6a) vs. wire them up (6b) — since that decision shapes several of the Phase 1 changes.
+
+> **Current status:** the layout/routing items (6–9), config cleanup (10–13), theme completeness (14–16), and component-level work (17–20) remain **unimplemented**. Only the Phase 0 documentation/verification items marked DONE above have landed (and the Phase 3 item 16 doc clarification was added in the same documentation pass). The Phase 1 decision (6a vs 6b) is still open.

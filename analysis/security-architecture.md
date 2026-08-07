@@ -1,15 +1,15 @@
 # Security Architecture & Audit Baseline
 
-This document defines the security boundaries, threat models, and audit baselines for the `cap-boilerplaite` monorepo. It serves as the primary reference for OWASP (Application Security Verification Standard v4.0) and CWE (Common Weakness Enumeration) compliance, specifically targeting the `/packages/modules/auth` Identity as a Service (IDaaS) module.
+This document defines the security boundaries, threat models, and audit baselines for the `cap-boilerplate` monorepo. It serves as the primary reference for OWASP (Application Security Verification Standard v4.0) and CWE (Common Weakness Enumeration) compliance, specifically targeting the `/packages/modules/auth` Identity as a Service (IDaaS) module.
 
 ---
 
 ## 1. Security Boundaries & Trust Model
 
-The `cap-boilerplaite` architecture enforces a strict zero-trust model between the client presentation layer and the domain kernel.
+The `cap-boilerplate` architecture enforces a strict zero-trust model between the client presentation layer and the domain kernel.
 
 *   **Untrusted Client (UI & Layout):** The `/app` and `/packages/layout` directories operate in an untrusted browser environment. React route guards (`AuthRoute.tsx`, `GuestRoute.tsx`, `AdminRoute.tsx`) exist strictly for UX purposes and graceful degradation. They are **not** security boundaries.
-*   **Contract Boundary:** The `/packages/api-contracts` and `/packages/auth-contracts` act as the validation perimeter. All incoming data must satisfy strict Zod schemas before being processed.
+*   **Contract Boundary:** The `/packages/api-contracts` and `/packages/auth-contracts` define the shared request/response and endpoint contracts for the platform. **Note:** today both packages are constants/type-only — `@cap/api-contracts` exports query-key factories and endpoint maps (e.g. `API_ENDPOINTS`, `API_QUERY_KEYS`) with no runtime validation layer (no Zod), so they describe the validation perimeter rather than actively enforcing it. Server-side schema validation is delegated to the backend; see `technical-debt-report.md` / `technical-recommendations.md` §6 for the open MCP-server recommendation that would surface these contracts to tooling.
 *   **Trusted Kernel:** The `domain-kernel` within `/packages/modules/auth` contains the core security logic. All authorization assertions, session validations, and cryptographic checks occur here or on the backend services this module communicates with.
 
 ---

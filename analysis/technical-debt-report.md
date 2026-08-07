@@ -32,7 +32,9 @@ The production sign-in screen's `useForm` default values pre-fill a real-shaped 
   ...
 />
 ```
-This is `@cap/layout`'s generic, reusable table wrapper — consumed across modules regardless of active locale — yet the pagination label is hardcoded French instead of routed through the `i18next`/dictionary system every other reviewed screen uses (`t('...')`). An English- or Arabic-locale tenant sees "Lignes par page." This directly contradicts the framework's own i18n-first, multi-tenant principle and is a one-line fix.
+This is `@cap/layout`'s generic, reusable table wrapper — consumed across modules regardless of active locale — yet the pagination label was hardcoded French instead of routed through the `i18next`/dictionary system every other reviewed screen uses (`t('...')`). An English- or Arabic-locale tenant would see "Lignes par page." This directly contradicts the framework's own i18n-first, multi-tenant principle and was a one-line fix.
+
+> **Current status (verified 2026-08):** **FIXED** — `Table.tsx` now uses `t('table.rowsPerPage', 'Rows per page')` (roadmap Phase 0 item 4). The finding is kept for the historical record; it is no longer present in the code.
 
 ### 1.4 Finding: duplicated redirect-by-role logic (4×) inside one screen
 Inside `SignInV2.tsx`, the exact same pattern —
@@ -62,22 +64,36 @@ The same forwarded `ref` is assigned to two different elements (`Card` and `Tabl
 
 ## 2. Code Quality & Tooling Audit
 
-### 2.1 Phantom packages referenced in *live, enforced* configuration
+### 2.1 Phantom packages referenced in *live* configuration
 `eslint.config.js` (root) — the actual linting layer-boundary config, not a comment — lists packages that don't exist on disk: `@cap/civil-registry`, `@cap/module-admin`, `@cap/module-kyc`, `@cap/module-digital-id`, `@cap/module-blockchain-idaas`, `@cap/module-monitoring-alerts`, `@cap/module-user`. This isn't purely cosmetic: these entries are inert today (rules referencing non-existent import specifiers never fire), but they will silently start enforcing boundaries the moment someone scaffolds a module with one of these exact names, based on assumptions nobody currently working on the repo actually made. **Recommend:** either remove them now, or — better, given they look like a genuine near-term roadmap (KYC, digital ID, blockchain IDaaS all show up elsewhere in module-deep-dive docs) — leave a one-line comment above each documenting that it's provisioned ahead of the package's creation, so a future reader doesn't mistake it for drift.
 
+> **Current status (verified 2026-08):** the phantom entries are still present in `eslint.config.js`'s `Layers` object, and the finding is unchanged in substance. Note the framing "live, enforced configuration" above should be read as "live configuration that *would* enforce" — the per-layer `layerConfigs` are **not wired into any active config** today (root exports only `baseConfig`; package configs don't apply them), so the restrictions never actually fire either. Both the phantoms and the (currently inactive) enforcement layer are called out in `architecture-report.md` §3.
+
 ### 2.2 Broken / no-op pre-commit hook
-`app/package.json`:
+The pre-commit guard chain is still broken, but the *specific* failure described below has changed. Current state (verified 2026-08):
+
+- **`.husky/pre-commit`** runs three steps: `pnpm run lint:circular`, `npx lint-staged`, then `npm run validate:architecture`. The last step fails hard because the root `package.json` has **no `validate:architecture` script** — the hook always exits non-zero at the end.
+- **`app/package.json`'s `lint-staged`** block is:
+  ```json
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "npm run validate:isolation",
+      "npm run validate:types"
+    ]
+  }
+  ```
+  The old `src/app/**` glob and the `validate:documentation` script (both called out below) have been fixed — the glob is now `src/**/*.{ts,tsx}` (matches `app/src/**`) and `validate:types` exists. **However**, `validate:isolation` runs `npm run lint --workspace=@boilerplate/ui`, and **no `@boilerplate/ui` workspace exists** — that command fails whenever the glob matches staged files.
+
+Historical context (the original finding, kept for the record): `app/package.json` used to declare
 ```json
 "lint-staged": {
   "src/app/**/*.{ts,tsx}": ["npm run validate:isolation", "npm run validate:documentation"],
   "**/*.{ts,tsx}": ["npm run validate:types"]
 }
 ```
-Two independent problems:
-1. **The glob is wrong.** The app's source lives at `app/src/**`, not `src/app/**` — no file in the repo matches that pattern, so the first rule (and both its scripts) never actually runs on any commit.
-2. **`validate:documentation` doesn't exist.** The `scripts` block in the same `package.json` has no `validate:documentation` entry — if the glob above ever did match a file, the hook would fail with `npm error Missing script: "validate:documentation"`.
+with two independent problems: (1) the glob pointed at `src/app/**` while the source lives at `app/src/**`, so the first rule never ran; and (2) `validate:documentation` did not exist, so the hook would fail if the glob ever matched.
 
-Net effect: this pre-commit safeguard is currently a complete no-op, silently. It gives a false sense of enforcement. **Recommend:** fix the glob to `app/src/**/*.{ts,tsx}` and either add the missing script or remove that hook entry — this should be a 10-minute fix.
+**Net effect:** the pre-commit safeguard still gives a false sense of enforcement — it either fails on a nonexistent root script or on the nonexistent `@boilerplate/ui` workspace. **Recommend:** remove the `npm run validate:architecture` line from `.husky/pre-commit` (or add the script), and repoint `validate:isolation` at a real workspace (e.g. `@cap/app` or drop the script entirely) — should be a 10-minute fix.
 
 ### 2.3 TypeScript version drift across package manifests
 Confirmed by direct comparison of `peerDependencies`/`devDependencies` across `package.json` files:
@@ -111,8 +127,8 @@ This isn't a call to chase every `any` in the repo — it's a note that the *spe
 | B | Duplicate `LayoutRouteWrapper` implementations, already diverged | `platform-core/src/components/`, `layout/src/components/wrappers/` | Medium — drift risk compounds every future fix | Low |
 | C | Inconsistent per-route `layout` declarations → layout bleed | `user-directory/routes.tsx`, `session-manager/routes.tsx` | Medium — reproducible, user-visible | Low–Medium |
 | D | Hardcoded admin credential as sign-in form default | `SignInV2.tsx` | Medium — security hygiene / bad precedent | Trivial |
-| E | Hardcoded French string in shared table component | `layout/.../Table.tsx` | Medium — breaks i18n contract for non-FR tenants | Trivial |
-| F | Broken/no-op pre-commit hook | `app/package.json` | Medium — false sense of enforcement | Trivial |
+| E | Hardcoded French string in shared table component | `layout/.../Table.tsx` | **FIXED (2026-08)** — now `t('table.rowsPerPage', ...)` | Trivial |
+| F | Broken/no-op pre-commit hook | `.husky/pre-commit`, `app/package.json` | Medium — false sense of enforcement (still present; see §2.2) | Trivial |
 | G | Phantom packages in live ESLint layering config | `eslint.config.js` | Low today, latent | Trivial |
 | H | TypeScript version drift across manifests | multiple `package.json` | Low–Medium — build reproducibility risk | Low |
 | I | 4× duplicated role-redirect logic | `SignInV2.tsx` | Low–Medium — maintenance trap | Low |

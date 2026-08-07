@@ -52,19 +52,21 @@ export const myFeatureRoutes: ModuleRouteConfig[] = [
   {
     path: '/dashboard',
     element: <DashboardScreen />,
-    layout: 'vertical',               // Layout intent: 'public' | 'vertical' | 'horizontal' | 'noLayout' | 'admin'
+    layout: 'admin',              // Layout intent: 'public' | 'vertical' | 'horizontal' | 'noLayout' | 'admin'
   },
   {
     path: '/settings',
     element: <SettingsScreen />,
-    layout: 'vertical',
+    layout: 'admin',
   },
 ]
 ```
 
+> **Layout intent — read before choosing:** only `'admin'` (authenticated dashboard-style chrome) and `'noLayout'` (chrome-free screens such as sign-in or verification links) actually switch the shell at runtime today. `'vertical'`, `'horizontal'`, and `'public'` are accepted values but are **inert** — they fall through to the default public path in `LayoutWrapper` (see `ARCHITECTURE.md` §3 and `analysis/architecture-report.md` §4). Always declare `layout` explicitly; an undeclared `layout` silently inherits whatever `layoutOverride` the previously-visited route left behind.
+
 ### Route Layout Declaration & Code Splitting Rules
 1. **Always use `React.lazy()`**: Import screen components using dynamic `import()` so Vite splits each screen into a separate bundle chunk.
-2. **Declare Layout Intent**: Specify the `layout` property (`vertical`, `horizontal`, `public`, `noLayout`, `admin`). The framework's `LayoutRouteWrapper` automatically switches the shell layout when the route is visited.
+2. **Declare Layout Intent**: Specify the `layout` property. Prefer `'admin'` for authenticated dashboard-style screens and `'noLayout'` for chrome-free screens; `'vertical'`/`'horizontal'`/`'public'` are accepted values but are not wired up at runtime yet (see the note above).
 
 ---
 

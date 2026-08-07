@@ -1,6 +1,6 @@
-# cap-boilerplaite
+# cap-boilerplate
 
-Welcome to the **cap-boilerplaite** monorepo, a highly modular, domain-driven decentralized identity and digital services platform. This project serves as the definitive architecture for building secure, scalable React applications with strict module isolation and enterprise-grade Identity and Access Management (IDaaS).
+Welcome to the **cap-boilerplate** monorepo, a highly modular, domain-driven decentralized identity and digital services platform. This project serves as the definitive architecture for building secure, scalable React applications with strict module isolation and enterprise-grade Identity and Access Management (IDaaS).
 
 ---
 
@@ -12,16 +12,16 @@ This workspace uses a **Monorepo** architecture leveraging `pnpm` workspaces. It
 
 *   **Host Application (`/app`)**: The main entry point (Vite-based) that orchestrates, mounts, and serves dynamic domain modules.
 *   **Shared Platform Packages (`/packages/`)**:
+    *   `shared-types`: Zero-dependency TypeScript types, domain entities, and API contracts.
     *   `platform-core`: Utilities, hooks, and core business logic.
     *   `platform-store`: State management (hydration, secure storage).
-    *   `platform-ui`: Reusable UI components.
     *   `layout`: The dedicated UI layout package (App shell, sidebar, templates).
     *   `theme`: Global styles and design tokens.
     *   `api-contracts` & `auth-contracts`: Strict API and Auth type boundaries.
 *   **Domain Modules (`/packages/modules/`)**:
     *   `auth`: Enterprise-grade Identity and Access Management (IDaaS), MFA, Passkey, Passwordless.
     *   `landing`: Public landing pages.
-    *   `document-processing`: OCR and document verification logic.
+    *   `theme`: Tenant branding and theme preset editor.
 
 ## 🛠️ Tech Stack
 
@@ -40,8 +40,8 @@ This workspace uses a **Monorepo** architecture leveraging `pnpm` workspaces. It
 ### Prerequisites
 
 Ensure you have the following installed:
-*   Node.js (v18.x or higher)
-*   pnpm (v8.x or higher)
+*   Node.js (v20.19+ or v22.12+)
+*   pnpm (v9.x or higher)
 
 ### Setup & Installation
 
@@ -59,7 +59,7 @@ Ensure you have the following installed:
     ```bash
     pnpm run dev
     ```
-    Open your browser to `http://tenant1.localhost:5173`.
+    Open your browser to `http://tenant1.localhost:5173` (plain `http://localhost:5173` works too when the tenants script hasn't been applied).
 
 ---
 
@@ -84,4 +84,5 @@ We rely on **Playwright** for robust End-to-End (E2E) integration tests, specifi
 
 *   **Linting:** `pnpm run lint`
 *   **Security Audits:** `pnpm run audit:ci` checks dependencies for known vulnerabilities.
-*   **Coupling Analysis:** `node scripts/analyze-coupling.cjs` verifies that architectural boundaries between modules are respected.
+*   **Circular Dependency Check:** `pnpm run lint:circular` (madge) — also wired into the pre-commit hook.
+*   **Coupling Analysis:** `node scripts/analyze-coupling.cjs` writes real Ce/Ca/instability metrics to `docs/MODULE_COUPLING_REPORT.md` and verifies architectural boundaries between packages.

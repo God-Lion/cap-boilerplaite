@@ -119,11 +119,13 @@ Virtualizing a grid cell-by-cell is inefficient and causes visual gaps during fa
 | :--- | :--- | :--- | :--- |
 | **Spacer Mechanism** | Spacer rows (`TableRow` with dynamic height) | Absolute wrapper with `translateY` | Absolute wrapper with `translateY` |
 | **Grid Layout** | Native `<table>` layouts | Single column layout | CSS Grid (`gridTemplateColumns`) |
-| **Measurement Strategy** | Static estimation (`estimatedRowHeight`) | Dynamic (`measureElement` ref) | Dynamic (`measureElement` ref) |
+| **Measurement Strategy** | Dynamic (`measureElement` ref) | Dynamic (`measureElement` ref) | Dynamic (`measureElement` ref) |
 | **Activation Threshold** | `items.length > 50` | `items.length > 50` | `rows > 20` |
 
-### Key Optimization Opportunity
+### Key Optimization Opportunity — RESOLVED
 
-In `VirtualizedTable.tsx`, the rows map through the virtual items but do **not** bind the `ref={rowVirtualizer.measureElement}`. 
-*   **Limitation**: If table rows have variable content (e.g. wrap text, varying descriptions), the table height will jump or misalign because `estimateSize` is treated as a static constraint.
-*   **Fix**: For true dynamic table row sizing, the cell row elements should apply the measurement ref, although this is more CPU intensive in tables due to layout recalculations.
+In `VirtualizedTable.tsx`, the virtualized row element now binds the dynamic measurement ref via `ref={measureRef}` (sourced from `rowVirtualizer.measureElement`) with a `data-index` attribute:
+```tsx
+<TableRow hover data-index={virtualIndex} ref={measureRef}>
+```
+*   **Outcome**: Table rows are measured at runtime, so variable content (wrapped text, varying descriptions) no longer jumps or misaligns — matching the robust behavior of `VirtualizedList` and `VirtualizedGrid`.

@@ -7,6 +7,7 @@ This directory contains domain-specific React hooks (e.g. auth, navigation, user
 - `usePermissions` - Role and permission checks
 - `useObjectCookie` - Cookie-based object storage (canonical implementation)
 - `useDynamicTheme` - Dynamic theme switching
+- `useModuleComponent` - Resolves and renders a dynamically registered module component
 - `useNetworkSync` - Network state synchronization
 - `useUser` - User data and preferences
 

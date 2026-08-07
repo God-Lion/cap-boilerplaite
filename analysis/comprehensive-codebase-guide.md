@@ -21,14 +21,18 @@ graph TD
     subgraph Modules
         Auth[packages/modules/auth]
         Landing[packages/modules/landing]
+        ThemeModule[packages/modules/theme]
     end
     
     App -->|Registers| Auth
     App -->|Registers| Landing
+    App -->|Registers| ThemeModule
     
     Auth -->|Depends on| Core
     Auth -->|Depends on| Store
     Landing -->|Depends on| Core
+    ThemeModule -->|Depends on| Core
+    ThemeModule -->|Depends on| Theme
 ```
 
 ### Workspace Packages Reference
@@ -54,6 +58,9 @@ graph TD
 7.  **`@cap/module-landing` (located in `packages/modules/landing/`)**:
     *   **Role**: Public-facing landing website.
     *   **Details**: Exposes pricing, feature comparisons, and policy information.
+8.  **`@cap/module-theme` (located in `packages/modules/theme/`)**:
+    *   **Role**: Tenant branding module.
+    *   **Details**: Theme preset picker and the live `ColorPaletteEditor` for the tenant design system, backed by `@cap/theme` and `@cap/platform-core`.
 
 ---
 
@@ -68,7 +75,7 @@ When the app boots, `assembleApp` processes the collection of registered `CAPMod
 1.  **i18n Registration**: Loops over the module dictionary configurations and injects them into the global `i18next` engine under both their local translation scope and a shared `common` bundle.
 2.  **Navigation Synchronization**: Registers the module's `navItems` array directly into the global Zustand store navigation registry so that layout navigation menus can dynamically build navigation trees.
 3.  **Search Indexes**: Iterates over `searchItems` and appends them to a static command-palette index, deduplicating IDs using a `Set` to prevent duplicate actions.
-4.  **Route Mapping**: Collects route configurations from `authRouteConfig` and flattens them into a unified React Router `<Routes>` component structure.
+4.  **Route Mapping**: Collects route configurations from the module's `routes` array (`ModuleRegistry.extractRoutesAndNav()`, falling back to the legacy `authRouteConfig` key if `routes` is absent) and flattens them into a unified React Router `<Routes>` component structure, wrapping each element in `LayoutRouteWrapper` so the declared `layout` intent is applied at render time.
 
 ---
 

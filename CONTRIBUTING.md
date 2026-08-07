@@ -32,8 +32,10 @@ When adding code or creating packages, respect the **6-Tier Architecture**:
 2. **Tier 1 (`@cap/platform-store`, `@cap/theme`, `@cap/api-contracts`)**: Core domain logic, state management, and design system tokens.
 3. **Tier 2 (`@cap/layout`, `@cap/auth-contracts`)**: Structural layout components and service contracts. May depend on Tier 0 and Tier 1 ONLY.
 4. **Tier 3 (`@cap/platform-core`)**: Assembly orchestration, dynamic router, tenant service, plugin registry.
-5. **Tier 4 (`@cap/modules/*`)**: Feature modules. Export a `CAPModule` contract.
+5. **Tier 4 (`@cap/modules/*`)**: Feature modules (`@cap/module-auth`, `@cap/module-landing`, `@cap/module-theme`). Export a `CAPModule` contract.
 6. **Tier 5 (`@cap/app`)**: Shell app container.
+
+> **Enforcement note:** `eslint.config.js` defines a more granular `Layers` grouping and `layerConfigs` with `import/no-restricted-imports` rules, but those configs are **not currently wired into any active ESLint config** (the root config exports only `baseConfig`; package-level configs don't apply them). Treat the tiers as the target model and the coupling report (`docs/MODULE_COUPLING_REPORT.md`) as the record of reality — don't assume lint will catch a cross-tier import today.
 
 ---
 
@@ -50,7 +52,8 @@ This runs the workspace Plop generator, creating standard module scaffolding und
 ## 4. Quality Commands
 
 ```bash
-# Type check all packages
+# Type check all packages (runs in the 9 packages that define a type-check script;
+# @cap/shared-types and @cap/api-contracts do not define one and are skipped)
 pnpm -r run type-check
 
 # Lint monorepo
@@ -59,6 +62,8 @@ pnpm -r run lint
 # Build all packages
 pnpm -r run build
 ```
+
+> **Pre-commit hook caveat:** the Husky pre-commit hook (`app/.husky/pre-commit`) runs `lint:circular`, `lint-staged`, and `npm run validate:architecture`. As of this writing `validate:architecture` does **not exist** as a root script and lint-staged's `validate:isolation` target (`npm run lint --workspace=@boilerplate/ui`) references a workspace that does **not exist** — both will abort a commit. See `analysis/technical-debt-report.md` (roadmap Phase 0 item 2) before relying on the hook.
 
 ---
 

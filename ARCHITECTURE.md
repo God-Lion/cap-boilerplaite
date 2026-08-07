@@ -13,7 +13,9 @@ The CAP Monorepo is **not just a single web application**; it is an **enterprise
 2. **Self-Declaring Feature Modules**: Feature modules (`packages/modules/*`) encapsulate their own routes (`ModuleRouteConfig`), navigation items (`NavItemConfig`), search items (`SearchItemConfig`), i18n dictionaries, and plugins (`CAPPlugin`).
 3. **Dynamic Discovery & Runtime Plugability**: Modules are discovered via static Vite `import.meta.glob` scans and runtime `registerDynamicModule()` API calls.
 4. **Three-Layer Token-Driven Design System**: Branding and visual identities are governed by a token hierarchy (Primitives → Semantics → Component Overrides) paired with visual effect generators (Glassmorphism, Neumorphism, Bento, Brutalism, Organic, Immersive 3D).
-5. **Strict 6-Tier Monorepo Layering**: High-tier packages depend on low-tier packages. **Low-tier packages MUST NEVER import from higher-tier packages**.
+5. **Strict 6-Tier Monorepo Layering**: High-tier packages depend on low-tier packages. **Low-tier packages MUST NEVER import from higher-tier packages.**
+
+> **Current status on enforcement:** the 6 tiers below are the **conceptual** model. `eslint.config.js` defines a *different, more granular* `Layers` grouping (`FOUNDATION`/`LAYER_1`…`LAYER_6` — e.g. `@cap/layout` is `LAYER_4` there vs. Tier 2 here) plus `layerConfigs` with per-layer `import/no-restricted-imports` rules. As of this writing those `layerConfigs` are **defined but not wired into any active ESLint config** (the root config's default export is only `baseConfig`; no package-level config imports them), so the boundaries are aspirational, not enforced. See §2 below.
 
 ---
 
@@ -22,7 +24,7 @@ The CAP Monorepo is **not just a single web application**; it is an **enterprise
 ```
 Tier 5: Shell App             [@cap/app]
                                   │
-Tier 4: Feature Modules       [@cap/module-auth, @cap/module-landing]
+Tier 4: Feature Modules       [@cap/module-auth, @cap/module-landing, @cap/module-theme]
                                   │
 Tier 3: Platform Façade       [@cap/platform-core]
                                   │
@@ -32,6 +34,8 @@ Tier 1: Core Domain           [@cap/platform-store, @cap/theme, @cap/api-contrac
                                   │
 Tier 0: Foundation            [@cap/shared-types]
 ```
+
+> **Enforcement reality (verified 2026-08):** this table is the *conceptual* model. ESLint's actual grouping in `eslint.config.js` is `FOUNDATION` (`@cap/shared-types`, `@cap/api-contracts`), `LAYER_1` (`@cap/auth-contracts`, `@cap/theme`), `LAYER_2` (`@cap/platform-store`), `LAYER_3` (`@cap/platform-core`), `LAYER_4` (`@cap/layout`, `@cap/civil-registry`), `LAYER_5` (`@cap/module-*`), `LAYER_6` (`@cap/app`). The per-layer `layerConfigs` restrictions are currently **not applied** by any active config, so package boundaries are not lint-enforced today. The committed coupling report (`docs/MODULE_COUPLING_REPORT.md`, 2026-08-04) is the authoritative source for real dependencies; note it shows `@cap/layout → @cap/platform-core` (20 edges) and `@cap/layout → @cap/module-auth` (2), both legal under the ESLint model (LAYER_4 may import LAYER_3 and below).
 
 ### Tier Inventory & Rules
 
@@ -44,7 +48,7 @@ Tier 0: Foundation            [@cap/shared-types]
 | **2** | `@cap/auth-contracts` | `packages/auth-contracts` | Tier 0, Tier 1 | Contracts and administrative services specific to identity and access management. |
 | **2** | `@cap/layout` | `packages/layout` | Tier 0, Tier 1 | Structural layouts (`VerticalLayout`, `HorizontalLayout`, `PublicLayout`, `BlankLayout`), `ThemeBridge`, `ModuleMenuRenderer`. |
 | **3** | `@cap/platform-core` | `packages/platform-core` | Tier 0, Tier 1 | Orchestration façade: runtime module assembly (`assembleApp`), routing, i18n, `TenantProvider`, `globalPluginRegistry`. |
-| **4** | `@cap/modules/*` | `packages/modules/*` | Tier 0, 1, 2, 3 | Self-contained feature modules (`@cap/module-auth`, `@cap/module-landing`). |
+| **4** | `@cap/modules/*` | `packages/modules/*` | Tier 0, 1, 2, 3 | Self-contained feature modules (`@cap/module-auth`, `@cap/module-landing`, `@cap/module-theme`). |
 | **5** | `@cap/app` | `app` | All Tiers | Shell application entry point (`main.tsx`), provider assembly (`Providers.tsx`), top-level layout selector. |
 
 ---
@@ -77,6 +81,8 @@ export interface CAPModule {
 3. **Suspense & Code Splitting**: All screen components are imported via `React.lazy()`. The root router is wrapped in `<React.Suspense fallback={<LoadingSpinner />}>`.
 4. **Layout Switching**: Routes declare a layout intent (`layout: 'vertical' | 'horizontal' | 'public' | 'noLayout' | 'admin'`). `LayoutRouteWrapper` sets `layoutOverride` in Zustand, causing `LayoutWrapper` to mount the corresponding structural layout seamlessly.
 
+> **Known gap (see `analysis/architecture-report.md` §4):** at runtime only `'noLayout'` and `'admin'` actually switch the shell in `LayoutWrapper`; `'vertical'`/`'horizontal'`/`'public'` fall through to the default public path today. An undeclared `layout` silently inherits whatever `layoutOverride` a previously-visited route left behind (a `'none'` default is a no-op in the wrapper). **Always declare `layout` explicitly** when adding a route.
+
 ---
 
 ## 4. Token-Driven Design System Architecture
@@ -87,7 +93,7 @@ export interface CAPModule {
 3. **Component Tokens & Overrides**: Applied via `getComponentOverrides(theme)` for MUI Buttons, Cards, Inputs, Tables, and Menus.
 
 ### Dynamic Tenant Visual Styles
-The design system supports 15 presets and 7 visual effect generators:
+The design system supports 15 presets and 6 visual effect generators:
 - **Glassmorphism**: Backdrop blur (`--glass-blur`), translucent background, luminous borders.
 - **Neumorphism**: Computed dual light/dark relief shadows via `computeNeumorphismShadows()`.
 - **Bento UI**: High radius, grid gap spacing.
@@ -106,7 +112,7 @@ Zustand (`@cap/platform-store`) provides domain-partitioned slices within a unif
 - `NetworkSlice` & `OfflineQueueSlice`: Connectivity status & offline mutation queue.
 
 ### Storage Security
-Persisted slices are encrypted with AES-256 via `secureStorage` using `crypto-js` and master storage keys.
+Persisted slices are encrypted with **AES-GCM 256** via `secureStorage`, implemented with the Web Crypto API (PBKDF2, 200k iterations) in `packages/platform-store/src/services/encryption.ts`.
 
 ---
 

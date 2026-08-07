@@ -17,6 +17,10 @@ This package follows a strict Domain-Driven / Hexagonal Architecture:
 *   Route Guards: `AuthRoute`, `GuestRoute`, and `AdminRoute` wrappers used to protect the application.
 
 ## Dependencies
-*   Depends on `@cap/auth-contracts` for its strict typings and route constants.
-*   Depends on `@cap/api-contracts` for payload validation.
-*   Depends heavily on `@cap/platform-core` to dispatch events and read/write session state to the store.
+*   Depends on `@cap/platform-core` to dispatch events and read/write session state to the store.
+*   Depends on `@cap/platform-store` for the app store and `secureTokenManager`.
+*   Depends on `@cap/layout` (route wrappers) and `@cap/theme` (styling).
+*   Type contracts come from `@cap/shared-types`.
+
+> [!NOTE]
+> Although `@cap/auth-contracts` and `@cap/api-contracts` exist in the workspace and are wired into the Vite aliases (`app/vite.config.ts`), module-auth does **not** currently import either package in source. The domain contracts live directly under this package's `domain-kernel/`/`types/` and `@cap/shared-types`.

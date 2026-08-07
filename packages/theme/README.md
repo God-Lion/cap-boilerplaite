@@ -4,14 +4,14 @@ This package serves as the **single source of truth** for all UI/UX concerns acr
 
 ## Overview
 It handles:
-1. **Design Tokens**: Colors, typography, spacing, shapes, and z-indexes (`src/tokens/`, `src/theme/zIndex.ts`).
+1. **Design Tokens**: Colors, typography, spacing, shapes, and z-indexes (primitive tokens in `src/types/designTokens.ts`, semantic z-index scale in `src/assets/themes/definitions/zIndex.ts`).
 2. **Global Styles**: Global CSS classes defined via Emotion (`src/styles/GlobalStyles.tsx`).
-3. **MUI Theme Overrides**: Complete UI styling overrides (`src/overrides/`, `src/theme/`).
+3. **MUI Theme Overrides**: Complete UI styling overrides (`src/overrides/`) and runtime theme composition (`src/utils/composeMuiTheme.ts`).
 4. **Theme Configuration Context**: Tenant-driven dynamic theming (`src/context/`).
 5. **Shared UI Components**: Complex styling layout constructs like GlassCard or GlassButton.
 
 ## Consuming Design Tokens
-All packages (e.g. `platform-core`, `admin`) should import tokens directly from `@cap/theme` and apply them using `@emotion/styled` or MUI's `sx` prop.
+All packages (e.g. `platform-core`, `layout`) should import tokens directly from `@cap/theme` and apply them using `@emotion/styled` or MUI's `sx` prop.
 
 **Typescript example:**
 ```tsx
@@ -28,7 +28,7 @@ export const StyledHeader = styled('header')(({ theme }) => ({
 ```
 
 ## Adding a Preset
-To add a new theme preset, open the presets dictionary (e.g., `src/theme/userTheme.ts` or where your `THEME_PRESETS` reside) and add a configuration conforming to `TenantThemeConfig`:
+To add a new theme preset, open the presets catalog (`src/types/presets.ts` where the `THEME_PRESETS` dictionary lives) and add a configuration conforming to `TenantThemeConfig`:
 
 ```ts
 export const THEME_PRESETS = {

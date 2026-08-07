@@ -11,6 +11,8 @@ This document defines the official architectural standard, conventions, and cont
 3. **Decoupled Path Constants**: Route paths must be declared in a dedicated `path.ts` registry within the module rather than hardcoded inline.
 4. **Code-Splitting Mandatory**: All screen components must be imported lazily via `React.lazy(() => import(...))` to ensure Vite creates isolated chunk bundles.
 5. **Layout Intent (`RouteLayout`)**: Every route explicitly declares its layout intent (`public`, `vertical`, `horizontal`, `noLayout`, `admin`). The framework's `LayoutRouteWrapper` dynamically applies the requested shell layout.
+
+> **Runtime gap (verified 2026-08 — `analysis/architecture-report.md` §4):** only `'noLayout'` and `'admin'` actually switch the shell in `LayoutWrapper` today; `'vertical'`, `'horizontal'`, and `'public'` fall through to the default public path (for public marketing routes this is fine — public *is* the default; for dashboard screens it is not). An undeclared `layout` silently inherits the previous route's `layoutOverride` (`'none'` is a no-op). Always declare `layout` explicitly, and use `'admin'` for authenticated dashboard-style routes.
 6. **i18n & Module Scope Discipline**: Never call React hooks (such as `useTranslation()`) at module scope outside component functions. Route `label`s must store translation keys (e.g., `'landing.home'`) or lazy getters.
 
 ---

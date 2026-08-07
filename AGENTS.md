@@ -15,7 +15,7 @@ The workspace is a multi-tenant, modular web framework built with React 19, Type
 ```
 Tier 5: Shell App             [@cap/app]
                                   │
-Tier 4: Feature Modules       [@cap/module-auth, @cap/module-landing]
+Tier 4: Feature Modules       [@cap/module-auth, @cap/module-landing, @cap/module-theme]
                                   │
 Tier 3: Platform Façade       [@cap/platform-core]
                                   │
@@ -26,7 +26,7 @@ Tier 1: Core Domain           [@cap/platform-store, @cap/theme, @cap/api-contrac
 Tier 0: Foundation            [@cap/shared-types]
 ```
 
-This tiering is not just documentation — it's enforced by `eslint.config.js`'s `import/no-restricted-imports` rules per package. A lower tier genuinely cannot import a higher one without a lint error. Note: `eslint.config.js`'s internal `Layers` object also lists several `@cap/module-*` and `@cap/civil-registry` packages that **do not exist yet on disk** (provisioned ahead of creation) — don't be misled into thinking they're missing/broken; see technical-debt-report.md §2.1 before "fixing" this.
+> **Note on "enforcement":** the tier diagram above is the **conceptual** model used throughout the docs. The tooling-side grouping in `eslint.config.js` uses a *different*, more granular set of layers (`FOUNDATION`/`LAYER_1`…`LAYER_6` — e.g. `@cap/layout` is `LAYER_4` there and `@cap/platform-core` is `LAYER_3`, so `layout → platform-core` imports are legal). As of this writing the `layerConfigs` defined in that file are **not yet wired into any active ESLint config** (the root config's default export is only `baseConfig`; per-package configs don't apply them), so the boundaries are aspirational rather than enforced today. The same file also lists several `@cap/module-*` and `@cap/civil-registry` packages that **do not exist yet on disk** (provisioned ahead of creation) — don't be misled into thinking they're missing/broken; see technical-debt-report.md §2.1 before "fixing" this.
 
 #### Package Responsibilities
 
@@ -39,6 +39,7 @@ This tiering is not just documentation — it's enforced by `eslint.config.js`'s
 * **`@cap/platform-core`** (`packages/platform-core`): Central orchestration façade for runtime module assembly (`assembleApp`), routing, i18n initialization, plugin registry (`globalPluginRegistry`), `TenantProvider`, and `LayoutRouteWrapper`.
 * **`@cap/module-auth`** (`packages/modules/auth`): Complete IDaaS module encompassing auth-core, MFA, passwordless, SAML, JWKS, identity broker, user directory, and session management.
 * **`@cap/module-landing`** (`packages/modules/landing`): Public marketing pages, workflow step pipeline, pricing tables, contact forms, and legal screens.
+* **`@cap/module-theme`** (`packages/modules/theme`): Tenant branding module — theme preset picker and live `ColorPaletteEditor` for the tenant design system.
 * **`@cap/app`** (`app`): Shell application entry point (`main.tsx`), provider assembly (`Providers.tsx`), top-level layout selector (`layout.tsx`), Vite config, and Playwright e2e tests.
 
 ---
@@ -68,7 +69,7 @@ Every feature module exports a `CAPModule` contract object containing:
 ### Three-Layer Theme Compilation
 1. **Tokens (`PrimitiveTokens`)**: Color palettes (primary, secondary, background, paper, status colors), spacing scales, radii, typography rules, shadows, and z-index definitions.
 2. **Composition (`composeMuiTheme`)**: Merges primitive tenant tokens with dark/light mode bases and applies MUI component overrides (`getComponentOverrides`).
-3. **Delivery (`ThemeBridge` & `DesignSystemProvider`)**: Synchronizes tenant configuration with CSS custom properties (`--border-color`, `--header-z-index`) via `applyThemeVariablesSync` and provides the compiled MUI `theme` via `MuiThemeProvider`.
+3. **Delivery (`ThemeBridge` & `DesignSystemProvider`)**: Synchronizes tenant configuration with CSS custom properties (`--border-color`, `--header-z-index`) via `applyThemeVariablesSync`, and provides the compiled MUI `theme` via `MuiThemeProvider`. `ThemeBridge` coalesces rapid config changes into a single `requestAnimationFrame` write (no per-frame DOM thrash on preset switching) and removes variables that a previous config produced but the new one no longer emits (e.g. `--glass-*`/`--effect-*` on returning to a non-effect preset).
 
 **Known gap:** in `composeMuiTheme.ts`, only `primary`/`secondary` derive their `light`/`dark`/opacity variants from the tenant token at runtime (via `lighten()`/`darken()`). `error`/`warning`/`success`/`info` only tokenize `main`; their `light`/`dark`/opacity variants are hardcoded literals. If you're building tenant branding UI, know that customizing a status color's `main` today will produce a mismatched `light`/`dark` pair — see technical-debt-report.md §1's theme section (K) before assuming full status-color tenantization already works.
 
@@ -83,7 +84,7 @@ Every feature module exports a `CAPModule` contract object containing:
 These are real, code-confirmed gaps (not stylistic nitpicks) found during the August 2026 architecture review. Full detail: `analysis/architecture-report.md` §4, `analysis/technical-debt-report.md` §1.7/§2, `analysis/improvement-roadmap.md` Phase 1.
 
 1. **`layout: 'vertical'` / `layout: 'horizontal'` on a `ModuleRouteConfig` do nothing at runtime today**, despite being documented in `MODULE_DEVELOPMENT_GUIDE.md`'s scaffolding example. Only `'noLayout'` and `'admin'` are actually wired up in `LayoutRouteWrapper` / `LayoutWrapper`. If you're scaffolding a new module's routes, use `'admin'` for authenticated dashboard-style screens and `'noLayout'` for chrome-free screens (sign-in, verification links, etc.) — don't reach for `'vertical'`/`'horizontal'` expecting them to switch the shell; they won't, until `improvement-roadmap.md` Phase 1 item 6 lands. **Check `improvement-roadmap.md` Phase 1 before assuming this is still open — it may already be resolved.**
-2. **`LayoutRouteWrapper` currently exists as two separate implementations** — `@cap/layout/src/components/wrappers/LayoutRouteWrapper.tsx` and `@cap/platform-core/src/components/LayoutRouteWrapper.tsx` — and they have already drifted (one has an extra doc comment the other lacks). If you need to fix or extend this component's behavior, **fix both, or better, consolidate them first** (roadmap Phase 1 item 7).
+2. **`LayoutRouteWrapper` had two implementations that drifted** — this was **resolved in commit `ca5ea29`** ("refactor: unify layout wrapping…"): the `@cap/platform-core/src/components/LayoutRouteWrapper.tsx` copy was deleted and the single canonical implementation now lives at `@cap/layout/src/components/wrappers/LayoutRouteWrapper.tsx`, imported by `assembleApp`. If you need to fix or extend this component, there is only **one** implementation to touch now — don't reintroduce a second copy.
 3. **Not every route in every auth sub-module declares a `layout`.** An undeclared `layout` silently inherits whatever `layoutOverride` the previously-visited route left behind, because `assembleApp` defaults it to `'none'`, which is a no-op in the wrapper. When adding a new route, **always declare `layout` explicitly** rather than omitting it, even if you think the "default" is what you want.
 
 ---
@@ -109,7 +110,7 @@ These are real, code-confirmed gaps (not stylistic nitpicks) found during the Au
 ## 6. Development Workflow
 
 * **Scaffold a new module**: `pnpm generate:module` (Plop, see `MODULE_DEVELOPMENT_GUIDE.md`). The shell's `import.meta.glob` auto-discovers it — no manual registration needed.
-* **Check package coupling before a large refactor**: `node scripts/analyze-coupling.cjs` writes `docs/MODULE_COUPLING_REPORT.md` with real Ce/Ca/instability metrics per package and DDD sub-module. As of this writing it hasn't been run/committed yet — run it fresh rather than trusting a stale copy if one appears later.
+* **Check package coupling before a large refactor**: `node scripts/analyze-coupling.cjs` writes `docs/MODULE_COUPLING_REPORT.md` with real Ce/Ca/instability metrics per package and DDD sub-module. A report is already committed (`docs/MODULE_COUPLING_REPORT.md`, generated 2026-08-04) — regenerate it fresh rather than trusting that stale copy.
 * **Before declaring a route's `layout`**, re-read §4 above.
 * **Before adding a new `any`**, check whether the surrounding file is already on the list in `technical-debt-report.md` §2.4 — if so, fixing the type properly while you're there is preferred over adding to the pile.
 

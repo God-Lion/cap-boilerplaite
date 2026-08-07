@@ -1,6 +1,6 @@
 # Developer Onboarding & Architecture Guide
 
-Welcome to the `cap-boilerplaite` development team. This document serves as the cohesive architectural onboarding guide, detailing the macro structure of the monorepo, our module boundaries, and deep dives into critical sub-systems.
+Welcome to the `cap-boilerplate` development team. This document serves as the cohesive architectural onboarding guide, detailing the macro structure of the monorepo, our module boundaries, and deep dives into critical sub-systems.
 
 ---
 
@@ -15,19 +15,40 @@ graph TD
     APP["/app (Host Shell)"]
     CORE["/packages/platform-core"]
     LAYOUT["/packages/layout (UI Shell)"]
+    THEME["/packages/theme (Design System)"]
+    STORE["/packages/platform-store"]
+    TYPES["/packages/shared-types"]
     AUTH_MOD["/packages/modules/auth (Domain Module)"]
+    LANDING_MOD["/packages/modules/landing"]
+    THEME_MOD["/packages/modules/theme"]
     API["/packages/api-contracts"]
     AUTH_CONTRACTS["/packages/auth-contracts"]
 
     APP --> LAYOUT
-    APP --> AUTH_MOD
     APP --> CORE
+    APP --> TYPES
     AUTH_MOD --> CORE
-    AUTH_MOD --> AUTH_CONTRACTS
-    AUTH_MOD --> API
+    AUTH_MOD --> TYPES
+    AUTH_MOD --> LAYOUT
+    LANDING_MOD --> CORE
+    LANDING_MOD --> LAYOUT
+    THEME_MOD --> THEME
+    THEME_MOD --> CORE
+    LAYOUT --> THEME
+    LAYOUT --> TYPES
+    LAYOUT --> STORE
     LAYOUT --> CORE
-    CORE --> API
+    CORE --> TYPES
+    CORE --> STORE
+    CORE --> THEME
+    STORE --> TYPES
+    THEME --> TYPES
+    AUTH_CONTRACTS --> TYPES
+    AUTH_CONTRACTS --> API
+    API --> TYPES
 ```
+
+> **Note:** Edges above reflect the actual import graph from `docs/MODULE_COUPLING_REPORT.md` (generated 2026-08-04). Notably, `@cap/module-auth` does **not** import `@cap/api-contracts` or `@cap/auth-contracts`, and neither `@cap/api-contracts` nor `@cap/auth-contracts` is imported by any application source today (both have zero afferent coupling) — they are contract-only packages awaiting adoption.
 
 *   **`/app`:** Assembles the React tree, pulling in layout and modules.
 *   **`/packages/layout`:** Owns the visual chrome (Sidebar, Headers, Footers). It is decoupled from business logic and simply provides structural wrappers (`VerticalLayout`, `HorizontalLayout`).

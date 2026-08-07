@@ -1,15 +1,43 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { CAPModule } from '../types'
+import { CAPModule, RouteLayout } from '../types'
 import { useAppStore } from '@cap/platform-store'
-import { LayoutRouteWrapper } from '@cap/layout'
 import { NotFound } from '../components/NotFound'
 import { ModuleRegistry, type AuthRouteConfig } from './ModuleRegistry'
 
 export type { AuthRouteConfig }
 
+/**
+ * Contract implemented by a route-layout wrapper injected at the app-assembly
+ * layer (e.g. `LayoutRouteWrapper` from `@cap/layout`). platform-core declares
+ * this shape but never imports the layout package, keeping the dependency
+ * graph acyclic: the shell composes the two packages instead.
+ */
+export interface RouteElementWrapperProps {
+  element?: React.ReactNode
+  children?: React.ReactNode
+  layout?: RouteLayout | string
+  label?: string
+}
+
+export type RouteElementWrapper = React.ComponentType<RouteElementWrapperProps>
+
+/**
+ * Default no-op wrapper used when no layoutWrapper is injected. Route elements
+ * render directly; layout overrides simply aren't applied.
+ */
+const PassthroughRouteElementWrapper: RouteElementWrapper = ({ children, element }) => (
+  <React.Fragment>{children ?? element}</React.Fragment>
+)
+
 interface AssembleAppProps {
   modules: Array<CAPModule>
+  /**
+   * Route wrapper applied to every compiled route (and the catch-all 404).
+   * Supplied by the host shell to honor route `layout` intent without
+   * platform-core depending on the layout package (inversion of control).
+   */
+  layoutWrapper?: RouteElementWrapper
 }
 
 /**
@@ -27,7 +55,7 @@ export const getSearchItems = () => ModuleRegistry.getInstance().getSearchItems(
  */
 export const getModules = () => ModuleRegistry.getInstance().getModules()
 
-export const assembleApp = ({ modules }: AssembleAppProps) => {
+export const assembleApp = ({ modules, layoutWrapper }: AssembleAppProps) => {
   const registry = ModuleRegistry.getInstance()
   registry.reset()
 
@@ -36,6 +64,7 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
   })
 
   const { allRouteConfigs, routeNavItems, navItemsToRegister } = registry.extractRoutesAndNav()
+  const Wrapper = layoutWrapper ?? PassthroughRouteElementWrapper
 
   // Return the App component with a SINGLE Routes component matching.
   const App = () => {
@@ -80,13 +109,20 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
               key={path}
               path={path}
               element={
-                <LayoutRouteWrapper layout={layout || 'none'} label={label}>
+                <Wrapper layout={layout || 'none'} label={label}>
                   {element}
-                </LayoutRouteWrapper>
+                </Wrapper>
               }
             />
           ))}
-          <Route path='*' element={<LayoutRouteWrapper layout='none'><NotFound /></LayoutRouteWrapper>} />
+          <Route
+            path='*'
+            element={
+              <Wrapper layout='none'>
+                <NotFound />
+              </Wrapper>
+            }
+          />
         </Routes>
       </React.Suspense>
     )
@@ -94,4 +130,3 @@ export const assembleApp = ({ modules }: AssembleAppProps) => {
 
   return App
 }
-

@@ -6,11 +6,30 @@ This document outlines prioritized refactoring roadmaps and architectural recomm
 
 ## 1. High Priority: Route Layout Association Bug
 
+> **Current status: RESOLVED.** Both recommended resolutions landed. `LayoutRouteWrapper` was moved from `@cap/module-auth` into `@cap/layout` (canonical implementation now lives at `packages/layout/src/components/wrappers/LayoutRouteWrapper.tsx`), and `assembleApp` wraps every route element at compile time (see `packages/platform-core/src/assembly/index.tsx`). The `layout` attribute is read from each route config and applied dynamically:
+>
+> ```tsx
+> // packages/platform-core/src/assembly/index.tsx (Current implementation)
+> {allRouteConfigs.map(({ path, element, layout, label }) => (
+>   <Route
+>     key={path}
+>     path={path}
+>     element={
+>       <LayoutRouteWrapper layout={layout || 'none'} label={label}>
+>         {element}
+>       </LayoutRouteWrapper>
+>     }
+>   />
+> ))}
+> ```
+>
+> Remaining caveat: `LayoutRouteWrapper` only distinguishes `'noLayout'` and `'admin'` at runtime — `'vertical'`/`'horizontal'`/`'public'` are accepted by the type but currently inert. See `architecture-report.md` §4 and the `improvement-roadmap.md` Phase 1 routing items.
+
 ### The Issue
 The module compilation system in `packages/platform-core/src/assembly/index.tsx` (`assembleApp`) reads each module's `authRouteConfig` configuration and builds Route elements using only `path` and `element`. The `layout` attribute (e.g. `layout: 'noLayout'`) is discarded:
 
 ```typescript
-// packages/platform-core/src/assembly/index.tsx (Current implementation)
+// packages/platform-core/src/assembly/index.tsx (Historical implementation — fixed)
 const App = () => {
   return (
     <Routes>
@@ -28,11 +47,11 @@ Any screen declared as a bare element (such as `Path.signinV2`, `Path.login`, an
 
 ### Proposed Resolutions
 
-*   **Resolution A: Move and Wire Layout Wrapper (Recommended)**
+*   **Resolution A: Move and Wire Layout Wrapper (Recommended)** — **DONE (see status note above)**
     1.  Move `LayoutRouteWrapper` from `@cap/module-auth` into `@cap/layout` (to prevent circular package dependencies).
     2.  Update `assembleApp` to import `LayoutRouteWrapper` and wrap elements dynamically during routing compilation:
         ```tsx
-        // Proposed Fix in assembleApp
+        // Proposed Fix in assembleApp (implemented)
         {allRouteConfigs.map(({ path, element, layout }) => (
           <Route 
             key={path} 
@@ -48,6 +67,8 @@ Any screen declared as a bare element (such as `Path.signinV2`, `Path.login`, an
 
 ## 2. Medium Priority: i18n Key Collision Mitigation
 
+> **Current status: RESOLVED.** `ModuleRegistry.registerModule()` (in `packages/platform-core/src/assembly/ModuleRegistry.ts`) now registers each module's `i18n` bundles under a module-scoped namespace (`moduleNs = module.id || module.name || 'common'`) via `i18next.addResourceBundle(langLower, moduleNs, resources, true, true)`, in addition to merging into the shared `translation`/`common` bundles. This eliminates silent cross-module key overwrites.
+
 ### The Issue
 The i18n composition in `assembleApp` merges dictionary bundles directly into global namespaces using `overwrite: true`.
 As the module count grows (e.g. adding KYC, Civil Registry, Digital ID), duplicate keys across dictionaries will silently overwrite each other based on module registration order, leading to localization bugs.
@@ -58,13 +79,15 @@ Refactor the translation system to enforce **module-scoped namespaces**:
 2.  Register translation keys under namespaced scopes (e.g., `auth:login.title` instead of `auth.login.title` in a global namespace).
 3.  Adjust module i18n declarations to export their scope names, letting the compiler register them cleanly under distinct namespaces:
     ```typescript
-    // Proposed Namespace Registration
+    // Proposed Namespace Registration (implemented)
     i18next.addResourceBundle(lang.toLowerCase(), module.id, resources, true, true)
     ```
 
 ---
 
 ## 3. Medium Priority: Workspace & Dependency Drift Cleanup
+
+> **Current status: RESOLVED.** `pnpm-workspace.yaml` no longer references a `packages/platform-api` entry (it lists only existing packages plus `packages/modules/**`), `app/package.json` declares only the three vendored modules that actually exist (`@cap/module-auth`, `@cap/module-landing`, `@cap/module-theme`), and `AppAssembly.tsx` discovers modules via `import.meta.glob` with no commented-out import blocks. Additionally, the vestigial per-sub-module `package.json` manifests under `packages/modules/auth/src/**` were removed (see `codebase-analysis-progress.md` item 7).
 
 ### The Issue
 The project contains several leftovers from a larger monorepo:
@@ -80,13 +103,20 @@ The project contains several leftovers from a larger monorepo:
 
 ## 4. Low Priority: Catch-All Route Rendering
 
+> **Current status: RESOLVED.** `assembleApp` now renders a dedicated `NotFound` screen (from `@cap/platform-core/src/components/NotFound`) inside a `LayoutRouteWrapper` for the fallback route:
+>
+> ```tsx
+> // packages/platform-core/src/assembly/index.tsx (Current implementation)
+> <Route path='*' element={<LayoutRouteWrapper layout='none'><NotFound /></LayoutRouteWrapper>} />
+> ```
+
 ### The Issue
 Unmapped paths hit `<Route path='*' element={null} />` in `assembleApp`, rendering a blank screen inside the currently active layout.
 
 ### Proposed Resolution
 Create a custom `NotFound` component inside `@cap/layout` (retaining tenant design systems) and set it as the default element for the fallback route:
 ```tsx
-// Proposed NotFound Integration
+// Proposed NotFound Integration (implemented)
 <Route path='*' element={<NotFoundScreen />} />
 ```
 
@@ -94,13 +124,15 @@ Create a custom `NotFound` component inside `@cap/layout` (retaining tenant desi
 
 ## 5. Low Priority: Virtualized Table Dynamic Sizing
 
+> **Current status: RESOLVED.** `VirtualizedTable.tsx` now binds the `measureElement` ref to its `TableRow` elements (`ref={measureRef}`, sourced from `rowVirtualizer.measureElement`, with `data-index`), giving it the same dynamic row-height measurement as `VirtualizedList` and `VirtualizedGrid`.
+
 ### The Issue
 `VirtualizedTable.tsx` calculates row positions using static height estimates (`estimatedRowHeight`), but does not attach the `rowVirtualizer.measureElement` ref to its `TableRow` elements. If row content wraps or varies in size, the table layout will jitter or misalign.
 
 ### Proposed Resolution
 Attach the measure element ref to standard row renders:
 ```tsx
-// Proposed TableRow Integration
+// Proposed TableRow Integration (implemented)
 <TableRow hover key={row.id} ref={rowVirtualizer.measureElement} data-index={virtualRow.index}>
 ```
 This enables the table to dynamically measure and adjust row heights on the fly, matching the robust behavior found in `VirtualizedList` and `VirtualizedGrid`.
@@ -114,6 +146,7 @@ To prepare the codebase for modern development paradigms (such as AI-driven agen
 ### Model Context Protocol (MCP) Server for API Contracts
 *   **Recommendation**: Implement a local Model Context Protocol (MCP) server that exposes the static typescript definitions, schemas, and endpoints under `packages/api-contracts` and `packages/auth-contracts`.
 *   **Rationale**: Exposing contracts via an MCP server establishes a standardized, secure channel for external agents (like IDE coding assistants or automation workflows) to read and understand the API interfaces without exposing core secrets or production data keys.
+*   **Status**: Not yet claimed — no MCP server exists in the repo as of this review. `@cap/api-contracts` and `@cap/auth-contracts` remain constants/type-only packages with zero afferent coupling (see `docs/MODULE_COUPLING_REPORT.md`), so this remains open for a future implementation.
 
 ### Granular OAuth-Style Token Scopes for Machine Identities
 *   **Recommendation**: Extend the `authorization-engine`'s API Token management (`APITokenActions.tsx`, `MachineIdentityManagement.tsx`) to support granular, OAuth2-style permissions scopes (e.g., `read:contracts`, `write:layout`, `manage:sessions`).
