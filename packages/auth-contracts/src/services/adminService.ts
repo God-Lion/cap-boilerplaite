@@ -1,5 +1,5 @@
-import { apiClient } from '@cap/platform-store'
-import type { FetchResponse, PaginatedResponse } from '@cap/shared-types'
+import { apiClient, type FetchResponse } from '@cap/platform-store'
+import type { PaginatedResponse } from '@cap/shared-types'
 import { ENDPOINTS } from '@cap/api-contracts'
 import type {
   SCIMConfig,
@@ -26,42 +26,42 @@ export type {
 
 export class AdminService {
   async listOIDCClients(): Promise<FetchResponse<import('../types').OIDCClient[]>> {
-    return apiClient.get<import('../types').OIDCClient[]>('/api/admin/clients')
+    return apiClient.get<import('../types').OIDCClient[]>(ENDPOINTS.admin.clients.index)
   }
 
   async getOIDCClient(id: string | number): Promise<FetchResponse<import('../types').OIDCClient>> {
-    return apiClient.get<import('../types').OIDCClient>(`/api/admin/clients/${id}`)
+    return apiClient.get<import('../types').OIDCClient>(ENDPOINTS.admin.clients.byId(id as string))
   }
 
   async createOIDCClient(
     data: import('../types').CreateOIDCClientRequest,
   ): Promise<FetchResponse<import('../types').OIDCClient>> {
-    return apiClient.post<import('../types').OIDCClient>('/api/admin/clients', data)
+    return apiClient.post<import('../types').OIDCClient>(ENDPOINTS.admin.clients.store, data)
   }
 
   async updateOIDCClient(
     id: string | number,
     data: import('../types').UpdateOIDCClientRequest,
   ): Promise<FetchResponse<import('../types').OIDCClient>> {
-    return apiClient.patch<import('../types').OIDCClient>(`/api/admin/clients/${id}`, data)
+    return apiClient.patch<import('../types').OIDCClient>(ENDPOINTS.admin.clients.update(id as string), data)
   }
 
   async deleteOIDCClient(id: string | number): Promise<FetchResponse<import('../types').MessageResponse>> {
-    return apiClient.delete<import('../types').MessageResponse>(`/api/admin/clients/${id}`)
+    return apiClient.delete<import('../types').MessageResponse>(ENDPOINTS.admin.clients.destroy(id as string))
   }
 
   async rotateClientSecret(
     id: string | number,
   ): Promise<FetchResponse<{ client_secret: string }>> {
-    return apiClient.post<{ client_secret: string }>(`/api/admin/clients/${id}/rotate-secret`)
+    return apiClient.post<{ client_secret: string }>(ENDPOINTS.admin.clients.rotateSecret(id as string))
   }
 
   async getClientBranding(id: string | number): Promise<FetchResponse<unknown>> {
-    return apiClient.get(`/api/admin/clients/${id}/branding`)
+    return apiClient.get(ENDPOINTS.admin.clients.branding(id as string))
   }
 
   async updateClientBranding(id: string | number, data: unknown): Promise<FetchResponse<unknown>> {
-    return apiClient.patch(`/api/admin/clients/${id}/branding`, data)
+    return apiClient.patch(ENDPOINTS.admin.clients.branding(id as string), data)
   }
 
   async listUsers(params?: {
@@ -71,28 +71,28 @@ export class AdminService {
     role?: string
     status?: string
   }): Promise<FetchResponse<PaginatedResponse<import('../types').AdminUser>>> {
-    return apiClient.get('/api/admin/users', { params })
+    return apiClient.get(ENDPOINTS.admin.users.index, { params })
   }
 
   async getUser(id: string | number): Promise<FetchResponse<import('../types').AdminUser>> {
-    return apiClient.get<import('../types').AdminUser>(`/api/admin/users/${id}`)
+    return apiClient.get<import('../types').AdminUser>(ENDPOINTS.admin.users.byId(id as number))
   }
 
   async createUser(
     data: import('../types').CreateUserRequest,
   ): Promise<FetchResponse<import('../types').AdminUser>> {
-    return apiClient.post<import('../types').AdminUser>('/api/admin/users', data)
+    return apiClient.post<import('../types').AdminUser>(ENDPOINTS.admin.users.store, data)
   }
 
   async updateUser(
     id: string | number,
     data: import('../types').UpdateUserRequest,
   ): Promise<FetchResponse<import('../types').AdminUser>> {
-    return apiClient.put<import('../types').AdminUser>(`/api/admin/users/${id}`, data)
+    return apiClient.put<import('../types').AdminUser>(ENDPOINTS.admin.users.byId(id as number), data)
   }
 
   async deleteUser(id: string | number): Promise<FetchResponse<import('../types').MessageResponse>> {
-    return apiClient.delete<import('../types').MessageResponse>(`/api/admin/users/${id}`)
+    return apiClient.delete<import('../types').MessageResponse>(ENDPOINTS.admin.users.byId(id as number))
   }
 
   async banUser(id: string | number, reason?: string): Promise<FetchResponse<import('../types').MessageResponse>> {
@@ -117,7 +117,7 @@ export class AdminService {
   }
 
   async impersonateUser(id: string | number): Promise<FetchResponse<{ token: string }>> {
-    return apiClient.post<{ token: string }>(`/api/admin/users/${id}/impersonate`)
+    return apiClient.post<{ token: string }>(ENDPOINTS.admin.users.impersonate(id as number))
   }
 
   async unlockUser(id: number): Promise<FetchResponse<import('../types').MessageResponse>> {
@@ -152,21 +152,21 @@ export class AdminService {
   }
 
   async getSAMLConfig(): Promise<FetchResponse<SAMLConfig>> {
-    return apiClient.get<SAMLConfig>('/api/admin/saml/config')
+    return apiClient.get<SAMLConfig>(ENDPOINTS.admin.saml.config)
   }
 
   async updateSAMLConfig(data: Partial<SAMLConfig>): Promise<FetchResponse<SAMLConfig>> {
-    return apiClient.put<SAMLConfig>('/api/admin/saml/config', data)
+    return apiClient.put<SAMLConfig>(ENDPOINTS.admin.saml.config, data)
   }
 
   async getSAMLMetadata(): Promise<FetchResponse<string>> {
-    return apiClient.get<string>('/api/admin/saml/metadata')
+    return apiClient.get<string>(ENDPOINTS.admin.saml.metadata)
   }
 
   async uploadSAMLMetadata(file: File): Promise<FetchResponse<import('../types').MessageResponse>> {
     const formData = new FormData()
     formData.append('metadata', file)
-    return apiClient.post<import('../types').MessageResponse>('/api/admin/saml/metadata/upload', formData)
+    return apiClient.post<import('../types').MessageResponse>(ENDPOINTS.admin.saml.uploadMetadata, formData)
   }
 
   async fetchRemoteMetadata(
@@ -193,7 +193,7 @@ export class AdminService {
       systemHealth: string
     }>
   > {
-    return apiClient.get('/api/admin/dashboard')
+    return apiClient.get(ENDPOINTS.admin.dashboard)
   }
 
   async getAuditLogs(params?: {
@@ -204,28 +204,28 @@ export class AdminService {
     start_date?: string
     end_date?: string
   }): Promise<FetchResponse<unknown>> {
-    return apiClient.get('/api/admin/audit-logs', { params })
+    return apiClient.get(ENDPOINTS.admin.auditLogs.index, { params })
   }
 
   async getImpersonationLogs(params?: {
     page?: number
     limit?: number
   }): Promise<FetchResponse<unknown>> {
-    return apiClient.get('/api/admin/audit-logs', {
+    return apiClient.get(ENDPOINTS.admin.auditLogs.index, {
       params: { ...params, action: 'USER_IMPERSONATION_START' },
     })
   }
 
   async getStatisticsSummary(): Promise<FetchResponse<unknown>> {
-    return apiClient.get('/api/admin/statistics/summary')
+    return apiClient.get(ENDPOINTS.admin.statistics.overview)
   }
 
   async listWebhooks(): Promise<FetchResponse<unknown[]>> {
-    return apiClient.get('/api/admin/webhooks')
+    return apiClient.get(ENDPOINTS.admin.webhooks.index)
   }
 
   async getWebhook(id: string | number): Promise<FetchResponse<unknown>> {
-    return apiClient.get(`/api/admin/webhooks/${id}`)
+    return apiClient.get(ENDPOINTS.admin.webhooks.byId(id as number))
   }
 
   async createWebhook(data: {
@@ -233,19 +233,19 @@ export class AdminService {
     events: string[]
     secret?: string
   }): Promise<FetchResponse<unknown>> {
-    return apiClient.post('/api/admin/webhooks', data)
+    return apiClient.post(ENDPOINTS.admin.webhooks.store, data)
   }
 
   async updateWebhook(id: string | number, data: unknown): Promise<FetchResponse<unknown>> {
-    return apiClient.patch(`/api/admin/webhooks/${id}`, data)
+    return apiClient.patch(ENDPOINTS.admin.webhooks.update(id as number), data)
   }
 
   async deleteWebhook(id: string | number): Promise<FetchResponse<import('../types').MessageResponse>> {
-    return apiClient.delete<import('../types').MessageResponse>(`/api/admin/webhooks/${id}`)
+    return apiClient.delete<import('../types').MessageResponse>(ENDPOINTS.admin.webhooks.destroy(id as number))
   }
 
   async testWebhook(id: string | number): Promise<FetchResponse<import('../types').MessageResponse>> {
-    return apiClient.post<import('../types').MessageResponse>(`/api/admin/webhooks/${id}/test`)
+    return apiClient.post<import('../types').MessageResponse>(ENDPOINTS.admin.webhooks.test(id as number))
   }
 
   async getAppeals(params?: {
@@ -450,7 +450,7 @@ export class AdminService {
     memberId: number,
     orgId: number,
   ): Promise<FetchResponse<import('../types').MemberOverride[]>> {
-    return apiClient.get(`/api/admin/members/${memberId}/overrides`, {
+    return apiClient.get(ENDPOINTS.adminMembers.overrides(memberId), {
       params: { org_id: orgId },
     })
   }
@@ -460,7 +460,7 @@ export class AdminService {
     orgId: number,
     override: { permissionId: number; grant: boolean },
   ): Promise<FetchResponse<import('../types').MessageResponse>> {
-    return apiClient.post(`/api/admin/members/${memberId}/overrides`, override, {
+    return apiClient.post(ENDPOINTS.adminMembers.addOverride(memberId), override, {
       params: { org_id: orgId },
     })
   }
@@ -470,7 +470,7 @@ export class AdminService {
     orgId: number,
     permissionId: number,
   ): Promise<FetchResponse<import('../types').MessageResponse>> {
-    return apiClient.delete(`/api/admin/members/${memberId}/overrides/${permissionId}`, {
+    return apiClient.delete(ENDPOINTS.adminMembers.removeOverride(memberId, permissionId), {
       params: { org_id: orgId },
     })
   }
@@ -479,14 +479,14 @@ export class AdminService {
     orgId: number,
     domain: string,
   ): Promise<FetchResponse<import('../types').DomainVerification>> {
-    return apiClient.post(`/api/admin/organizations/${orgId}/domains`, { domain })
+    return apiClient.post(ENDPOINTS.admin.organizations.domains(orgId), { domain })
   }
 
   async checkDomain(
     orgId: number,
     domainId: number,
   ): Promise<FetchResponse<import('../types').DomainVerification>> {
-    return apiClient.get(`/api/admin/organizations/${orgId}/domains/${domainId}/check`)
+    return apiClient.get(ENDPOINTS.admin.organizations.domainsCheck(orgId, domainId))
   }
 
   async listOrganizations(params?: {
@@ -524,9 +524,7 @@ export class AdminService {
   async impersonateOrganization(
     id: number,
   ): Promise<FetchResponse<{ token: string; user: unknown }>> {
-    return apiClient.post<{ token: string; user: unknown }>(
-      `/api/admin/organizations/${id}/impersonate`,
-    )
+    return apiClient.post<{ token: string; user: unknown }>(ENDPOINTS.admin.organizations.impersonate(id))
   }
 
   async getOrganizationScimConfig(): Promise<FetchResponse<SCIMConfig>> {
@@ -647,7 +645,7 @@ export class AdminService {
   async testSCIMConnection(): Promise<
     FetchResponse<{ status: string; message: string; diagnostics: unknown }>
   > {
-    return apiClient.post('/api/admin/scim/test')
+    return apiClient.post(ENDPOINTS.admin.scim.test)
   }
 
   async exportAuditLogs(params?: {
@@ -664,11 +662,11 @@ export class AdminService {
   }
 
   async listDataExports(userId: number): Promise<FetchResponse<unknown[]>> {
-    return apiClient.get(`/api/admin/users/${userId}/data-exports`)
+    return apiClient.get(ENDPOINTS.admin.users.dataExports(userId))
   }
 
   async requestDataExport(userId: number): Promise<FetchResponse<import('../types').MessageResponse>> {
-    return apiClient.post<import('../types').MessageResponse>(`/api/admin/users/${userId}/data-exports`)
+    return apiClient.post<import('../types').MessageResponse>(ENDPOINTS.admin.users.requestDataExport(userId))
   }
 
   async getMFAStats(): Promise<FetchResponse<import('../types').MFAStats>> {
@@ -738,7 +736,7 @@ export class AdminService {
   }
 
   async getSSFHistory(): Promise<FetchResponse<unknown[]>> {
-    return apiClient.get<unknown[]>('/api/admin/ssf/history')
+    return apiClient.get<unknown[]>(ENDPOINTS.admin.ssf.history)
   }
 
   async getJWKSKeys(): Promise<FetchResponse<JWKSKey[]>> {

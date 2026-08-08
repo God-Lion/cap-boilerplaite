@@ -6,6 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 ;
 import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
+import { useRegister } from '@idaas/authentication-core/hooks/useAuthQuery';
+import { API_CONFIG } from '@cap/platform-core';
+import { ENDPOINTS } from '@cap/platform-core';
+import { Path } from '@cap/module-auth/routes/path';
 
 export default function RegistrationScreen() {
   const { t } = useTranslation('auth')
@@ -18,10 +22,24 @@ export default function RegistrationScreen() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [acceptTerms, setAcceptTerms] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const registerMutation = useRegister({
+    onSuccess: () => {
+      navigate(`${Path.auth.checkEmail}?email=${encodeURIComponent(email)}`)
+    },
+    onError: (error: any) => {
+      setError(
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        t('signUp.errorGeneric', 'An error occurred during registration.'),
+      )
+    },
+  })
+
+  const isLoading = registerMutation.isPending
+
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     if (!email || !password || !firstName || !lastName) {
@@ -32,19 +50,20 @@ export default function RegistrationScreen() {
       setError(t('signUp.errorTerms', 'You must accept the terms of service.'))
       return
     }
-    setIsLoading(true)
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      navigate('/auth/verify-email', { state: { email } })
-    } catch (err: any) {
-      setError(err.message || t('signUp.errorGeneric', 'An error occurred during registration.'))
-    } finally {
-      setIsLoading(false)
-    }
+    registerMutation.mutate({
+      data: {
+        email,
+        password,
+        confirmPassword: password,
+        firstname: firstName,
+        lastname: lastName,
+        isTermsSign: acceptTerms,
+      },
+    })
   }
 
   const handleSocialRegister = (provider: string) => {
-    navigate(`/auth/sso/initiate?provider=${provider}&action=register`)
+    window.location.assign(`${API_CONFIG.baseURL}${ENDPOINTS.auth.social.redirect(provider)}`)
   }
 
   return (
@@ -153,7 +172,7 @@ export default function RegistrationScreen() {
       <Box sx={{ mt: 5, textAlign: 'center' }}>
         <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
           {t('signUp.alreadyHaveAccount', 'Already have an account?')}{' '}
-          <Typography component="span" variant="body2" onClick={() => navigate('/auth/signin')}
+          <Typography component="span" variant="body2" onClick={() => navigate(Path.auth.signin)}
             sx={{ fontWeight: 800, color: 'info.main', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}>
             {t('signUp.signInHere', 'Sign in here')}
           </Typography>

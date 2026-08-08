@@ -35,10 +35,10 @@ import LinkIcon from '@mui/icons-material/Link'
 
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useNotifications } from '@cap/platform-core'
+import { useNotifications, API_CONFIG } from '@cap/platform-core'
 import userService from "../../services/user.service"
 import { QUERY_KEYS } from "@idaas/authentication-core/services/query"
-import { ENDPOINTS } from "@idaas/authentication-core/services/endpoints"
+import { ENDPOINTS } from '@cap/platform-core'
 
 const BRAND_COLORS = {
   google: '#EA4335',
@@ -165,8 +165,7 @@ const LinkedAccountsDashboard = () => {
 
   const handleConnect = (providerId: string) => {
     // Standard OAuth flow redirect API
-    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3333'
-    window.location.href = `${apiUrl}${ENDPOINTS.auth.social.redirect(providerId)}?interaction=linked-accounts`
+    window.location.href = `${API_CONFIG.baseURL}${ENDPOINTS.auth.social.redirect(providerId)}?interaction=linked-accounts`
   }
 
   const handleRevoke = () => {

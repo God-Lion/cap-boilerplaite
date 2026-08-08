@@ -1,7 +1,7 @@
 import { apiClient, FetchResponse } from '@cap/platform-core'
 
 import { UpdateNamesRequest, UpdateEmailRequest, UpdatePhotoRequest } from "@auth/authentication-core/types/api.types"
-import { ENDPOINTS } from "@auth/authentication-core/services/endpoints"
+import { ENDPOINTS } from '@cap/platform-core'
 
 /**
  * Resume Profiles Service

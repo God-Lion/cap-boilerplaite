@@ -7,6 +7,10 @@ import { Visibility, VisibilityOff, Email, Lock, VpnKey, Google, GitHub, Microso
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
+import { useSignin } from '@idaas/authentication-core/hooks/useAuthQuery';
+import { API_CONFIG } from '@cap/platform-core';
+import { ENDPOINTS } from '@cap/platform-core';
+import { Path } from '@cap/module-auth/routes/path';
 import { authRegistry } from '../../../../registry/AuthRegistry';
 
 export default function LoginScreen() {
@@ -19,11 +23,25 @@ export default function LoginScreen() {
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
   // Extract redirect url if available
   const redirectUrl = new URLSearchParams(location.search).get('redirect') || '/admin/dashboard'
+
+  const loginMutation = useSignin({
+    onSuccess: () => {
+      navigate(redirectUrl)
+    },
+    onError: (error: any) => {
+      setError(
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        t('signIn.errorGeneric', 'An error occurred. Please try again.'),
+      )
+    },
+  })
+
+  const isLoading = loginMutation.isPending
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   const handleLogin = async (e: React.FormEvent) => {
@@ -35,25 +53,11 @@ export default function LoginScreen() {
       return
     }
 
-    setIsLoading(true)
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      // Simulate successful login
-      navigate(redirectUrl)
-    } catch (err: any) {
-      setError(err.message || t('signIn.errorGeneric', 'An error occurred. Please try again.'))
-    } finally {
-      setIsLoading(false)
-    }
+    loginMutation.mutate({ data: { email: identifier, password } })
   }
 
   const handleSocialLogin = (provider: string) => {
-    // Initiate SSO / Social login
-    console.log(`Initiating social login for ${provider}`)
-    navigate(`/auth/sso/initiate?provider=${provider}`)
+    window.location.assign(`${API_CONFIG.baseURL}${ENDPOINTS.auth.social.redirect(provider)}`)
   }
 
   // ── SYSTEM PATTERN: Entry animation (OrganizationProfile L60) ──
@@ -111,7 +115,7 @@ export default function LoginScreen() {
               <AuthInputLabel>{t('signIn.passwordLabel', 'PASSWORD')}</AuthInputLabel>
               <Typography
                 variant="caption"
-                onClick={() => navigate('/auth/recovery')}
+                onClick={() => navigate(Path.auth.forgotPassword)}
                 sx={{
                   fontWeight: 700,
                   color: 'info.main',
@@ -255,7 +259,7 @@ export default function LoginScreen() {
           <Typography
             component="span"
             variant="body2"
-            onClick={() => navigate('/auth/signup')}
+            onClick={() => navigate(Path.auth.signup)}
             sx={{
               fontWeight: 800,
               color: 'info.main',

@@ -181,7 +181,7 @@ export default function RoleDetailView() {
   // â”€â”€ Handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleTogglePermission = (permissionId: number) => {
     if (!role) return
-    const currentPermissionIds = role.permissions.map((p) => p.id)
+    const currentPermissionIds = (role.permissions ?? []).map((p) => p.id)
     const isAssigned = currentPermissionIds.includes(permissionId)
     const newPermissionIds = isAssigned
       ? currentPermissionIds.filter((pid) => pid !== permissionId)
@@ -441,7 +441,7 @@ export default function RoleDetailView() {
                       {allPermissions
                         .filter((p) => getResource(p) === resource)
                         .map((perm) => {
-                          const isAssigned = role.permissions.some((rp) => rp.id === perm.id)
+                          const isAssigned = (role.permissions ?? []).some((rp) => rp.id === perm.id)
                           const isInherited = inheritedPermissionIds.has(perm.id)
                           return (
                             <Box
@@ -627,7 +627,7 @@ export default function RoleDetailView() {
                         {t('auth.admin.directPermissions')}
                       </Typography>
                       <Typography variant='body2' sx={{ fontWeight: 800 }}>
-                        {role.permissions.length}
+                        {role.permissions?.length ?? 0}
                       </Typography>
                     </Box>
                     <Divider />

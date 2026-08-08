@@ -1,7 +1,9 @@
 import { secureTokenManager, TokenData } from '../secureTokenManager'
 import StorageManager from '../storage/storage.service'
+import { resolveContractPath } from '@cap/api-contracts'
+import type { AnyContract, ContractArgs, ContractRequest, ContractResponse } from '@cap/api-contracts'
 
-export { ENDPOINTS, QUERY_KEYS } from '@cap/shared-types'
+export { ENDPOINTS, QUERY_KEYS, API_CONTRACTS } from '@cap/api-contracts'
 
 const getBaseURL = (): string => {
   const envApiUrl = import.meta.env.VITE_API_URL
@@ -35,13 +37,32 @@ export const API_CONFIG = {
   },
 } as const
 
+// ---------------------------------------------------------------------------
+// Tenant-aware request context
+// Registers the resolved tenant id so every outbound request is scoped to the
+// active tenant. The header is only attached once a tenant is known (set by the
+// TenantProvider after tenant config resolution) and can be overridden
+// per-request via FetchRequestConfig.headers.
+// ---------------------------------------------------------------------------
+export const TENANT_ID_HEADER = 'X-Tenant-Id'
+
+let currentTenantId: string | null = null
+
+export function setTenantId(tenantId: string | null | undefined): void {
+  currentTenantId = tenantId ?? null
+}
+
+export function getTenantId(): string | null {
+  return currentTenantId
+}
+
 import {
   RefreshResponseDto,
   ApiResponse,
   PaginatedResponse,
   ApiErrorResponse,
-  ENDPOINTS,
 } from '@cap/shared-types'
+import { ENDPOINTS } from '@cap/api-contracts'
 
 export type { ApiResponse, PaginatedResponse, ApiErrorResponse }
 
@@ -312,6 +333,10 @@ export class FetchClient {
       }
     })
 
+    if (currentTenantId && !headers.has(TENANT_ID_HEADER)) {
+      headers.set(TENANT_ID_HEADER, currentTenantId)
+    }
+
     if (!endpoint.includes(ENDPOINTS.auth.refresh)) {
       await secureTokenManager.ensureInitialized()
 
@@ -500,6 +525,34 @@ export const fetchClient = new FetchClient({
 
 export class ApiClient {
   constructor(private instance: FetchClient = fetchClient) {}
+
+  /**
+   * Invokes a typed endpoint contract. The URL is resolved from the
+   * contract's `resolve` builder (delegating to `API_ENDPOINTS`) and the
+   * request/response payload types flow from the contract itself.
+   */
+  async execute<C extends AnyContract>(
+    contract: C,
+    args: ContractArgs<C>,
+    data?: ContractRequest<C>,
+    config?: FetchRequestConfig,
+  ): Promise<FetchResponse<ContractResponse<C>>> {
+    const url = resolveContractPath(contract, ...args)
+    switch (contract.method) {
+      case 'GET':
+        return this.instance.get<ContractResponse<C>>(url, config)
+      case 'POST':
+        return this.instance.post<ContractResponse<C>>(url, data, config)
+      case 'PUT':
+        return this.instance.put<ContractResponse<C>>(url, data, config)
+      case 'PATCH':
+        return this.instance.patch<ContractResponse<C>>(url, data, config)
+      case 'DELETE':
+        return this.instance.delete<ContractResponse<C>>(url, config)
+      default:
+        throw new HttpError(`Unsupported HTTP method: ${contract.method}`, config || {})
+    }
+  }
 
   async request<T = unknown>(endpoint: string, config: FetchRequestConfig = {}): Promise<FetchResponse<T>> {
     return this.instance.request<T>(endpoint, config)

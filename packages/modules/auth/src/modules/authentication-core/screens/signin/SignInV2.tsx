@@ -4,7 +4,7 @@ import { Box, Button, Grid, TextField, Typography, IconButton, InputAdornment, S
 import { Visibility, VisibilityOff, Fingerprint, LockPerson, ArrowForward, Timer, VerifiedUser } from '@mui/icons-material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Alert as MAlert, themeConfig, IStatus, Roles, useAppStore } from '@cap/platform-core';
+import { Alert as MAlert, themeConfig, IStatus, Roles, useAppStore, API_CONFIG } from '@cap/platform-core';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { useSignin, useSsoDiscovery } from '../../hooks/useAuthQuery';
 import { usePasskeyLogin, usePasskeyGetLoginOptions, useMfaLoginVerify } from '../../../mfa-orchestrator/hooks';
@@ -12,15 +12,14 @@ import { useInterval } from '../../hooks/useInterval';
 import { usePasskeyAutofill } from '../../../mfa-orchestrator/hooks';
 import { LoginRequest } from '../../types/api.types';
 import authService from '../../services/auth.service';
+import { ENDPOINTS } from '@cap/platform-core';
 import { resolveRedirectPathForUser } from '../../utils/resolveRedirect';
 import { Path } from '@cap/module-auth/routes/path';
 import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '../../components/shared/auth';
 
 const DEFAULT_FORM_VALUES: LoginRequest = {
-  email: 'admin@example.com',
-  password: 'password',
-  // email: 'mascayiti@gmail.com',
-  // password: 'mascayiti',
+  email: '',
+  password: '',
   rememberMe: false,
 }
 
@@ -286,29 +285,28 @@ export default function SignInV2() {
 
   const handleSocialLogin = useCallback(
     (provider: string) => {
-      const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3333'
-      navigate(`${apiUrl}/api/auth/social/${provider}/redirect`)
+      window.location.assign(`${API_CONFIG.baseURL}${ENDPOINTS.auth.social.redirect(provider)}`)
     },
-    [navigate],
+    [],
   )
 
   const onSubmit = useCallback(
     (data: LoginRequest) => {
       // If SSO is needed, handle redirection
       if (ssoData && (ssoData.provider === 'saml' || ssoData.provider === 'oidc')) {
-        const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3333'
-        // Implement redirect logic here to SSO endpoints
-        // Example: /api/auth/sso/saml/redirect?orgId=... or /api/auth/sso/oidc/redirect?clientId=...
+        // Redirect to SSO endpoints
         if (ssoData.provider === 'saml' && ssoData.organizationId) {
+          const organizationId = ssoData.organizationId
           setTimeout(() => {
             window.location.assign(
-              `${apiUrl}/api/auth/sso/saml/redirect?organizationId=${ssoData.organizationId}`,
+              `${API_CONFIG.baseURL}${ENDPOINTS.auth.sso.samlRedirect(organizationId)}`,
             )
           }, 0)
         } else if (ssoData.provider === 'oidc' && ssoData.clientId) {
+          const clientId = ssoData.clientId
           setTimeout(() => {
             window.location.assign(
-              `${apiUrl}/api/auth/sso/oidc/redirect?clientId=${ssoData.clientId}`,
+              `${API_CONFIG.baseURL}${ENDPOINTS.auth.sso.oidcRedirect(clientId)}`,
             )
           }, 0)
         }

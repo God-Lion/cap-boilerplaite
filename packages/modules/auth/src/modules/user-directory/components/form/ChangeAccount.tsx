@@ -6,9 +6,10 @@ import { Box, Grid, TextField, Button, Stack, Backdrop, CircularProgress } from 
 import { useTranslation } from 'react-i18next'
 import FormLayout from "@auth/authentication-core/components/form/FormLayout"
 import { useMutation } from '@tanstack/react-query'
-import { IUserResponse, IUpdateNames } from '@cap/platform-core'
+import { IUpdateNames } from '@cap/platform-core'
+import { UserDto } from '@cap/shared-types'
 
-export default function ChangeAccount({ user }: { user: IUserResponse }) {
+export default function ChangeAccount({ user }: { user: UserDto }) {
   const { t } = useTranslation()
   const [loading, setLoading] = React.useState<boolean>(false)
 

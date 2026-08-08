@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, InputAdornment, IconButton, Stack, Alert, alpha, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { AdminPanelSettings, Visibility, VisibilityOff, Security } from '@mui/icons-material';
-;
 import { useNavigate } from 'react-router-dom';
 import { Path } from '@cap/module-auth/routes/path';
+import { normalizeRole } from '@cap/platform-core';
+import { useSignin } from '@idaas/authentication-core/hooks/useAuthQuery';
+import { resolveRedirectPathForUser } from '@idaas/authentication-core/utils/resolveRedirect';
 import { AuthPageLayout, AuthScreenIcon, AuthInputLabel, AuthActionButton } from '@idaas/authentication-core/components/shared/auth';
 
 const AdminLoginScreen = () => {
@@ -15,25 +17,33 @@ const AdminLoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const loginMutation = useSignin({
+    onSuccess: (response) => {
+      const userData = response?.data?.user || response?.data
+      const userRole = normalizeRole(userData?.role)
+      navigate(resolveRedirectPathForUser(userRole))
+    },
+    onError: (error: any) => {
+      setError(
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        t('admin.errorGeneric', 'An error occurred. Please try again.'),
+      )
+    },
+  })
+
+  const isLoading = loginMutation.isPending
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     if (!email || !password) {
       setError(t('admin.errorIncomplete', 'Please enter both email and password.'))
       return
     }
-    setIsLoading(true)
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      navigate('/')
-    } catch (err: any) {
-      setError(err.message || t('admin.errorGeneric', 'An error occurred. Please try again.'))
-    } finally {
-      setIsLoading(false)
-    }
+    loginMutation.mutate({ data: { email, password } })
   }
 
   return (

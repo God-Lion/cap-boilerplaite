@@ -5,14 +5,14 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { IUserResponse } from '@cap/platform-core'
+import { UserDto } from '@cap/shared-types'
 import FormLayout from "@auth/authentication-core/components/form/FormLayout"
 // import { FormLayout } from 'src/components/form'
 
 // Type-safe wrapper for PhoneInput to fix React 19 compatibility
 const PhoneInputWrapper = PhoneInput as unknown as React.ComponentType<any>
 
-export default function ChangePhone({ user }: { user: IUserResponse }) {
+export default function ChangePhone({ user }: { user: UserDto }) {
   const { t } = useTranslation()
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
   const handleShowPassword = () => setShowPassword(!showPassword)

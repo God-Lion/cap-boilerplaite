@@ -1,64 +1,67 @@
 
-import { Box, Typography, Container, Paper, Button } from '@mui/material';
+import { Box, Typography, Container, Paper, Button, Alert, CircularProgress } from '@mui/material';
 import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineOppositeContent, TimelineDot } from '@mui/lab';
-import { Login, VpnKey, Security, Password, NotificationImportant, History } from '@mui/icons-material';
+import { Login, VpnKey, Security, Password, NotificationImportant, History, Refresh } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { useActivityTimeline } from '@auth';
+import { AuditLog } from '@idaas/authentication-core/types/api.types';
+import { useMemo } from 'react';
+
+type TimelineDotColor = 'success' | 'primary' | 'info' | 'warning' | 'error' | 'grey' | 'inherit';
+
+interface ActivityItem {
+  id: string
+  title: string
+  description: string
+  date: string
+  time: string
+  icon: React.ReactNode
+  color: TimelineDotColor
+}
+
+const toActivityItems = (logs: AuditLog[]): ActivityItem[] =>
+  logs.map((log) => {
+    let icon = <History fontSize='small' />
+    let color: TimelineDotColor = 'grey'
+
+    if (log.action.includes('login')) {
+      icon = <Login fontSize='small' />
+      color = 'success'
+    } else if (log.action.includes('password')) {
+      icon = <Password fontSize='small' />
+      color = 'warning'
+    } else if (log.action.includes('mfa')) {
+      icon = <Security fontSize='small' />
+      color = 'info'
+    } else if (log.action.includes('token')) {
+      icon = <VpnKey fontSize='small' />
+      color = 'primary'
+    } else if (log.action.includes('fail')) {
+      icon = <NotificationImportant fontSize='small' />
+      color = 'error'
+    }
+
+    const timestamp = new Date(log.created_at)
+
+    return {
+      id: log.id.toString(),
+      title: log.action.charAt(0).toUpperCase() + log.action.slice(1).replace(/_/g, ' '),
+      description: `${log.resource_type}${log.resource_id ? ` #${log.resource_id}` : ''}`,
+      date: Number.isNaN(timestamp.getTime()) ? log.created_at : timestamp.toLocaleDateString(),
+      time: Number.isNaN(timestamp.getTime()) ? '' : timestamp.toLocaleTimeString(),
+      icon,
+      color,
+    }
+  })
 
 const UserActivityTimeline = () => {
   const { t } = useTranslation()
+  const { data, isLoading, isError, refetch, isFetching } = useActivityTimeline()
 
-  const activities = [
-    {
-      id: '1',
-      type: 'login_success',
-      title: 'Successful Login',
-      description: 'User logged in successfully via web portal.',
-      date: 'Oct 12, 2024',
-      time: '10:45 AM',
-      icon: <Login fontSize='small' />,
-      color: 'success',
-    },
-    {
-      id: '2',
-      type: 'token_created',
-      title: 'API Token Created',
-      description: 'New API token generated for external integration.',
-      date: 'Oct 14, 2024',
-      time: '02:30 PM',
-      icon: <VpnKey fontSize='small' />,
-      color: 'primary',
-    },
-    {
-      id: '3',
-      type: 'mfa_enabled',
-      title: 'MFA Method Added',
-      description: 'User enabled multi-factor authentication.',
-      date: 'Oct 15, 2024',
-      time: '09:15 AM',
-      icon: <Security fontSize='small' />,
-      color: 'info',
-    },
-    {
-      id: '4',
-      type: 'password_changed',
-      title: 'Password Changed',
-      description: 'Password update initiated by user.',
-      date: 'Dec 03, 2024',
-      time: '04:20 PM',
-      icon: <Password fontSize='small' />,
-      color: 'warning',
-    },
-    {
-      id: '5',
-      type: 'login_failed',
-      title: 'Login Failed',
-      description: 'Attempted login with invalid credentials.',
-      date: 'Dec 05, 2024',
-      time: '11:10 PM',
-      icon: <NotificationImportant fontSize='small' />,
-      color: 'error',
-    },
-  ]
+  const activities = useMemo(
+    () => toActivityItems(data?.data ?? []),
+    [data],
+  )
 
   return (
     <Container maxWidth='lg' sx={{ py: 6 }}>
@@ -81,58 +84,97 @@ const UserActivityTimeline = () => {
       </Box>
 
       <Paper variant='outlined' sx={{ p: 4, borderRadius: 3 }}>
-        <Timeline position='alternate'>
-          {activities.map((activity, index) => (
-            <TimelineItem key={activity.id}>
-              <TimelineOppositeContent
-                sx={{ m: 'auto 0' }}
-                align={index % 2 === 0 ? 'right' : 'left'}
-                variant='body2'
-                color='text.secondary'
-              >
-                <Typography variant='subtitle2' fontWeight='bold'>
-                  {activity.date}
-                </Typography>
-                <Typography variant='caption'>{activity.time}</Typography>
-              </TimelineOppositeContent>
-              <TimelineSeparator>
-                <TimelineConnector />
-                <TimelineDot color={activity.color as any}>{activity.icon}</TimelineDot>
-                <TimelineConnector />
-              </TimelineSeparator>
-              <TimelineContent sx={{ py: '12px', px: 2 }}>
-                <Paper
-                  variant='outlined'
-                  sx={{
-                    p: 2,
-                    borderRadius: 2,
-                    bgcolor: 'background.default',
-                    borderColor: 'divider',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      boxShadow: (theme) => theme.shadows[2],
-                    },
-                    transition: 'all 0.2s',
-                  }}
+        {isLoading ? (
+          <Box sx={{ py: 8, display: 'flex', justifyContent: 'center' }}>
+            <CircularProgress />
+          </Box>
+        ) : isError ? (
+          <Box sx={{ py: 4 }}>
+            <Alert
+              severity='error'
+              action={
+                <Button
+                  color='inherit'
+                  size='small'
+                  startIcon={<Refresh />}
+                  onClick={() => refetch()}
                 >
-                  <Typography variant='subtitle1' fontWeight='bold'>
-                    {activity.title}
+                  {t('auth.account.activity.retry', 'Retry')}
+                </Button>
+              }
+            >
+              {t('auth.account.activity.load_failed', 'Unable to load activity. Please try again.')}
+            </Alert>
+          </Box>
+        ) : activities.length === 0 ? (
+          <Box sx={{ py: 8, textAlign: 'center' }}>
+            <Typography color='text.secondary'>
+              {t('auth.account.activity.no_recent_activity', 'No recent activity found.')}
+            </Typography>
+          </Box>
+        ) : (
+          <Timeline position='alternate'>
+            {activities.map((activity, index) => (
+              <TimelineItem key={activity.id}>
+                <TimelineOppositeContent
+                  sx={{ m: 'auto 0' }}
+                  align={index % 2 === 0 ? 'right' : 'left'}
+                  variant='body2'
+                  color='text.secondary'
+                >
+                  <Typography variant='subtitle2' fontWeight='bold'>
+                    {activity.date}
                   </Typography>
-                  <Typography variant='body2' color='text.secondary'>
-                    {activity.description}
-                  </Typography>
-                </Paper>
-              </TimelineContent>
-            </TimelineItem>
-          ))}
-        </Timeline>
+                  <Typography variant='caption'>{activity.time}</Typography>
+                </TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineConnector />
+                  <TimelineDot color={activity.color}>{activity.icon}</TimelineDot>
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent sx={{ py: '12px', px: 2 }}>
+                  <Paper
+                    variant='outlined'
+                    sx={{
+                      p: 2,
+                      borderRadius: 2,
+                      bgcolor: 'background.default',
+                      borderColor: 'divider',
+                      '&:hover': {
+                        borderColor: 'primary.main',
+                        boxShadow: (theme) => theme.shadows[2],
+                      },
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <Typography variant='subtitle1' fontWeight='bold'>
+                      {activity.title}
+                    </Typography>
+                    <Typography variant='body2' color='text.secondary'>
+                      {activity.description}
+                    </Typography>
+                  </Paper>
+                </TimelineContent>
+              </TimelineItem>
+            ))}
+          </Timeline>
+        )}
       </Paper>
 
-      <Box sx={{ mt: 4, textAlign: 'center' }}>
-        <Button variant='text' color='primary' sx={{ textTransform: 'none', fontWeight: 'bold' }}>
-          Load older activity
-        </Button>
-      </Box>
+      {!isLoading && !isError && activities.length > 0 && (
+        <Box sx={{ mt: 4, textAlign: 'center' }}>
+          <Button
+            variant='text'
+            color='primary'
+            startIcon={<Refresh />}
+            disabled={isFetching}
+            onClick={() => refetch()}
+            sx={{ textTransform: 'none', fontWeight: 'bold' }}
+          >
+            {t('auth.account.activity.refresh', 'Refresh activity')}
+          </Button>
+        </Box>
+      )}
     </Container>
   )
 }

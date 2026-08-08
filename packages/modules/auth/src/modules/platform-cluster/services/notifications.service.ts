@@ -1,6 +1,6 @@
 import { apiClient, FetchResponse } from '@cap/platform-core'
 
-import { ENDPOINTS } from "@idaas/authentication-core/services/endpoints"
+import { ENDPOINTS } from '@cap/platform-core'
 /**
  * Notifications Service
  */

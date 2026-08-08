@@ -14,10 +14,11 @@ import {
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { IUserResponse, useAuth, HttpError } from '@cap/platform-core'
+import { useAuth, HttpError } from '@cap/platform-core'
+import { UserDto, ApiErrorResponse } from '@cap/shared-types'
 import FormLayout from "@auth/authentication-core/components/form/FormLayout"
 
-export default function ChangeEmail({ user }: { user: IUserResponse }) {
+export default function ChangeEmail({ user }: { user: UserDto }) {
   const { t } = useTranslation()
   const { refreshAuth } = useAuth()
   const [loading, setLoading] = React.useState<boolean>(false)
@@ -69,7 +70,7 @@ export default function ChangeEmail({ user }: { user: IUserResponse }) {
         'email',
         {
           type: 'exist',
-          message: error.response?.data?.message,
+          message: (error.response?.data as ApiErrorResponse | undefined)?.message,
         },
         { shouldFocus: true },
       )

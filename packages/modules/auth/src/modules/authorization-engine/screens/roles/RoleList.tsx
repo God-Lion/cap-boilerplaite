@@ -512,11 +512,13 @@ export default function RoleList() {
                     {/* Last updated */}
                     <TableCell>
                       <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                        {new Date(role.updated_at).toLocaleDateString(undefined, {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
+                        {role.updated_at
+                          ? new Date(role.updated_at).toLocaleDateString(undefined, {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            })
+                          : null}
                       </Typography>
                     </TableCell>
 

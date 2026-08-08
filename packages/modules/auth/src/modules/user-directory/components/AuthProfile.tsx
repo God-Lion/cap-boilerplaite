@@ -17,10 +17,11 @@ import {
 } from '@mui/material'
 import { Settings, Logout } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { useAuth, IUserResponse } from '@cap/platform-core'
+import { useAuth } from '@cap/platform-core'
+import { UserDto } from '@cap/shared-types'
 import { useSignout } from "@auth/authentication-core/hooks/useAuthQuery"
 
-const Profile: React.FC<{ user: IUserResponse }> = ({ user }) => (
+const Profile: React.FC<{ user: UserDto }> = ({ user }) => (
   <Stack direction='column'>
     <Stack
       direction='row'

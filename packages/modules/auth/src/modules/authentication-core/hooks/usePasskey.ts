@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query'
 import { FetchResponse, HttpError, apiClient } from '@cap/platform-core'
-import { ENDPOINTS } from '../services/endpoints'
+import { ENDPOINTS } from '@cap/platform-core'
 import { QUERY_KEYS } from '../services/query'
 
 export interface PasskeyCredential {
@@ -37,8 +37,8 @@ const passkeyService = {
     return apiClient.post(ENDPOINTS.auth.passkey.registerFinish, { attestation })
   },
 
-  loginStart: async (options?: PasskeyAuthenticationOptions): Promise<FetchResponse> => {
-    return apiClient.post(ENDPOINTS.auth.passkey.loginStart, options || {})
+  loginStart: async (options?: PasskeyAuthenticationOptions): Promise<FetchResponse<PasskeyLoginResult>> => {
+    return apiClient.post<PasskeyLoginResult>(ENDPOINTS.auth.passkey.loginStart, options || {})
   },
 
   loginFinish: async ( assertion: any ): Promise<FetchResponse<PasskeyLoginResult> > => {
@@ -109,7 +109,7 @@ export function usePasskeys(
 ) {
   return useQuery({
     queryKey: QUERY_KEYS.users.passkeys,
-    queryFn: () => apiClient.get(ENDPOINTS.user.passkeys.index),
+    queryFn: () => apiClient.get<PasskeyCredential[]>(ENDPOINTS.user.passkeys.index),
     staleTime: 1000 * 60 * 5,
     ...options,
   })

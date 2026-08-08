@@ -1,8 +1,12 @@
 /**
- * Unified API Registry
- * 
- * This is the single source of truth for all API endpoints and query keys.
- * All modules should import from this registry instead of defining their own.
+ * API Endpoint Registry
+ *
+ * `API_ENDPOINTS` is the single source of truth for every backend URL, and
+ * `API_QUERY_KEYS` holds the matching React Query key factories for cache
+ * invalidation. Endpoint contracts (`API_CONTRACTS`) reference these paths
+ * through their `resolve` builders so the URL strings never live in two places.
+ *
+ * No React dependencies - pure TypeScript only.
  */
 
 export const API_ENDPOINTS = {
@@ -29,11 +33,54 @@ export const API_ENDPOINTS = {
     refresh: '/api/auth/refresh',
     session: '/api/auth/session',
     trackFailedLogin: '/api/auth/track-failed-login',
-    verifyEmail: '/api/auth/verification/email',
-    verifyResetPassword: '/api/auth/reset-password',
+    csrfToken: '/api/auth/csrf-token',
+    verifyEmail: (email: string, signature: string) =>
+      `/api/auth/verification/email/${email}?signature=${signature}`,
+    verifyResetPassword: (email: string, signature: string) =>
+      `/api/auth/reset-password/${email}?signature=${signature}`,
     resendVerification: '/api/auth/verification/email/resend',
-    verifyEmailToken: '/api/auth/verification/email',
+    verifyEmailToken: (email: string, signature: string) =>
+      `/api/auth/verification/email/${email}?signature=${signature}`,
     validateUser: (id: string | number, token: string) => `/api/auth/validate/${id}/${token}`,
+    invitationDetails: '/api/auth/invitation-details',
+    acceptInvitation: '/api/auth/accept-invitation',
+    declineInvitation: '/api/auth/decline-invitation',
+    sso: {
+      discover: '/api/auth/sso/discover',
+      samlRedirect: (organizationId: string | number) =>
+        `/api/auth/sso/saml/redirect?organizationId=${organizationId}`,
+      oidcRedirect: (clientId: string | number) =>
+        `/api/auth/sso/oidc/redirect?clientId=${clientId}`,
+    },
+    passwordless: {
+      send: '/api/auth/passwordless/send',
+      verify: '/api/auth/passwordless/verify',
+    },
+    oidcDevice: {
+      authorize: '/api/auth/oidc/device',
+      verifyAction: '/api/auth/device/verify',
+    },
+    oidcInteraction: {
+      get: (uid: string) => `/api/auth/oidc/interaction/${uid}`,
+      login: (uid: string) => `/api/auth/oidc/interaction/${uid}/login`,
+      consent: (uid: string) => `/api/auth/oidc/interaction/${uid}/consent`,
+      confirm: (uid: string) => `/api/auth/oidc/interaction/${uid}/confirm`,
+      abort: (uid: string) => `/api/auth/oidc/interaction/${uid}/abort`,
+    },
+    social: {
+      redirect: (provider: string) => `/api/auth/social/${provider}/redirect`,
+      callback: (provider: string) => `/api/auth/social/${provider}/callback`,
+    },
+    oidc: {
+      auth: '/api/auth/oidc/auth',
+      userinfo: '/api/auth/oidc/userinfo',
+      introspect: '/api/auth/oidc/introspect',
+      revoke: '/api/auth/oidc/revoke',
+      endSession: '/api/auth/oidc/end-session',
+    },
+    saml: {
+      sso: '/api/auth/saml/sso',
+    },
     passkey: {
       registerStart: '/api/auth/passkey/register/start',
       registerFinish: '/api/auth/passkey/register/finish',
@@ -59,10 +106,20 @@ export const API_ENDPOINTS = {
   user: {
     me: '/api/user/me',
     update: '/api/user/update',
+    avatar: '/api/user/avatar',
     changeEmail: '/api/user/change-email',
+    emailChanges: '/api/user/change-email',
+    changePhone: '/api/user/change-phone',
     changePassword: '/api/user/change-password',
+    activityTimeline: '/api/user/activity-timeline',
+    securityStatus: '/api/user/security-status',
     destroy: '/api/user',
-    deactivate: '/api/user/deactivate',
+    preferences: '/api/user/preferences',
+    verifyEmailChange: '/api/user/change-email/verify',
+    activate: (id: string | number) => `/api/user/activate/${id}`,
+    deactivate: (id: string | number) => `/api/user/deactivate/${id}`,
+    suspend: (id: string | number) => `/api/user/suspend/${id}`,
+    unsuspend: (id: string | number) => `/api/user/unsuspend/${id}`,
     linkedAccounts: '/api/user/linked-accounts',
     linkAccount: '/api/user/link-account',
     unlinkAccount: (id: string | number) => `/api/user/linked-accounts/${id}`,
@@ -79,6 +136,9 @@ export const API_ENDPOINTS = {
     },
     mfa: {
       methods: '/api/user/mfa-methods',
+    },
+    compliance: {
+      export: '/api/user/compliance/export',
     },
   },
 
@@ -107,13 +167,7 @@ export const API_ENDPOINTS = {
 
   statistics: {
     overview: '/api/statistics/overview',
-    jobsByLocation: '/api/statistics/jobs-by-location',
-    jobsByCompany: '/api/statistics/jobs-by-company',
-    jobsByType: '/api/statistics/jobs-by-type',
-    jobsByExperience: '/api/statistics/jobs-by-experience',
     scrapingActivity: '/api/statistics/scraping-activity',
-    topSkills: '/api/statistics/top-skills',
-    recentJobs: '/api/statistics/recent-jobs',
     sessionStatistics: '/api/statistics/session-statistics',
     trends: '/api/statistics/trends',
   },
@@ -145,12 +199,13 @@ export const API_ENDPOINTS = {
     preferences: '/api/notifications/preferences',
     updatePreferences: '/api/notifications/preferences',
     unreadCount: '/api/notifications/unread-count',
+    sse: '/api/sse/notifications',
     ws: '/ws/notifications',
   },
 
   sse: {
     scrapingProgress: (sessionId: number | string) => `/api/sse/scraping/${sessionId}`,
-    analysisProgress: (analysisId: number) => `/api/sse/analysis/${analysisId}`,
+    analysisProgress: (analysisId: number | string) => `/api/sse/analysis/${analysisId}`,
   },
 
   security: {
@@ -200,6 +255,7 @@ export const API_ENDPOINTS = {
       deactivate: (id: number) => `/api/admin/users/${id}/deactivate`,
       ban: (id: number) => `/api/admin/users/${id}/ban`,
       unban: (id: number) => `/api/admin/users/${id}/unsuspend`,
+      unsuspend: (id: number) => `/api/admin/users/${id}/unsuspend`,
       resetPassword: (id: number) => `/api/admin/users/${id}/reset-password`,
       resetMfa: (id: number) => `/api/admin/users/${id}/mfa-reset`,
       bulkAction: '/api/admin/users/bulk',
@@ -221,6 +277,7 @@ export const API_ENDPOINTS = {
         destroy: (id: string | number) => `/api/admin/scim/tokens/${id}`,
       },
       config: '/api/admin/scim/config',
+      test: '/api/admin/scim/test',
     },
     clients: {
       index: '/api/admin/clients',
@@ -243,6 +300,7 @@ export const API_ENDPOINTS = {
       updateConfig: '/api/admin/ssf/config',
       test: '/api/admin/ssf/test',
       broadcast: '/api/admin/ssf/broadcast',
+      history: '/api/admin/ssf/history',
     },
     jwks: {
       index: '/api/admin/jwks',
@@ -285,6 +343,9 @@ export const API_ENDPOINTS = {
         `/api/admin/organizations/${orgId}/invitations/${invitationId}/revoke`,
       policies: (id: number) => `/api/admin/organizations/${id}/policies`,
       impersonate: (id: number) => `/api/admin/organizations/${id}/impersonate`,
+      domains: (id: number) => `/api/admin/organizations/${id}/domains`,
+      domainsCheck: (id: number, domainId: number) =>
+        `/api/admin/organizations/${id}/domains/${domainId}/check`,
     },
     provisioning: {
       index: '/api/admin/provisioning',
@@ -355,6 +416,18 @@ export const API_ENDPOINTS = {
       removeOverride: (id: number, pid: number) => `/api/admin/rbac/members/${id}/overrides/${pid}`,
     },
     accessPolicies: '/api/admin/rbac/access-policies',
+  },
+
+  adminMembers: {
+    overrides: (id: number) => `/api/admin/members/${id}/overrides`,
+    addOverride: (id: number) => `/api/admin/members/${id}/overrides`,
+    removeOverride: (id: number, pid: number) => `/api/admin/members/${id}/overrides/${pid}`,
+  },
+
+  developerApiKeys: {
+    index: '/api/admin/developer-api-keys',
+    store: '/api/admin/developer-api-keys',
+    destroy: (id: number) => `/api/admin/developer-api-keys/${id}`,
   },
 } as const
 

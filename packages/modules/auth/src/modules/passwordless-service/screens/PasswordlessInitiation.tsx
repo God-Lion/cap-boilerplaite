@@ -7,31 +7,39 @@ import { Email, ArrowForward, Fingerprint } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { usePasswordlessSend } from '../hooks'
+import Path from './path'
+import { Path as AuthPath } from '@cap/module-auth/routes/path'
 
 export default function PasswordlessInitiation() {
   const { t } = useTranslation('common')
   const theme = useTheme()
   const navigate = useNavigate()
   const [identifier, setIdentifier] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleInitiate = async (e: React.FormEvent) => {
+  const sendMutation = usePasswordlessSend({
+    onSuccess: () => {
+      navigate(`${Path.verification}?email=${encodeURIComponent(identifier)}`)
+    },
+    onError: (error: any) => {
+      setError(
+        error.response?.data?.message ||
+          t('auth.passwordless.send_failed', 'Failed to send the magic link. Please try again.'),
+      )
+    },
+  })
+
+  const isLoading = sendMutation.isPending
+
+  const handleInitiate = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     if (!identifier) {
-      setError(t('auth.passwordless.error_incomplete'))
+      setError(t('auth.passwordless.error_incomplete', 'Please enter your email address.'))
       return
     }
-    setIsLoading(true)
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      navigate('/auth/passwordless/verify', { state: { identifier } })
-    } catch (err: any) {
-      setError(err.message || t('auth.passwordless.error_generic'))
-    } finally {
-      setIsLoading(false)
-    }
+    sendMutation.mutate(identifier)
   }
 
   return (
@@ -89,7 +97,7 @@ export default function PasswordlessInitiation() {
       </Divider>
 
       <Box sx={{ textAlign: 'center' }}>
-        <Typography variant="body2" onClick={() => navigate('/auth/signin')}
+        <Typography variant="body2" onClick={() => navigate(AuthPath.auth.signin)}
           sx={{ fontWeight: 800, color: 'text.secondary', cursor: 'pointer', '&:hover': { color: 'text.primary', textDecoration: 'underline' } }}>
           {t('auth.passwordless.use_password_instead')}
         </Typography>

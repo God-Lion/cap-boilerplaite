@@ -14,6 +14,8 @@
     "paths": {
       "@cap/platform-store": ["./src"],
       "@cap/platform-store/*": ["./src/*"],
+      "@cap/api-contracts": ["../api-contracts/src"],
+      "@cap/api-contracts/*": ["../api-contracts/src/*"],
       "@cap/shared-types": ["../shared-types/src"],
       "@cap/shared-types/*": ["../shared-types/src/*"],
       "@cap/theme": ["../theme/src"],

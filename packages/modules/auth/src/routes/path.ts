@@ -51,6 +51,7 @@ export const Path = {
   },
   account: {
     overview: '/auth/account',
+    profile: '/auth/account',
     view: '/auth/account/view',
     edit: '/auth/account/edit',
     changeEmail: '/auth/account/change-email',
@@ -180,6 +181,18 @@ export const Path = {
     emailTemplatePreview: '/admin/email-preview/:id',
     mfa_analytics: '/admin/mfa-analytics',
   },
+
+  // Flat aliases for direct access (backward compatibility and shorthand)
+  profile: '/auth/account',
+  signin: '/auth/sign-in',
+  signinV2: '/auth/sign-in-v2',
+  signup: '/auth/sign-up',
+  forgotPassword: '/auth/recovery/forgot-password',
+  resetPassword: '/auth/recovery/reset-password',
+  checkEmail: '/auth/verify-email-confirmation',
+  verifyEmail: '/auth/verify-email/:email',
+  verificationLinkExpired: '/auth/verification-link-expired',
+  registration: '/auth/register',
 }
 
 
@@ -198,19 +211,5 @@ export const FlatPath = {
   verificationLinkExpired: Path.auth.verificationLinkExpired,
   registration: Path.auth.registration,
 }
-
-// Assign flat properties to the main Path object
-Object.assign(Path, {
-  profile: Path.account.overview,
-  signin: Path.auth.signin,
-  signinV2: Path.auth.signinV2,
-  signup: Path.auth.signup,
-  forgotPassword: Path.auth.forgotPassword,
-  resetPassword: Path.auth.resetPassword,
-  checkEmail: Path.auth.checkEmail,
-  verifyEmail: Path.auth.verifyEmail,
-  verificationLinkExpired: Path.auth.verificationLinkExpired,
-  registration: Path.auth.registration,
-})
 
 export default Path

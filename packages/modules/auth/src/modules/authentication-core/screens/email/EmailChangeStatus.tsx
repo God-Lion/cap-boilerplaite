@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead,
   TableRow, Chip, IconButton, Tooltip, Button, Card, Avatar, alpha, useTheme,
@@ -8,7 +8,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Path } from "@cap/module-auth/routes/path"
 import { useEmailChanges } from "@auth/user-directory/hooks/useUserQuery"
-import { EmailChangeRequest } from "../../../types/api.types"
+import { EmailChangeRequest } from "../../types/api.types"
 
 export default function EmailChangeStatus() {
   const { t } = useTranslation('auth')
@@ -58,7 +58,7 @@ export default function EmailChangeStatus() {
             </IconButton>
           </Tooltip>
           <Button variant="contained" component={Link} to={Path.user.overview} endIcon={<ArrowForward />}
-            sx={{ borderRadius: 3, textTransform: 'none', fontWeight: 800, bgcolor: 'info.main', boxShadow: (t) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark' } }}>
+            sx={{ borderRadius: 3, textTransform: 'none', fontWeight: 800, bgcolor: 'info.main', boxShadow: (t: any) => `0 4px 14px ${alpha(t.palette.info.main, 0.4)}`, '&:hover': { bgcolor: 'info.dark' } }}>
             {t('email.newRequest', 'New Request')}
           </Button>
         </Box>

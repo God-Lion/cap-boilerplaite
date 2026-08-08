@@ -41,7 +41,6 @@ const EmailChangeVerification        = React.lazy(() => import('../screens/email
 const EmailChangeSuccess             = React.lazy(() => import('../screens/email/EmailChangeSuccess'))
 const EmailChangeFailed              = React.lazy(() => import('../screens/email/EmailChangeFailed'))
 const ExportVerification             = React.lazy(() => import('../screens/email/ExportVerification'))
-const PasswordlessVerification       = React.lazy(() => import('../screens/email/PasswordlessVerification'))
 const VerificationEmail              = React.lazy(() => import('../screens/email/VerificationEmail'))
 
 // ---------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 
 import { apiClient, FetchResponse } from '@cap/platform-core'
 
-import { ENDPOINTS } from "../../authentication-core/services/endpoints"
+import { ENDPOINTS } from '@cap/platform-core'
 
 const healthService = {
   getBasic: (): Promise<FetchResponse> => {

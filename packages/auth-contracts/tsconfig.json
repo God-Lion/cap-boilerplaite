@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "types": []
+    "types": ["vite/client"]
   },
   "include": ["src/**/*"]
 }

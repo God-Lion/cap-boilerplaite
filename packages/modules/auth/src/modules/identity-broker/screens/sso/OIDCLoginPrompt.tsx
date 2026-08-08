@@ -13,9 +13,10 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { themeConfig, useAppStore } from '@cap/platform-core'
+import { themeConfig, useAppStore, API_CONFIG } from '@cap/platform-core'
 import { useOidcInteraction, useConfirmOidcInteraction } from '@auth/identity-broker/hooks/useOidcCompliance'
 import { Path } from "@auth/routes/path"
+import { ENDPOINTS } from '@cap/platform-core'
 
 interface OIDCLoginPromptProps {
   user?: { name: string; email: string; avatar?: string }
@@ -65,9 +66,8 @@ export default function OIDCLoginPrompt({ user: initialUser, isPending: initialP
 
   const handleUserClick = () => { if (isPending || !uid) return; confirm() }
   const handleProviderClick = (providerId: string) => {
-    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3333'
     const interactionParam = uid && uid !== 'null' ? `?interaction=${uid}` : ''
-    window.location.assign(`${apiUrl}/api/auth/social/${providerId}/redirect${interactionParam}`)
+    window.location.assign(`${API_CONFIG.baseURL}${ENDPOINTS.auth.social.redirect(providerId)}${interactionParam}`)
   }
   const handleKeyDown = (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUserClick() } }
 

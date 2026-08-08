@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import TenantService from '../services/tenantService'
 import { themeService } from '../services/theme/theme.service'
-import { useSettings } from '@cap/platform-store'
+import { useSettings, setTenantId } from '@cap/platform-store'
 import type { TenantConfig, UserPreferences, TenantContextValue, TenantThemeBase, TenantModule } from '../types/tenant'
 import { DEFAULT_THEME_CONFIG } from '@cap/theme'
 import type { TenantThemeConfig } from '@cap/theme'
@@ -36,6 +36,7 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
     
     const normalized = normalizeTenantConfig(config)
     setTenant(normalized)
+    setTenantId(normalized.id)
     updateSettings({
       primaryColor: normalized.theme?.primaryColor,
       layout: normalized.layout?.layout as any,

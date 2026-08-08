@@ -677,7 +677,7 @@ export function useVerifyDomain(
 ) {
   const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {}
   return useMutation({
-    mutationFn: ({ domain, organizationId }) => adminService.verifyDomain(domain, organizationId),
+    mutationFn: ({ domain, organizationId }) => adminService.verifyDomain(organizationId ?? 0, domain),
     onSuccess: (...args) => {
       customOnSuccess?.(...args)
     },

@@ -15,6 +15,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@cap/api-contracts": "workspace:*",
     "@cap/shared-types": "workspace:*",
     "@cap/theme": "workspace:*",
     "@tanstack/react-query": "^5.67.1",

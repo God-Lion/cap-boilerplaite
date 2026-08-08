@@ -2,7 +2,7 @@
 import { apiClient, FetchResponse, IForgetPassword, ILogin, IResetPassword, ISignup } from '@cap/platform-core';
 
 import { SecurityLogParams } from '../types/api.types';
-import { ENDPOINTS } from './endpoints';
+import { ENDPOINTS } from '@cap/platform-core';
 import { TenantService } from '@cap/platform-core';
 
 import { eventBus } from '../../../domain-kernel/src/events/event-bus';
@@ -168,11 +168,11 @@ const authService = {
   },
 
   verifyResetPassword: (email: string, signature: string): Promise<FetchResponse<any>> => {
-    return apiClient.post(ENDPOINTS.auth.verifyResetPassword, { email, signature })
+    return apiClient.get(ENDPOINTS.auth.verifyResetPassword(email, signature))
   },
 
   verifyEmail: (email: string, signature: string): Promise<FetchResponse<any>> => {
-    return apiClient.post(ENDPOINTS.auth.verifyEmail, { email, signature })
+    return apiClient.get(ENDPOINTS.auth.verifyEmail(email, signature))
   },
 
   resendVerification: (email: string): Promise<FetchResponse<any>> => {
@@ -180,7 +180,7 @@ const authService = {
   },
 
   verifyEmailToken: (email: string, signature: string): Promise<FetchResponse<any>> => {
-    return apiClient.post(ENDPOINTS.auth.verifyEmailToken, { email, signature })
+    return apiClient.get(ENDPOINTS.auth.verifyEmailToken(email, signature))
   },
 
   verifyEmailChange: (token: string): Promise<FetchResponse<any>> => {

@@ -5,8 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { GitHub, Google, Visibility, VisibilityOff, ArrowForward, PersonAdd } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import type { SignupRequest } from '../../types/api.types';
+import type { RegisterRequest } from '../../types/api.types';
 import { useRegister } from '@idaas/authentication-core/hooks/useAuthQuery';
+import { API_CONFIG } from '@cap/platform-core';
+import { ENDPOINTS } from '@cap/platform-core';
 
 const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 
@@ -71,8 +73,7 @@ export default function SignUp() {
   )
 
   const handleSocialRegister = (provider: string) => {
-    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3333'
-    navigate(`${apiUrl}/api/auth/social/${provider}/redirect`)
+    window.location.assign(`${API_CONFIG.baseURL}${ENDPOINTS.auth.social.redirect(provider)}`)
   }
 
   return (

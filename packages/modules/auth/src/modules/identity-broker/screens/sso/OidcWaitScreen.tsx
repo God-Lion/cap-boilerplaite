@@ -13,17 +13,17 @@ import ErrorOutline from '@mui/icons-material/ErrorOutline'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useTranslation } from 'react-i18next'
-import { themeConfig } from '@cap/platform-core'
+import { themeConfig, API_CONFIG } from '@cap/platform-core'
 import { motion } from 'framer-motion'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useOidcInteraction } from '@auth/identity-broker/hooks/useOidcCompliance'
 import { Path } from "@auth/routes/path"
 import logger from '@auth/authentication-core/utils/logger'
+import { ENDPOINTS } from '@cap/platform-core'
 
 type WaitPhase = 'initializing' | 'redirecting' | 'interaction' | 'error'
 
-const API_BASE = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3333'
-const OIDC_AUTH_URL = `${API_BASE}/api/auth/oidc/auth`
+const OIDC_AUTH_URL = `${API_CONFIG.baseURL}${ENDPOINTS.auth.oidc.auth}`
 const REDIRECT_TIMEOUT_MS = 15_000
 
 export default function OidcWaitScreen() {

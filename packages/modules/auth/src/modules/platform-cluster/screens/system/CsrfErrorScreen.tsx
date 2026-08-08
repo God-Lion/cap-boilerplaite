@@ -9,7 +9,7 @@ import { SecurityUpdateWarning, HelpOutline, Refresh, Home } from '@mui/icons-ma
 
 import { useTranslation } from 'react-i18next'
 import { apiClient } from '@cap/platform-core'
-import { ENDPOINTS } from '@idaas/authentication-core/services/endpoints'
+import { ENDPOINTS } from '@cap/platform-core'
 
 export default function CsrfErrorScreen() {
   const { t } = useTranslation('auth')

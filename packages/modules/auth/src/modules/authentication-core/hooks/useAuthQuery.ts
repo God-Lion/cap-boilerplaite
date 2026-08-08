@@ -31,7 +31,7 @@ import {
   SsoDiscoveryResponse,
 } from '../types/api.types'
 import { useSSESubscription } from './useSSE'
-import { ENDPOINTS } from '../services/endpoints'
+import { ENDPOINTS } from '@cap/platform-core'
 
 import { QUERY_KEYS } from '../services/query'
 import authService from '../services/auth.service'

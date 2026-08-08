@@ -6,7 +6,7 @@
 import { apiClient, FetchResponse } from '@cap/platform-core';
 
 import { UpdateEmailRequest, UpdatePhotoRequest, ChangePasswordRequest, UpdatePreferencesRequest, UpdateMeRequest, SecurityStatusResponse, AuditLog } from '@idaas/authentication-core/types/api.types';
-import { ENDPOINTS } from '@idaas/authentication-core/services/endpoints';
+import { ENDPOINTS } from '@cap/platform-core';
 
 const userService = {
   getMe: (): Promise<FetchResponse> => {

@@ -16,6 +16,7 @@ import { Mail, ArrowBack, Refresh, ArrowForward } from '@mui/icons-material'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Path } from "@cap/module-auth/routes/path"
+import { useResendVerification } from '@idaas/authentication-core/hooks/useAuthQuery'
 
 export default function CheckEmailConfirmation() {
   const { t } = useTranslation('auth')
@@ -24,22 +25,27 @@ export default function CheckEmailConfirmation() {
   const [searchParams] = useSearchParams()
   const email = searchParams.get('email') || ''
 
-  const [resending, setResending] = useState(false)
   const [resendSuccess, setResendSuccess] = useState(false)
   const [resendError, setResendError] = useState<string | null>(null)
 
-  const handleResendEmail = useCallback(async () => {
-    setResending(true)
+  const resendMutation = useResendVerification({
+    onSuccess: () => setResendSuccess(true),
+    onError: (error: any) => {
+      setResendError(
+        error.response?.data?.message ||
+        t('email.resendError', 'Failed to resend email. Please try again.'),
+      )
+    },
+  })
+
+  const handleResendEmail = useCallback(() => {
     setResendError(null)
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      setResendSuccess(true)
-    } catch {
+    if (!email) {
       setResendError(t('email.resendError', 'Failed to resend email. Please try again.'))
-    } finally {
-      setResending(false)
+      return
     }
-  }, [t])
+    resendMutation.mutate({ email })
+  }, [email, resendMutation, t])
 
   return (
     <Box
@@ -125,10 +131,10 @@ export default function CheckEmailConfirmation() {
           variant="outlined"
           size="large"
           fullWidth
-          disabled={resending}
+          disabled={resendMutation.isPending}
           onClick={handleResendEmail}
           startIcon={
-            resending ? (
+            resendMutation.isPending ? (
               <CircularProgress size={18} />
             ) : (
               <Refresh />
@@ -144,7 +150,7 @@ export default function CheckEmailConfirmation() {
             '&:hover': { bgcolor: alpha(theme.palette.action.hover, 0.5) },
           }}
         >
-          {resending
+          {resendMutation.isPending
             ? t('email.resending', 'Resending...')
             : t('email.resendButton', 'Resend email')}
         </Button>
