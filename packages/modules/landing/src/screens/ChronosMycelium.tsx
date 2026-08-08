@@ -870,7 +870,7 @@ export const ChronosMycelium: React.FC = () => {
             <IconButton
               sx={{ color: '#a855f7' }}
               onClick={() => {
-                const newSeed = Math.floor(Math.random() * 100000)
+                const newSeed = crypto.getRandomValues(new Uint32Array(1))[0] % 100000
                 handleConfigChange('seed', newSeed)
               }}
             >
