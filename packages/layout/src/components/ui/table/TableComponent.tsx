@@ -53,19 +53,19 @@ class TableComponent extends React.PureComponent<ITableComponentI> {
         <TableHead>
           <TableRow>
             {data?.header?.map((item: ITableHeader) => (
-              <TableCell key={`${item.label}${Math.random()}${item.key}${Math.random()}`}>
+              <TableCell key={`${item.label}${crypto.randomUUID()}${item.key}${crypto.randomUUID()}`}>
                 {item.label}
               </TableCell>
             ))}
             {this.props?.TableOptions && (
-              <TableCell key={`actions${Math.random() * properties.length}}`}>
+              <TableCell key={`actions${crypto.randomUUID()}}`}>
                 {/* // {translate('actions')} */}
                 actions
               </TableCell>
             )}
           </TableRow>
         </TableHead>
-        <TableBody key={`TableBody${Math.random()}`}>
+        <TableBody key={`TableBody${crypto.randomUUID()}`}>
           {/* <FixedSizeList
               height={100}
               width={100}
@@ -76,9 +76,9 @@ class TableComponent extends React.PureComponent<ITableComponentI> {
             </FixedSizeList> */}
           {loading &&
             fillArray.map(() => (
-              <TableRow key={`TableRow${Math.random()}`}>
+              <TableRow key={`TableRow${crypto.randomUUID()}`}>
                 {data.header.map((item: ITableHeader) => (
-                  <TableCell key={`${item.label}${Math.random()}`}>
+                  <TableCell key={`${item.label}${crypto.randomUUID()}`}>
                     <Skeleton variant='text' sx={{ fontSize: '1rem' }} />
                   </TableCell>
                 ))}
@@ -89,12 +89,12 @@ class TableComponent extends React.PureComponent<ITableComponentI> {
             data.rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row: ITableRow) => (
-                <TableRow hover key={`${row?.id ? row?.id : Math.random()}`}>
+                <TableRow hover key={`${row?.id ? row?.id : crypto.randomUUID()}`}>
                   {data.header.map((header: ITableHeader) => (
                     <TableCell
                       key={`${
                         Object.keys(row).filter((value) => value === header.key)[0]
-                      }${Math.random()}${header.key}${Math.random()}`}
+                      }${crypto.randomUUID()}${header.key}${crypto.randomUUID()}`}
                     >
                       <TableValue property={header} row={row} />
                     </TableCell>
